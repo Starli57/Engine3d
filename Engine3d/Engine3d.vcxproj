@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{12508fb5-5297-4625-99e0-6324818a18c3}</ProjectGuid>
-    <RootNamespace>Engine3dcpp</RootNamespace>
+    <ProjectGuid>{8d202021-52db-450f-b2ea-a0e6554ef05c}</ProjectGuid>
+    <RootNamespace>Engine3d</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
