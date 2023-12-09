@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core.h"
+#include "DllDecDefines.h"
 
 class ENGINE_API Engine
 {

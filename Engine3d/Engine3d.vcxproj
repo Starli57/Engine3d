@@ -147,7 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Core.h" />
+    <ClInclude Include="Source\DllDecDefines.h" />
     <ClInclude Include="Source\Engine.h" />
   </ItemGroup>
   <ItemGroup>
