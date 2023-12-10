@@ -12,17 +12,20 @@ project "Engine3d"
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
 
+	pchheader "Pch.h"
+	pchsource "%{prj.name}/Source/Pch.cpp"
+
 	files
 	{
 		"%{prj.name}/Source/**.h",
 		"%{prj.name}/Source/**.cpp"
 	}
+	
+	cppdialect "C++20"
+	staticruntime "On"
+	systemversion "latest"
 
 	filter "system:windows"
-		cppdialect "C++20"
-		staticruntime "On"
-		systemversion "latest"
-
 		defines
 		{
 			"ENGINE_WIN",
@@ -30,6 +33,9 @@ project "Engine3d"
 		}
 
 		postbuildcommands { "copy $(SolutionDir)Output\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.dll $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject" }
+		
+	filter { "not system:windows" }
+		postbuildcommands { "copy $(SolutionDir)Output/" .. outputdir .. "/%{prj.name}/%{prj.name}.dll $(SolutionDir)Output/" .. outputdir .. "/ExampleProject" }
 
 	filter "configurations:Debug"
 		defines
@@ -64,12 +70,12 @@ project "ExampleProject"
 	{
 		"Engine3d"
 	}
+	
+	cppdialect "C++20"
+	staticruntime "On"
+	systemversion "latest"
 
 	filter "system:windows"
-		cppdialect "C++20"
-		staticruntime "On"
-		systemversion "latest"
-
 		defines
 		{
 			"ENGINE_WIN"
