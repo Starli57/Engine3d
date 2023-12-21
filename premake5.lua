@@ -6,6 +6,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 Includes = {}
 Includes["GLFW"] = "Externals/Glfw/include"
+Includes["GLM"] = "Externals/Glm"
 
 Libs = {}
 
@@ -30,7 +31,7 @@ project "ExampleProject"
 		"Engine3d/Source"
 	}
 
-
+	
 	links
 	{
 		"Engine3d"
@@ -73,17 +74,19 @@ project "Engine3d"
 	files
 	{
 		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp"
+		"%{prj.name}/Source/**.cpp",
 	}
 	
 	includedirs
 	{
-		"%{Includes.GLFW}"
+		"%{Includes.GLFW}",
+		"%{Includes.GLM}"
 	}
 
 	links
 	{
-		"GLFW"
+		"GLFW",
+		"GLM"
 	}
 	
 	filter "system:windows"
@@ -143,3 +146,27 @@ project "GLFW"
 	filter "configurations:Release"
 		runtime "Release"
 		optimize "on"
+
+		
+project "GLM"
+	kind "StaticLib"
+	language "C++"
+	
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+	
+	files
+	{
+		"%{Includes.GLM}/glm/**.hpp",
+		"%{Includes.GLM}/glm/**.cpp",
+		"%{Includes.GLM}/glm/**.inl"
+	}
+
+	includedirs
+	{
+		"%{Includes.GLM}"
+	}
+
+	systemversion "latest"
+	staticruntime "On"
+	

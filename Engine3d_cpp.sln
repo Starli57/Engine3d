@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine3d", "Engine3d\Engine
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLFW", "GLFW.vcxproj", "{154B857C-0182-860D-AA6E-6C109684020F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GLM", "GLM.vcxproj", "{05EB870B-71F4-877C-FA6F-9E7C6678937C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -25,6 +27,10 @@ Global
 		{154B857C-0182-860D-AA6E-6C109684020F}.Debug|x64.Build.0 = Debug|x64
 		{154B857C-0182-860D-AA6E-6C109684020F}.Release|x64.ActiveCfg = Release|x64
 		{154B857C-0182-860D-AA6E-6C109684020F}.Release|x64.Build.0 = Release|x64
+		{05EB870B-71F4-877C-FA6F-9E7C6678937C}.Debug|x64.ActiveCfg = Debug|x64
+		{05EB870B-71F4-877C-FA6F-9E7C6678937C}.Debug|x64.Build.0 = Debug|x64
+		{05EB870B-71F4-877C-FA6F-9E7C6678937C}.Release|x64.ActiveCfg = Release|x64
+		{05EB870B-71F4-877C-FA6F-9E7C6678937C}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
