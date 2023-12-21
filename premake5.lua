@@ -8,7 +8,6 @@ Includes = {}
 Includes["GLFW"] = "Externals/Glfw/include"
 
 Libs = {}
-Libs["GLFW"] = "%{outputdir}/GLFW"
 
 startproject "ExampleProject"
 
@@ -31,10 +30,6 @@ project "ExampleProject"
 		"Engine3d/Source"
 	}
 
-	libdirs
-	{
-		"%{Libs.GLFW}"
-	}
 
 	links
 	{
