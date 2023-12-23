@@ -4,11 +4,18 @@ workspace "Engine3d_cpp"
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+VulkanSdk = os.getenv("VULKAN_SDK")
+
 Includes = {}
 Includes["GLFW"] = "Externals/Glfw/include"
 Includes["GLM"] = "Externals/Glm"
+Includes["VULKAN"] = "%{VulkanSdk}/Include"
+
+LibFolders = {}
+LibFolders["VULKAN"] = "%{VulkanSdk}/Lib"
 
 Libs = {}
+Libs["VULKAN"] = "%{LibFolders.VULKAN}/vulkan-1.lib"
 
 startproject "ExampleProject"
 
@@ -80,13 +87,16 @@ project "Engine3d"
 	includedirs
 	{
 		"%{Includes.GLFW}",
-		"%{Includes.GLM}"
+		"%{Includes.GLM}",
+		"%{Includes.VULKAN}"
 	}
 
 	links
 	{
 		"GLFW",
-		"GLM"
+		"GLM",
+
+		"%{Libs.VULKAN}"
 	}
 	
 	filter "system:windows"
