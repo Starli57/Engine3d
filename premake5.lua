@@ -35,9 +35,11 @@ project "ExampleProject"
 
 	includedirs
 	{
+		"%{Includes.GLFW}",
+		"%{Includes.GLM}",
+		"%{Includes.VULKAN}",
 		"Engine3d/Source"
 	}
-
 	
 	links
 	{
@@ -86,6 +88,7 @@ project "Engine3d"
 	
 	includedirs
 	{
+		"%{prj.name}/Source",
 		"%{Includes.GLFW}",
 		"%{Includes.GLM}",
 		"%{Includes.VULKAN}"

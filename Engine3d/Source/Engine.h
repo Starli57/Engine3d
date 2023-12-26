@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Defines/DllDecDefines.h"
+#include "Rendering/Renderer.h"
 
 class ENGINE_API Engine
 {
@@ -9,5 +10,8 @@ public:
 	virtual ~Engine();
 
 	void Run();
+
+private:
+	Renderer* renderer;
 };
 
