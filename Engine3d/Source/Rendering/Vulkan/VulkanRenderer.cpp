@@ -4,12 +4,23 @@
 VulkanRenderer::VulkanRenderer()
 {
 	validationLayers = new ValidationLayers();
+	physDeviceSelector = new PhysicalDeviceSelector();
+
 	CreateInstance();
+	SelectPhysicalRenderingDevice();
+
+
+	//todo: delete after tests
+	VkPhysicalDeviceProperties deviceProperties;
+	vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+	std::cout << "Rendering GPU: " << deviceProperties.deviceName << std::endl;
 }
 
 VulkanRenderer::~VulkanRenderer()
 {
 	DestroyInstance();
+
+	delete physDeviceSelector;
 	delete validationLayers;
 }
 
@@ -19,10 +30,9 @@ void VulkanRenderer::CreateInstance()
 	SetupAppInfo(appInfo);
 
 	VkInstanceCreateInfo createInfo{};
-	SetupInstanceCreateInfo(createInfo, appInfo);//todo: add errors handling
+	SetupInstanceCreateInfo(createInfo, appInfo);
 	validationLayers->SetupValidationLayers(createInfo);
 
-	//todo: result can be success or not -> add errors handling
 	VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
 	if (result != VK_SUCCESS) std::cout << "vulkan instance can't be created: " << result;
 }
@@ -42,13 +52,25 @@ void VulkanRenderer::SetupInstanceCreateInfo(VkInstanceCreateInfo& createInfo, V
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	createInfo.pApplicationInfo = &appInfo;
 
-	//todo: glfwExtensions can be null -> add errors handling
+	auto extensions = GetRequiredExtensions();
+	createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+	createInfo.ppEnabledExtensionNames = extensions.data();
+
+	createInfo.enabledLayerCount = 0;
+}
+
+void VulkanRenderer::SelectPhysicalRenderingDevice()
+{
+	physicalDevice = physDeviceSelector->GetBestRenderingDevice(instance);
+}
+
+std::vector<const char*> VulkanRenderer::GetRequiredExtensions()
+{
 	uint32_t glfwExtensionCount = 0;
 	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-	createInfo.enabledExtensionCount = glfwExtensionCount;
-	createInfo.ppEnabledExtensionNames = glfwExtensions;
-	createInfo.enabledLayerCount = 0;
+	std::vector<const char*> extensions(glfwExtensions, glfwExtensions);
+	return extensions;
 }
 
 void VulkanRenderer::DestroyInstance()
