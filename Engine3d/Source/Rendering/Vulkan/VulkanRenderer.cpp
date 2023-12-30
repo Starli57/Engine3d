@@ -37,26 +37,18 @@ void VulkanRenderer::SetupAppInfo(VkApplicationInfo& appInfo)
 	appInfo.apiVersion = VK_API_VERSION_1_0;
 }
 
-bool VulkanRenderer::SetupInstanceCreateInfo(VkInstanceCreateInfo& createInfo, VkApplicationInfo& appInfo)
+void VulkanRenderer::SetupInstanceCreateInfo(VkInstanceCreateInfo& createInfo, VkApplicationInfo& appInfo)
 {
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	createInfo.pApplicationInfo = &appInfo;
 
-	uint32_t glfwExtensionCount = 0;
-	const char** glfwExtensions;
-
 	//todo: glfwExtensions can be null -> add errors handling
-	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-	if (glfwExtensions == nullptr)
-	{
-		std::cout << "glfw extensions == null for vulkan";
-		return false;
-	}
+	uint32_t glfwExtensionCount = 0;
+	const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
 	createInfo.enabledExtensionCount = glfwExtensionCount;
 	createInfo.ppEnabledExtensionNames = glfwExtensions;
 	createInfo.enabledLayerCount = 0;
-	return true;
 }
 
 void VulkanRenderer::DestroyInstance()
