@@ -1,9 +1,6 @@
 #pragma once
 
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-
-class GLFWwindow;
+#include "ValidationLayers.h"
 
 class VulkanRenderer
 {
@@ -13,8 +10,13 @@ public:
 
 private:
 	VkInstance instance;
+	ValidationLayers* validationLayers;
 
 	void CreateInstance();
 	void DestroyInstance();
+
+	void SetupAppInfo(VkApplicationInfo& info);
+	bool SetupInstanceCreateInfo(VkInstanceCreateInfo& createInfo, VkApplicationInfo& appInfo);
+
 };
 
