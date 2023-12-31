@@ -1,10 +1,12 @@
 #pragma once
 
 struct VkInstanceCreateInfo;
+struct VkDeviceCreateInfo;
 
 class ValidationLayers
 {
 public:
-	void SetupValidationLayers(VkInstanceCreateInfo& createInfo);
+	void Setup(VkInstanceCreateInfo& createInfo);
+	void Setup(VkDeviceCreateInfo& createInfo);
 };
 

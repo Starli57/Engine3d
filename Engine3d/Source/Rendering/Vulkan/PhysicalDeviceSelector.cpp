@@ -14,7 +14,7 @@ VkPhysicalDevice PhysicalDeviceSelector::GetBestRenderingDevice(VkInstance insta
         auto score = CalculateRenderingScore(device);
 
         if (score < bestScore) continue;
-        if (!FindQueueFamilies(device).isComplete())  continue;
+        if (!GetQueueFamilies(device).isComplete())  continue;
 
         bestScore = score;
         bestDevice = device;
@@ -37,7 +37,7 @@ std::vector<VkPhysicalDevice> PhysicalDeviceSelector::GetListOfPhysicalDevices(V
 }
 
 
-QueueFamilyIndices PhysicalDeviceSelector::FindQueueFamilies(VkPhysicalDevice device)
+QueueFamilyIndices PhysicalDeviceSelector::GetQueueFamilies(VkPhysicalDevice device)
 {
     QueueFamilyIndices indices;
 

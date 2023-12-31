@@ -8,7 +8,16 @@ const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"
 };
 
-void ValidationLayers::SetupValidationLayers(VkInstanceCreateInfo& createInfo)
+void ValidationLayers::Setup(VkInstanceCreateInfo& createInfo)
+{
+#ifdef DEBUG
+	//todo: check validation layers support before enabling
+	createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+	createInfo.ppEnabledLayerNames = validationLayers.data();
+#endif
+}
+
+void ValidationLayers::Setup(VkDeviceCreateInfo& createInfo)
 {
 #ifdef DEBUG
 	//todo: check validation layers support before enabling

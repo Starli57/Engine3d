@@ -7,6 +7,7 @@
 
 #include "ValidationLayers.h"
 #include "PhysicalDeviceSelector.h"
+#include "LogicalDeviceCreator.h"
 
 class VulkanRenderer
 {
@@ -17,9 +18,11 @@ public:
 private:
 	VkInstance instance;
 	ValidationLayers* validationLayers;
-	PhysicalDeviceSelector* physDeviceSelector;
+	PhysicalDeviceSelector* physycalDeviceSelector;
+	LogicalDeviceCreator* logicaDeviceCreator;
 
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+	VkDevice logicalDevice;
 
 	void CreateInstance();
 	void DestroyInstance();
@@ -27,7 +30,8 @@ private:
 	void SetupAppInfo(VkApplicationInfo& info);
 	void SetupInstanceCreateInfo(VkInstanceCreateInfo& createInfo, VkApplicationInfo& appInfo);
 	void SelectPhysicalRenderingDevice();
+	void CreateLogicalDevice();
 
-	std::vector<const char*> GetRequiredExtensions();
+	std::vector<const char*> GetGLFWRequiredExtensions();
 };
 

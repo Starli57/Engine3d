@@ -4,24 +4,16 @@
 #include <GLFW/glfw3.h>
 #include <optional>
 
-struct QueueFamilyIndices 
-{
-    std::optional<uint32_t> graphicsFamily;
-
-    bool isComplete() 
-    {
-        return graphicsFamily.has_value();
-    }
-};
+#include "QueueFamilyIndices.h"
 
 class PhysicalDeviceSelector
 {
 public:
 	VkPhysicalDevice GetBestRenderingDevice(VkInstance instance);
     std::vector<VkPhysicalDevice> GetListOfPhysicalDevices(VkInstance instance);
+	QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice device);
 
 private:
-	QueueFamilyIndices FindQueueFamilies(VkPhysicalDevice device);
 
     int CalculateRenderingScore(VkPhysicalDevice device);
 };
