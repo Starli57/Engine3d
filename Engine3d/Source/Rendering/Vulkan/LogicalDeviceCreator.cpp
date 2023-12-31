@@ -5,9 +5,10 @@
 
 VkDevice LogicalDeviceCreator::Create(VkPhysicalDevice physicalDevice)
 {
-	auto physicalDeviceSelector = new PhysicalDeviceSelector();
+	PhysicalDeviceSelector physicalDeviceSelector;
+	ValidationLayers validationLayers;
 
-	auto queueFamily = physicalDeviceSelector->GetQueueFamilies(physicalDevice);
+	auto queueFamily = physicalDeviceSelector.GetQueueFamilies(physicalDevice);
 
 	VkDeviceQueueCreateInfo queueCreateInfo{};
 	queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
@@ -29,8 +30,7 @@ VkDevice LogicalDeviceCreator::Create(VkPhysicalDevice physicalDevice)
 
 	createInfo.enabledExtensionCount = 0;
 
-	ValidationLayers* validationLayers = new ValidationLayers();
-	validationLayers->Setup(createInfo);
+	validationLayers.Setup(createInfo);
 
 	VkDevice logicalDevice;
 	auto createStatus = vkCreateDevice(physicalDevice, &createInfo, nullptr, &logicalDevice);
@@ -40,9 +40,6 @@ VkDevice LogicalDeviceCreator::Create(VkPhysicalDevice physicalDevice)
 
 	VkQueue graphicsQueue;
 	vkGetDeviceQueue(logicalDevice, queueFamily.graphicsFamily.value(), 0, &graphicsQueue);
-
-	delete validationLayers;
-	delete physicalDeviceSelector;
 
 	return logicalDevice;
 }

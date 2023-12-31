@@ -6,6 +6,6 @@
 class LogicalDeviceCreator
 {
 public:
-	VkDevice Create(VkPhysicalDevice device);
+	VkDevice Create(VkPhysicalDevice physicalDevice);
 };
 

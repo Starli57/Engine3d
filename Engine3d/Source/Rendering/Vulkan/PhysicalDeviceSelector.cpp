@@ -4,7 +4,7 @@
 
 VkPhysicalDevice PhysicalDeviceSelector::GetBestRenderingDevice(VkInstance instance)
 {
-    auto devices = GetListOfPhysicalDevices(instance);
+    auto devices = GetDevicesList(instance);
     
     VkPhysicalDevice bestDevice = VK_NULL_HANDLE;
     int bestScore = INT16_MIN;
@@ -23,7 +23,7 @@ VkPhysicalDevice PhysicalDeviceSelector::GetBestRenderingDevice(VkInstance insta
     return bestDevice;
 }
 
-std::vector<VkPhysicalDevice> PhysicalDeviceSelector::GetListOfPhysicalDevices(VkInstance instance)
+std::vector<VkPhysicalDevice> PhysicalDeviceSelector::GetDevicesList(VkInstance instance)
 {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -62,9 +62,9 @@ int PhysicalDeviceSelector::CalculateRenderingScore(VkPhysicalDevice device)
 
     VkPhysicalDeviceProperties deviceProperties;
     VkPhysicalDeviceFeatures deviceFeatures;
+    VkPhysicalDeviceMemoryProperties memoryProperties;
     vkGetPhysicalDeviceProperties(device, &deviceProperties);
     vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
-    VkPhysicalDeviceMemoryProperties memoryProperties;
     vkGetPhysicalDeviceMemoryProperties(device, &memoryProperties);
 
     int totalMemory = 0;
@@ -78,7 +78,7 @@ int PhysicalDeviceSelector::CalculateRenderingScore(VkPhysicalDevice device)
         std::cout << i << ": Size=" << memoryMb << " MB" << std::endl;
     }
 
-    int discreteMult = deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 1 : 0;
+    int discreteMult = deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 2 : 1;
 
     return discreteMult * totalMemory;
 }

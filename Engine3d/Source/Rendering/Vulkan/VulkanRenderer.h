@@ -23,6 +23,7 @@ private:
 
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkDevice logicalDevice;
+	VkSurfaceKHR windiwSurface;
 
 	void CreateInstance();
 	void DestroyInstance();

@@ -9,7 +9,7 @@ VulkanRenderer::VulkanRenderer()
 
 	CreateInstance();
 	SelectPhysicalRenderingDevice();
-
+	CreateLogicalDevice();
 
 	//todo: delete after tests
 	VkPhysicalDeviceProperties deviceProperties;
@@ -19,11 +19,11 @@ VulkanRenderer::VulkanRenderer()
 
 VulkanRenderer::~VulkanRenderer()
 {
-	DestroyInstance();
-
+	vkDestroyDevice(logicalDevice, nullptr);
 	delete logicaDeviceCreator;
 	delete physycalDeviceSelector;
 	delete validationLayers;
+	DestroyInstance();
 }
 
 void VulkanRenderer::CreateInstance()
