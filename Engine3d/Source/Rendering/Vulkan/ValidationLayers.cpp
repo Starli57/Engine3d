@@ -11,17 +11,21 @@ const std::vector<const char*> validationLayers = {
 void ValidationLayers::Setup(VkInstanceCreateInfo& createInfo)
 {
 #ifdef DEBUG
-	//todo: check validation layers support before enabling
 	createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
 	createInfo.ppEnabledLayerNames = validationLayers.data();
+#else
+	createInfo.enabledLayerCount = 0;
+	createInfo.pNext = nullptr;
 #endif
 }
 
 void ValidationLayers::Setup(VkDeviceCreateInfo& createInfo)
 {
 #ifdef DEBUG
-	//todo: check validation layers support before enabling
 	createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
 	createInfo.ppEnabledLayerNames = validationLayers.data();
+#else
+	createInfo.enabledLayerCount = 0;
+	createInfo.pNext = nullptr;
 #endif
 }

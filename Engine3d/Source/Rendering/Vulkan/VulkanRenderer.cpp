@@ -36,38 +36,26 @@ VulkanRenderer::~VulkanRenderer()
 void VulkanRenderer::CreateInstance()
 {
 	VkApplicationInfo appInfo{};
-	SetupAppInfo(appInfo);
-
-	VkInstanceCreateInfo createInfo{};
-	SetupInstanceCreateInfo(createInfo, appInfo);
-	validationLayers->Setup(createInfo);
-
-	VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
-	if (result != VK_SUCCESS) std::cout << "vulkan instance can't be created: " << result << std::endl;//todo: add errors handling
-}
-
-void VulkanRenderer::SetupAppInfo(VkApplicationInfo& appInfo)
-{
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	appInfo.pApplicationName = "Engine3d";
 	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
 	appInfo.pEngineName = "Engine3d";
 	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
 	appInfo.apiVersion = VK_API_VERSION_1_0;
-}
 
-void VulkanRenderer::SetupInstanceCreateInfo(VkInstanceCreateInfo& createInfo, VkApplicationInfo& appInfo)
-{
+	VkInstanceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 	createInfo.pApplicationInfo = &appInfo;
-
 
 	auto extensions = GetGLFWRequiredExtensions();
 	createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 	createInfo.ppEnabledExtensionNames = extensions.data();
+	validationLayers->Setup(createInfo);
 
-	createInfo.enabledLayerCount = 0;
+	VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
+	if (result != VK_SUCCESS) std::cout << "vulkan instance can't be created: " << result << std::endl;//todo: add errors handling
 }
+
 
 void VulkanRenderer::SelectPhysicalRenderingDevice()
 {
@@ -81,7 +69,7 @@ void VulkanRenderer::CreateLogicalDevice()
 
 void VulkanRenderer::CreateWindowSurface() 
 {
-	windowSurface = windowsSurfaceCreator->CreateSurface(instance, *window);//surface is null, need to fix !
+	windowSurface = windowsSurfaceCreator->CreateSurface(instance, *window);
 }
 
 std::vector<const char*> VulkanRenderer::GetGLFWRequiredExtensions()
@@ -95,6 +83,8 @@ std::vector<const char*> VulkanRenderer::GetGLFWRequiredExtensions()
 #ifdef DEBUG
 	extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 #endif
+
+	std::cout << "GLFW extesions included: " << extensions.size() << std::endl;
 
 	return extensions;
 }

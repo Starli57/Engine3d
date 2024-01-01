@@ -17,10 +17,6 @@ LibFolders["VULKAN"] = "%{VulkanSdk}/Lib"
 Libs = {}
 Libs["VULKAN"] = "%{LibFolders.VULKAN}/vulkan-1.lib"
 
-Projects = {}
-Projects["ENGINE"] = "Engine3d";
-Projects["GAME"] = "ExampleProject";
-
 startproject "ExampleProject"
 
 project "ExampleProject"
@@ -68,13 +64,6 @@ project "ExampleProject"
 
 	filter "configurations:Release"
 		optimize "On"
-	
-	filter "system:windows"
-		postbuildcommands { "copy $(SolutionDir)Output\\" .. outputdir .. "\\%{Projects.ENGINE}\\%{Projects.ENGINE}.dll $(SolutionDir)Output\\" .. outputdir .. "\\%{prj.name}" }
-		
-	filter { "not system:windows" }
-		postbuildcommands { "copy $(SolutionDir)Output/" .. outputdir .. "/%{Projects.ENGINE}/%{Projects.ENGINE}.dll $(SolutionDir)Output/" .. outputdir .. "/%{prj.name}" }
-
 
 project "Engine3d"
 	location "Engine3d"
@@ -119,6 +108,11 @@ project "Engine3d"
 			"ENGINE_WIN",
 			"ENGINE_DLL_BUILD"
 		}
+
+		postbuildcommands { "copy $(SolutionDir)Output\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.dll $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject" }
+		
+	filter { "not system:windows" }
+		postbuildcommands { "copy $(SolutionDir)Output/" .. outputdir .. "/%{prj.name}/%{prj.name}.dll $(SolutionDir)Output/" .. outputdir .. "/ExampleProject" }
 
 	filter "configurations:Debug"
 		defines
