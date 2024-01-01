@@ -2,6 +2,7 @@
 #include "LogicalDeviceCreator.h"
 #include "PhysicalDeviceSelector.h"
 #include "ValidationLayers.h"
+#include "PhysicalDeviceExtensions.h"
 
 VkDevice LogicalDeviceCreator::Create(VkPhysicalDevice physicalDevice, VkSurfaceKHR& windowSurface,
 	VkQueue& graphicsQueue, VkQueue& presentationQueue)
@@ -34,12 +35,12 @@ VkDevice LogicalDeviceCreator::Create(VkPhysicalDevice physicalDevice, VkSurface
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 	createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 	createInfo.pQueueCreateInfos = queueCreateInfos.data();
+	createInfo.enabledExtensionCount = static_cast<uint32_t>(physicalDeviceExtensions.size());
+	createInfo.ppEnabledExtensionNames = physicalDeviceExtensions.data();
 
 	VkPhysicalDeviceFeatures deviceFeatures;
 	vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
 	createInfo.pEnabledFeatures = &deviceFeatures;
-
-	createInfo.enabledExtensionCount = 0;
 
 	validationLayers.Setup(createInfo);
 

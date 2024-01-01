@@ -1,20 +1,32 @@
 #include "Pch.h"
 #include "PhysicalDeviceSelector.h"
+#include "PhysicalDeviceExtensions.h"
 
+PhysicalDeviceSelector::PhysicalDeviceSelector() 
+{
+    swapChainInterface = new SwapChainInterface();
+}
+
+PhysicalDeviceSelector::~PhysicalDeviceSelector()
+{
+    delete swapChainInterface;
+}
 
 VkPhysicalDevice PhysicalDeviceSelector::GetBestRenderingDevice(VkInstance instance, VkSurfaceKHR surface)
 {
     auto devices = GetDevicesList(instance);
     
     VkPhysicalDevice bestDevice = VK_NULL_HANDLE;
-    int bestScore = INT16_MIN;
+    uint64_t bestScore = 0;
 
     for (const auto& device : devices) 
     {
         auto score = CalculateRenderingScore(device);
 
         if (score < bestScore) continue;
-        if (!GetQueueFamilies(device, surface).isComplete())  continue;
+        if (!DoSupportQueueFamilies(device, surface))  continue;
+        if (!DoSupportPhysicalDeviceExtensions(device)) continue;
+        if (!DoSupportSwapChain(device, surface)) continue;
 
         bestScore = score;
         bestDevice = device;
@@ -62,9 +74,9 @@ QueueFamilyIndices PhysicalDeviceSelector::GetQueueFamilies(VkPhysicalDevice dev
     return indices;
 }
 
-int PhysicalDeviceSelector::CalculateRenderingScore(VkPhysicalDevice device) 
+uint64_t PhysicalDeviceSelector::CalculateRenderingScore(VkPhysicalDevice device)
 {
-    //todo: add make score calculation
+    //todo: make better score calculation
 
     VkPhysicalDeviceProperties deviceProperties;
     VkPhysicalDeviceFeatures deviceFeatures;
@@ -73,7 +85,7 @@ int PhysicalDeviceSelector::CalculateRenderingScore(VkPhysicalDevice device)
     vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
     vkGetPhysicalDeviceMemoryProperties(device, &memoryProperties);
 
-    int totalMemory = 0;
+    uint64_t totalMemory = 0;
     std::cout << "Device: " << deviceProperties.deviceName << std::endl;
 
     for (uint32_t i = 0; i < memoryProperties.memoryHeapCount; ++i) 
@@ -84,7 +96,34 @@ int PhysicalDeviceSelector::CalculateRenderingScore(VkPhysicalDevice device)
         std::cout << i << ": Size=" << memoryMb << " MB" << std::endl;
     }
 
-    int discreteMult = deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 2 : 1;
+    uint64_t discreteMult = deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 2 : 1;
 
     return discreteMult * totalMemory;
+}
+
+bool PhysicalDeviceSelector::DoSupportQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface)
+{
+    return GetQueueFamilies(device, surface).isComplete();
+}
+
+bool PhysicalDeviceSelector::DoSupportPhysicalDeviceExtensions(VkPhysicalDevice device)
+{
+    uint32_t extensionCount;
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+
+    std::vector<VkExtensionProperties> availableExtensions(extensionCount);
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+
+    std::set<std::string> requiredExtensions(physicalDeviceExtensions.begin(), physicalDeviceExtensions.end());
+
+    for (const auto& extension : availableExtensions) {
+        requiredExtensions.erase(extension.extensionName);
+    }
+
+    return requiredExtensions.empty();
+}
+
+bool PhysicalDeviceSelector::DoSupportSwapChain(VkPhysicalDevice device, VkSurfaceKHR surface)
+{
+    return swapChainInterface->DoSupportSwapChain(device, surface);
 }
