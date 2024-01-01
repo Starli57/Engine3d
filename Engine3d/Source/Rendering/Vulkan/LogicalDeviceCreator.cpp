@@ -3,26 +3,37 @@
 #include "PhysicalDeviceSelector.h"
 #include "ValidationLayers.h"
 
-VkDevice LogicalDeviceCreator::Create(VkPhysicalDevice physicalDevice)
+VkDevice LogicalDeviceCreator::Create(VkPhysicalDevice physicalDevice, VkSurfaceKHR& windowSurface,
+	VkQueue& graphicsQueue, VkQueue& presentationQueue)
 {
 	PhysicalDeviceSelector physicalDeviceSelector;
 	ValidationLayers validationLayers;
 
-	auto queueFamily = physicalDeviceSelector.GetQueueFamilies(physicalDevice);
+	auto queueFamilies = physicalDeviceSelector.GetQueueFamilies(physicalDevice, windowSurface);
 
-	VkDeviceQueueCreateInfo queueCreateInfo{};
-	queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-	queueCreateInfo.queueFamilyIndex = queueFamily.graphicsFamily.value();
-	queueCreateInfo.queueCount = 1;
+	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+	std::set<uint32_t> uniqueQueueFamilies = 
+	{
+		queueFamilies.graphicsFamily.value(), 
+		queueFamilies.presentationFamily.value()
+	};
 
-	float queuePriority = 1.0f;
-	queueCreateInfo.pQueuePriorities = &queuePriority;
+	for (uint32_t queueFamily : uniqueQueueFamilies)
+	{
+		VkDeviceQueueCreateInfo queueCreateInfo{};
+		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+		queueCreateInfo.queueFamilyIndex = queueFamily;
+		queueCreateInfo.queueCount = 1;
+
+		float queuePriority = 1.0f;
+		queueCreateInfo.pQueuePriorities = &queuePriority;
+		queueCreateInfos.push_back(queueCreateInfo);
+	}
 
 	VkDeviceCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-
-	createInfo.pQueueCreateInfos = &queueCreateInfo;
-	createInfo.queueCreateInfoCount = 1;
+	createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+	createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
 	VkPhysicalDeviceFeatures deviceFeatures;
 	vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
@@ -38,8 +49,8 @@ VkDevice LogicalDeviceCreator::Create(VkPhysicalDevice physicalDevice)
 		std::cout << "failed to create logical device, status: " << createStatus;//todo: add errors handling
 	}
 
-	VkQueue graphicsQueue;
-	vkGetDeviceQueue(logicalDevice, queueFamily.graphicsFamily.value(), 0, &graphicsQueue);
+	vkGetDeviceQueue(logicalDevice, queueFamilies.graphicsFamily.value(), 0, &graphicsQueue);
+	vkGetDeviceQueue(logicalDevice, queueFamilies.presentationFamily.value(), 0, &presentationQueue);
 
 	return logicalDevice;
 }

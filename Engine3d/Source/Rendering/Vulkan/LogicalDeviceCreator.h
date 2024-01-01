@@ -6,6 +6,7 @@
 class LogicalDeviceCreator
 {
 public:
-	VkDevice Create(VkPhysicalDevice physicalDevice);
+	VkDevice Create(VkPhysicalDevice physicalDevice, VkSurfaceKHR& windowSurface,
+		VkQueue& graphicsQueue, VkQueue& presentationQueue);
 };
 

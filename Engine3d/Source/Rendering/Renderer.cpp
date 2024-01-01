@@ -7,7 +7,7 @@ Renderer::Renderer()
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);//todo: replace to Vulkan specific logic
 	window = glfwCreateWindow(1000, 1000, "Engine window", nullptr, nullptr);
 
-	vkRenderer = new VulkanRenderer();//todo: replace to Vulkan specific logic
+	vkRenderer = new VulkanRenderer(window);//todo: replace to Vulkan specific logic
 }
 
 Renderer::~Renderer()
