@@ -50,6 +50,11 @@ project "ExampleProject"
 		"Engine3d"
 	}
 	
+	dependson 
+	{
+		"Engine3d"
+	}
+
 	cppdialect "C++20"
 	staticruntime "On"
 	systemversion "latest"
