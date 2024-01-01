@@ -58,7 +58,7 @@ QueueFamilyIndices PhysicalDeviceSelector::GetQueueFamilies(VkPhysicalDevice dev
 
 int PhysicalDeviceSelector::CalculateRenderingScore(VkPhysicalDevice device) 
 {
-    //todo: add better score calculation
+    //todo: add make score calculation
 
     VkPhysicalDeviceProperties deviceProperties;
     VkPhysicalDeviceFeatures deviceFeatures;

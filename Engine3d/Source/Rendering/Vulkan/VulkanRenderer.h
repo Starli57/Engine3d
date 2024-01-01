@@ -28,8 +28,6 @@ private:
 	void CreateInstance();
 	void DestroyInstance();
 
-	void SetupAppInfo(VkApplicationInfo& info);
-	void SetupInstanceCreateInfo(VkInstanceCreateInfo& createInfo, VkApplicationInfo& appInfo);
 	void SelectPhysicalRenderingDevice();
 	void CreateLogicalDevice();
 
