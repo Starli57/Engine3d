@@ -2,7 +2,7 @@
 #include "PhysicalDeviceSelector.h"
 
 
-VkPhysicalDevice PhysicalDeviceSelector::GetBestRenderingDevice(VkInstance instance)
+VkPhysicalDevice PhysicalDeviceSelector::GetBestRenderingDevice(VkInstance instance, VkSurfaceKHR surface)
 {
     auto devices = GetDevicesList(instance);
     
@@ -14,7 +14,7 @@ VkPhysicalDevice PhysicalDeviceSelector::GetBestRenderingDevice(VkInstance insta
         auto score = CalculateRenderingScore(device);
 
         if (score < bestScore) continue;
-        if (!GetQueueFamilies(device).isComplete())  continue;
+        if (!GetQueueFamilies(device, surface).isComplete())  continue;
 
         bestScore = score;
         bestDevice = device;
@@ -37,7 +37,7 @@ std::vector<VkPhysicalDevice> PhysicalDeviceSelector::GetDevicesList(VkInstance 
 }
 
 
-QueueFamilyIndices PhysicalDeviceSelector::GetQueueFamilies(VkPhysicalDevice device)
+QueueFamilyIndices PhysicalDeviceSelector::GetQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface)
 {
     QueueFamilyIndices indices;
 
@@ -49,8 +49,14 @@ QueueFamilyIndices PhysicalDeviceSelector::GetQueueFamilies(VkPhysicalDevice dev
 
     for(int i = 0; i < queueFamilies.size(); i++)
     {
+        VkBool32 presentSupport = false;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+
         if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
             indices.graphicsFamily = i;
+
+        if (presentSupport) 
+            indices.presentationFamily = i;
     }
 
     return indices;

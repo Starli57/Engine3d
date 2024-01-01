@@ -1,13 +1,17 @@
 #include "Pch.h"
 #include "VulkanRenderer.h"
 
-VulkanRenderer::VulkanRenderer()
+VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 {
+	window = glfwWindow;
+
 	validationLayers = new ValidationLayers();
 	physycalDeviceSelector = new PhysicalDeviceSelector();
 	logicaDeviceCreator = new LogicalDeviceCreator();
+	windowsSurfaceCreator = new WindowsSurface();
 
 	CreateInstance();
+	CreateWindowSurface();
 	SelectPhysicalRenderingDevice();
 	CreateLogicalDevice();
 
@@ -19,10 +23,13 @@ VulkanRenderer::VulkanRenderer()
 
 VulkanRenderer::~VulkanRenderer()
 {
-	vkDestroyDevice(logicalDevice, nullptr);
+	delete windowsSurfaceCreator;
 	delete logicaDeviceCreator;
 	delete physycalDeviceSelector;
 	delete validationLayers;
+
+	vkDestroyDevice(logicalDevice, nullptr);
+	vkDestroySurfaceKHR(instance, windowSurface, nullptr);
 	DestroyInstance();
 }
 
@@ -46,17 +53,23 @@ void VulkanRenderer::CreateInstance()
 	validationLayers->Setup(createInfo);
 
 	VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
-	if (result != VK_SUCCESS) std::cout << "vulkan instance can't be created: " << result;//todo: add errors handling
+	if (result != VK_SUCCESS) std::cout << "vulkan instance can't be created: " << result << std::endl;//todo: add errors handling
 }
+
 
 void VulkanRenderer::SelectPhysicalRenderingDevice()
 {
-	physicalDevice = physycalDeviceSelector->GetBestRenderingDevice(instance);
+	physicalDevice = physycalDeviceSelector->GetBestRenderingDevice(instance, windowSurface);
 }
 
 void VulkanRenderer::CreateLogicalDevice()
 {
-	logicalDevice = logicaDeviceCreator->Create(physicalDevice);
+	logicalDevice = logicaDeviceCreator->Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
+}
+
+void VulkanRenderer::CreateWindowSurface() 
+{
+	windowSurface = windowsSurfaceCreator->CreateSurface(instance, *window);
 }
 
 std::vector<const char*> VulkanRenderer::GetGLFWRequiredExtensions()
@@ -65,14 +78,13 @@ std::vector<const char*> VulkanRenderer::GetGLFWRequiredExtensions()
 	const char** glfwExtensions;
 	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-	std::vector<const char*> extensions = std::vector<const char*>();
-	for (int i = 0; i < glfwExtensionCount; i++) extensions.push_back(glfwExtensions[i]);
+	std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
 #ifdef DEBUG
 	extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 #endif
 
-	std::cout << "GLFW extensions count: " << glfwExtensionCount << std::endl;
+	std::cout << "GLFW extesions included: " << extensions.size() << std::endl;
 
 	return extensions;
 }

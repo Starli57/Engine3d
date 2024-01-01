@@ -9,9 +9,9 @@
 class PhysicalDeviceSelector
 {
 public:
-	VkPhysicalDevice GetBestRenderingDevice(VkInstance instance);
+	VkPhysicalDevice GetBestRenderingDevice(VkInstance instance, VkSurfaceKHR surface);
     std::vector<VkPhysicalDevice> GetDevicesList(VkInstance instance);
-	QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice device);
+	QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
 
 private:
 

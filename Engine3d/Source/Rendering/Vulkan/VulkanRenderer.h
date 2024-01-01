@@ -8,28 +8,37 @@
 #include "ValidationLayers.h"
 #include "PhysicalDeviceSelector.h"
 #include "LogicalDeviceCreator.h"
+#include "WindowsSurface.h"
 
 class VulkanRenderer
 {
 public:
-	VulkanRenderer();
+	VulkanRenderer(GLFWwindow* window);
 	~VulkanRenderer();
 
 private:
+	GLFWwindow* window;
+
 	VkInstance instance;
+	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+	VkDevice logicalDevice;
+	VkSurfaceKHR windowSurface;
+	
+	VkQueue graphicsQueue;
+	VkQueue presentationQueue;
+
 	ValidationLayers* validationLayers;
 	PhysicalDeviceSelector* physycalDeviceSelector;
 	LogicalDeviceCreator* logicaDeviceCreator;
+	WindowsSurface* windowsSurfaceCreator;
 
-	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-	VkDevice logicalDevice;
-	VkSurfaceKHR windiwSurface;
 
 	void CreateInstance();
 	void DestroyInstance();
 
 	void SelectPhysicalRenderingDevice();
 	void CreateLogicalDevice();
+	void CreateWindowSurface();
 
 	std::vector<const char*> GetGLFWRequiredExtensions();
 };
