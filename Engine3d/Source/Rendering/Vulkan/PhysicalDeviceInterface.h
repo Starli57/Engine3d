@@ -15,6 +15,7 @@ public:
 
 	VkPhysicalDevice GetBestRenderingDevice(VkInstance instance, VkSurfaceKHR surface);
     std::vector<VkPhysicalDevice> GetDevicesList(VkInstance instance);
+	std::vector<VkPhysicalDevice> GetRenderingDevicesList(VkInstance instance, VkSurfaceKHR surface);
 	QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
 
 private:

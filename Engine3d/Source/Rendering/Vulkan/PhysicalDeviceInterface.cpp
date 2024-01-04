@@ -14,7 +14,10 @@ PhysicalDeviceInterface::~PhysicalDeviceInterface()
 
 VkPhysicalDevice PhysicalDeviceInterface::GetBestRenderingDevice(VkInstance instance, VkSurfaceKHR surface)
 {
-    auto devices = GetDevicesList(instance);
+    auto devices = GetRenderingDevicesList(instance, surface);
+
+    if (devices.size() == 0) throw std::runtime_error("Physical rendering device not found");
+    else std::cout << "Physical rendering devices found: " << devices.size() << std::endl;
     
     VkPhysicalDevice bestDevice = VK_NULL_HANDLE;
     uint64_t bestScore = 0;
@@ -22,14 +25,11 @@ VkPhysicalDevice PhysicalDeviceInterface::GetBestRenderingDevice(VkInstance inst
     for (const auto& device : devices) 
     {
         auto score = CalculateRenderingScore(device);
-
-        if (score < bestScore) continue;
-        if (!DoSupportQueueFamilies(device, surface))  continue;
-        if (!DoSupportPhysicalDeviceExtensions(device)) continue;
-        if (!DoSupportSwapChain(device, surface)) continue;
-
-        bestScore = score;
-        bestDevice = device;
+        if (score > bestScore)
+        {
+            bestScore = score;
+            bestDevice = device;
+        }
     }
 
     return bestDevice;
@@ -40,12 +40,27 @@ std::vector<VkPhysicalDevice> PhysicalDeviceInterface::GetDevicesList(VkInstance
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
 
-    if (deviceCount == 0) throw std::runtime_error("Physical device not found");
-    else std::cout << "Physical device found: " << deviceCount << std::endl;
-
     std::vector<VkPhysicalDevice> devices(deviceCount);
     vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
+
     return devices;
+}
+
+std::vector<VkPhysicalDevice> PhysicalDeviceInterface::GetRenderingDevicesList(VkInstance instance, VkSurfaceKHR surface)
+{
+    auto allDevices = GetDevicesList(instance);
+
+    std::vector<VkPhysicalDevice> renderingDevices;
+    for (int i = 0; i < allDevices.size(); i++)
+    {
+        auto device = allDevices.at(i);
+        if (!DoSupportQueueFamilies(device, surface))  continue;
+        if (!DoSupportPhysicalDeviceExtensions(device)) continue;
+        if (!DoSupportSwapChain(device, surface)) continue;
+        renderingDevices.push_back(device);
+    }
+
+    return renderingDevices;
 }
 
 

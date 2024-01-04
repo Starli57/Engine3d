@@ -19,6 +19,14 @@ VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 	VkPhysicalDeviceProperties deviceProperties;
 	vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
 	std::cout << "Rendering GPU: " << deviceProperties.deviceName << std::endl;
+
+	SwapChainDetails details;
+	SwapChainInterface swapchainInterface;
+	swapchainInterface.GetSwapChainColorFormats(physicalDevice, windowSurface, details.formats);
+	swapchainInterface.GetSwapChainPresentModes(physicalDevice, windowSurface, details.presentModes);
+	for (auto colorFormat : details.formats) std::cout << "Available color format: " << colorFormat.format << " color space: " << colorFormat.colorSpace << std::endl;
+	for (auto mode : details.presentModes) std::cout << "Available present mode: " << mode << std::endl;
+	//end
 }
 
 VulkanRenderer::~VulkanRenderer()
