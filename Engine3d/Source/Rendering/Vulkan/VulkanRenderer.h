@@ -5,10 +5,10 @@
 
 #include <vector>
 
-#include "ValidationLayers.h"
-#include "PhysicalDeviceSelector.h"
-#include "LogicalDeviceCreator.h"
-#include "WindowsSurface.h"
+#include "ValidationLayersInterface.h"
+#include "PhysicalDeviceInterface.h"
+#include "LogicalDeviceInterface.h"
+#include "WindowsSurfaceInterface.h"
 
 class VulkanRenderer
 {
@@ -27,10 +27,10 @@ private:
 	VkQueue graphicsQueue;
 	VkQueue presentationQueue;
 
-	ValidationLayers* validationLayers;
-	PhysicalDeviceSelector* physycalDeviceSelector;
-	LogicalDeviceCreator* logicaDeviceCreator;
-	WindowsSurface* windowsSurfaceCreator;
+	ValidationLayersInterface* validationLayersInterface;
+	PhysicalDeviceInterface* physycalDevicesInterface;
+	LogicalDeviceInterface* logicaDeviceInterface;
+	WindowsSurfaceInterface* windowsSurfaceInterface;
 
 
 	void CreateInstance();

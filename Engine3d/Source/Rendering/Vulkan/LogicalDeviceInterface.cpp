@@ -1,16 +1,16 @@
 #include "Pch.h"
-#include "LogicalDeviceCreator.h"
-#include "PhysicalDeviceSelector.h"
-#include "ValidationLayers.h"
+#include "LogicalDeviceInterface.h"
+#include "PhysicalDeviceInterface.h"
+#include "ValidationLayersInterface.h"
 #include "PhysicalDeviceExtensions.h"
 
-VkDevice LogicalDeviceCreator::Create(VkPhysicalDevice physicalDevice, VkSurfaceKHR& windowSurface,
+VkDevice LogicalDeviceInterface::Create(VkPhysicalDevice physicalDevice, VkSurfaceKHR& windowSurface,
 	VkQueue& graphicsQueue, VkQueue& presentationQueue)
 {
-	PhysicalDeviceSelector physicalDeviceSelector;
-	ValidationLayers validationLayers;
+	PhysicalDeviceInterface physicalDeviceInterface;
+	ValidationLayersInterface validationLayers;
 
-	auto queueFamilies = physicalDeviceSelector.GetQueueFamilies(physicalDevice, windowSurface);
+	auto queueFamilies = physicalDeviceInterface.GetQueueFamilies(physicalDevice, windowSurface);
 
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	std::set<uint32_t> uniqueQueueFamilies = 

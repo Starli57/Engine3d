@@ -1,5 +1,5 @@
 #include "Pch.h"
-#include "ValidationLayers.h"
+#include "ValidationLayersInterface.h"
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -8,7 +8,7 @@ const std::vector<const char*> validationLayers = {
 	"VK_LAYER_KHRONOS_validation"
 };
 
-void ValidationLayers::Setup(VkInstanceCreateInfo& createInfo)
+void ValidationLayersInterface::Setup(VkInstanceCreateInfo& createInfo)
 {
 #ifdef DEBUG
 	createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
@@ -19,7 +19,7 @@ void ValidationLayers::Setup(VkInstanceCreateInfo& createInfo)
 #endif
 }
 
-void ValidationLayers::Setup(VkDeviceCreateInfo& createInfo)
+void ValidationLayersInterface::Setup(VkDeviceCreateInfo& createInfo)
 {
 #ifdef DEBUG
 	createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());

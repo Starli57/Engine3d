@@ -1,18 +1,18 @@
 #include "Pch.h"
-#include "PhysicalDeviceSelector.h"
+#include "PhysicalDeviceInterface.h"
 #include "PhysicalDeviceExtensions.h"
 
-PhysicalDeviceSelector::PhysicalDeviceSelector() 
+PhysicalDeviceInterface::PhysicalDeviceInterface()
 {
     swapChainInterface = new SwapChainInterface();
 }
 
-PhysicalDeviceSelector::~PhysicalDeviceSelector()
+PhysicalDeviceInterface::~PhysicalDeviceInterface()
 {
     delete swapChainInterface;
 }
 
-VkPhysicalDevice PhysicalDeviceSelector::GetBestRenderingDevice(VkInstance instance, VkSurfaceKHR surface)
+VkPhysicalDevice PhysicalDeviceInterface::GetBestRenderingDevice(VkInstance instance, VkSurfaceKHR surface)
 {
     auto devices = GetDevicesList(instance);
     
@@ -35,7 +35,7 @@ VkPhysicalDevice PhysicalDeviceSelector::GetBestRenderingDevice(VkInstance insta
     return bestDevice;
 }
 
-std::vector<VkPhysicalDevice> PhysicalDeviceSelector::GetDevicesList(VkInstance instance)
+std::vector<VkPhysicalDevice> PhysicalDeviceInterface::GetDevicesList(VkInstance instance)
 {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -49,7 +49,7 @@ std::vector<VkPhysicalDevice> PhysicalDeviceSelector::GetDevicesList(VkInstance 
 }
 
 
-QueueFamilyIndices PhysicalDeviceSelector::GetQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface)
+QueueFamilyIndices PhysicalDeviceInterface::GetQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface)
 {
     QueueFamilyIndices indices;
 
@@ -74,7 +74,7 @@ QueueFamilyIndices PhysicalDeviceSelector::GetQueueFamilies(VkPhysicalDevice dev
     return indices;
 }
 
-uint64_t PhysicalDeviceSelector::CalculateRenderingScore(VkPhysicalDevice device)
+uint64_t PhysicalDeviceInterface::CalculateRenderingScore(VkPhysicalDevice device)
 {
     //todo: make better score calculation
 
@@ -101,12 +101,12 @@ uint64_t PhysicalDeviceSelector::CalculateRenderingScore(VkPhysicalDevice device
     return discreteMult * totalMemory;
 }
 
-bool PhysicalDeviceSelector::DoSupportQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface)
+bool PhysicalDeviceInterface::DoSupportQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface)
 {
     return GetQueueFamilies(device, surface).isComplete();
 }
 
-bool PhysicalDeviceSelector::DoSupportPhysicalDeviceExtensions(VkPhysicalDevice device)
+bool PhysicalDeviceInterface::DoSupportPhysicalDeviceExtensions(VkPhysicalDevice device)
 {
     uint32_t extensionCount;
     vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
@@ -123,7 +123,7 @@ bool PhysicalDeviceSelector::DoSupportPhysicalDeviceExtensions(VkPhysicalDevice 
     return requiredExtensions.empty();
 }
 
-bool PhysicalDeviceSelector::DoSupportSwapChain(VkPhysicalDevice device, VkSurfaceKHR surface)
+bool PhysicalDeviceInterface::DoSupportSwapChain(VkPhysicalDevice device, VkSurfaceKHR surface)
 {
     return swapChainInterface->DoSupportSwapChain(device, surface);
 }

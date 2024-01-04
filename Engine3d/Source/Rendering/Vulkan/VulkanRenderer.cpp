@@ -5,10 +5,10 @@ VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 {
 	window = glfwWindow;
 
-	validationLayers = new ValidationLayers();
-	physycalDeviceSelector = new PhysicalDeviceSelector();
-	logicaDeviceCreator = new LogicalDeviceCreator();
-	windowsSurfaceCreator = new WindowsSurface();
+	validationLayersInterface = new ValidationLayersInterface();
+	physycalDevicesInterface = new PhysicalDeviceInterface();
+	logicaDeviceInterface = new LogicalDeviceInterface();
+	windowsSurfaceInterface = new WindowsSurfaceInterface();
 
 	CreateInstance();
 	CreateWindowSurface();
@@ -23,10 +23,10 @@ VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 
 VulkanRenderer::~VulkanRenderer()
 {
-	delete windowsSurfaceCreator;
-	delete logicaDeviceCreator;
-	delete physycalDeviceSelector;
-	delete validationLayers;
+	delete windowsSurfaceInterface;
+	delete logicaDeviceInterface;
+	delete physycalDevicesInterface;
+	delete validationLayersInterface;
 
 	vkDestroyDevice(logicalDevice, nullptr);
 	vkDestroySurfaceKHR(instance, windowSurface, nullptr);
@@ -50,7 +50,7 @@ void VulkanRenderer::CreateInstance()
 	auto extensions = GetGLFWRequiredExtensions();
 	createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 	createInfo.ppEnabledExtensionNames = extensions.data();
-	validationLayers->Setup(createInfo);
+	validationLayersInterface->Setup(createInfo);
 
 	VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
 	if (result != VK_SUCCESS) std::cout << "vulkan instance can't be created: " << result << std::endl;//todo: add errors handling
@@ -59,17 +59,17 @@ void VulkanRenderer::CreateInstance()
 
 void VulkanRenderer::SelectPhysicalRenderingDevice()
 {
-	physicalDevice = physycalDeviceSelector->GetBestRenderingDevice(instance, windowSurface);
+	physicalDevice = physycalDevicesInterface->GetBestRenderingDevice(instance, windowSurface);
 }
 
 void VulkanRenderer::CreateLogicalDevice()
 {
-	logicalDevice = logicaDeviceCreator->Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
+	logicalDevice = logicaDeviceInterface->Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
 }
 
 void VulkanRenderer::CreateWindowSurface() 
 {
-	windowSurface = windowsSurfaceCreator->CreateSurface(instance, *window);
+	windowSurface = windowsSurfaceInterface->CreateSurface(instance, *window);
 }
 
 std::vector<const char*> VulkanRenderer::GetGLFWRequiredExtensions()

@@ -1,7 +1,7 @@
 #include "Pch.h"
-#include "WindowsSurface.h"
+#include "WindowsSurfaceInterface.h"
 
-VkSurfaceKHR WindowsSurface::CreateSurface(VkInstance instance, GLFWwindow& window)
+VkSurfaceKHR WindowsSurfaceInterface::CreateSurface(VkInstance instance, GLFWwindow& window)
 {
 	VkSurfaceKHR surface;
 	auto createResult = glfwCreateWindowSurface(instance, &window, nullptr, &surface);

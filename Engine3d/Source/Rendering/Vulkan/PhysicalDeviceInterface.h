@@ -7,11 +7,11 @@
 #include "QueueFamilyIndices.h"
 #include "SwapChainInterface.h"
 
-class PhysicalDeviceSelector
+class PhysicalDeviceInterface
 {
 public:
-	PhysicalDeviceSelector();
-	~PhysicalDeviceSelector();
+	PhysicalDeviceInterface();
+	~PhysicalDeviceInterface();
 
 	VkPhysicalDevice GetBestRenderingDevice(VkInstance instance, VkSurfaceKHR surface);
     std::vector<VkPhysicalDevice> GetDevicesList(VkInstance instance);
