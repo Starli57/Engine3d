@@ -6,14 +6,16 @@ VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 	window = glfwWindow;
 
 	validationLayersInterface = new ValidationLayersInterface();
-	physycalDevicesInterface = new PhysicalDeviceInterface();
+	physicalDevicesInterface = new PhysicalDeviceInterface();
 	logicaDeviceInterface = new LogicalDeviceInterface();
 	windowsSurfaceInterface = new WindowsSurfaceInterface();
+	swapChainInterface = new SwapChainInterface();
 
 	CreateInstance();
 	CreateWindowSurface();
 	SelectPhysicalRenderingDevice();
 	CreateLogicalDevice();
+	CreateSwapChain();
 
 	//todo: delete after tests
 	VkPhysicalDeviceProperties deviceProperties;
@@ -21,9 +23,8 @@ VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 	std::cout << "Rendering GPU: " << deviceProperties.deviceName << std::endl;
 
 	SwapChainDetails details;
-	SwapChainInterface swapchainInterface;
-	swapchainInterface.GetSwapChainColorFormats(physicalDevice, windowSurface, details.formats);
-	swapchainInterface.GetSwapChainPresentModes(physicalDevice, windowSurface, details.presentModes);
+	swapChainInterface->GetSwapChainColorFormats(physicalDevice, windowSurface, details.formats);
+	swapChainInterface->GetSwapChainPresentModes(physicalDevice, windowSurface, details.presentModes);
 	for (auto colorFormat : details.formats) std::cout << "Available color format: " << colorFormat.format << " color space: " << colorFormat.colorSpace << std::endl;
 	for (auto mode : details.presentModes) std::cout << "Available present mode: " << mode << std::endl;
 	//end
@@ -31,11 +32,13 @@ VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 
 VulkanRenderer::~VulkanRenderer()
 {
+	delete swapChainInterface;
 	delete windowsSurfaceInterface;
 	delete logicaDeviceInterface;
-	delete physycalDevicesInterface;
+	delete physicalDevicesInterface;
 	delete validationLayersInterface;
 
+	vkDestroySwapchainKHR(logicalDevice, swapChain, nullptr);
 	vkDestroyDevice(logicalDevice, nullptr);
 	vkDestroySurfaceKHR(instance, windowSurface, nullptr);
 	DestroyInstance();
@@ -67,7 +70,7 @@ void VulkanRenderer::CreateInstance()
 
 void VulkanRenderer::SelectPhysicalRenderingDevice()
 {
-	physicalDevice = physycalDevicesInterface->GetBestRenderingDevice(instance, windowSurface);
+	physicalDevice = physicalDevicesInterface->GetBestRenderingDevice(instance, windowSurface);
 }
 
 void VulkanRenderer::CreateLogicalDevice()
@@ -78,6 +81,12 @@ void VulkanRenderer::CreateLogicalDevice()
 void VulkanRenderer::CreateWindowSurface() 
 {
 	windowSurface = windowsSurfaceInterface->CreateSurface(instance, *window);
+}
+
+void VulkanRenderer::CreateSwapChain()
+{
+	auto physicalDeviceQueueIndices = physicalDevicesInterface->GetQueueFamilies(physicalDevice, windowSurface);
+	swapChain = swapChainInterface->CreateSwapChain(window, physicalDevice, logicalDevice, windowSurface, physicalDeviceQueueIndices);
 }
 
 std::vector<const char*> VulkanRenderer::GetGLFWRequiredExtensions()

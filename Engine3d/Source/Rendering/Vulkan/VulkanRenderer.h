@@ -23,15 +23,16 @@ private:
 	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 	VkDevice logicalDevice;
 	VkSurfaceKHR windowSurface;
-	
+	VkSwapchainKHR swapChain;
+
 	VkQueue graphicsQueue;
 	VkQueue presentationQueue;
 
 	ValidationLayersInterface* validationLayersInterface;
-	PhysicalDeviceInterface* physycalDevicesInterface;
+	PhysicalDeviceInterface* physicalDevicesInterface;
 	LogicalDeviceInterface* logicaDeviceInterface;
 	WindowsSurfaceInterface* windowsSurfaceInterface;
-
+	SwapChainInterface* swapChainInterface;
 
 	void CreateInstance();
 	void DestroyInstance();
@@ -39,6 +40,7 @@ private:
 	void SelectPhysicalRenderingDevice();
 	void CreateLogicalDevice();
 	void CreateWindowSurface();
+	void CreateSwapChain();
 
 	std::vector<const char*> GetGLFWRequiredExtensions();
 };
