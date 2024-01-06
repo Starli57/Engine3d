@@ -6,17 +6,22 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 VulkanSdk = os.getenv("VULKAN_SDK")
 
+Externals = {}
+Externals["Glfw"] = "Externals/GLFW"
+Externals["Glm"] = "Externals/Glm"
+Externals["SpdLog"] = "Externals/SpdLog"
+
 Includes = {}
-Includes["GLFW"] = "Externals/Glfw/include"
-Includes["GLM"] = "Externals/Glm"
-Includes["VULKAN"] = "%{VulkanSdk}/Include"
-Includes["SPDLOG"] = "Externals/SpdLog/include"
+Includes["Glfw"] = "%{Externals.Glfw}/include"
+Includes["Glm"] = "%{Externals.Glm}"
+Includes["Vulkan"] = "%{VulkanSdk}/Include"
+Includes["SpdLog"] = "%{Externals.SpdLog}/include"
 
 LibFolders = {}
-LibFolders["VULKAN"] = "%{VulkanSdk}/Lib"
+LibFolders["Vulkan"] = "%{VulkanSdk}/Lib"
 
 Libs = {}
-Libs["VULKAN"] = "%{LibFolders.VULKAN}/vulkan-1.lib"
+Libs["Vulkan"] = "%{LibFolders.Vulkan}/vulkan-1.lib"
 
 startproject "ExampleProject"
 
@@ -36,10 +41,10 @@ project "ExampleProject"
 
 	includedirs
 	{
-		"%{Includes.GLFW}",
-		"%{Includes.GLM}",
-		"%{Includes.VULKAN}",
-		"%{Includes.SPDLOG}",
+		"%{Includes.Glfw}",
+		"%{Includes.Glm}",
+		"%{Includes.Vulkan}",
+		"%{Includes.SpdLog}",
 		"Engine3d/Source"
 	}
 	
@@ -48,6 +53,11 @@ project "ExampleProject"
 		"Engine3d"
 	}
 	
+	defines
+	{
+		"GLFW_INCLUDE_VULKAN"
+	}
+
 	cppdialect "C++20"
 	staticruntime "On"
 	systemversion "latest"
@@ -91,17 +101,22 @@ project "Engine3d"
 	includedirs
 	{
 		"%{prj.name}/Source",
-		"%{Includes.GLFW}",
-		"%{Includes.GLM}",
-		"%{Includes.VULKAN}",
-		"%{Includes.SPDLOG}"
+		"%{Includes.Glfw}",
+		"%{Includes.Glm}",
+		"%{Includes.Vulkan}",
+		"%{Includes.SpdLog}"
 	}
 
 	links
 	{
-		"GLFW",
-		"GLM",
-		"%{Libs.VULKAN}"
+		"Glfw",
+		"Glm",
+		"%{Libs.Vulkan}"
+	}
+	
+	defines
+	{
+		"GLFW_INCLUDE_VULKAN"
 	}
 	
 	filter "system:windows"
@@ -125,7 +140,7 @@ project "Engine3d"
 	filter "configurations:Release"
 		optimize "On"
 
-project "GLFW"
+project "Glfw"
 	kind "StaticLib"
 	language "C"
 	
@@ -134,8 +149,8 @@ project "GLFW"
 	
 	files
 	{
-		"Externals/Glfw/src/**.h",
-		"Externals/Glfw/src/**.c"
+		"%{Externals.Glfw}/src/**.h",
+		"%{Externals.Glfw}/src/**.c"
 	}
 		
 	systemversion "latest"
@@ -163,7 +178,7 @@ project "GLFW"
 		optimize "on"
 
 		
-project "GLM"
+project "Glm"
 	kind "StaticLib"
 	language "C++"
 	
@@ -172,14 +187,14 @@ project "GLM"
 	
 	files
 	{
-		"%{Includes.GLM}/glm/**.hpp",
-		"%{Includes.GLM}/glm/**.cpp",
-		"%{Includes.GLM}/glm/**.inl"
+		"%{Includes.Glm}/glm/**.hpp",
+		"%{Includes.Glm}/glm/**.cpp",
+		"%{Includes.Glm}/glm/**.inl"
 	}
 
 	includedirs
 	{
-		"%{Includes.GLM}"
+		"%{Includes.Glm}"
 	}
 
 	systemversion "latest"

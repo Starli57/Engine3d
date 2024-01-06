@@ -1,7 +1,6 @@
 #include "Pch.h"
 #include "ValidationLayersInterface.h"
 
-#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
 const std::vector<const char*> validationLayers = {
