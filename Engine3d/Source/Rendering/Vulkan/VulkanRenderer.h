@@ -9,6 +9,7 @@
 #include "PhysicalDeviceInterface.h"
 #include "LogicalDeviceInterface.h"
 #include "WindowsSurfaceInterface.h"
+#include "ImageViewInterface.h"
 
 class VulkanRenderer
 {
@@ -24,7 +25,6 @@ private:
 	VkDevice logicalDevice;
 	VkSurfaceKHR windowSurface;
 	VkSwapchainKHR swapChain;
-
 	VkQueue graphicsQueue;
 	VkQueue presentationQueue;
 
@@ -33,6 +33,7 @@ private:
 	LogicalDeviceInterface* logicaDeviceInterface;
 	WindowsSurfaceInterface* windowsSurfaceInterface;
 	SwapChainInterface* swapChainInterface;
+	ImageViewInterface* imageViewInterface;
 
 	void CreateInstance();
 	void DestroyInstance();
@@ -41,6 +42,7 @@ private:
 	void CreateLogicalDevice();
 	void CreateWindowSurface();
 	void CreateSwapChain();
+	void CreateSwapChainImageViews();
 
 	std::vector<const char*> GetGLFWRequiredExtensions();
 };

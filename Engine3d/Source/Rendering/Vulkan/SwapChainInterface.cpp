@@ -66,6 +66,13 @@ VkSwapchainKHR SwapChainInterface::CreateSwapChain(GLFWwindow* window, VkPhysica
 		throw std::runtime_error("Failed to create swap chain, status: " + createStatus);
 	}
 
+	vkGetSwapchainImagesKHR(logicalDevice, swapChain, &imageCount, nullptr);
+	swapChainImages.resize(imageCount);
+	vkGetSwapchainImagesKHR(logicalDevice, swapChain, &imageCount, swapChainImages.data());
+
+	swapChainImageFormat = surfaceFormat.format;
+	swapChainExtent = extent;
+
 	return swapChain;
 }
 

@@ -2,6 +2,7 @@
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+#include <vector>
 
 #include "SwapChainDetails.h"
 #include "QueueFamilyIndices.h"
@@ -9,7 +10,10 @@
 class SwapChainInterface
 {
 public:
-	
+	std::vector<VkImage> swapChainImages;
+	VkFormat swapChainImageFormat;
+	VkExtent2D swapChainExtent;
+
 	VkSwapchainKHR CreateSwapChain(GLFWwindow* window, VkPhysicalDevice physicalDevice, VkDevice logicalDevice,
 		VkSurfaceKHR surface, QueueFamilyIndices& physicalDeviceQueueIndices);
 

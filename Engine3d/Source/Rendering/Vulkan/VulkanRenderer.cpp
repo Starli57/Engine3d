@@ -10,12 +10,14 @@ VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 	logicaDeviceInterface = new LogicalDeviceInterface();
 	windowsSurfaceInterface = new WindowsSurfaceInterface();
 	swapChainInterface = new SwapChainInterface();
+	imageViewInterface = new ImageViewInterface();
 
 	CreateInstance();
 	CreateWindowSurface();
 	SelectPhysicalRenderingDevice();
 	CreateLogicalDevice();
 	CreateSwapChain();
+	CreateSwapChainImageViews();
 
 	//todo: delete after tests
 	VkPhysicalDeviceProperties deviceProperties;
@@ -32,6 +34,9 @@ VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 
 VulkanRenderer::~VulkanRenderer()
 {
+	imageViewInterface->Dispose(logicalDevice);
+
+	delete imageViewInterface;
 	delete swapChainInterface;
 	delete windowsSurfaceInterface;
 	delete logicaDeviceInterface;
@@ -87,6 +92,11 @@ void VulkanRenderer::CreateSwapChain()
 {
 	auto physicalDeviceQueueIndices = physicalDevicesInterface->GetQueueFamilies(physicalDevice, windowSurface);
 	swapChain = swapChainInterface->CreateSwapChain(window, physicalDevice, logicalDevice, windowSurface, physicalDeviceQueueIndices);
+}
+
+void VulkanRenderer::CreateSwapChainImageViews()
+{
+	imageViewInterface->CreateImageViews(logicalDevice, swapChainInterface->swapChainImages, swapChainInterface->swapChainImageFormat);
 }
 
 std::vector<const char*> VulkanRenderer::GetGLFWRequiredExtensions()
