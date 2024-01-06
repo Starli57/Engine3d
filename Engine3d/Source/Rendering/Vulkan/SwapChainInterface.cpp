@@ -5,6 +5,8 @@
 SwapChainData SwapChainInterface::CreateSwapChain(GLFWwindow* window, VkPhysicalDevice physicalDevice, VkDevice logicalDevice,
 	VkSurfaceKHR surface, QueueFamilyIndices& physicalDeviceQueueIndices)
 {
+	spdlog::info("Create swap chain");
+
 	SwapChainData swapChainData;
 
 	auto details = GetSwapChainDetails(physicalDevice, surface);
@@ -71,6 +73,12 @@ SwapChainData SwapChainInterface::CreateSwapChain(GLFWwindow* window, VkPhysical
 	swapChainData.swapChainExtent = extent;
 
 	return swapChainData;
+}
+
+void SwapChainInterface::DestroySwapChain(VkDevice logicalDevice, SwapChainData& swapChainData)
+{
+	spdlog::info("Dispose swap chain");
+	vkDestroySwapchainKHR(logicalDevice, swapChainData.swapChain, nullptr);
 }
 
 SwapChainDetails SwapChainInterface::GetSwapChainDetails(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)

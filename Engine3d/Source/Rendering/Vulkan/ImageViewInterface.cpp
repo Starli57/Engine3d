@@ -3,6 +3,8 @@
 
 void ImageViewInterface::CreateImageViews(VkDevice logicalDevice, SwapChainData& swapChainData)
 {
+	spdlog::info("Create swap chain image view");
+
 	swapChainData.swapChainImageViews.resize(swapChainData.swapChainImages.size());
 
 	for (size_t i = 0; i < swapChainData.swapChainImages.size(); i++)
@@ -35,6 +37,7 @@ void ImageViewInterface::CreateImageViews(VkDevice logicalDevice, SwapChainData&
 
 void ImageViewInterface::Dispose(VkDevice logicalDevice, SwapChainData& swapChainData)
 {
+	spdlog::info("Dispose swap chain image viewes");
 	for (auto imageView : swapChainData.swapChainImageViews)
 	{
 		vkDestroyImageView(logicalDevice, imageView, nullptr);

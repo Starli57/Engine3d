@@ -7,5 +7,7 @@ class LogicalDeviceInterface
 public:
 	VkDevice Create(VkPhysicalDevice physicalDevice, VkSurfaceKHR& windowSurface,
 		VkQueue& graphicsQueue, VkQueue& presentationQueue);
+
+	void DestroyDevice(VkDevice* logicalDevice);
 };
 

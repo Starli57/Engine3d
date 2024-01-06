@@ -4,6 +4,8 @@
 
 VkPhysicalDevice PhysicalDeviceInterface::GetBestRenderingDevice(VkInstance instance, VkSurfaceKHR surface)
 {
+    spdlog::info("Select physical rendering device");
+
     auto devices = GetRenderingDevicesList(instance, surface);
 
     if (devices.size() == 0) throw std::runtime_error("Physical rendering device not found");
@@ -131,4 +133,27 @@ bool PhysicalDeviceInterface::DoSupportPhysicalDeviceExtensions(VkPhysicalDevice
 bool PhysicalDeviceInterface::DoSupportSwapChain(VkPhysicalDevice device, VkSurfaceKHR surface)
 {
     return SwapChainInterface().DoSupportSwapChain(device, surface);
+}
+
+void PhysicalDeviceInterface::PrintDebugInformation(VkPhysicalDevice physicalDevice, VkSurfaceKHR windowSurface)
+{
+    VkPhysicalDeviceProperties deviceProperties;
+    vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+    spdlog::info("Rendering GPU: {0}", deviceProperties.deviceName);
+
+    SwapChainInterface swapChainInterface;
+    SwapChainDetails details;
+
+    swapChainInterface.GetSwapChainColorFormats(physicalDevice, windowSurface, details.formats);
+    swapChainInterface.GetSwapChainPresentModes(physicalDevice, windowSurface, details.presentModes);
+
+    for (auto colorFormat : details.formats)
+    {
+        spdlog::info("Available color format: {0} color space: {1}", colorFormat.format, colorFormat.colorSpace);
+    }
+
+    for (auto mode : details.presentModes)
+    {
+        spdlog::info("Available present mode: {0}", mode);
+    }
 }

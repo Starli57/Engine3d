@@ -7,6 +7,8 @@
 VkDevice LogicalDeviceInterface::Create(VkPhysicalDevice physicalDevice, VkSurfaceKHR& windowSurface,
 	VkQueue& graphicsQueue, VkQueue& presentationQueue)
 {
+	spdlog::info("Create logical device");
+
 	PhysicalDeviceInterface physicalDeviceInterface;
 	ValidationLayersInterface validationLayers;
 
@@ -55,4 +57,10 @@ VkDevice LogicalDeviceInterface::Create(VkPhysicalDevice physicalDevice, VkSurfa
 	vkGetDeviceQueue(logicalDevice, queueFamilies.presentationFamily.value(), 0, &presentationQueue);
 
 	return logicalDevice;
+}
+
+void LogicalDeviceInterface::DestroyDevice(VkDevice* logicalDevice)
+{
+	spdlog::info("Dispose logical device");
+	vkDestroyDevice(*logicalDevice, nullptr);
 }

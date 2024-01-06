@@ -3,6 +3,8 @@
 
 void InstanceInterface::CreateInstance(VkInstance* instance)
 {
+	spdlog::info("Create Instance");
+
 	VkApplicationInfo appInfo{};
 	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 	appInfo.pApplicationName = "Engine3d";
@@ -28,6 +30,7 @@ void InstanceInterface::CreateInstance(VkInstance* instance)
 
 void InstanceInterface::DestroyInstance(VkInstance* instance)
 {
+	spdlog::info("Dispose instance");
 	vkDestroyInstance(*instance, nullptr);
 }
 

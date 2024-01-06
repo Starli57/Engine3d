@@ -15,6 +15,8 @@ public:
 	VkPhysicalDevice GetBestRenderingDevice(VkInstance instance, VkSurfaceKHR surface);
 	QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
 
+	void PrintDebugInformation(VkPhysicalDevice device, VkSurfaceKHR surface);
+
 private:
 	uint64_t CalculateRenderingScore(VkPhysicalDevice device);
 

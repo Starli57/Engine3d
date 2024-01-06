@@ -6,5 +6,6 @@ class WindowsSurfaceInterface
 {
 public:
 	VkSurfaceKHR CreateSurface(VkInstance instance, GLFWwindow& window);
+	void DestroySurface(VkInstance instance, VkSurfaceKHR* surface);
 };
 
