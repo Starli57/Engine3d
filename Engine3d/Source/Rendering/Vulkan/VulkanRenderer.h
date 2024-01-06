@@ -3,13 +3,16 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include <vector>
+#include <stack>
+#include <functional>
 
 #include "ValidationLayersInterface.h"
 #include "PhysicalDeviceInterface.h"
 #include "LogicalDeviceInterface.h"
 #include "WindowsSurfaceInterface.h"
 #include "ImageViewInterface.h"
+#include "InstanceInterface.h"
+#include "SwapChainData.h"
 
 class VulkanRenderer
 {
@@ -21,29 +24,32 @@ private:
 	GLFWwindow* window;
 
 	VkInstance instance;
-	VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+	VkPhysicalDevice physicalDevice;
 	VkDevice logicalDevice;
 	VkSurfaceKHR windowSurface;
-	VkSwapchainKHR swapChain;
+	SwapChainData swapChainData;
 	VkQueue graphicsQueue;
 	VkQueue presentationQueue;
 
-	ValidationLayersInterface* validationLayersInterface;
-	PhysicalDeviceInterface* physicalDevicesInterface;
-	LogicalDeviceInterface* logicaDeviceInterface;
-	WindowsSurfaceInterface* windowsSurfaceInterface;
-	SwapChainInterface* swapChainInterface;
-	ImageViewInterface* imageViewInterface;
+	std::stack<std::function<void()>> disposeStack;
 
 	void CreateInstance();
-	void DestroyInstance();
+	void DisposeInstance();
 
 	void SelectPhysicalRenderingDevice();
-	void CreateLogicalDevice();
-	void CreateWindowSurface();
-	void CreateSwapChain();
-	void CreateSwapChainImageViews();
 
-	std::vector<const char*> GetGLFWRequiredExtensions();
+	void CreateLogicalDevice();
+	void DisposeLogicalDevice();
+
+	void CreateWindowSurface();
+	void DisposeSurface();
+
+	void CreateSwapChain();
+	void DisposeSwapChain();
+
+	void CreateSwapChainImageViews();
+	void DisposeSwapChainImageViews();
+
+	void DisposeAquiredVulkanResources();
 };
 

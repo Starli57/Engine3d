@@ -46,8 +46,9 @@ VkDevice LogicalDeviceInterface::Create(VkPhysicalDevice physicalDevice, VkSurfa
 
 	VkDevice logicalDevice;
 	auto createStatus = vkCreateDevice(physicalDevice, &createInfo, nullptr, &logicalDevice);
-	if (createStatus != VK_SUCCESS) {
-		std::cout << "failed to create logical device, status: " << createStatus;//todo: add errors handling
+	if (createStatus != VK_SUCCESS) 
+	{
+		throw std::runtime_error("failed to create logical device, status: " + createStatus);
 	}
 
 	vkGetDeviceQueue(logicalDevice, queueFamilies.graphicsFamily.value(), 0, &graphicsQueue);

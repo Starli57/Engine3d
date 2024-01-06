@@ -10,17 +10,13 @@
 class PhysicalDeviceInterface
 {
 public:
-	PhysicalDeviceInterface();
-	~PhysicalDeviceInterface();
+	std::vector<VkPhysicalDevice> GetDevicesList(VkInstance instance);
+	std::vector<VkPhysicalDevice> GetRenderingDevicesList(VkInstance instance, VkSurfaceKHR surface);
 
 	VkPhysicalDevice GetBestRenderingDevice(VkInstance instance, VkSurfaceKHR surface);
-    std::vector<VkPhysicalDevice> GetDevicesList(VkInstance instance);
-	std::vector<VkPhysicalDevice> GetRenderingDevicesList(VkInstance instance, VkSurfaceKHR surface);
 	QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
 
 private:
-	SwapChainInterface* swapChainInterface;
-
 	uint64_t CalculateRenderingScore(VkPhysicalDevice device);
 
 	bool DoSupportQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);

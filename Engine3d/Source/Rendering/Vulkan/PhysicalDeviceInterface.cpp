@@ -2,16 +2,6 @@
 #include "PhysicalDeviceInterface.h"
 #include "PhysicalDeviceExtensions.h"
 
-PhysicalDeviceInterface::PhysicalDeviceInterface()
-{
-    swapChainInterface = new SwapChainInterface();
-}
-
-PhysicalDeviceInterface::~PhysicalDeviceInterface()
-{
-    delete swapChainInterface;
-}
-
 VkPhysicalDevice PhysicalDeviceInterface::GetBestRenderingDevice(VkInstance instance, VkSurfaceKHR surface)
 {
     auto devices = GetRenderingDevicesList(instance, surface);
@@ -140,5 +130,5 @@ bool PhysicalDeviceInterface::DoSupportPhysicalDeviceExtensions(VkPhysicalDevice
 
 bool PhysicalDeviceInterface::DoSupportSwapChain(VkPhysicalDevice device, VkSurfaceKHR surface)
 {
-    return swapChainInterface->DoSupportSwapChain(device, surface);
+    return SwapChainInterface().DoSupportSwapChain(device, surface);
 }

@@ -1,32 +1,36 @@
 #include "Pch.h"
 #include "VulkanRenderer.h"
+#include "../../Architecture/IDisposable.h"
 
 VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 {
 	window = glfwWindow;
 
-	validationLayersInterface = new ValidationLayersInterface();
-	physicalDevicesInterface = new PhysicalDeviceInterface();
-	logicaDeviceInterface = new LogicalDeviceInterface();
-	windowsSurfaceInterface = new WindowsSurfaceInterface();
-	swapChainInterface = new SwapChainInterface();
-	imageViewInterface = new ImageViewInterface();
-
-	CreateInstance();
-	CreateWindowSurface();
-	SelectPhysicalRenderingDevice();
-	CreateLogicalDevice();
-	CreateSwapChain();
-	CreateSwapChainImageViews();
+	try
+	{
+		CreateInstance();
+		CreateWindowSurface();
+		SelectPhysicalRenderingDevice();
+		CreateLogicalDevice();
+		CreateSwapChain();
+		CreateSwapChainImageViews();
+	}
+	catch (const std::exception& e)
+	{
+		//todo show as critical error
+		std::cout << e.what() << std::endl;
+		DisposeAquiredVulkanResources();
+	}
 
 	//todo: delete after tests
 	VkPhysicalDeviceProperties deviceProperties;
 	vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
 	std::cout << "Rendering GPU: " << deviceProperties.deviceName << std::endl;
 
+	SwapChainInterface swapChainInterface;
 	SwapChainDetails details;
-	swapChainInterface->GetSwapChainColorFormats(physicalDevice, windowSurface, details.formats);
-	swapChainInterface->GetSwapChainPresentModes(physicalDevice, windowSurface, details.presentModes);
+	swapChainInterface.GetSwapChainColorFormats(physicalDevice, windowSurface, details.formats);
+	swapChainInterface.GetSwapChainPresentModes(physicalDevice, windowSurface, details.presentModes);
 	for (auto colorFormat : details.formats) std::cout << "Available color format: " << colorFormat.format << " color space: " << colorFormat.colorSpace << std::endl;
 	for (auto mode : details.presentModes) std::cout << "Available present mode: " << mode << std::endl;
 	//end
@@ -34,90 +38,87 @@ VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 
 VulkanRenderer::~VulkanRenderer()
 {
-	imageViewInterface->Dispose(logicalDevice);
-
-	delete imageViewInterface;
-	delete swapChainInterface;
-	delete windowsSurfaceInterface;
-	delete logicaDeviceInterface;
-	delete physicalDevicesInterface;
-	delete validationLayersInterface;
-
-	vkDestroySwapchainKHR(logicalDevice, swapChain, nullptr);
-	vkDestroyDevice(logicalDevice, nullptr);
-	vkDestroySurfaceKHR(instance, windowSurface, nullptr);
-	DestroyInstance();
+	DisposeAquiredVulkanResources();
 }
 
 void VulkanRenderer::CreateInstance()
 {
-	VkApplicationInfo appInfo{};
-	appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-	appInfo.pApplicationName = "Engine3d";
-	appInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.pEngineName = "Engine3d";
-	appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-	appInfo.apiVersion = VK_API_VERSION_1_0;
-
-	VkInstanceCreateInfo createInfo{};
-	createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-	createInfo.pApplicationInfo = &appInfo;
-
-	auto extensions = GetGLFWRequiredExtensions();
-	createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
-	createInfo.ppEnabledExtensionNames = extensions.data();
-	validationLayersInterface->Setup(createInfo);
-
-	VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
-	if (result != VK_SUCCESS) std::cout << "vulkan instance can't be created: " << result << std::endl;//todo: add errors handling
+	std::cout << "Create Instance" << std::endl;
+	InstanceInterface().CreateInstance(&instance);
+	disposeStack.push([this]() { DisposeInstance(); });
 }
 
+void VulkanRenderer::CreateWindowSurface()
+{
+	std::cout << "Create Window Surface" << std::endl;
+	windowSurface = WindowsSurfaceInterface().CreateSurface(instance, *window);
+	disposeStack.push([this]() { DisposeSurface(); });
+}
 
 void VulkanRenderer::SelectPhysicalRenderingDevice()
 {
-	physicalDevice = physicalDevicesInterface->GetBestRenderingDevice(instance, windowSurface);
+	std::cout << "Select physical device" << std::endl;
+	physicalDevice = PhysicalDeviceInterface().GetBestRenderingDevice(instance, windowSurface);
 }
 
 void VulkanRenderer::CreateLogicalDevice()
 {
-	logicalDevice = logicaDeviceInterface->Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
-}
-
-void VulkanRenderer::CreateWindowSurface() 
-{
-	windowSurface = windowsSurfaceInterface->CreateSurface(instance, *window);
+	std::cout << "Create loical device" << std::endl;
+	logicalDevice = LogicalDeviceInterface().Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
+	disposeStack.push([this]() { DisposeLogicalDevice(); });
 }
 
 void VulkanRenderer::CreateSwapChain()
 {
-	auto physicalDeviceQueueIndices = physicalDevicesInterface->GetQueueFamilies(physicalDevice, windowSurface);
-	swapChain = swapChainInterface->CreateSwapChain(window, physicalDevice, logicalDevice, windowSurface, physicalDeviceQueueIndices);
+	std::cout << "Create swap chain" << std::endl;
+	auto queueIndices = PhysicalDeviceInterface().GetQueueFamilies(physicalDevice, windowSurface);
+	swapChainData = SwapChainInterface().CreateSwapChain(window, physicalDevice, logicalDevice, windowSurface, queueIndices);
+	disposeStack.push([this]() { DisposeSwapChain(); });
 }
 
 void VulkanRenderer::CreateSwapChainImageViews()
 {
-	imageViewInterface->CreateImageViews(logicalDevice, swapChainInterface->swapChainImages, swapChainInterface->swapChainImageFormat);
+	std::cout << "Create swap chain image view" << std::endl;
+	ImageViewInterface().CreateImageViews(logicalDevice, swapChainData);
+	disposeStack.push([this]() { DisposeSwapChainImageViews(); });
 }
 
-std::vector<const char*> VulkanRenderer::GetGLFWRequiredExtensions()
+void VulkanRenderer::DisposeAquiredVulkanResources()
 {
-	uint32_t glfwExtensionCount = 0;
-	const char** glfwExtensions;
-	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-	std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
-
-#ifdef DEBUG
-	extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-#endif
-
-	std::cout << "GLFW extesions included: " << extensions.size() << std::endl;
-
-	return extensions;
+	while (!disposeStack.empty())
+	{
+		auto disposable = disposeStack.top();
+		disposable();
+		disposeStack.pop();
+	}
 }
 
-
-void VulkanRenderer::DestroyInstance()
+void VulkanRenderer::DisposeInstance()
 {
-	vkDestroyInstance(instance, nullptr);
+	std::cout << "Dispose instance" << std::endl;
+	InstanceInterface().DestroyInstance(&instance);
+}
+
+void VulkanRenderer::DisposeSurface()
+{
+	std::cout << "Dispose surface" << std::endl;
+	vkDestroySurfaceKHR(instance, windowSurface, nullptr);
+}
+
+void VulkanRenderer::DisposeLogicalDevice()
+{
+	std::cout << "Dispose logical device" << std::endl;
+	vkDestroyDevice(logicalDevice, nullptr);
+}
+
+void VulkanRenderer::DisposeSwapChain()
+{
+	std::cout << "Dispose swap chain" << std::endl;
+	vkDestroySwapchainKHR(logicalDevice, swapChainData.swapChain, nullptr);
+}
+
+void VulkanRenderer::DisposeSwapChainImageViews()
+{
+	std::cout << "Dispose swap chain image viewes" << std::endl;
+	ImageViewInterface().Dispose(logicalDevice, swapChainData);
 }

@@ -1,17 +1,17 @@
 #include "Pch.h"
 #include "ImageViewInterface.h"
 
-void ImageViewInterface::CreateImageViews(VkDevice logicalDevice, std::vector<VkImage>& swapChainImages, VkFormat imageFormat)
+void ImageViewInterface::CreateImageViews(VkDevice logicalDevice, SwapChainData& swapChainData)
 {
-	swapChainImageViews.resize(swapChainImages.size());
+	swapChainData.swapChainImageViews.resize(swapChainData.swapChainImages.size());
 
-	for (size_t i = 0; i < swapChainImages.size(); i++) 
+	for (size_t i = 0; i < swapChainData.swapChainImages.size(); i++)
 	{
 		VkImageViewCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-		createInfo.image = swapChainImages[i];
+		createInfo.image = swapChainData.swapChainImages[i];
 		createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-		createInfo.format = imageFormat;
+		createInfo.format = swapChainData.swapChainImageFormat;
 
 		createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
 		createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -24,18 +24,18 @@ void ImageViewInterface::CreateImageViews(VkDevice logicalDevice, std::vector<Vk
 		createInfo.subresourceRange.baseArrayLayer = 0;
 		createInfo.subresourceRange.layerCount = 1;
 
-		auto createStatus = vkCreateImageView(logicalDevice, &createInfo, nullptr, &swapChainImageViews[i]);
+		auto createStatus = vkCreateImageView(logicalDevice, &createInfo, nullptr, &swapChainData.swapChainImageViews[i]);
 		if (createStatus != VK_SUCCESS)
 		{
-			throw std::runtime_error("Swap chain image view can't be created, status: " + createStatus);//todo: make better errors handling
+			throw std::runtime_error("Swap chain image view can't be created, status: " + createStatus);
 		}
 	}
 
 }
 
-void ImageViewInterface::Dispose(VkDevice logicalDevice)
+void ImageViewInterface::Dispose(VkDevice logicalDevice, SwapChainData& swapChainData)
 {
-	for (auto imageView : swapChainImageViews) 
+	for (auto imageView : swapChainData.swapChainImageViews)
 	{
 		vkDestroyImageView(logicalDevice, imageView, nullptr);
 	}

@@ -2,13 +2,15 @@
 #include "SwapChainInterface.h"
 
 //todo: div to smaller functions
-VkSwapchainKHR SwapChainInterface::CreateSwapChain(GLFWwindow* window, VkPhysicalDevice physicalDevice, VkDevice logicalDevice, 
+SwapChainData SwapChainInterface::CreateSwapChain(GLFWwindow* window, VkPhysicalDevice physicalDevice, VkDevice logicalDevice,
 	VkSurfaceKHR surface, QueueFamilyIndices& physicalDeviceQueueIndices)
 {
+	SwapChainData swapChainData;
+
 	auto details = GetSwapChainDetails(physicalDevice, surface);
 	if (!DoSupportSwapChain(details))
 	{
-		throw std::runtime_error("Swap chains are not supported");//todo: make better error handling
+		throw std::runtime_error("Swap chains are not supported");
 	}
 
 	VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(details.formats);
@@ -58,22 +60,17 @@ VkSwapchainKHR SwapChainInterface::CreateSwapChain(GLFWwindow* window, VkPhysica
 		createInfo.pQueueFamilyIndices = nullptr;
 	}
 
-	VkSwapchainKHR swapChain;
-	auto createStatus = vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &swapChain);
-	if (createStatus != VK_SUCCESS)
-	{
-		//todo: make better errors handling
-		throw std::runtime_error("Failed to create swap chain, status: " + createStatus);
-	}
+	auto createStatus = vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &swapChainData.swapChain);
+	if (createStatus != VK_SUCCESS) throw std::runtime_error("Failed to create swap chain, status: " + createStatus);
 
-	vkGetSwapchainImagesKHR(logicalDevice, swapChain, &imageCount, nullptr);
-	swapChainImages.resize(imageCount);
-	vkGetSwapchainImagesKHR(logicalDevice, swapChain, &imageCount, swapChainImages.data());
+	vkGetSwapchainImagesKHR(logicalDevice, swapChainData.swapChain, &imageCount, nullptr);
+	swapChainData.swapChainImages.resize(imageCount);
+	vkGetSwapchainImagesKHR(logicalDevice, swapChainData.swapChain, &imageCount, swapChainData.swapChainImages.data());
 
-	swapChainImageFormat = surfaceFormat.format;
-	swapChainExtent = extent;
+	swapChainData.swapChainImageFormat = surfaceFormat.format;
+	swapChainData.swapChainExtent = extent;
 
-	return swapChain;
+	return swapChainData;
 }
 
 SwapChainDetails SwapChainInterface::GetSwapChainDetails(VkPhysicalDevice physicalDevice, VkSurfaceKHR surface)

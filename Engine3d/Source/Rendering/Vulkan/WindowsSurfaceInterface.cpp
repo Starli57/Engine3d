@@ -5,6 +5,6 @@ VkSurfaceKHR WindowsSurfaceInterface::CreateSurface(VkInstance instance, GLFWwin
 {
 	VkSurfaceKHR surface;
 	auto createResult = glfwCreateWindowSurface(instance, &window, nullptr, &surface);
-	if (createResult != VK_SUCCESS) std::cout << "Cant't create vulkan window surface, status: " << createResult << std::endl;
+	if (createResult != VK_SUCCESS) throw std::runtime_error("Cant't create vulkan window surface, status: " + createResult);
 	return surface;
 }

@@ -5,5 +5,7 @@
 
 #include <vector>
 #include <set>
+#include <stack>
+#include <queue>
 
 #include <optional>
