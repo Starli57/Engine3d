@@ -10,6 +10,7 @@ Includes = {}
 Includes["GLFW"] = "Externals/Glfw/include"
 Includes["GLM"] = "Externals/Glm"
 Includes["VULKAN"] = "%{VulkanSdk}/Include"
+Includes["SPDLOG"] = "Externals/SpdLog/include"
 
 LibFolders = {}
 LibFolders["VULKAN"] = "%{VulkanSdk}/Lib"
@@ -38,6 +39,7 @@ project "ExampleProject"
 		"%{Includes.GLFW}",
 		"%{Includes.GLM}",
 		"%{Includes.VULKAN}",
+		"%{Includes.SPDLOG}",
 		"Engine3d/Source"
 	}
 	
@@ -91,14 +93,14 @@ project "Engine3d"
 		"%{prj.name}/Source",
 		"%{Includes.GLFW}",
 		"%{Includes.GLM}",
-		"%{Includes.VULKAN}"
+		"%{Includes.VULKAN}",
+		"%{Includes.SPDLOG}"
 	}
 
 	links
 	{
 		"GLFW",
 		"GLM",
-
 		"%{Libs.VULKAN}"
 	}
 	
@@ -182,4 +184,3 @@ project "GLM"
 
 	systemversion "latest"
 	staticruntime "On"
-	

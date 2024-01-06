@@ -1,10 +1,12 @@
 #include "Pch.h"
 #include "VulkanRenderer.h"
-#include "../../Architecture/IDisposable.h"
+#include "spdlog/spdlog.h"
 
 VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 {
 	window = glfwWindow;
+
+	spdlog::info("Welcome to spdlog!");
 
 	try
 	{
@@ -20,6 +22,7 @@ VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 		//todo show as critical error
 		std::cout << e.what() << std::endl;
 		DisposeAquiredVulkanResources();
+		throw e;
 	}
 
 	//todo: delete after tests
@@ -63,7 +66,7 @@ void VulkanRenderer::SelectPhysicalRenderingDevice()
 
 void VulkanRenderer::CreateLogicalDevice()
 {
-	std::cout << "Create loical device" << std::endl;
+	std::cout << "Create logical device" << std::endl;
 	logicalDevice = LogicalDeviceInterface().Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
 	disposeStack.push([this]() { DisposeLogicalDevice(); });
 }
