@@ -3,6 +3,8 @@
 
 Engine::Engine()
 {
+	spdlog::set_pattern("[%^%l%$] %v");
+
 	renderer = new Renderer();
 }
 

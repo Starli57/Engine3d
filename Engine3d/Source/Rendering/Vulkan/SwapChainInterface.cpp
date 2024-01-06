@@ -25,7 +25,7 @@ SwapChainData SwapChainInterface::CreateSwapChain(GLFWwindow* window, VkPhysical
 		imageCount = details.capabilities.maxImageCount;
 	}
 
-	std::cout << "Swap chain images count: " << imageCount << std::endl;
+	spdlog::info("Swap chain images count: {0}", imageCount);
 
 
 	VkSwapchainCreateInfoKHR createInfo{};
@@ -111,12 +111,12 @@ VkSurfaceFormatKHR SwapChainInterface::ChooseSwapSurfaceFormat(const std::vector
 	{
 		if (data.format == VK_FORMAT_R8G8B8A8_SRGB && data.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 		{
-			std::cout << "Choosed color format: " << data.format << std::endl;
+			spdlog::info("Choosed color format: {0}", data.format);
 			return data;
 		}
 	}
 
-	std::cout << "fallback color format: " << availableFormats[0].format << std::endl;
+	spdlog::warn("fallback color format: {0}", availableFormats[0].format);
 	return availableFormats[0];
 }
 
@@ -153,7 +153,7 @@ VkPresentModeKHR SwapChainInterface::ChoosePresentMode(const std::vector<VkPrese
 		}
 	}
 
-	std::cout << "Present mode is not available: " << bestMode << " Fallback mode will be used" << std::endl;
+	spdlog::warn("Present mode is not available: {0} Fallback mode will be used {1}", bestMode, fallback);
 
 	return fallback;
 }

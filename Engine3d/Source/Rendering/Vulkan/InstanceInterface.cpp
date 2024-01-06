@@ -1,7 +1,6 @@
 #include "Pch.h"
 #include "InstanceInterface.h"
 
-
 void InstanceInterface::CreateInstance(VkInstance* instance)
 {
 	VkApplicationInfo appInfo{};
@@ -44,7 +43,7 @@ std::vector<const char*> InstanceInterface::GetGLFWRequiredExtensions()
 	extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 #endif
 
-	std::cout << "GLFW extesions included: " << extensions.size() << std::endl;
+	spdlog::info("GLFW extesions included: {0}", extensions.size());
 
 	return extensions;
 }

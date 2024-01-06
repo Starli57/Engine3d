@@ -1,12 +1,9 @@
 #include "Pch.h"
 #include "VulkanRenderer.h"
-#include "spdlog/spdlog.h"
 
 VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 {
 	window = glfwWindow;
-
-	spdlog::info("Welcome to spdlog!");
 
 	try
 	{
@@ -20,7 +17,7 @@ VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 	catch (const std::exception& e)
 	{
 		//todo show as critical error
-		std::cout << e.what() << std::endl;
+		spdlog::critical(e.what());
 		DisposeAquiredVulkanResources();
 		throw e;
 	}
@@ -28,14 +25,21 @@ VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 	//todo: delete after tests
 	VkPhysicalDeviceProperties deviceProperties;
 	vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
-	std::cout << "Rendering GPU: " << deviceProperties.deviceName << std::endl;
+	spdlog::info("Rendering GPU: {0}", deviceProperties.deviceName);
 
 	SwapChainInterface swapChainInterface;
 	SwapChainDetails details;
 	swapChainInterface.GetSwapChainColorFormats(physicalDevice, windowSurface, details.formats);
 	swapChainInterface.GetSwapChainPresentModes(physicalDevice, windowSurface, details.presentModes);
-	for (auto colorFormat : details.formats) std::cout << "Available color format: " << colorFormat.format << " color space: " << colorFormat.colorSpace << std::endl;
-	for (auto mode : details.presentModes) std::cout << "Available present mode: " << mode << std::endl;
+	for (auto colorFormat : details.formats)
+	{
+		spdlog::info("Available color format: {0} color space: {1}", colorFormat.format, colorFormat.colorSpace);
+	}
+
+	for (auto mode : details.presentModes)
+	{
+		spdlog::info("Available present mode: {0}", mode);
+	}
 	//end
 }
 
@@ -46,34 +50,34 @@ VulkanRenderer::~VulkanRenderer()
 
 void VulkanRenderer::CreateInstance()
 {
-	std::cout << "Create Instance" << std::endl;
+	spdlog::info("Create Instance" );
 	InstanceInterface().CreateInstance(&instance);
 	disposeStack.push([this]() { DisposeInstance(); });
 }
 
 void VulkanRenderer::CreateWindowSurface()
 {
-	std::cout << "Create Window Surface" << std::endl;
+	spdlog::info("Create Window Surface" );
 	windowSurface = WindowsSurfaceInterface().CreateSurface(instance, *window);
 	disposeStack.push([this]() { DisposeSurface(); });
 }
 
 void VulkanRenderer::SelectPhysicalRenderingDevice()
 {
-	std::cout << "Select physical device" << std::endl;
+	spdlog::info("Select physical device" );
 	physicalDevice = PhysicalDeviceInterface().GetBestRenderingDevice(instance, windowSurface);
 }
 
 void VulkanRenderer::CreateLogicalDevice()
 {
-	std::cout << "Create logical device" << std::endl;
+	spdlog::info("Create logical device" );
 	logicalDevice = LogicalDeviceInterface().Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
 	disposeStack.push([this]() { DisposeLogicalDevice(); });
 }
 
 void VulkanRenderer::CreateSwapChain()
 {
-	std::cout << "Create swap chain" << std::endl;
+	spdlog::info("Create swap chain" );
 	auto queueIndices = PhysicalDeviceInterface().GetQueueFamilies(physicalDevice, windowSurface);
 	swapChainData = SwapChainInterface().CreateSwapChain(window, physicalDevice, logicalDevice, windowSurface, queueIndices);
 	disposeStack.push([this]() { DisposeSwapChain(); });
@@ -81,7 +85,7 @@ void VulkanRenderer::CreateSwapChain()
 
 void VulkanRenderer::CreateSwapChainImageViews()
 {
-	std::cout << "Create swap chain image view" << std::endl;
+	spdlog::info("Create swap chain image view" );
 	ImageViewInterface().CreateImageViews(logicalDevice, swapChainData);
 	disposeStack.push([this]() { DisposeSwapChainImageViews(); });
 }
@@ -98,30 +102,30 @@ void VulkanRenderer::DisposeAquiredVulkanResources()
 
 void VulkanRenderer::DisposeInstance()
 {
-	std::cout << "Dispose instance" << std::endl;
+	spdlog::info("Dispose instance" );
 	InstanceInterface().DestroyInstance(&instance);
 }
 
 void VulkanRenderer::DisposeSurface()
 {
-	std::cout << "Dispose surface" << std::endl;
+	spdlog::info("Dispose surface" );
 	vkDestroySurfaceKHR(instance, windowSurface, nullptr);
 }
 
 void VulkanRenderer::DisposeLogicalDevice()
 {
-	std::cout << "Dispose logical device" << std::endl;
+	spdlog::info("Dispose logical device" );
 	vkDestroyDevice(logicalDevice, nullptr);
 }
 
 void VulkanRenderer::DisposeSwapChain()
 {
-	std::cout << "Dispose swap chain" << std::endl;
+	spdlog::info("Dispose swap chain" );
 	vkDestroySwapchainKHR(logicalDevice, swapChainData.swapChain, nullptr);
 }
 
 void VulkanRenderer::DisposeSwapChainImageViews()
 {
-	std::cout << "Dispose swap chain image viewes" << std::endl;
+	spdlog::info("Dispose swap chain image viewes" );
 	ImageViewInterface().Dispose(logicalDevice, swapChainData);
 }

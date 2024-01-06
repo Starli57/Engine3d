@@ -32,5 +32,5 @@ void Renderer::Run()
 		glfwPollEvents();
 	}
 
-	std::cout << "Window closed" << std::endl;
+	spdlog::info("Window closed");
 }

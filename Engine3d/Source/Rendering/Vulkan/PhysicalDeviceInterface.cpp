@@ -7,7 +7,7 @@ VkPhysicalDevice PhysicalDeviceInterface::GetBestRenderingDevice(VkInstance inst
     auto devices = GetRenderingDevicesList(instance, surface);
 
     if (devices.size() == 0) throw std::runtime_error("Physical rendering device not found");
-    else std::cout << "Physical rendering devices found: " << devices.size() << std::endl;
+    else spdlog::info("Physical rendering devices found: {0}", devices.size());
     
     VkPhysicalDevice bestDevice = VK_NULL_HANDLE;
     uint64_t bestScore = 0;
@@ -91,14 +91,14 @@ uint64_t PhysicalDeviceInterface::CalculateRenderingScore(VkPhysicalDevice devic
     vkGetPhysicalDeviceMemoryProperties(device, &memoryProperties);
 
     uint64_t totalMemory = 0;
-    std::cout << "Device: " << deviceProperties.deviceName << std::endl;
+    spdlog::info("Device: {0}", deviceProperties.deviceName);
 
     for (uint32_t i = 0; i < memoryProperties.memoryHeapCount; ++i) 
     {
         auto memoryMb = memoryProperties.memoryHeaps[i].size / (1024 * 1024);
         totalMemory += memoryMb;
 
-        std::cout << i << ": Size=" << memoryMb << " MB" << std::endl;
+        spdlog::info("{0}: Size={1} MB", i, memoryMb);
     }
 
     uint64_t discreteMult = deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 2 : 1;

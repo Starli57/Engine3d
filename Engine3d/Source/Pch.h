@@ -9,3 +9,5 @@
 #include <queue>
 
 #include <optional>
+
+#include "spdlog/spdlog.h"
