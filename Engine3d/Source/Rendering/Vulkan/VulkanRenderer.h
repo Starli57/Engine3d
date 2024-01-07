@@ -12,8 +12,9 @@
 #include "ImageViewInterface.h"
 #include "InstanceInterface.h"
 #include "SwapChainData.h"
+#include "ShaderModuleInterface.h"
 
-#include "../../Architecture/Rollback/Rollback.h"
+#include "Architecture/Rollback/Rollback.h"
 
 class VulkanRenderer
 {
@@ -36,6 +37,9 @@ private:
 	VkQueue graphicsQueue;
 	VkQueue presentationQueue;
 
+	VkShaderModule vertShaderModule;
+	VkShaderModule fragShaderModule;
+
 	void CreateInstance();
 	void DisposeInstance();
 
@@ -52,5 +56,10 @@ private:
 
 	void CreateSwapChainImageViews();
 	void DisposeSwapChainImageViews();
+
+	void CreateGraphicsPipeline();
+
+	void CreateShadersModules();
+	void DisposeShadersModules();
 };
 

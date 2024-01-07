@@ -4,7 +4,7 @@
 
 #include <vector>
 
-struct SwapChainDetails 
+struct SwapChainSurfaceSettings 
 {
     VkSurfaceCapabilitiesKHR capabilities;
     std::vector<VkSurfaceFormatKHR> formats;

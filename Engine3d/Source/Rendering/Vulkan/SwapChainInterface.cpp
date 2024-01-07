@@ -81,15 +81,15 @@ void SwapChainInterface::DestroySwapChain(VkDevice& logicalDevice, SwapChainData
 	vkDestroySwapchainKHR(logicalDevice, swapChainData.swapChain, nullptr);
 }
 
-SwapChainDetails SwapChainInterface::GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const
+SwapChainSurfaceSettings SwapChainInterface::GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const
 {
-	SwapChainDetails details;
-	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &details.capabilities);
+	SwapChainSurfaceSettings surfaceSettigns;
+	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceSettigns.capabilities);
 
-	GetSwapChainColorFormats(physicalDevice, surface, details.formats);
-	GetSwapChainPresentModes(physicalDevice, surface, details.presentModes);
+	GetSwapChainColorFormats(physicalDevice, surface, surfaceSettigns.formats);
+	GetSwapChainPresentModes(physicalDevice, surface, surfaceSettigns.presentModes);
 
-	return details;
+	return surfaceSettigns;
 }
 
 void SwapChainInterface::GetSwapChainColorFormats(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkSurfaceFormatKHR>& formats) const
@@ -166,13 +166,13 @@ VkPresentModeKHR SwapChainInterface::ChoosePresentMode(const std::vector<VkPrese
 	return fallback;
 }
 
-bool SwapChainInterface::DoSupportSwapChain(SwapChainDetails& details) const
+bool SwapChainInterface::DoSupportSwapChain(SwapChainSurfaceSettings& details) const
 {
 	return !details.formats.empty() && !details.presentModes.empty();
 }
 
 bool SwapChainInterface::DoSupportSwapChain(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const
 {
-	SwapChainDetails details = GetSwapChainDetails(physicalDevice, surface);
+	SwapChainSurfaceSettings details = GetSwapChainDetails(physicalDevice, surface);
 	return DoSupportSwapChain(details);
 }

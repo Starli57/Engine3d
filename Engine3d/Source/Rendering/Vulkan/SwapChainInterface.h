@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "SwapChainData.h"
-#include "SwapChainDetails.h"
+#include "SwapChainSurfaceSettings.h"
 #include "QueueFamilyIndices.h"
 
 class SwapChainInterface
@@ -14,11 +14,11 @@ public:
 		VkSurfaceKHR& surface, QueueFamilyIndices& physicalDeviceQueueIndices) const;
 	void DestroySwapChain(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
 
-	SwapChainDetails GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const;
+	SwapChainSurfaceSettings GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const;
 	void GetSwapChainColorFormats(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkSurfaceFormatKHR>& formats) const;
 	void GetSwapChainPresentModes(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkPresentModeKHR>& presentModes) const;
 
-	bool DoSupportSwapChain(SwapChainDetails& details) const;
+	bool DoSupportSwapChain(SwapChainSurfaceSettings& surfaceSettings) const;
 	bool DoSupportSwapChain(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const;
 
 private:

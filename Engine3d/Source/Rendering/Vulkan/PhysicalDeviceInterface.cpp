@@ -142,17 +142,17 @@ void PhysicalDeviceInterface::PrintDebugInformation(VkPhysicalDevice& physicalDe
     spdlog::info("Rendering GPU: {0}", deviceProperties.deviceName);
 
     SwapChainInterface swapChainInterface;
-    SwapChainDetails details;
+    SwapChainSurfaceSettings surfaceSettings;
 
-    swapChainInterface.GetSwapChainColorFormats(physicalDevice, windowSurface, details.formats);
-    swapChainInterface.GetSwapChainPresentModes(physicalDevice, windowSurface, details.presentModes);
+    swapChainInterface.GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
+    swapChainInterface.GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
 
-    for (auto colorFormat : details.formats)
+    for (auto colorFormat : surfaceSettings.formats)
     {
         spdlog::info("Available color format: {0} color space: {1}", colorFormat.format, colorFormat.colorSpace);
     }
 
-    for (auto mode : details.presentModes)
+    for (auto mode : surfaceSettings.presentModes)
     {
         spdlog::info("Available present mode: {0}", mode);
     }

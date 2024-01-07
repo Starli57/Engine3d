@@ -35,3 +35,6 @@ Output/
 *.vcxproj.user
 *.vcxproj.filters
 *.sln
+
+# Built shaders
+*.spv
