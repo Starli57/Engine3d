@@ -13,13 +13,19 @@
 #include "InstanceInterface.h"
 #include "SwapChainData.h"
 
+#include "../../Architecture/Rollback/Rollback.h"
+
 class VulkanRenderer
 {
 public:
-	VulkanRenderer(GLFWwindow* window);
+	VulkanRenderer(GLFWwindow* window, Rollback* vulkanRollback);
 	~VulkanRenderer();
 
+	void Initialize();
+
 private:
+	Rollback* rollback;
+
 	GLFWwindow* window;
 
 	VkInstance instance;
@@ -29,8 +35,6 @@ private:
 	SwapChainData swapChainData;
 	VkQueue graphicsQueue;
 	VkQueue presentationQueue;
-
-	std::stack<std::function<void()>> disposeStack;
 
 	void CreateInstance();
 	void DisposeInstance();
@@ -48,7 +52,5 @@ private:
 
 	void CreateSwapChainImageViews();
 	void DisposeSwapChainImageViews();
-
-	void DisposeAquiredVulkanResources();
 };
 

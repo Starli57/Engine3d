@@ -1,10 +1,19 @@
 #include "Pch.h"
 #include "VulkanRenderer.h"
 
-VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
+VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 {
+	rollback = vulkanRollback;
 	window = glfwWindow;
+}
 
+VulkanRenderer::~VulkanRenderer()
+{
+	rollback->Dispose();
+}
+
+void VulkanRenderer::Initialize() 
+{
 	try
 	{
 		CreateInstance();
@@ -17,26 +26,21 @@ VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow)
 	catch (const std::exception& e)
 	{
 		spdlog::critical(e.what());
-		DisposeAquiredVulkanResources();
+		rollback->Dispose();
 		throw e;
 	}
-}
-
-VulkanRenderer::~VulkanRenderer()
-{
-	DisposeAquiredVulkanResources();
 }
 
 void VulkanRenderer::CreateInstance()
 {
 	InstanceInterface().CreateInstance(instance);
-	disposeStack.push([this]() { DisposeInstance(); });
+	rollback->Add([this]() { DisposeInstance(); });
 }
 
 void VulkanRenderer::CreateWindowSurface()
 {
 	windowSurface = WindowsSurfaceInterface().CreateSurface(instance, *window);
-	disposeStack.push([this]() { DisposeSurface(); });
+	rollback->Add([this]() { DisposeSurface(); });
 }
 
 void VulkanRenderer::SelectPhysicalRenderingDevice()
@@ -49,30 +53,20 @@ void VulkanRenderer::SelectPhysicalRenderingDevice()
 void VulkanRenderer::CreateLogicalDevice()
 {
 	logicalDevice = LogicalDeviceInterface().Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
-	disposeStack.push([this]() { DisposeLogicalDevice(); });
+	rollback->Add([this]() { DisposeLogicalDevice(); });
 }
 
 void VulkanRenderer::CreateSwapChain()
 {
 	auto queueIndices = PhysicalDeviceInterface().GetQueueFamilies(physicalDevice, windowSurface);
 	swapChainData = SwapChainInterface().CreateSwapChain(*window, physicalDevice, logicalDevice, windowSurface, queueIndices);
-	disposeStack.push([this]() { DisposeSwapChain(); });
+	rollback->Add([this]() { DisposeSwapChain(); });
 }
 
 void VulkanRenderer::CreateSwapChainImageViews()
 {
 	ImageViewInterface().CreateImageViews(logicalDevice, swapChainData);
-	disposeStack.push([this]() { DisposeSwapChainImageViews(); });
-}
-
-void VulkanRenderer::DisposeAquiredVulkanResources()
-{
-	while (!disposeStack.empty())
-	{
-		auto disposable = disposeStack.top();
-		disposable();
-		disposeStack.pop();
-	}
+	rollback->Add([this]() { DisposeSwapChainImageViews(); });
 }
 
 void VulkanRenderer::DisposeInstance()
