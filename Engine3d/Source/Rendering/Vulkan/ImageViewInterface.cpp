@@ -1,7 +1,7 @@
 #include "Pch.h"
 #include "ImageViewInterface.h"
 
-void ImageViewInterface::CreateImageViews(VkDevice logicalDevice, SwapChainData& swapChainData)
+void ImageViewInterface::CreateImageViews(VkDevice& logicalDevice, SwapChainData& swapChainData) const
 {
 	spdlog::info("Create swap chain image view");
 
@@ -35,7 +35,7 @@ void ImageViewInterface::CreateImageViews(VkDevice logicalDevice, SwapChainData&
 
 }
 
-void ImageViewInterface::Dispose(VkDevice logicalDevice, SwapChainData& swapChainData)
+void ImageViewInterface::Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const
 {
 	spdlog::info("Dispose swap chain image viewes");
 	for (auto imageView : swapChainData.swapChainImageViews)

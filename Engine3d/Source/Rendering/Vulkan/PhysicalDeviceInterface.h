@@ -9,19 +9,19 @@
 class PhysicalDeviceInterface
 {
 public:
-	std::vector<VkPhysicalDevice> GetDevicesList(VkInstance instance);
-	std::vector<VkPhysicalDevice> GetRenderingDevicesList(VkInstance instance, VkSurfaceKHR surface);
+	std::vector<VkPhysicalDevice> GetDevicesList(VkInstance& instance) const;
+	std::vector<VkPhysicalDevice> GetRenderingDevicesList(VkInstance& instance, VkSurfaceKHR& surface) const;
 
-	VkPhysicalDevice GetBestRenderingDevice(VkInstance instance, VkSurfaceKHR surface);
-	QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
+	VkPhysicalDevice GetBestRenderingDevice(VkInstance& instance, VkSurfaceKHR& surface) const;
+	QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface) const;
 
-	void PrintDebugInformation(VkPhysicalDevice device, VkSurfaceKHR surface);
+	void PrintDebugInformation(VkPhysicalDevice& device, VkSurfaceKHR& surface) const;
 
 private:
-	uint64_t CalculateRenderingScore(VkPhysicalDevice device);
+	uint64_t CalculateRenderingScore(VkPhysicalDevice& device) const;
 
-	bool DoSupportQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface);
-	bool DoSupportPhysicalDeviceExtensions(VkPhysicalDevice device);
-	bool DoSupportSwapChain(VkPhysicalDevice device, VkSurfaceKHR surface);
+	bool DoSupportQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface) const;
+	bool DoSupportPhysicalDeviceExtensions(VkPhysicalDevice& device) const;
+	bool DoSupportSwapChain(VkPhysicalDevice& device, VkSurfaceKHR& surface) const;
 };
 

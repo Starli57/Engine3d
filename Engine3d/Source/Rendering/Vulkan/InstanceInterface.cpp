@@ -1,7 +1,7 @@
 #include "Pch.h"
 #include "InstanceInterface.h"
 
-void InstanceInterface::CreateInstance(VkInstance* instance)
+void InstanceInterface::CreateInstance(VkInstance& instance) const
 {
 	spdlog::info("Create Instance");
 
@@ -24,17 +24,17 @@ void InstanceInterface::CreateInstance(VkInstance* instance)
 	ValidationLayersInterface validation;
 	validation.Setup(createInfo);
 
-	VkResult result = vkCreateInstance(&createInfo, nullptr, instance);
+	VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
 	if (result != VK_SUCCESS) throw std::runtime_error("vulkan instance can't be created: " + result);
 }
 
-void InstanceInterface::DestroyInstance(VkInstance* instance)
+void InstanceInterface::DestroyInstance(VkInstance& instance) const
 {
 	spdlog::info("Dispose instance");
-	vkDestroyInstance(*instance, nullptr);
+	vkDestroyInstance(instance, nullptr);
 }
 
-std::vector<const char*> InstanceInterface::GetGLFWRequiredExtensions()
+std::vector<const char*> InstanceInterface::GetGLFWRequiredExtensions() const
 {
 	uint32_t glfwExtensionCount = 0;
 	const char** glfwExtensions;

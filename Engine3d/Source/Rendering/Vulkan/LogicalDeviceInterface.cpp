@@ -4,8 +4,8 @@
 #include "ValidationLayersInterface.h"
 #include "PhysicalDeviceExtensions.h"
 
-VkDevice LogicalDeviceInterface::Create(VkPhysicalDevice physicalDevice, VkSurfaceKHR& windowSurface,
-	VkQueue& graphicsQueue, VkQueue& presentationQueue)
+VkDevice LogicalDeviceInterface::Create(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface,
+	VkQueue& graphicsQueue, VkQueue& presentationQueue) const
 {
 	spdlog::info("Create logical device");
 
@@ -59,8 +59,8 @@ VkDevice LogicalDeviceInterface::Create(VkPhysicalDevice physicalDevice, VkSurfa
 	return logicalDevice;
 }
 
-void LogicalDeviceInterface::DestroyDevice(VkDevice* logicalDevice)
+void LogicalDeviceInterface::DestroyDevice(VkDevice& logicalDevice) const
 {
 	spdlog::info("Dispose logical device");
-	vkDestroyDevice(*logicalDevice, nullptr);
+	vkDestroyDevice(logicalDevice, nullptr);
 }

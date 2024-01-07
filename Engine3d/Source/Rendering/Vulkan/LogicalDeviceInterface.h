@@ -5,9 +5,9 @@
 class LogicalDeviceInterface
 {
 public:
-	VkDevice Create(VkPhysicalDevice physicalDevice, VkSurfaceKHR& windowSurface,
-		VkQueue& graphicsQueue, VkQueue& presentationQueue);
+	VkDevice Create(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface,
+		VkQueue& graphicsQueue, VkQueue& presentationQueue) const;
 
-	void DestroyDevice(VkDevice* logicalDevice);
+	void DestroyDevice(VkDevice& logicalDevice) const;
 };
 

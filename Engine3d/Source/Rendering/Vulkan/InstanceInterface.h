@@ -8,10 +8,10 @@
 class InstanceInterface
 {
 public:
-	void CreateInstance(VkInstance* instance);
-	void DestroyInstance(VkInstance* instance);
+	void CreateInstance(VkInstance& instance) const;
+	void DestroyInstance(VkInstance& instance) const;
 
 private:
-	std::vector<const char*> GetGLFWRequiredExtensions();
+	std::vector<const char*> GetGLFWRequiredExtensions() const;
 };
 

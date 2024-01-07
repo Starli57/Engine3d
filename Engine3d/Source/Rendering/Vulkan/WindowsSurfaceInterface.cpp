@@ -1,7 +1,7 @@
 #include "Pch.h"
 #include "WindowsSurfaceInterface.h"
 
-VkSurfaceKHR WindowsSurfaceInterface::CreateSurface(VkInstance instance, GLFWwindow& window)
+VkSurfaceKHR WindowsSurfaceInterface::CreateSurface(VkInstance& instance, GLFWwindow& window) const
 {
 	spdlog::info("Create Window Surface");
 
@@ -11,8 +11,8 @@ VkSurfaceKHR WindowsSurfaceInterface::CreateSurface(VkInstance instance, GLFWwin
 	return surface;
 }
 
-void WindowsSurfaceInterface::DestroySurface(VkInstance instance, VkSurfaceKHR* surface)
+void WindowsSurfaceInterface::DestroySurface(VkInstance& instance, VkSurfaceKHR& surface) const
 {
 	spdlog::info("Dispose surface");
-	vkDestroySurfaceKHR(instance, *surface, nullptr);
+	vkDestroySurfaceKHR(instance, surface, nullptr);
 }

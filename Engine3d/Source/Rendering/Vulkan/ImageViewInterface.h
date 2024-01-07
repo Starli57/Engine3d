@@ -7,7 +7,7 @@
 class ImageViewInterface
 {
 public:
-	void CreateImageViews(VkDevice logicalDevice, SwapChainData& swapChainData);
-	void Dispose(VkDevice logicalDevice, SwapChainData& swapChainData);
+	void CreateImageViews(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
+	void Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
 };
 

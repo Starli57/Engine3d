@@ -29,7 +29,7 @@ VulkanRenderer::~VulkanRenderer()
 
 void VulkanRenderer::CreateInstance()
 {
-	InstanceInterface().CreateInstance(&instance);
+	InstanceInterface().CreateInstance(instance);
 	disposeStack.push([this]() { DisposeInstance(); });
 }
 
@@ -55,7 +55,7 @@ void VulkanRenderer::CreateLogicalDevice()
 void VulkanRenderer::CreateSwapChain()
 {
 	auto queueIndices = PhysicalDeviceInterface().GetQueueFamilies(physicalDevice, windowSurface);
-	swapChainData = SwapChainInterface().CreateSwapChain(window, physicalDevice, logicalDevice, windowSurface, queueIndices);
+	swapChainData = SwapChainInterface().CreateSwapChain(*window, physicalDevice, logicalDevice, windowSurface, queueIndices);
 	disposeStack.push([this]() { DisposeSwapChain(); });
 }
 
@@ -77,17 +77,17 @@ void VulkanRenderer::DisposeAquiredVulkanResources()
 
 void VulkanRenderer::DisposeInstance()
 {
-	InstanceInterface().DestroyInstance(&instance);
+	InstanceInterface().DestroyInstance(instance);
 }
 
 void VulkanRenderer::DisposeSurface()
 {
-	WindowsSurfaceInterface().DestroySurface(instance, &windowSurface);
+	WindowsSurfaceInterface().DestroySurface(instance, windowSurface);
 }
 
 void VulkanRenderer::DisposeLogicalDevice()
 {
-	LogicalDeviceInterface().DestroyDevice(&logicalDevice);
+	LogicalDeviceInterface().DestroyDevice(logicalDevice);
 }
 
 void VulkanRenderer::DisposeSwapChain()
