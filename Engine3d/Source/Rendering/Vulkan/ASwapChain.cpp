@@ -1,8 +1,8 @@
 #include "Pch.h"
-#include "SwapChainInterface.h"
+#include "ASwapChain.h"
 
 //todo: div to smaller functions
-SwapChainData SwapChainInterface::CreateSwapChain(GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
+SwapChainData ASwapChain::Create(GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
 	VkSurfaceKHR& surface, QueueFamilyIndices& physicalDeviceQueueIndices) const
 {
 	spdlog::info("Create swap chain");
@@ -75,13 +75,13 @@ SwapChainData SwapChainInterface::CreateSwapChain(GLFWwindow& window, VkPhysical
 	return swapChainData;
 }
 
-void SwapChainInterface::DestroySwapChain(VkDevice& logicalDevice, SwapChainData& swapChainData) const
+void ASwapChain::Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const
 {
 	spdlog::info("Dispose swap chain");
 	vkDestroySwapchainKHR(logicalDevice, swapChainData.swapChain, nullptr);
 }
 
-SwapChainSurfaceSettings SwapChainInterface::GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const
+SwapChainSurfaceSettings ASwapChain::GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const
 {
 	SwapChainSurfaceSettings surfaceSettigns;
 	vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceSettigns.capabilities);
@@ -92,7 +92,7 @@ SwapChainSurfaceSettings SwapChainInterface::GetSwapChainDetails(VkPhysicalDevic
 	return surfaceSettigns;
 }
 
-void SwapChainInterface::GetSwapChainColorFormats(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkSurfaceFormatKHR>& formats) const
+void ASwapChain::GetSwapChainColorFormats(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkSurfaceFormatKHR>& formats) const
 {
 	uint32_t formatCount;
 	vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, nullptr);
@@ -101,7 +101,7 @@ void SwapChainInterface::GetSwapChainColorFormats(VkPhysicalDevice& physicalDevi
 	vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, formats.data());
 }
 
-void SwapChainInterface::GetSwapChainPresentModes(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkPresentModeKHR>& presentModes) const
+void ASwapChain::GetSwapChainPresentModes(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkPresentModeKHR>& presentModes) const
 {
 	uint32_t presentModeCount;
 	vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, nullptr);
@@ -111,7 +111,7 @@ void SwapChainInterface::GetSwapChainPresentModes(VkPhysicalDevice& physicalDevi
 
 }
 
-VkSurfaceFormatKHR SwapChainInterface::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) const
+VkSurfaceFormatKHR ASwapChain::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) const
 {
 	//todo: chose format by player settings or most often used
 
@@ -128,7 +128,7 @@ VkSurfaceFormatKHR SwapChainInterface::ChooseSwapSurfaceFormat(const std::vector
 	return availableFormats[0];
 }
 
-VkExtent2D SwapChainInterface::ChooseSwapExtent(GLFWwindow& window, const VkSurfaceCapabilitiesKHR& capabilities) const
+VkExtent2D ASwapChain::ChooseSwapExtent(GLFWwindow& window, const VkSurfaceCapabilitiesKHR& capabilities) const
 {
 	if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
 		return capabilities.currentExtent;
@@ -148,7 +148,7 @@ VkExtent2D SwapChainInterface::ChooseSwapExtent(GLFWwindow& window, const VkSurf
 	return actualExtent;
 }
 
-VkPresentModeKHR SwapChainInterface::ChoosePresentMode(const std::vector<VkPresentModeKHR>& availableModes) const
+VkPresentModeKHR ASwapChain::ChoosePresentMode(const std::vector<VkPresentModeKHR>& availableModes) const
 {
 	VkPresentModeKHR bestMode = VK_PRESENT_MODE_MAILBOX_KHR;
 	VkPresentModeKHR fallback = VK_PRESENT_MODE_FIFO_KHR;
@@ -166,12 +166,12 @@ VkPresentModeKHR SwapChainInterface::ChoosePresentMode(const std::vector<VkPrese
 	return fallback;
 }
 
-bool SwapChainInterface::DoSupportSwapChain(SwapChainSurfaceSettings& details) const
+bool ASwapChain::DoSupportSwapChain(SwapChainSurfaceSettings& details) const
 {
 	return !details.formats.empty() && !details.presentModes.empty();
 }
 
-bool SwapChainInterface::DoSupportSwapChain(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const
+bool ASwapChain::DoSupportSwapChain(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const
 {
 	SwapChainSurfaceSettings details = GetSwapChainDetails(physicalDevice, surface);
 	return DoSupportSwapChain(details);

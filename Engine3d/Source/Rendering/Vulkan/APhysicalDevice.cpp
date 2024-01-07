@@ -1,8 +1,8 @@
 #include "Pch.h"
-#include "PhysicalDeviceInterface.h"
+#include "APhysicalDevice.h"
 #include "PhysicalDeviceExtensions.h"
 
-VkPhysicalDevice PhysicalDeviceInterface::GetBestRenderingDevice(VkInstance& instance, VkSurfaceKHR& surface) const
+VkPhysicalDevice APhysicalDevice::GetBestRenderingDevice(VkInstance& instance, VkSurfaceKHR& surface) const
 {
     spdlog::info("Select physical rendering device");
 
@@ -27,7 +27,7 @@ VkPhysicalDevice PhysicalDeviceInterface::GetBestRenderingDevice(VkInstance& ins
     return bestDevice;
 }
 
-std::vector<VkPhysicalDevice> PhysicalDeviceInterface::GetDevicesList(VkInstance& instance) const
+std::vector<VkPhysicalDevice> APhysicalDevice::GetDevicesList(VkInstance& instance) const
 {
     uint32_t deviceCount = 0;
     vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -38,7 +38,7 @@ std::vector<VkPhysicalDevice> PhysicalDeviceInterface::GetDevicesList(VkInstance
     return devices;
 }
 
-std::vector<VkPhysicalDevice> PhysicalDeviceInterface::GetRenderingDevicesList(VkInstance& instance, VkSurfaceKHR& surface) const
+std::vector<VkPhysicalDevice> APhysicalDevice::GetRenderingDevicesList(VkInstance& instance, VkSurfaceKHR& surface) const
 {
     auto allDevices = GetDevicesList(instance);
 
@@ -56,7 +56,7 @@ std::vector<VkPhysicalDevice> PhysicalDeviceInterface::GetRenderingDevicesList(V
 }
 
 
-QueueFamilyIndices PhysicalDeviceInterface::GetQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface) const
+QueueFamilyIndices APhysicalDevice::GetQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface) const
 {
     QueueFamilyIndices indices;
 
@@ -81,7 +81,7 @@ QueueFamilyIndices PhysicalDeviceInterface::GetQueueFamilies(VkPhysicalDevice& d
     return indices;
 }
 
-uint64_t PhysicalDeviceInterface::CalculateRenderingScore(VkPhysicalDevice& device) const
+uint64_t APhysicalDevice::CalculateRenderingScore(VkPhysicalDevice& device) const
 {
     //todo: make better score calculation
 
@@ -108,12 +108,12 @@ uint64_t PhysicalDeviceInterface::CalculateRenderingScore(VkPhysicalDevice& devi
     return discreteMult * totalMemory;
 }
 
-bool PhysicalDeviceInterface::DoSupportQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface) const
+bool APhysicalDevice::DoSupportQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface) const
 {
     return GetQueueFamilies(device, surface).isComplete();
 }
 
-bool PhysicalDeviceInterface::DoSupportPhysicalDeviceExtensions(VkPhysicalDevice& device) const
+bool APhysicalDevice::DoSupportPhysicalDeviceExtensions(VkPhysicalDevice& device) const
 {
     uint32_t extensionCount;
     vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
@@ -130,22 +130,22 @@ bool PhysicalDeviceInterface::DoSupportPhysicalDeviceExtensions(VkPhysicalDevice
     return requiredExtensions.empty();
 }
 
-bool PhysicalDeviceInterface::DoSupportSwapChain(VkPhysicalDevice& device, VkSurfaceKHR& surface) const
+bool APhysicalDevice::DoSupportSwapChain(VkPhysicalDevice& device, VkSurfaceKHR& surface) const
 {
-    return SwapChainInterface().DoSupportSwapChain(device, surface);
+    return ASwapChain().DoSupportSwapChain(device, surface);
 }
 
-void PhysicalDeviceInterface::PrintDebugInformation(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface) const
+void APhysicalDevice::PrintDebugInformation(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface) const
 {
     VkPhysicalDeviceProperties deviceProperties;
     vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
     spdlog::info("Rendering GPU: {0}", deviceProperties.deviceName);
 
-    SwapChainInterface swapChainInterface;
+    ASwapChain ASwapChain;
     SwapChainSurfaceSettings surfaceSettings;
 
-    swapChainInterface.GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
-    swapChainInterface.GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
+    ASwapChain.GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
+    ASwapChain.GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
 
     for (auto colorFormat : surfaceSettings.formats)
     {

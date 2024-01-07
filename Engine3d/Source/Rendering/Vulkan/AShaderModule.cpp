@@ -1,7 +1,7 @@
 #include "Pch.h"
-#include "ShaderModuleInterface.h"
+#include "AShaderModule.h"
 
-VkShaderModule ShaderModuleInterface::Create(VkDevice& logicalDevice, const std::vector<char>& shader) const
+VkShaderModule AShaderModule::Create(VkDevice& logicalDevice, const std::vector<char>& shader) const
 {
 	VkShaderModuleCreateInfo createInfo{};
 	createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -19,7 +19,7 @@ VkShaderModule ShaderModuleInterface::Create(VkDevice& logicalDevice, const std:
 	return shaderModule;
 }
 
-void ShaderModuleInterface::Destroy(VkDevice& logicalDevice, VkShaderModule& shaderModule) const
+void AShaderModule::Dispose(VkDevice& logicalDevice, VkShaderModule& shaderModule) const
 {
 	vkDestroyShaderModule(logicalDevice, shaderModule, nullptr);
 }

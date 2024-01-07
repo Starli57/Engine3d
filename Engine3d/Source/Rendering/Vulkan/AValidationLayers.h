@@ -3,7 +3,7 @@
 struct VkInstanceCreateInfo;
 struct VkDeviceCreateInfo;
 
-class ValidationLayersInterface
+class AValidationLayers
 {
 public:
 	void Setup(VkInstanceCreateInfo& createInfo);

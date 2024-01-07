@@ -1,18 +1,18 @@
 #include "Pch.h"
-#include "LogicalDeviceInterface.h"
-#include "PhysicalDeviceInterface.h"
-#include "ValidationLayersInterface.h"
+#include "ALogicalDevice.h"
+#include "APhysicalDevice.h"
+#include "AValidationLayers.h"
 #include "PhysicalDeviceExtensions.h"
 
-VkDevice LogicalDeviceInterface::Create(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface,
+VkDevice ALogicalDevice::Create(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface,
 	VkQueue& graphicsQueue, VkQueue& presentationQueue) const
 {
 	spdlog::info("Create logical device");
 
-	PhysicalDeviceInterface physicalDeviceInterface;
-	ValidationLayersInterface validationLayers;
+	APhysicalDevice APhysicalDevice;
+	AValidationLayers validationLayers;
 
-	auto queueFamilies = physicalDeviceInterface.GetQueueFamilies(physicalDevice, windowSurface);
+	auto queueFamilies = APhysicalDevice.GetQueueFamilies(physicalDevice, windowSurface);
 
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 	std::set<uint32_t> uniqueQueueFamilies = 
@@ -59,7 +59,7 @@ VkDevice LogicalDeviceInterface::Create(VkPhysicalDevice& physicalDevice, VkSurf
 	return logicalDevice;
 }
 
-void LogicalDeviceInterface::DestroyDevice(VkDevice& logicalDevice) const
+void ALogicalDevice::Dispose(VkDevice& logicalDevice) const
 {
 	spdlog::info("Dispose logical device");
 	vkDestroyDevice(logicalDevice, nullptr);

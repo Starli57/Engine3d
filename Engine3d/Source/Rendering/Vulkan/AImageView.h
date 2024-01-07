@@ -4,10 +4,10 @@
 
 #include "SwapChainData.h"
 
-class ImageViewInterface
+class AImageView
 {
 public:
-	void CreateImageViews(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
+	void Create(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
 	void Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
 };
 

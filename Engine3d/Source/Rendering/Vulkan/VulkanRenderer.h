@@ -5,14 +5,14 @@
 #include <stack>
 #include <functional>
 
-#include "ValidationLayersInterface.h"
-#include "PhysicalDeviceInterface.h"
-#include "LogicalDeviceInterface.h"
-#include "WindowsSurfaceInterface.h"
-#include "ImageViewInterface.h"
-#include "InstanceInterface.h"
+#include "AValidationLayers.h"
+#include "APhysicalDevice.h"
+#include "ALogicalDevice.h"
+#include "AWindowsSurface.h"
+#include "AInstance.h"
+#include "AImageView.h"
 #include "SwapChainData.h"
-#include "ShaderModuleInterface.h"
+#include "AShaderModule.h"
 
 #include "Architecture/Rollback/Rollback.h"
 

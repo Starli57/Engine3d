@@ -7,12 +7,12 @@
 #include "SwapChainSurfaceSettings.h"
 #include "QueueFamilyIndices.h"
 
-class SwapChainInterface
+class ASwapChain
 {
 public:
-	SwapChainData CreateSwapChain(GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
+	SwapChainData Create(GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
 		VkSurfaceKHR& surface, QueueFamilyIndices& physicalDeviceQueueIndices) const;
-	void DestroySwapChain(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
+	void Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
 
 	SwapChainSurfaceSettings GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const;
 	void GetSwapChainColorFormats(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkSurfaceFormatKHR>& formats) const;

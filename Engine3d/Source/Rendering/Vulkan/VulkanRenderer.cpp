@@ -35,65 +35,65 @@ void VulkanRenderer::Initialize()
 
 void VulkanRenderer::CreateInstance()
 {
-	InstanceInterface().CreateInstance(instance);
+	AInstance().Create(instance);
 	rollback->Add([this]() { DisposeInstance(); });
 }
 
 void VulkanRenderer::CreateWindowSurface()
 {
-	windowSurface = WindowsSurfaceInterface().CreateSurface(instance, *window);
+	windowSurface = AWindowsSurface().Create(instance, *window);
 	rollback->Add([this]() { DisposeSurface(); });
 }
 
 void VulkanRenderer::SelectPhysicalRenderingDevice()
 {
-	PhysicalDeviceInterface pdInterface;
+	APhysicalDevice pdInterface;
 	physicalDevice = pdInterface.GetBestRenderingDevice(instance, windowSurface);
 	pdInterface.PrintDebugInformation(physicalDevice, windowSurface);
 }
 
 void VulkanRenderer::CreateLogicalDevice()
 {
-	logicalDevice = LogicalDeviceInterface().Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
+	logicalDevice = ALogicalDevice().Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
 	rollback->Add([this]() { DisposeLogicalDevice(); });
 }
 
 void VulkanRenderer::CreateSwapChain()
 {
-	auto queueIndices = PhysicalDeviceInterface().GetQueueFamilies(physicalDevice, windowSurface);
-	swapChainData = SwapChainInterface().CreateSwapChain(*window, physicalDevice, logicalDevice, windowSurface, queueIndices);
+	auto queueIndices = APhysicalDevice().GetQueueFamilies(physicalDevice, windowSurface);
+	swapChainData = ASwapChain().Create(*window, physicalDevice, logicalDevice, windowSurface, queueIndices);
 	rollback->Add([this]() { DisposeSwapChain(); });
 }
 
 void VulkanRenderer::CreateSwapChainImageViews()
 {
-	ImageViewInterface().CreateImageViews(logicalDevice, swapChainData);
+	AImageView().Create(logicalDevice, swapChainData);
 	rollback->Add([this]() { DisposeSwapChainImageViews(); });
 }
 
 void VulkanRenderer::DisposeInstance()
 {
-	InstanceInterface().DestroyInstance(instance);
+	AInstance().Dispose(instance);
 }
 
 void VulkanRenderer::DisposeSurface()
 {
-	WindowsSurfaceInterface().DestroySurface(instance, windowSurface);
+	AWindowsSurface().Dispose(instance, windowSurface);
 }
 
 void VulkanRenderer::DisposeLogicalDevice()
 {
-	LogicalDeviceInterface().DestroyDevice(logicalDevice);
+	ALogicalDevice().Dispose(logicalDevice);
 }
 
 void VulkanRenderer::DisposeSwapChain()
 {
-	SwapChainInterface().DestroySwapChain(logicalDevice, swapChainData);
+	ASwapChain().Dispose(logicalDevice, swapChainData);
 }
 
 void VulkanRenderer::DisposeSwapChainImageViews()
 {
-	ImageViewInterface().Dispose(logicalDevice, swapChainData);
+	AImageView().Dispose(logicalDevice, swapChainData);
 }
 
 void VulkanRenderer::CreateGraphicsPipeline()
@@ -105,7 +105,7 @@ void VulkanRenderer::CreateGraphicsPipeline()
 void VulkanRenderer::CreateShadersModules()
 {
 	IOUtility utilities;
-	ShaderModuleInterface shaderModule;
+	AShaderModule shaderModule;
 
 	spdlog::info("Create vert shader module");
 	const std::vector<char>& vertShaderCode = utilities.ReadFile("../Engine3d/Source/Rendering/Shaders/vert.spv");
@@ -133,7 +133,7 @@ void VulkanRenderer::CreateShadersModules()
 
 void VulkanRenderer::DisposeShadersModules() 
 {
-	ShaderModuleInterface shaderModule;
-	shaderModule.Destroy(logicalDevice, vertShaderModule);
-	shaderModule.Destroy(logicalDevice, fragShaderModule);
+	AShaderModule shaderModule;
+	shaderModule.Dispose(logicalDevice, vertShaderModule);
+	shaderModule.Dispose(logicalDevice, fragShaderModule);
 }

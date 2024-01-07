@@ -4,9 +4,9 @@
 #include <optional>
 
 #include "QueueFamilyIndices.h"
-#include "SwapChainInterface.h"
+#include "ASwapChain.h"
 
-class PhysicalDeviceInterface
+class APhysicalDevice
 {
 public:
 	std::vector<VkPhysicalDevice> GetDevicesList(VkInstance& instance) const;

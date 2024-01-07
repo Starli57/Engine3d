@@ -2,10 +2,10 @@
 
 #include <GLFW/glfw3.h>
 
-class ShaderModuleInterface
+class AShaderModule
 {
 public:
 	VkShaderModule Create(VkDevice& logicalDevice, const std::vector<char>& shader) const;
-	void Destroy(VkDevice& logicalDevice, VkShaderModule& shaderModule) const;
+	void Dispose(VkDevice& logicalDevice, VkShaderModule& shaderModule) const;
 };
 
