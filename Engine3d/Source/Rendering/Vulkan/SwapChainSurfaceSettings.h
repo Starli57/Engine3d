@@ -4,9 +4,12 @@
 
 #include <vector>
 
-struct SwapChainSurfaceSettings 
+namespace AVulkan
 {
-    VkSurfaceCapabilitiesKHR capabilities;
-    std::vector<VkSurfaceFormatKHR> formats;
-    std::vector<VkPresentModeKHR> presentModes;
-};
+    struct SwapChainSurfaceSettings
+    {
+        VkSurfaceCapabilitiesKHR capabilities;
+        std::vector<VkSurfaceFormatKHR> formats;
+        std::vector<VkPresentModeKHR> presentModes;
+    };
+}

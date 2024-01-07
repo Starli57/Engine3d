@@ -3,28 +3,31 @@
 
 #include <GLFW/glfw3.h>
 
-const std::vector<const char*> validationLayers = {
-	"VK_LAYER_KHRONOS_validation"
-};
-
-void AValidationLayers::Setup(VkInstanceCreateInfo& createInfo)
+namespace AVulkan
 {
-#ifdef DEBUG
-	createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-	createInfo.ppEnabledLayerNames = validationLayers.data();
-#else
-	createInfo.enabledLayerCount = 0;
-	createInfo.pNext = nullptr;
-#endif
-}
+	const std::vector<const char*> validationLayers = {
+		"VK_LAYER_KHRONOS_validation"
+	};
 
-void AValidationLayers::Setup(VkDeviceCreateInfo& createInfo)
-{
+	void AValidationLayers::Setup(VkInstanceCreateInfo& createInfo)
+	{
 #ifdef DEBUG
-	createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
-	createInfo.ppEnabledLayerNames = validationLayers.data();
+		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+		createInfo.ppEnabledLayerNames = validationLayers.data();
 #else
-	createInfo.enabledLayerCount = 0;
-	createInfo.pNext = nullptr;
+		createInfo.enabledLayerCount = 0;
+		createInfo.pNext = nullptr;
 #endif
+	}
+
+	void AValidationLayers::Setup(VkDeviceCreateInfo& createInfo)
+	{
+#ifdef DEBUG
+		createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+		createInfo.ppEnabledLayerNames = validationLayers.data();
+#else
+		createInfo.enabledLayerCount = 0;
+		createInfo.pNext = nullptr;
+#endif
+	}
 }

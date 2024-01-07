@@ -4,15 +4,18 @@
 
 #include <vector>
 
-struct SwapChainData 
+namespace AVulkan
 {
-public:
-	VkSwapchainKHR swapChain;
+	struct SwapChainData
+	{
+	public:
+		VkSwapchainKHR swapChain;
 
-	std::vector<VkImage> swapChainImages;
-	std::vector<VkImageView> swapChainImageViews;
+		std::vector<VkImage> swapChainImages;
+		std::vector<VkImageView> swapChainImageViews;
 
-	VkFormat swapChainImageFormat;
-	VkExtent2D swapChainExtent;
+		VkFormat swapChainImageFormat;
+		VkExtent2D swapChainExtent;
 
-};
+	};
+}

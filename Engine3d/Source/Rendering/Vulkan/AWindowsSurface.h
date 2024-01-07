@@ -2,10 +2,12 @@
 
 #include <GLFW/glfw3.h>
 
-class AWindowsSurface
+namespace AVulkan
 {
-public:
-	VkSurfaceKHR Create(VkInstance& instance, GLFWwindow& window) const;
-	void Dispose(VkInstance& instance, VkSurfaceKHR& surface) const;
-};
-
+	class AWindowsSurface
+	{
+	public:
+		VkSurfaceKHR Create(VkInstance& instance, GLFWwindow& window) const;
+		void Dispose(VkInstance& instance, VkSurfaceKHR& surface) const;
+	};
+}

@@ -3,6 +3,8 @@
 #include "Vulkan/VulkanRenderer.h"
 #include "Architecture/Rollback/Rollback.h"
 
+using namespace AVulkan;
+
 class Renderer
 {
 public:

@@ -4,10 +4,12 @@
 
 #include "SwapChainData.h"
 
-class AImageView
+namespace AVulkan
 {
-public:
-	void Create(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
-	void Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
-};
-
+	class AImageView
+	{
+	public:
+		void Create(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
+		void Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
+	};
+}

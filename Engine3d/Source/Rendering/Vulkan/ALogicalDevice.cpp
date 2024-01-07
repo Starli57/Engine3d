@@ -4,63 +4,66 @@
 #include "AValidationLayers.h"
 #include "PhysicalDeviceExtensions.h"
 
-VkDevice ALogicalDevice::Create(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface,
-	VkQueue& graphicsQueue, VkQueue& presentationQueue) const
+namespace AVulkan
 {
-	spdlog::info("Create logical device");
-
-	APhysicalDevice APhysicalDevice;
-	AValidationLayers validationLayers;
-
-	auto queueFamilies = APhysicalDevice.GetQueueFamilies(physicalDevice, windowSurface);
-
-	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
-	std::set<uint32_t> uniqueQueueFamilies = 
+	VkDevice ALogicalDevice::Create(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface,
+		VkQueue& graphicsQueue, VkQueue& presentationQueue) const
 	{
-		queueFamilies.graphicsFamily.value(), 
-		queueFamilies.presentationFamily.value()
-	};
+		spdlog::info("Create logical device");
 
-	for (uint32_t queueFamily : uniqueQueueFamilies)
-	{
-		VkDeviceQueueCreateInfo queueCreateInfo{};
-		queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-		queueCreateInfo.queueFamilyIndex = queueFamily;
-		queueCreateInfo.queueCount = 1;
+		APhysicalDevice APhysicalDevice;
+		AValidationLayers validationLayers;
 
-		float queuePriority = 1.0f;
-		queueCreateInfo.pQueuePriorities = &queuePriority;
-		queueCreateInfos.push_back(queueCreateInfo);
+		auto queueFamilies = APhysicalDevice.GetQueueFamilies(physicalDevice, windowSurface);
+
+		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
+		std::set<uint32_t> uniqueQueueFamilies =
+		{
+			queueFamilies.graphicsFamily.value(),
+			queueFamilies.presentationFamily.value()
+		};
+
+		for (uint32_t queueFamily : uniqueQueueFamilies)
+		{
+			VkDeviceQueueCreateInfo queueCreateInfo{};
+			queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+			queueCreateInfo.queueFamilyIndex = queueFamily;
+			queueCreateInfo.queueCount = 1;
+
+			float queuePriority = 1.0f;
+			queueCreateInfo.pQueuePriorities = &queuePriority;
+			queueCreateInfos.push_back(queueCreateInfo);
+		}
+
+		VkDeviceCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+		createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
+		createInfo.pQueueCreateInfos = queueCreateInfos.data();
+		createInfo.enabledExtensionCount = static_cast<uint32_t>(physicalDeviceExtensions.size());
+		createInfo.ppEnabledExtensionNames = physicalDeviceExtensions.data();
+
+		VkPhysicalDeviceFeatures deviceFeatures;
+		vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
+		createInfo.pEnabledFeatures = &deviceFeatures;
+
+		validationLayers.Setup(createInfo);
+
+		VkDevice logicalDevice;
+		auto createStatus = vkCreateDevice(physicalDevice, &createInfo, nullptr, &logicalDevice);
+		if (createStatus != VK_SUCCESS)
+		{
+			throw std::runtime_error("failed to create logical device, status: " + createStatus);
+		}
+
+		vkGetDeviceQueue(logicalDevice, queueFamilies.graphicsFamily.value(), 0, &graphicsQueue);
+		vkGetDeviceQueue(logicalDevice, queueFamilies.presentationFamily.value(), 0, &presentationQueue);
+
+		return logicalDevice;
 	}
 
-	VkDeviceCreateInfo createInfo{};
-	createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-	createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
-	createInfo.pQueueCreateInfos = queueCreateInfos.data();
-	createInfo.enabledExtensionCount = static_cast<uint32_t>(physicalDeviceExtensions.size());
-	createInfo.ppEnabledExtensionNames = physicalDeviceExtensions.data();
-
-	VkPhysicalDeviceFeatures deviceFeatures;
-	vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
-	createInfo.pEnabledFeatures = &deviceFeatures;
-
-	validationLayers.Setup(createInfo);
-
-	VkDevice logicalDevice;
-	auto createStatus = vkCreateDevice(physicalDevice, &createInfo, nullptr, &logicalDevice);
-	if (createStatus != VK_SUCCESS) 
+	void ALogicalDevice::Dispose(VkDevice& logicalDevice) const
 	{
-		throw std::runtime_error("failed to create logical device, status: " + createStatus);
+		spdlog::info("Dispose logical device");
+		vkDestroyDevice(logicalDevice, nullptr);
 	}
-
-	vkGetDeviceQueue(logicalDevice, queueFamilies.graphicsFamily.value(), 0, &graphicsQueue);
-	vkGetDeviceQueue(logicalDevice, queueFamilies.presentationFamily.value(), 0, &presentationQueue);
-
-	return logicalDevice;
-}
-
-void ALogicalDevice::Dispose(VkDevice& logicalDevice) const
-{
-	spdlog::info("Dispose logical device");
-	vkDestroyDevice(logicalDevice, nullptr);
 }

@@ -3,13 +3,16 @@
 #include <GLFW/glfw3.h>
 #include <optional>
 
-struct QueueFamilyIndices
+namespace AVulkan
 {
-    std::optional<uint32_t> graphicsFamily;
-    std::optional<uint32_t> presentationFamily;
-
-    bool isComplete()
+    struct QueueFamilyIndices
     {
-        return graphicsFamily.has_value() && presentationFamily.has_value();
-    }
-};
+        std::optional<uint32_t> graphicsFamily;
+        std::optional<uint32_t> presentationFamily;
+
+        bool isComplete()
+        {
+            return graphicsFamily.has_value() && presentationFamily.has_value();
+        }
+    };
+}

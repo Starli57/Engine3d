@@ -5,13 +5,15 @@
 
 #include "AValidationLayers.h"
 
-class AInstance
+namespace AVulkan
 {
-public:
-	void Create(VkInstance& instance) const;
-	void Dispose(VkInstance& instance) const;
+	class AInstance
+	{
+	public:
+		void Create(VkInstance& instance) const;
+		void Dispose(VkInstance& instance) const;
 
-private:
-	std::vector<const char*> GetGLFWRequiredExtensions() const;
-};
-
+	private:
+		std::vector<const char*> GetGLFWRequiredExtensions() const;
+	};
+}

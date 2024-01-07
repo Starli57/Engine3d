@@ -16,50 +16,52 @@
 
 #include "Architecture/Rollback/Rollback.h"
 
-class VulkanRenderer
+namespace AVulkan
 {
-public:
-	VulkanRenderer(GLFWwindow* window, Rollback* vulkanRollback);
-	~VulkanRenderer();
+	class VulkanRenderer
+	{
+	public:
+		VulkanRenderer(GLFWwindow* window, Rollback* vulkanRollback);
+		~VulkanRenderer();
 
-	void Initialize();
+		void Initialize();
 
-private:
-	Rollback* rollback;
+	private:
+		Rollback* rollback;
 
-	GLFWwindow* window;
+		GLFWwindow* window;
 
-	VkInstance instance;
-	VkPhysicalDevice physicalDevice;
-	VkDevice logicalDevice;
-	VkSurfaceKHR windowSurface;
-	SwapChainData swapChainData;
-	VkQueue graphicsQueue;
-	VkQueue presentationQueue;
+		VkInstance instance;
+		VkPhysicalDevice physicalDevice;
+		VkDevice logicalDevice;
+		VkSurfaceKHR windowSurface;
+		SwapChainData swapChainData;
+		VkQueue graphicsQueue;
+		VkQueue presentationQueue;
 
-	VkShaderModule vertShaderModule;
-	VkShaderModule fragShaderModule;
+		VkShaderModule vertShaderModule;
+		VkShaderModule fragShaderModule;
 
-	void CreateInstance();
-	void DisposeInstance();
+		void CreateInstance();
+		void DisposeInstance();
 
-	void SelectPhysicalRenderingDevice();
+		void SelectPhysicalRenderingDevice();
 
-	void CreateLogicalDevice();
-	void DisposeLogicalDevice();
+		void CreateLogicalDevice();
+		void DisposeLogicalDevice();
 
-	void CreateWindowSurface();
-	void DisposeSurface();
+		void CreateWindowSurface();
+		void DisposeSurface();
 
-	void CreateSwapChain();
-	void DisposeSwapChain();
+		void CreateSwapChain();
+		void DisposeSwapChain();
 
-	void CreateSwapChainImageViews();
-	void DisposeSwapChainImageViews();
+		void CreateSwapChainImageViews();
+		void DisposeSwapChainImageViews();
 
-	void CreateGraphicsPipeline();
+		void CreateGraphicsPipeline();
 
-	void CreateShadersModules();
-	void DisposeShadersModules();
-};
-
+		void CreateShadersModules();
+		void DisposeShadersModules();
+	};
+}

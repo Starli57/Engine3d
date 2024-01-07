@@ -1,12 +1,13 @@
 #pragma once
 
-struct VkInstanceCreateInfo;
-struct VkDeviceCreateInfo;
+#include <GLFW/glfw3.h>
 
-class AValidationLayers
+namespace AVulkan
 {
-public:
-	void Setup(VkInstanceCreateInfo& createInfo);
-	void Setup(VkDeviceCreateInfo& createInfo);
-};
-
+	class AValidationLayers
+	{
+	public:
+		void Setup(VkInstanceCreateInfo& createInfo);
+		void Setup(VkDeviceCreateInfo& createInfo);
+	};
+}
