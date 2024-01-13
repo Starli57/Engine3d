@@ -4,15 +4,26 @@
 
 #include <array>
 
+#include "Architecture/Rollback/Rollback.h"
+
 namespace AVulkan
 {
 	class AGraphicsPipeline
 	{
 	public:
-		VkPipeline Create(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
-		void Dispose(VkDevice& logicalDevice, VkPipeline& graphicsPipeline);
+		AGraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
+		~AGraphicsPipeline();
+
+		VkPipeline Create();
+		void Dispose(VkPipeline& graphicsPipeline);
 
 	private:
+		Rollback* rollback;
+
+		VkDevice logicalDevice;
+		VkExtent2D swapChainExtent;
+		VkRenderPass renderPass;
+
 		VkShaderModule vertShaderModule;
 		VkShaderModule fragShaderModule;
 
@@ -23,12 +34,8 @@ namespace AVulkan
 
 		VkPipelineColorBlendAttachmentState* colorBlendAttachment;
 
-		std::array<VkPipelineShaderStageCreateInfo, 2>  CreateShadersModules(VkDevice& logicalDevice);
-		void DisposeShadersModules(VkDevice& logicalDevice);
-
-		void CreatePipelineLayout(VkDevice& logicalDevice);
-		void DisposePipelineLayout(VkDevice& logicalDevice);
-
+		std::array<VkPipelineShaderStageCreateInfo, 2>  CreateShadersModules();
+		void CreatePipelineLayout();
 		void CreateViewport(VkExtent2D& swapChainExtent);
 		void CreateScissor(VkExtent2D& swapChainExtent);
 		void CreateColorBlendAttachment();

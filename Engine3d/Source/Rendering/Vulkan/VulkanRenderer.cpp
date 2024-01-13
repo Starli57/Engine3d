@@ -81,13 +81,7 @@ namespace AVulkan
 
 	void VulkanRenderer::CreateGraphicsPipeline()
 	{
-		graphicsPipelineInterface = new AGraphicsPipeline();
-		graphicsPipeline = graphicsPipelineInterface->Create(logicalDevice, swapChainData.extent, renderPass);
-
-		rollback->Add([this]()
-		{ 
-			graphicsPipelineInterface->Dispose(logicalDevice, graphicsPipeline);
-			delete graphicsPipelineInterface;
-		});
+		graphicsPipeline = AGraphicsPipeline(logicalDevice, swapChainData.extent, renderPass).Create();
+		rollback->Add([this]() { AGraphicsPipeline(logicalDevice, swapChainData.extent, renderPass).Dispose(graphicsPipeline); });
 	}
 }

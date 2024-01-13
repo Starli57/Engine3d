@@ -43,8 +43,6 @@ namespace AVulkan
 		VkRenderPass renderPass;
 		VkPipeline graphicsPipeline;
 
-		AGraphicsPipeline* graphicsPipelineInterface;
-
 		void CreateInstance();
 		void SelectPhysicalRenderingDevice();
 		void CreateLogicalDevice();

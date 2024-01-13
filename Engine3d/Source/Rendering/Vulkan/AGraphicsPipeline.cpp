@@ -5,67 +5,86 @@
 
 namespace AVulkan
 {
-	VkPipeline AGraphicsPipeline::Create(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass)
+	AGraphicsPipeline::AGraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass) 
+	{
+		rollback = new Rollback();
+
+		this->logicalDevice = logicalDevice;
+		this->swapChainExtent = swapChainExtent;
+		this->renderPass = renderPass;
+	}
+
+	AGraphicsPipeline::~AGraphicsPipeline()
+	{
+		rollback->Dispose();
+		delete rollback;
+	}
+
+	VkPipeline AGraphicsPipeline::Create()
 	{
 		spdlog::info("Create graphics pipeline");
 
-		auto shadersStages = CreateShadersModules(logicalDevice);
-		CreatePipelineLayout(logicalDevice);
-
-		VkGraphicsPipelineCreateInfo pipelineInfo{};
-		pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-		pipelineInfo.stageCount = 2;
-		pipelineInfo.pStages = shadersStages.data();
-
-		auto vertexInput = SetupVertexInputData();
-		pipelineInfo.pVertexInputState = &vertexInput;
-
-		auto inputAssembly = SetupInputAssemblyData();
-		pipelineInfo.pInputAssemblyState = &inputAssembly;
-
-		auto viewportState = SetupViewportAndScissor(swapChainExtent);
-		pipelineInfo.pViewportState = &viewportState;
-
-		auto rasterizer = SetupRasterizer();
-		pipelineInfo.pRasterizationState = &rasterizer;
-
-		auto multisample = SetupMultisampling();
-		pipelineInfo.pMultisampleState = &multisample;
-
-		auto colorBlend = SetupColorsBlending();
-		pipelineInfo.pColorBlendState = &colorBlend;
-
-		pipelineInfo.pDynamicState = nullptr;
-		pipelineInfo.pDepthStencilState = nullptr;
-		pipelineInfo.layout = pipelineLayout;
-		pipelineInfo.renderPass = renderPass;
-		pipelineInfo.subpass = 0;
-
-		VkPipeline graphicsPipeline;
-		auto createState = vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline);
-
-		delete colorBlendAttachment;
-		delete scissor;
-		delete viewport;
-
-		DisposeShadersModules(logicalDevice);
-		DisposePipelineLayout(logicalDevice);
-
-		if (createState != VK_SUCCESS)
+		try
 		{
-			throw std::runtime_error("Failed to create graphics pipeline, state" + createState);
-		}
+			auto shadersStages = CreateShadersModules();
+			CreatePipelineLayout();
 
-		return graphicsPipeline;
+			VkGraphicsPipelineCreateInfo pipelineInfo{};
+			pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+			pipelineInfo.stageCount = 2;
+			pipelineInfo.pStages = shadersStages.data();
+
+			auto vertexInput = SetupVertexInputData();
+			pipelineInfo.pVertexInputState = &vertexInput;
+
+			auto inputAssembly = SetupInputAssemblyData();
+			pipelineInfo.pInputAssemblyState = &inputAssembly;
+
+			auto viewportState = SetupViewportAndScissor(swapChainExtent);
+			pipelineInfo.pViewportState = &viewportState;
+
+			auto rasterizer = SetupRasterizer();
+			pipelineInfo.pRasterizationState = &rasterizer;
+
+			auto multisample = SetupMultisampling();
+			pipelineInfo.pMultisampleState = &multisample;
+
+			auto colorBlend = SetupColorsBlending();
+			pipelineInfo.pColorBlendState = &colorBlend;
+
+			pipelineInfo.pDynamicState = nullptr;
+			pipelineInfo.pDepthStencilState = nullptr;
+			pipelineInfo.layout = pipelineLayout;
+			pipelineInfo.renderPass = renderPass;
+			pipelineInfo.subpass = 0;
+
+			VkPipeline graphicsPipeline;
+			auto createState = vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline);
+
+			if (createState != VK_SUCCESS)
+			{
+				throw std::runtime_error("Failed to create graphics pipeline, state" + createState);
+			}
+
+			rollback->Dispose();
+			spdlog::info("Graphics pipeline successfully created");
+
+			return graphicsPipeline;
+		}
+		catch (const std::exception& e)
+		{
+			rollback->Dispose();
+			throw e;
+		}
 	}
 
-	void AGraphicsPipeline::Dispose(VkDevice& logicalDevice, VkPipeline& graphicsPipeline)
+	void AGraphicsPipeline::Dispose(VkPipeline& graphicsPipeline)
 	{
 		spdlog::info("Dispose graphics pipeline");
 		vkDestroyPipeline(logicalDevice, graphicsPipeline, nullptr);
 	}
 
-	std::array<VkPipelineShaderStageCreateInfo, 2> AGraphicsPipeline::CreateShadersModules(VkDevice& logicalDevice)
+	std::array<VkPipelineShaderStageCreateInfo, 2> AGraphicsPipeline::CreateShadersModules()
 	{
 		AShaderModule shaderModule;
 		vertShaderModule = shaderModule.CreateModule("vert.spv", logicalDevice);
@@ -75,16 +94,16 @@ namespace AVulkan
 		shaderStages[0] = shaderModule.SetupStageInfo(vertShaderModule, VK_SHADER_STAGE_VERTEX_BIT);
 		shaderStages[1] = shaderModule.SetupStageInfo(fragShaderModule, VK_SHADER_STAGE_FRAGMENT_BIT);
 
+		rollback->Add([this]
+		{
+			spdlog::info("dispose ShadersModules");
+			AShaderModule shaderModule;
+			shaderModule.DisposeModule(logicalDevice, vertShaderModule);
+			shaderModule.DisposeModule(logicalDevice, fragShaderModule);
+		});
+
 		return shaderStages;
 	}
-
-	void AGraphicsPipeline::DisposeShadersModules(VkDevice& logicalDevice)
-	{
-		AShaderModule shaderModule;
-		shaderModule.DisposeModule(logicalDevice, vertShaderModule);
-		shaderModule.DisposeModule(logicalDevice, fragShaderModule);
-	}
-
 	
 	VkPipelineVertexInputStateCreateInfo AGraphicsPipeline::SetupVertexInputData()
 	{
@@ -115,6 +134,8 @@ namespace AVulkan
 		viewport->height = (float)swapChainExtent.height;
 		viewport->minDepth = 0.0f;
 		viewport->maxDepth = 1.0f;
+
+		rollback->Add([this] { delete viewport; });
 	}
 
 	void AGraphicsPipeline::CreateScissor(VkExtent2D& swapChainExtent)
@@ -122,6 +143,8 @@ namespace AVulkan
 		scissor = new VkRect2D();
 		scissor->offset = { 0, 0 };
 		scissor->extent = swapChainExtent;
+
+		rollback->Add([this] { delete scissor; });
 	}
 
 	VkPipelineViewportStateCreateInfo AGraphicsPipeline::SetupViewportAndScissor(VkExtent2D& swapChainExtent)
@@ -156,6 +179,7 @@ namespace AVulkan
 		rasterizer.depthBiasConstantFactor = 0.0f;
 		rasterizer.depthBiasClamp = 0.0f;
 		rasterizer.depthBiasSlopeFactor = 0.0f;
+
 		return rasterizer;
 	}
 
@@ -186,6 +210,8 @@ namespace AVulkan
 		colorBlendAttachment->srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
 		colorBlendAttachment->dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
 		colorBlendAttachment->alphaBlendOp = VK_BLEND_OP_ADD;
+
+		rollback->Add([this] { delete colorBlendAttachment; });
 	}
 
 	VkPipelineColorBlendStateCreateInfo AGraphicsPipeline::SetupColorsBlending()
@@ -199,7 +225,7 @@ namespace AVulkan
 		return colorBlending;
 	}
 
-	void AGraphicsPipeline::CreatePipelineLayout(VkDevice& logicalDevice)
+	void AGraphicsPipeline::CreatePipelineLayout()
 	{
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -209,14 +235,16 @@ namespace AVulkan
 		pipelineLayoutInfo.pPushConstantRanges = nullptr;
 
 		auto createStatus = vkCreatePipelineLayout(logicalDevice, &pipelineLayoutInfo, nullptr, &pipelineLayout);
-		if (createStatus != VK_SUCCESS) 
+		if (createStatus != VK_SUCCESS)
 		{
 			throw std::runtime_error("Failed to create pipeline layout, status: " + createStatus);
 		}
-	}
 
-	void AGraphicsPipeline::DisposePipelineLayout(VkDevice& logicalDevice) 
-	{
-		vkDestroyPipelineLayout(logicalDevice, pipelineLayout, nullptr);
+		rollback->Add([this]
+		{
+			spdlog::info("dispose pipeline layout");
+			vkDestroyPipelineLayout(logicalDevice, pipelineLayout, nullptr);
+		});
+	
 	}
 }
