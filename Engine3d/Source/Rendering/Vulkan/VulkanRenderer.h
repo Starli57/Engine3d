@@ -13,6 +13,8 @@
 #include "AImageView.h"
 #include "SwapChainData.h"
 #include "AShaderModule.h"
+#include "ARenderPass.h"
+#include "GraphicsPipeline/AGraphicsPipeline.h"
 
 #include "Architecture/Rollback/Rollback.h"
 
@@ -38,9 +40,9 @@ namespace AVulkan
 		SwapChainData swapChainData;
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;
+		VkRenderPass renderPass;
 
-		VkShaderModule vertShaderModule;
-		VkShaderModule fragShaderModule;
+		AGraphicsPipeline* graphicsPipelineInterface;
 
 		void CreateInstance();
 		void DisposeInstance();
@@ -59,9 +61,10 @@ namespace AVulkan
 		void CreateSwapChainImageViews();
 		void DisposeSwapChainImageViews();
 
-		void CreateGraphicsPipeline();
+		void CreateRenderPass();
+		void DisposeRenderPass();
 
-		void CreateShadersModules();
-		void DisposeShadersModules();
+		void CreateGraphicsPipeline();
+		void DisposeGraphicsPipeline();
 	};
 }

@@ -68,11 +68,11 @@ namespace AVulkan
 		if (createStatus != VK_SUCCESS) throw std::runtime_error("Failed to create swap chain, status: " + createStatus);
 
 		vkGetSwapchainImagesKHR(logicalDevice, swapChainData.swapChain, &imageCount, nullptr);
-		swapChainData.swapChainImages.resize(imageCount);
-		vkGetSwapchainImagesKHR(logicalDevice, swapChainData.swapChain, &imageCount, swapChainData.swapChainImages.data());
+		swapChainData.images.resize(imageCount);
+		vkGetSwapchainImagesKHR(logicalDevice, swapChainData.swapChain, &imageCount, swapChainData.images.data());
 
-		swapChainData.swapChainImageFormat = surfaceFormat.format;
-		swapChainData.swapChainExtent = extent;
+		swapChainData.imageFormat = surfaceFormat.format;
+		swapChainData.extent = extent;
 
 		return swapChainData;
 	}

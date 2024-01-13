@@ -7,15 +7,15 @@ namespace AVulkan
 	{
 		spdlog::info("Create swap chain image view");
 
-		swapChainData.swapChainImageViews.resize(swapChainData.swapChainImages.size());
+		swapChainData.imageViews.resize(swapChainData.images.size());
 
-		for (size_t i = 0; i < swapChainData.swapChainImages.size(); i++)
+		for (size_t i = 0; i < swapChainData.images.size(); i++)
 		{
 			VkImageViewCreateInfo createInfo{};
 			createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-			createInfo.image = swapChainData.swapChainImages[i];
+			createInfo.image = swapChainData.images[i];
 			createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-			createInfo.format = swapChainData.swapChainImageFormat;
+			createInfo.format = swapChainData.imageFormat;
 
 			createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
 			createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -28,7 +28,7 @@ namespace AVulkan
 			createInfo.subresourceRange.baseArrayLayer = 0;
 			createInfo.subresourceRange.layerCount = 1;
 
-			auto createStatus = vkCreateImageView(logicalDevice, &createInfo, nullptr, &swapChainData.swapChainImageViews[i]);
+			auto createStatus = vkCreateImageView(logicalDevice, &createInfo, nullptr, &swapChainData.imageViews[i]);
 			if (createStatus != VK_SUCCESS)
 			{
 				throw std::runtime_error("Swap chain image view can't be created, status: " + createStatus);
@@ -40,7 +40,7 @@ namespace AVulkan
 	void AImageView::Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const
 	{
 		spdlog::info("Dispose swap chain image viewes");
-		for (auto imageView : swapChainData.swapChainImageViews)
+		for (auto imageView : swapChainData.imageViews)
 		{
 			vkDestroyImageView(logicalDevice, imageView, nullptr);
 		}

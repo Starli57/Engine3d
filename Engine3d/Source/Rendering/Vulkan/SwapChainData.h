@@ -11,11 +11,11 @@ namespace AVulkan
 	public:
 		VkSwapchainKHR swapChain;
 
-		std::vector<VkImage> swapChainImages;
-		std::vector<VkImageView> swapChainImageViews;
+		std::vector<VkImage> images;
+		std::vector<VkImageView> imageViews;
 
-		VkFormat swapChainImageFormat;
-		VkExtent2D swapChainExtent;
+		VkFormat imageFormat;
+		VkExtent2D extent;
 
 	};
 }
