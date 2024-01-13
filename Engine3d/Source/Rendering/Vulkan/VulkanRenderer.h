@@ -14,7 +14,7 @@
 #include "SwapChainData.h"
 #include "AShaderModule.h"
 #include "ARenderPass.h"
-#include "GraphicsPipeline/AGraphicsPipeline.h"
+#include "AGraphicsPipeline.h"
 
 #include "Architecture/Rollback/Rollback.h"
 
@@ -41,30 +41,17 @@ namespace AVulkan
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;
 		VkRenderPass renderPass;
+		VkPipeline graphicsPipeline;
 
 		AGraphicsPipeline* graphicsPipelineInterface;
 
 		void CreateInstance();
-		void DisposeInstance();
-
 		void SelectPhysicalRenderingDevice();
-
 		void CreateLogicalDevice();
-		void DisposeLogicalDevice();
-
 		void CreateWindowSurface();
-		void DisposeSurface();
-
 		void CreateSwapChain();
-		void DisposeSwapChain();
-
 		void CreateSwapChainImageViews();
-		void DisposeSwapChainImageViews();
-
 		void CreateRenderPass();
-		void DisposeRenderPass();
-
 		void CreateGraphicsPipeline();
-		void DisposeGraphicsPipeline();
 	};
 }

@@ -1,11 +1,11 @@
 #include "Pch.h"
 #include "AGraphicsPipeline.h"
-#include "Rendering/Vulkan/AShaderModule.h"
+#include "AShaderModule.h"
 #include "spdlog/spdlog.h"
 
 namespace AVulkan
 {
-	void AGraphicsPipeline::Create(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass)
+	VkPipeline AGraphicsPipeline::Create(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass)
 	{
 		spdlog::info("Create graphics pipeline");
 
@@ -41,26 +41,28 @@ namespace AVulkan
 		pipelineInfo.renderPass = renderPass;
 		pipelineInfo.subpass = 0;
 
+		VkPipeline graphicsPipeline;
 		auto createState = vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline);
 
 		delete colorBlendAttachment;
 		delete scissor;
 		delete viewport;
 
+		DisposeShadersModules(logicalDevice);
+		DisposePipelineLayout(logicalDevice);
+
 		if (createState != VK_SUCCESS)
 		{
 			throw std::runtime_error("Failed to create graphics pipeline, state" + createState);
 		}
+
+		return graphicsPipeline;
 	}
 
-	void AGraphicsPipeline::Dispose(VkDevice& logicalDevice)
+	void AGraphicsPipeline::Dispose(VkDevice& logicalDevice, VkPipeline& graphicsPipeline)
 	{
 		spdlog::info("Dispose graphics pipeline");
-
 		vkDestroyPipeline(logicalDevice, graphicsPipeline, nullptr);
-		DisposeShadersModules(logicalDevice);
-		DisposePipelineLayout(logicalDevice);
-
 	}
 
 	std::array<VkPipelineShaderStageCreateInfo, 2> AGraphicsPipeline::CreateShadersModules(VkDevice& logicalDevice)

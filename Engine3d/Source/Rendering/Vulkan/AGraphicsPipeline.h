@@ -9,12 +9,10 @@ namespace AVulkan
 	class AGraphicsPipeline
 	{
 	public:
-		void Create(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
-		void Dispose(VkDevice& logicalDevice);
+		VkPipeline Create(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
+		void Dispose(VkDevice& logicalDevice, VkPipeline& graphicsPipeline);
 
 	private:
-		VkPipeline graphicsPipeline;
-
 		VkShaderModule vertShaderModule;
 		VkShaderModule fragShaderModule;
 
