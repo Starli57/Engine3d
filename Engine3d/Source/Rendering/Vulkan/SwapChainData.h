@@ -13,6 +13,7 @@ namespace AVulkan
 
 		std::vector<VkImage> images;
 		std::vector<VkImageView> imageViews;
+		std::vector<VkFramebuffer> framebuffers;
 
 		VkFormat imageFormat;
 		VkExtent2D extent;

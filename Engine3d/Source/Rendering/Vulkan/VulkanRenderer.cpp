@@ -1,5 +1,6 @@
 #include "Pch.h"
 #include "VulkanRenderer.h"
+#include <functional>
 
 namespace AVulkan
 {
@@ -26,6 +27,7 @@ namespace AVulkan
 			CreateSwapChainImageViews();
 			CreateRenderPass();
 			CreateGraphicsPipeline();
+			CreateFrameBuffers();
 		}
 		catch (const std::exception& e)
 		{
@@ -83,5 +85,11 @@ namespace AVulkan
 	{
 		graphicsPipeline = AGraphicsPipeline(logicalDevice, swapChainData.extent, renderPass).Create();
 		rollback->Add([this]() { AGraphicsPipeline(logicalDevice, swapChainData.extent, renderPass).Dispose(graphicsPipeline); });
+	}
+
+	void VulkanRenderer::CreateFrameBuffers()
+	{
+		AFrameBuffer().Create(logicalDevice, renderPass, swapChainData);
+		rollback->Add([this]() { AFrameBuffer().Dispose(logicalDevice, swapChainData); });
 	}
 }

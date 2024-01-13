@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include <stack>
-#include <functional>
+#include <vector>
 
 #include "AValidationLayers.h"
 #include "APhysicalDevice.h"
@@ -15,6 +15,7 @@
 #include "AShaderModule.h"
 #include "ARenderPass.h"
 #include "AGraphicsPipeline.h"
+#include "AFrameBuffer.h"
 
 #include "Architecture/Rollback/Rollback.h"
 
@@ -51,5 +52,6 @@ namespace AVulkan
 		void CreateSwapChainImageViews();
 		void CreateRenderPass();
 		void CreateGraphicsPipeline();
+		void CreateFrameBuffers();
 	};
 }

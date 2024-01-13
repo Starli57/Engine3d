@@ -29,29 +29,23 @@ namespace AVulkan
 			auto shadersStages = CreateShadersModules();
 			CreatePipelineLayout();
 
+			auto vertexInput = SetupVertexInputData();
+			auto inputAssembly = SetupInputAssemblyData();
+			auto viewportState = SetupViewportAndScissor(swapChainExtent);
+			auto rasterizer = SetupRasterizer();
+			auto multisample = SetupMultisampling();
+			auto colorBlend = SetupColorsBlending();
+
 			VkGraphicsPipelineCreateInfo pipelineInfo{};
 			pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 			pipelineInfo.stageCount = 2;
 			pipelineInfo.pStages = shadersStages.data();
-
-			auto vertexInput = SetupVertexInputData();
 			pipelineInfo.pVertexInputState = &vertexInput;
-
-			auto inputAssembly = SetupInputAssemblyData();
 			pipelineInfo.pInputAssemblyState = &inputAssembly;
-
-			auto viewportState = SetupViewportAndScissor(swapChainExtent);
 			pipelineInfo.pViewportState = &viewportState;
-
-			auto rasterizer = SetupRasterizer();
 			pipelineInfo.pRasterizationState = &rasterizer;
-
-			auto multisample = SetupMultisampling();
 			pipelineInfo.pMultisampleState = &multisample;
-
-			auto colorBlend = SetupColorsBlending();
 			pipelineInfo.pColorBlendState = &colorBlend;
-
 			pipelineInfo.pDynamicState = nullptr;
 			pipelineInfo.pDepthStencilState = nullptr;
 			pipelineInfo.layout = pipelineLayout;
