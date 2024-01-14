@@ -5,6 +5,7 @@
 #include <stack>
 #include <vector>
 
+#include "Rendering/IRenderer.h"
 #include "AValidationLayers.h"
 #include "APhysicalDevice.h"
 #include "ALogicalDevice.h"
@@ -23,13 +24,14 @@
 
 namespace AVulkan
 {
-	class VulkanRenderer
+	class VulkanRenderer : public IRenderer
 	{
 	public:
 		VulkanRenderer(GLFWwindow* window, Rollback* vulkanRollback);
-		~VulkanRenderer();
+		virtual ~VulkanRenderer() override;
 
-		void Initialize();
+		void Initialize() override;
+		void Render() override;
 
 	private:
 		Rollback* rollback;

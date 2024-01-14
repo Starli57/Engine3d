@@ -11,10 +11,10 @@ Renderer::Renderer()
 		window = glfwCreateWindow(1000, 1000, "Engine window", nullptr, nullptr);
 		if (window == nullptr) throw std::runtime_error("glfw window can't be created");
 
-		//todo: replace to Vulkan specific logic
-		vulkanRollback = new Rollback();
-		vkRenderer = new VulkanRenderer(window, vulkanRollback);
-		vkRenderer->Initialize();
+		rendererRollback = new Rollback();
+
+		renderer = new VulkanRenderer(window, rendererRollback);
+		renderer->Initialize();
 	}
 	catch (const std::exception& e)
 	{
@@ -24,8 +24,8 @@ Renderer::Renderer()
 
 Renderer::~Renderer()
 {
-	delete vkRenderer;
-	delete vulkanRollback;
+	delete renderer;
+	delete rendererRollback;
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
@@ -36,6 +36,7 @@ void Renderer::Run()
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
+		renderer->Render();
 	}
 
 	spdlog::info("Window closed");

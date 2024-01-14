@@ -1,5 +1,6 @@
 #pragma once
 
+#include "IRenderer.h"
 #include "Vulkan/VulkanRenderer.h"
 #include "Architecture/Rollback/Rollback.h"
 
@@ -16,7 +17,7 @@ public:
 	void Run();
 
 private: 
-	VulkanRenderer* vkRenderer;
-	Rollback* vulkanRollback;
+	IRenderer* renderer;
+	Rollback* rendererRollback;
 };
 

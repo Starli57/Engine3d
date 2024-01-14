@@ -41,6 +41,10 @@ namespace AVulkan
 		}
 	}
 
+	void VulkanRenderer::Render()
+	{
+	}
+
 	void VulkanRenderer::CreateInstance()
 	{
 		AInstance().Create(instance);
