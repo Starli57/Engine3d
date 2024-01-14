@@ -16,6 +16,8 @@
 #include "ARenderPass.h"
 #include "AGraphicsPipeline.h"
 #include "AFrameBuffer.h"
+#include "ACommandPool.h"
+#include "ACommandBuffer.h"
 
 #include "Architecture/Rollback/Rollback.h"
 
@@ -38,11 +40,13 @@ namespace AVulkan
 		VkPhysicalDevice physicalDevice;
 		VkDevice logicalDevice;
 		VkSurfaceKHR windowSurface;
-		SwapChainData swapChainData;
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;
 		VkRenderPass renderPass;
 		VkPipeline graphicsPipeline;
+		VkCommandPool commandPool;
+
+		SwapChainData swapChainData;
 
 		void CreateInstance();
 		void SelectPhysicalRenderingDevice();
@@ -53,5 +57,9 @@ namespace AVulkan
 		void CreateRenderPass();
 		void CreateGraphicsPipeline();
 		void CreateFrameBuffers();
+		void CreateCommandPool();
+		void CreateCommandBuffer();
+
+		void RecordCommandBuffers();
 	};
 }

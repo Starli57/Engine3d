@@ -28,6 +28,10 @@ namespace AVulkan
 			CreateRenderPass();
 			CreateGraphicsPipeline();
 			CreateFrameBuffers();
+			CreateCommandPool();
+			CreateCommandBuffer();
+
+			RecordCommandBuffers();
 		}
 		catch (const std::exception& e)
 		{
@@ -91,5 +95,70 @@ namespace AVulkan
 	{
 		AFrameBuffer().Create(logicalDevice, renderPass, swapChainData);
 		rollback->Add([this]() { AFrameBuffer().Dispose(logicalDevice, swapChainData); });
+	}
+
+	void VulkanRenderer::CreateCommandPool()
+	{
+		commandPool = ACommandPool().Create(logicalDevice, physicalDevice, windowSurface);
+		rollback->Add([this]() { ACommandPool().Dispose(logicalDevice, commandPool); });
+	}
+
+	void VulkanRenderer::CreateCommandBuffer()
+	{
+		ACommandBuffer().Setup(logicalDevice, commandPool, swapChainData);
+	}
+
+	//todo: replace the function somewhere
+	void VulkanRenderer::RecordCommandBuffers()
+	{
+		spdlog::info("Record command buffers");
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
+		beginInfo.pInheritanceInfo = nullptr;
+
+		VkClearValue clearColors[] =
+		{
+			{0.1f, 0.1f, 0.15f, 1.0f}
+		};
+
+		for (int i = 0; i < swapChainData.commandbuffers.size(); i++)
+		{
+			auto commandBuffer = swapChainData.commandbuffers[i];
+			auto frameBuffer = swapChainData.framebuffers[i];
+
+			auto beginStatus = vkBeginCommandBuffer(commandBuffer, &beginInfo);
+			if (beginStatus != VK_SUCCESS)
+			{
+				throw std::runtime_error("Failed to begin recording a command buffer, status: " + beginStatus);
+			}
+
+			VkRenderPassBeginInfo renderPassInfo{};
+			renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+			renderPassInfo.renderPass = renderPass;
+			renderPassInfo.framebuffer = frameBuffer;
+			renderPassInfo.renderArea.offset = { 0, 0 };
+			renderPassInfo.renderArea.extent = swapChainData.extent;
+			renderPassInfo.clearValueCount = 1;
+			renderPassInfo.pClearValues = clearColors;
+
+			vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+			{
+				vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+
+				uint32_t vertexCount = 3;
+				uint32_t instanceCount = 1;
+				uint32_t firstVertexIndex = 0;
+				uint32_t firstInstanceIndex = 0;
+				vkCmdDraw(commandBuffer, vertexCount, instanceCount, firstVertexIndex, firstInstanceIndex);
+			}
+			vkCmdEndRenderPass(commandBuffer);
+
+			auto endStatus = vkEndCommandBuffer(commandBuffer);
+			if (endStatus != VK_SUCCESS)
+			{
+				throw std::runtime_error("Failed to end recording a command buffer, status: " + endStatus);
+			}
+		}
 	}
 }
