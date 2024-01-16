@@ -30,8 +30,8 @@ namespace AVulkan
 			CreateFrameBuffers();
 			CreateCommandPool();
 			CreateCommandBuffer();
-
 			RecordCommandBuffers();
+			CreateSyncObjects();
 		}
 		catch (const std::exception& e)
 		{
@@ -110,6 +110,29 @@ namespace AVulkan
 	void VulkanRenderer::CreateCommandBuffer()
 	{
 		ACommandBuffer().Setup(logicalDevice, commandPool, swapChainData);
+	}
+
+	//todo: replace 
+	void VulkanRenderer::CreateSyncObjects()
+	{
+		VkSemaphoreCreateInfo semaphoreInfo{};
+		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+		VkFenceCreateInfo fenceInfo{};
+		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+
+		auto imageSemaphoreStatus = vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphore);
+		rollback->Add([this]() { vkDestroySemaphore(logicalDevice, imageAvailableSemaphore, nullptr); });
+		if (imageSemaphoreStatus != VK_SUCCESS) throw std::runtime_error("Failed to create image sync semaphor");
+		
+		auto renderFinishedSemaphoreStatus = vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphore);
+		rollback->Add([this]() { vkDestroySemaphore(logicalDevice, renderFinishedSemaphore, nullptr); });
+		if (renderFinishedSemaphoreStatus != VK_SUCCESS) throw std::runtime_error("Failed to create render finished sync semaphor");;
+			
+		auto inFlightFenceStatus = vkCreateFence(logicalDevice, &fenceInfo, nullptr, &inFlightFence);
+		rollback->Add([this]() { vkDestroyFence(logicalDevice, inFlightFence, nullptr); });
+		if (inFlightFenceStatus != VK_SUCCESS) throw std::runtime_error("Failed to create sync fence!");
+
 	}
 
 	//todo: replace the function somewhere

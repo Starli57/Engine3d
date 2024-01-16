@@ -50,6 +50,10 @@ namespace AVulkan
 
 		SwapChainData swapChainData;
 
+		VkSemaphore imageAvailableSemaphore;
+		VkSemaphore renderFinishedSemaphore;
+		VkFence inFlightFence;
+
 		void CreateInstance();
 		void SelectPhysicalRenderingDevice();
 		void CreateLogicalDevice();
@@ -61,6 +65,7 @@ namespace AVulkan
 		void CreateFrameBuffers();
 		void CreateCommandPool();
 		void CreateCommandBuffer();
+		void CreateSyncObjects();
 
 		void RecordCommandBuffers();
 	};
