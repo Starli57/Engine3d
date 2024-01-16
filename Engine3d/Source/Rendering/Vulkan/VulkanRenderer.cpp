@@ -30,8 +30,9 @@ namespace AVulkan
 			CreateFrameBuffers();
 			CreateCommandPool();
 			CreateCommandBuffer();
-			RecordCommandBuffers();
 			CreateSyncObjects();
+
+			RecordCommandBuffers();
 		}
 		catch (const std::exception& e)
 		{
@@ -41,8 +42,42 @@ namespace AVulkan
 		}
 	}
 
+	//todo: make refactoring of the function
 	void VulkanRenderer::Render()
 	{
+		auto timeout = UINT64_MAX;//todo: setup real timeout
+		vkWaitForFences(logicalDevice, 1, &inFlightFence, VK_TRUE, timeout);
+		vkResetFences(logicalDevice, 1, &inFlightFence);
+
+		uint32_t imageIndex = 0;
+		vkAcquireNextImageKHR(logicalDevice, swapChainData.swapChain, timeout, imageAvailable, VK_NULL_HANDLE, &imageIndex);
+
+		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
+		VkSubmitInfo submitInfo{};
+		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		submitInfo.waitSemaphoreCount = 1;
+		submitInfo.commandBufferCount = 1;
+		submitInfo.signalSemaphoreCount = 1;
+		
+		submitInfo.pWaitSemaphores = &imageAvailable;
+		submitInfo.pSignalSemaphores = &renderFinished;
+
+		submitInfo.pWaitDstStageMask = waitStages;
+		submitInfo.pCommandBuffers = &swapChainData.commandbuffers[imageIndex];
+
+		auto submitStatus = vkQueueSubmit(graphicsQueue, 1, &submitInfo, inFlightFence);
+		if (submitStatus != VK_SUCCESS)  throw std::runtime_error("Failed to submit draw command buffer, status: " + submitStatus);
+
+		VkPresentInfoKHR presentInfo{};
+		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+		presentInfo.waitSemaphoreCount = 1;
+		presentInfo.pWaitSemaphores = &renderFinished;
+		presentInfo.swapchainCount = 1;
+		presentInfo.pSwapchains = &swapChainData.swapChain;
+		presentInfo.pImageIndices = &imageIndex;
+		auto presentStatus = vkQueuePresentKHR(presentationQueue, &presentInfo);
+		if (presentStatus != VK_SUCCESS)  throw std::runtime_error("Failed to present draw command buffer, status: " + presentStatus);
 	}
 
 	void VulkanRenderer::CreateInstance()
@@ -120,13 +155,14 @@ namespace AVulkan
 
 		VkFenceCreateInfo fenceInfo{};
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-		auto imageSemaphoreStatus = vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphore);
-		rollback->Add([this]() { vkDestroySemaphore(logicalDevice, imageAvailableSemaphore, nullptr); });
+		auto imageSemaphoreStatus = vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailable);
+		rollback->Add([this]() { vkDestroySemaphore(logicalDevice, imageAvailable, nullptr); });
 		if (imageSemaphoreStatus != VK_SUCCESS) throw std::runtime_error("Failed to create image sync semaphor");
 		
-		auto renderFinishedSemaphoreStatus = vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphore);
-		rollback->Add([this]() { vkDestroySemaphore(logicalDevice, renderFinishedSemaphore, nullptr); });
+		auto renderFinishedSemaphoreStatus = vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinished);
+		rollback->Add([this]() { vkDestroySemaphore(logicalDevice, renderFinished, nullptr); });
 		if (renderFinishedSemaphoreStatus != VK_SUCCESS) throw std::runtime_error("Failed to create render finished sync semaphor");;
 			
 		auto inFlightFenceStatus = vkCreateFence(logicalDevice, &fenceInfo, nullptr, &inFlightFence);

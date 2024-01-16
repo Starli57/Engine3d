@@ -50,8 +50,8 @@ namespace AVulkan
 
 		SwapChainData swapChainData;
 
-		VkSemaphore imageAvailableSemaphore;
-		VkSemaphore renderFinishedSemaphore;
+		VkSemaphore imageAvailable;
+		VkSemaphore renderFinished;
 		VkFence inFlightFence;
 
 		void CreateInstance();
