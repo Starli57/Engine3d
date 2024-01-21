@@ -1,5 +1,8 @@
 #include "Pch.h"
+
 #include "Rollback.h"
+#include "RollbackExtension.h"
+
 #include "spdlog/spdlog.h"
 
 Rollback::Rollback()
@@ -10,7 +13,7 @@ Rollback::Rollback()
 Rollback::Rollback(Rollback& parentRollback)
 {
     disposeStack = new std::stack<std::function<void()>>();
-    parentRollback.Add([this]() { Dispose(disposeStack); });
+    parentRollback.Add([this]() { RollbackExtension().Dispose(disposeStack); });
 }
 
 Rollback::~Rollback()
@@ -26,20 +29,5 @@ void Rollback::Add(std::function<void()> function)
 
 void Rollback::Dispose()
 {
-    Dispose(disposeStack);
-}
-
-void Rollback::Dispose(Rollback rollback)
-{
-    Dispose(rollback.disposeStack);
-}
-
-void Rollback::Dispose(std::stack<std::function<void()>>* dstack)
-{
-    while (dstack != nullptr && !dstack->empty())
-    {
-        auto dispose = dstack->top();
-        dispose();
-        dstack->pop();
-    }
+    RollbackExtension().Dispose(disposeStack);
 }

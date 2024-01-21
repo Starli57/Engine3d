@@ -30,7 +30,7 @@ namespace AVulkan
 		VulkanRenderer(GLFWwindow* window, Rollback* vulkanRollback);
 		virtual ~VulkanRenderer() override;
 
-		void Initialize() override;
+		void Init() override;
 		void Render() override;
 		void FinanilizeRenderOperations() override;
 

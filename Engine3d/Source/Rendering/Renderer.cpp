@@ -36,7 +36,7 @@ void Renderer::Init()
 		glfwSetFramebufferSizeCallback(window, OnFramebufferResized);
 
 		renderer = new VulkanRenderer(window, rollback);
-		renderer->Initialize();
+		renderer->Init();
 	}
 	catch (const std::exception& e)
 	{

@@ -15,7 +15,7 @@ namespace AVulkan
 		rollback->Dispose();
 	}
 
-	void VulkanRenderer::Initialize()
+	void VulkanRenderer::Init()
 	{
 		try
 		{
@@ -45,8 +45,6 @@ namespace AVulkan
 		/// to recreate spawnchain it's enough to dispose and recreate only the next 3 components:
 		/// swapchain, spwanchainImageView and commandBuffers
 		/// but for better architecture we dispose all components and start the initialization from beginning
-		
-		spdlog::info("Recreate swapchain");
 
 		int width = 0, height = 0;
 		glfwGetFramebufferSize(window, &width, &height);
@@ -58,10 +56,11 @@ namespace AVulkan
 			glfwWaitEvents();
 		}
 
+		spdlog::info("Recreate swapchain");
 		needResizeWindow = false;
 		vkDeviceWaitIdle(logicalDevice);
 		rollback->Dispose();
-		Initialize();
+		Init();
 	}
 
 	//todo: make refactoring of the function

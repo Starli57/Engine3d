@@ -3,23 +3,21 @@
 #include <stack>
 #include <functional>
 
+class RollbackExtension;
 
 class Rollback
 {
 public:
 	Rollback();
 	Rollback(Rollback& parentRollback);
-
-	void Dispose();
-	void Dispose(Rollback rollback);
+	~Rollback();
 
 	void Add(std::function<void()> function);
+	void Dispose();
 
-	~Rollback();
+	friend class RollbackExtension;
 
 private:
 	std::stack<std::function<void()>>* disposeStack;
-
-	void Dispose(std::stack<std::function<void()>>* stack);
 };
 
