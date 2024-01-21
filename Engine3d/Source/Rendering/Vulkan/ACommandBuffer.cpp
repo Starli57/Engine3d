@@ -4,11 +4,11 @@
 
 namespace AVulkan
 {
-	void ACommandBuffer::Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, SwapChainData& swapChainData) const
+	void ACommandBuffer::Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, SwapChainData& swapChainData, int buffersCount) const
 	{
 		spdlog::info("Create command buffer");
 
-		swapChainData.commandbuffers.resize(swapChainData.imageViews.size());
+		swapChainData.commandbuffers.resize(buffersCount);
 
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;

@@ -51,8 +51,8 @@ namespace AVulkan
 		uint32_t imageIndex = 0;
 		vkAcquireNextImageKHR(logicalDevice, swapChainData.swapChain, timeout, imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 
-		vkResetCommandBuffer(swapChainData.commandbuffers[imageIndex], 0);
-		ACommandBuffer().Record(swapChainData.commandbuffers[imageIndex], swapChainData.framebuffers[imageIndex],
+		vkResetCommandBuffer(swapChainData.commandbuffers[frame], 0);
+		ACommandBuffer().Record(swapChainData.commandbuffers[frame], swapChainData.framebuffers[imageIndex],
 			renderPass, swapChainData.extent, graphicsPipeline);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -67,7 +67,7 @@ namespace AVulkan
 		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[frame];
 
 		submitInfo.pWaitDstStageMask = waitStages;
-		submitInfo.pCommandBuffers = &swapChainData.commandbuffers[imageIndex];
+		submitInfo.pCommandBuffers = &swapChainData.commandbuffers[frame];
 
 		auto submitStatus = vkQueueSubmit(graphicsQueue, 1, &submitInfo, drawFences[frame]);
 		if (submitStatus != VK_SUCCESS)  throw std::runtime_error("Failed to submit draw command buffer, status: " + submitStatus);
@@ -154,7 +154,7 @@ namespace AVulkan
 
 	void VulkanRenderer::CreateCommandBuffer()
 	{
-		ACommandBuffer().Setup(logicalDevice, commandPool, swapChainData);
+		ACommandBuffer().Setup(logicalDevice, commandPool, swapChainData, maxFramesDraws);
 	}
 
 	//todo: replace 

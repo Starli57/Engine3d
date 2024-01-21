@@ -36,6 +36,8 @@ void Renderer::Run()
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
+
+		//todo: handle exceptions and errors
 		renderer->Render();
 	}
 	renderer->FinanilizeRenderOperations(); 
