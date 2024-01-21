@@ -3,9 +3,9 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
-#include "SwapChainData.h"
-#include "SwapChainSurfaceSettings.h"
-#include "QueueFamilyIndices.h"
+#include "Rendering/Vulkan/SwapChainData.h"
+#include "Rendering/Vulkan/SwapChainSurfaceSettings.h"
+#include "Rendering/Vulkan/QueueFamilyIndices.h"
 
 namespace AVulkan
 {

@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <optional>
 
-#include "QueueFamilyIndices.h"
+#include "Rendering/Vulkan/QueueFamilyIndices.h"
 #include "ASwapChain.h"
 
 namespace AVulkan
