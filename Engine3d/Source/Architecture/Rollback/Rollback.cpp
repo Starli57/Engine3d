@@ -7,6 +7,12 @@ Rollback::Rollback()
     disposeStack = new std::stack<std::function<void()>>();
 }
 
+Rollback::Rollback(Rollback& parentRollback)
+{
+    disposeStack = new std::stack<std::function<void()>>();
+    parentRollback.Add([this]() { Dispose(disposeStack); });
+}
+
 Rollback::~Rollback()
 {
     Dispose();
@@ -20,10 +26,20 @@ void Rollback::Add(std::function<void()> function)
 
 void Rollback::Dispose()
 {
-    while (disposeStack != nullptr && !disposeStack->empty())
+    Dispose(disposeStack);
+}
+
+void Rollback::Dispose(Rollback rollback)
+{
+    Dispose(rollback.disposeStack);
+}
+
+void Rollback::Dispose(std::stack<std::function<void()>>* dstack)
+{
+    while (dstack != nullptr && !dstack->empty())
     {
-        auto dispose = disposeStack->top();
+        auto dispose = dstack->top();
         dispose();
-        disposeStack->pop();
+        dstack->pop();
     }
 }

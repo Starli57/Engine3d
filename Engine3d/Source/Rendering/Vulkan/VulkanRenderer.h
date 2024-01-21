@@ -38,7 +38,6 @@ namespace AVulkan
 
 	private:
 		Rollback* rollback;
-
 		GLFWwindow* window;
 
 		VkInstance instance;

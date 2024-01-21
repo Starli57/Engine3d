@@ -3,8 +3,16 @@
 
 int main() 
 {
-	Engine* engine = new Engine();
-	engine->Run();
-	delete engine;
+	try
+	{
+		Engine* engine = new Engine();
+		engine->Run();
+		delete engine;
+	}
+	catch (const std::exception& e)
+	{
+
+	}
+
 	return 0;
 }

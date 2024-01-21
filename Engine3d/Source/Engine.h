@@ -2,6 +2,7 @@
 
 #include "Defines/DllDecDefines.h"
 #include "Rendering/Renderer.h"
+#include "Architecture/Rollback/Rollback.h"
 
 class ENGINE_API Engine
 {
@@ -13,5 +14,6 @@ public:
 
 private:
 	Renderer* renderer;
+	Rollback* engineRollback;
 };
 

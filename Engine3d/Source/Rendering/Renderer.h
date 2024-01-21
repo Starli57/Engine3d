@@ -11,14 +11,16 @@ class Renderer
 public:
 	GLFWwindow* window;
 
-	Renderer();
+	Renderer(Rollback& engineRollback);
 	~Renderer();
 
+	void Init();
 	void Run();
 
 private: 
 	IRenderer* renderer;
-	Rollback* rendererRollback;
+
+	Rollback* rollback;
 
 	static void OnFramebufferResized(GLFWwindow* window, int width, int height);
 };

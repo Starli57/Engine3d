@@ -11,11 +11,14 @@ Engine::Engine()
 
 	spdlog::set_pattern("[%^%l%$] %v");
 
-	renderer = new Renderer();
+	engineRollback = new Rollback();
+	renderer = new Renderer(*engineRollback);
+	renderer->Init();
 }
 
 Engine::~Engine()
 {
+	engineRollback->Dispose();
 	delete renderer;
 }
 

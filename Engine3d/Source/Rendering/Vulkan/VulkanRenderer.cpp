@@ -6,7 +6,7 @@ namespace AVulkan
 {
 	VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
-		rollback = vulkanRollback;
+		rollback = new Rollback(*vulkanRollback);
 		window = glfwWindow;
 	}
 
@@ -34,7 +34,7 @@ namespace AVulkan
 		}
 		catch (const std::exception& e)
 		{
-			spdlog::critical(e.what());
+			spdlog::critical("VulkanRenderer critical error: {0}", e.what());
 			rollback->Dispose();
 			throw e;
 		}
@@ -48,15 +48,17 @@ namespace AVulkan
 		
 		spdlog::info("Recreate swapchain");
 
-		needResizeWindow = false;
 		int width = 0, height = 0;
 		glfwGetFramebufferSize(window, &width, &height);
+
+		//todo: make it without a loop
 		while (width == 0 || height == 0) 
 		{
 			glfwGetFramebufferSize(window, &width, &height);
 			glfwWaitEvents();
 		}
 
+		needResizeWindow = false;
 		vkDeviceWaitIdle(logicalDevice);
 		rollback->Dispose();
 		Initialize();
@@ -70,15 +72,6 @@ namespace AVulkan
 		uint32_t imageIndex = 0;
 		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData.swapChain, frameSyncTimeout,
 			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
-
-		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR || acquireStatus == VK_SUBOPTIMAL_KHR)
-		{
-			RecreateSwapChain();
-		}
-		else if (acquireStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("Failed to acquire swap chain image, status: " + acquireStatus);
-		}
 
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(swapChainData.commandbuffers[frame], 0);
