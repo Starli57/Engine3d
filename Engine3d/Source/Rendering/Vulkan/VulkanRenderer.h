@@ -70,7 +70,5 @@ namespace AVulkan
 		void CreateCommandPool();
 		void CreateCommandBuffer();
 		void CreateSyncObjects();
-
-		void RecordCommandBuffers();
 	};
 }

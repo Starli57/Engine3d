@@ -10,5 +10,7 @@ namespace AVulkan
 	{
 	public:
 		void Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, SwapChainData& swapChainData) const;
+		void Record(VkCommandBuffer& commandBuffer, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
+			VkExtent2D& swapchainExtent, VkPipeline& pipeline) const;
 	};
 }
