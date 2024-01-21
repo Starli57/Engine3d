@@ -32,6 +32,7 @@ namespace AVulkan
 
 		void Initialize() override;
 		void Render() override;
+		void FinanilizeRenderOperations() override;
 
 	private:
 		Rollback* rollback;
@@ -50,9 +51,12 @@ namespace AVulkan
 
 		SwapChainData swapChainData;
 
-		VkSemaphore imageAvailable;
-		VkSemaphore renderFinished;
-		VkFence inFlightFence;
+		std::vector<VkSemaphore> imageAvailableSemaphores;
+		std::vector<VkSemaphore> renderFinishedSemaphores;
+		std::vector<VkFence> drawFences;
+
+		int frame = 0;
+		int const maxFramesDraws = 2;
 
 		void CreateInstance();
 		void SelectPhysicalRenderingDevice();

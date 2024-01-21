@@ -38,6 +38,6 @@ void Renderer::Run()
 		glfwPollEvents();
 		renderer->Render();
 	}
-
+	renderer->FinanilizeRenderOperations(); 
 	spdlog::info("Window closed");
 }
