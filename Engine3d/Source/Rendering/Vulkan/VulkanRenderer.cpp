@@ -40,17 +40,47 @@ namespace AVulkan
 		}
 	}
 
+	void VulkanRenderer::RecreateSwapChain()
+	{
+		/// to recreate spawnchain it's enough to dispose and recreate only the next 3 components:
+		/// swapchain, spwanchainImageView and commandBuffers
+		/// but for better architecture we dispose all components and start the initialization from beginning
+		
+		spdlog::info("Recreate swapchain");
+
+		needResizeWindow = false;
+		int width = 0, height = 0;
+		glfwGetFramebufferSize(window, &width, &height);
+		while (width == 0 || height == 0) 
+		{
+			glfwGetFramebufferSize(window, &width, &height);
+			glfwWaitEvents();
+		}
+
+		vkDeviceWaitIdle(logicalDevice);
+		rollback->Dispose();
+		Initialize();
+	}
+
 	//todo: make refactoring of the function
 	void VulkanRenderer::Render()
 	{
-		auto timeout = UINT64_MAX;//todo: setup real timeout
-
-		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, timeout);
-		vkResetFences(logicalDevice, 1, &drawFences[frame]);
+		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, frameSyncTimeout);
 
 		uint32_t imageIndex = 0;
-		vkAcquireNextImageKHR(logicalDevice, swapChainData.swapChain, timeout, imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
+		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData.swapChain, frameSyncTimeout,
+			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 
+		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR || acquireStatus == VK_SUBOPTIMAL_KHR)
+		{
+			RecreateSwapChain();
+		}
+		else if (acquireStatus != VK_SUCCESS)
+		{
+			throw std::runtime_error("Failed to acquire swap chain image, status: " + acquireStatus);
+		}
+
+		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(swapChainData.commandbuffers[frame], 0);
 		ACommandBuffer().Record(swapChainData.commandbuffers[frame], swapChainData.framebuffers[imageIndex],
 			renderPass, swapChainData.extent, graphicsPipeline);
@@ -79,8 +109,17 @@ namespace AVulkan
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = &swapChainData.swapChain;
 		presentInfo.pImageIndices = &imageIndex;
+
 		auto presentStatus = vkQueuePresentKHR(presentationQueue, &presentInfo);
-		if (presentStatus != VK_SUCCESS)  throw std::runtime_error("Failed to present draw command buffer, status: " + presentStatus);
+
+		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR || needResizeWindow)
+		{
+			RecreateSwapChain();
+		}
+		else if (presentStatus != VK_SUCCESS)
+		{
+			throw std::runtime_error("Failed to present draw command buffer, status: " + presentStatus);
+		}
 
 		frame = (frame + 1) % maxFramesDraws;
 	}
@@ -185,6 +224,11 @@ namespace AVulkan
 			rollback->Add([i, this]() { vkDestroyFence(logicalDevice, drawFences[i], nullptr); });
 			if (inFlightFenceStatus != VK_SUCCESS) throw std::runtime_error("Failed to create sync fence!");
 		}
+	}
+
+	void VulkanRenderer::OnFramebufferResized()
+	{
+		needResizeWindow = true;
 	}
 
 }

@@ -19,5 +19,7 @@ public:
 private: 
 	IRenderer* renderer;
 	Rollback* rendererRollback;
+
+	static void OnFramebufferResized(GLFWwindow* window, int width, int height);
 };
 

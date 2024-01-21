@@ -10,6 +10,8 @@ Renderer::Renderer()
 	{
 		window = glfwCreateWindow(1000, 1000, "Engine window", nullptr, nullptr);
 		if (window == nullptr) throw std::runtime_error("glfw window can't be created");
+		glfwSetWindowUserPointer(window, this);
+		glfwSetFramebufferSizeCallback(window, OnFramebufferResized);
 
 		rendererRollback = new Rollback();
 
@@ -42,4 +44,11 @@ void Renderer::Run()
 	}
 	renderer->FinanilizeRenderOperations(); 
 	spdlog::info("Window closed");
+}
+
+void Renderer::OnFramebufferResized(GLFWwindow* window, int width, int height)
+{
+	spdlog::debug("FramebufferResized");
+	auto render = reinterpret_cast<Renderer*>(glfwGetWindowUserPointer(window));
+	render->renderer->OnFramebufferResized();
 }

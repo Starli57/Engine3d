@@ -34,6 +34,8 @@ namespace AVulkan
 		void Render() override;
 		void FinanilizeRenderOperations() override;
 
+		void OnFramebufferResized() override;
+
 	private:
 		Rollback* rollback;
 
@@ -55,8 +57,11 @@ namespace AVulkan
 		std::vector<VkSemaphore> renderFinishedSemaphores;
 		std::vector<VkFence> drawFences;
 
-		int frame = 0;
-		int const maxFramesDraws = 2;
+		uint16_t frame = 0;
+		uint16_t const maxFramesDraws = 2;
+		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
+
+		bool needResizeWindow = false;
 
 		void CreateInstance();
 		void SelectPhysicalRenderingDevice();
@@ -70,5 +75,7 @@ namespace AVulkan
 		void CreateCommandPool();
 		void CreateCommandBuffer();
 		void CreateSyncObjects();
+
+		void RecreateSwapChain();
 	};
 }
