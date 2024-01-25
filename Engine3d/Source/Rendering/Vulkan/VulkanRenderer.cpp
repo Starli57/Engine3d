@@ -7,11 +7,13 @@ namespace AVulkan
 	VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
 		rollback = new Rollback(*vulkanRollback);
+		drawMeshes = new std::vector<Mesh*>();
 		window = glfwWindow;
 	}
 
 	VulkanRenderer::~VulkanRenderer()
 	{
+		delete drawMeshes;
 		rollback->Dispose();
 	}
 
@@ -31,6 +33,15 @@ namespace AVulkan
 			CreateCommandPool();
 			CreateCommandBuffer();
 			CreateSyncObjects();
+
+			//todo: replace
+			std::vector<Vertex> vertices =
+			{
+				{{ 0.0f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}},
+				{{ 0.5f,  0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
+				{{-0.5f,  0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}}
+			};
+			AddMesh(new Mesh(physicalDevice, logicalDevice, vertices));
 		}
 		catch (const std::exception& e)
 		{
@@ -75,7 +86,7 @@ namespace AVulkan
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(swapChainData.commandbuffers[frame], 0);
 		ACommandBuffer().Record(swapChainData.commandbuffers[frame], swapChainData.framebuffers[imageIndex],
-			renderPass, swapChainData.extent, graphicsPipeline);
+			renderPass, swapChainData.extent, graphicsPipeline, *drawMeshes->at(0));
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
@@ -119,6 +130,11 @@ namespace AVulkan
 	void VulkanRenderer::FinanilizeRenderOperations()
 	{
 		vkDeviceWaitIdle(logicalDevice);
+	}
+
+	void VulkanRenderer::AddMesh(Mesh* mesh)
+	{
+		drawMeshes->push_back(mesh);
 	}
 
 	void VulkanRenderer::CreateInstance()

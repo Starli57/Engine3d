@@ -24,7 +24,7 @@ namespace AVulkan
 	}
 
 	void ACommandBuffer::Record(VkCommandBuffer& commandBuffer, VkFramebuffer& frameBuffer, VkRenderPass& renderPass, 
-		VkExtent2D& swapchainExtent, VkPipeline& pipeline) const
+		VkExtent2D& swapchainExtent, VkPipeline& pipeline, Mesh& mesh) const
 	{
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -54,11 +54,15 @@ namespace AVulkan
 		{
 			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 
-			uint32_t vertexCount = 3;
+			VkBuffer vertexBuffers[] = { mesh.GetVertexBuffer() };
+			VkDeviceSize offsets[] = { 0 };
+			vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+
 			uint32_t instanceCount = 1;
 			uint32_t firstVertexIndex = 0;
 			uint32_t firstInstanceIndex = 0;
-			vkCmdDraw(commandBuffer, vertexCount, instanceCount, firstVertexIndex, firstInstanceIndex);
+
+			vkCmdDraw(commandBuffer, mesh.GetVertexCount(), instanceCount, firstVertexIndex, firstInstanceIndex);
 		}
 		vkCmdEndRenderPass(commandBuffer);
 

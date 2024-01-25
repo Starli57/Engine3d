@@ -33,6 +33,8 @@ namespace AVulkan
 		void Render() override;
 		void FinanilizeRenderOperations() override;
 
+		void AddMesh(Mesh* mesh);
+
 		void OnFramebufferResized() override;
 
 	private:
@@ -54,6 +56,8 @@ namespace AVulkan
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;
 		std::vector<VkFence> drawFences;
+
+		std::vector<Mesh*>* drawMeshes;
 
 		uint16_t frame = 0;
 		uint16_t const maxFramesDraws = 2;

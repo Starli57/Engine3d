@@ -5,6 +5,7 @@
 #include <array>
 
 #include "Architecture/Rollback/Rollback.h"
+#include "Rendering/Vulkan/Buffers/Vertex.h"
 
 namespace AVulkan
 {

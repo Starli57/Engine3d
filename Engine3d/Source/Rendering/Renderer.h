@@ -22,6 +22,8 @@ private:
 
 	Rollback* rollback;
 
+	Mesh* mesh;
+
 	static void OnFramebufferResized(GLFWwindow* window, int width, int height);
 };
 
