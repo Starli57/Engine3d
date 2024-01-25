@@ -1,6 +1,10 @@
 #include "Pch.h"
+
+#include "Rendering/Vulkan/Buffers/AVertexBuffer.h"
+
 #include "AGraphicsPipeline.h"
 #include "AShaderModule.h"
+
 #include "spdlog/spdlog.h"
 
 namespace AVulkan
@@ -29,7 +33,16 @@ namespace AVulkan
 			auto shadersStages = CreateShadersModules();
 			CreatePipelineLayout();
 
-			auto vertexInput = SetupVertexInputData();
+			auto bindingDescription = AVertexBuffer().GetBindingDescription();
+			auto attributeDescriptions = AVertexBuffer().GetAttributeDescriptions();
+
+			VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
+			vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+			vertexInputInfo.vertexBindingDescriptionCount = 1;
+			vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+			vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+			vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+
 			auto inputAssembly = SetupInputAssemblyData();
 			auto viewportState = SetupViewportAndScissor(swapChainExtent);
 			auto rasterizer = SetupRasterizer();
@@ -40,7 +53,7 @@ namespace AVulkan
 			pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 			pipelineInfo.stageCount = 2;
 			pipelineInfo.pStages = shadersStages.data();
-			pipelineInfo.pVertexInputState = &vertexInput;
+			pipelineInfo.pVertexInputState = &vertexInputInfo;
 			pipelineInfo.pInputAssemblyState = &inputAssembly;
 			pipelineInfo.pViewportState = &viewportState;
 			pipelineInfo.pRasterizationState = &rasterizer;
@@ -99,34 +112,6 @@ namespace AVulkan
 		return shaderStages;
 	}
 	
-	VkPipelineVertexInputStateCreateInfo AGraphicsPipeline::SetupVertexInputData()
-	{
-		VkVertexInputBindingDescription bindingDescription{};
-		bindingDescription.binding = 0;
-		bindingDescription.stride = sizeof(Vertex);
-		bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-		std::array<VkVertexInputAttributeDescription, 2> attributeDescriptions{};
-
-		attributeDescriptions[0].binding = 0;
-		attributeDescriptions[0].location = 0;
-		attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-		attributeDescriptions[0].offset = offsetof(Vertex, position);
-
-		attributeDescriptions[1].binding = 0;
-		attributeDescriptions[1].location = 1;
-		attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-		attributeDescriptions[1].offset = offsetof(Vertex, color);
-
-		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
-		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		vertexInputInfo.vertexBindingDescriptionCount = 1;
-		vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
-		vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
-		vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
-		return vertexInputInfo;
-	}
-
 	VkPipelineInputAssemblyStateCreateInfo AGraphicsPipeline::SetupInputAssemblyData()
 	{
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};

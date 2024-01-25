@@ -41,7 +41,6 @@ namespace AVulkan
 		void CreateScissor(VkExtent2D& swapChainExtent);
 		void CreateColorBlendAttachment();
 
-		VkPipelineVertexInputStateCreateInfo SetupVertexInputData();
 		VkPipelineInputAssemblyStateCreateInfo SetupInputAssemblyData();
 		VkPipelineViewportStateCreateInfo SetupViewportAndScissor(VkExtent2D& swapChainExtent);
 		VkPipelineRasterizationStateCreateInfo SetupRasterizer();
