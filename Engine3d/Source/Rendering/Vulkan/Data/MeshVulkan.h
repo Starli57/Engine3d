@@ -3,21 +3,22 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
-#include "Buffers/Vertex.h"
+#include "Rendering/Data/Mesh.h"
+#include "Rendering/Data/Vertex.h"
 
 namespace AVulkan
 {
-	class Mesh
+	class MeshVulkan
 	{
 	public:
-		Mesh(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, std::vector<Vertex>& vertices);
-		~Mesh();
+		MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Mesh& mesh);
+		~MeshVulkan();
 
 		uint32_t GetVertexCount();
 		VkBuffer GetVertexBuffer();
 	private:
 		VkDevice* logicalDevice;
-		std::vector<Vertex>* vertices;
+		std::vector<Vertex> vertices;
 
 		VkBuffer vertexBuffer;
 		VkDeviceMemory vertexBufferMemory;

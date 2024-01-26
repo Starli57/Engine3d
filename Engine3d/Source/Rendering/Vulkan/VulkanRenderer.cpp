@@ -1,13 +1,15 @@
 #include "Pch.h"
-#include "VulkanRenderer.h"
+
 #include <functional>
+
+#include "VulkanRenderer.h"
 
 namespace AVulkan
 {
 	VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
 		rollback = new Rollback(*vulkanRollback);
-		drawMeshes = new std::vector<Mesh*>();
+		drawMeshes = new std::vector<MeshVulkan*>();
 		window = glfwWindow;
 	}
 
@@ -33,15 +35,6 @@ namespace AVulkan
 			CreateCommandPool();
 			CreateCommandBuffer();
 			CreateSyncObjects();
-
-			//todo: replace
-			std::vector<Vertex> vertices =
-			{
-				{{ 0.0f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}},
-				{{ 0.5f,  0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}},
-				{{-0.5f,  0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}}
-			};
-			AddMesh(new Mesh(physicalDevice, logicalDevice, vertices));
 		}
 		catch (const std::exception& e)
 		{
@@ -132,9 +125,9 @@ namespace AVulkan
 		vkDeviceWaitIdle(logicalDevice);
 	}
 
-	void VulkanRenderer::AddMesh(Mesh* mesh)
+	void VulkanRenderer::AddMesh(Mesh& mesh)
 	{
-		drawMeshes->push_back(mesh);
+		drawMeshes->push_back(new MeshVulkan(physicalDevice, logicalDevice, mesh));
 	}
 
 	void VulkanRenderer::CreateInstance()
@@ -142,6 +135,7 @@ namespace AVulkan
 		AInstance().Create(instance);
 		rollback->Add([this]() { AInstance().Dispose(instance); });
 	}
+
 
 	void VulkanRenderer::CreateWindowSurface()
 	{

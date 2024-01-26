@@ -16,13 +16,12 @@ public:
 
 	void Init();
 	void Run();
+	void AddMesh(Mesh& mesh);
 
 private: 
 	IRenderer* renderer;
 
 	Rollback* rollback;
-
-	Mesh* mesh;
 
 	static void OnFramebufferResized(GLFWwindow* window, int width, int height);
 };

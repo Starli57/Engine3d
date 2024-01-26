@@ -58,6 +58,11 @@ void Renderer::Run()
 	spdlog::info("Window closed");
 }
 
+void Renderer::AddMesh(Mesh& mesh)
+{
+	renderer->AddMesh(mesh);
+}
+
 void Renderer::OnFramebufferResized(GLFWwindow* window, int width, int height)
 {
 	spdlog::debug("FramebufferResized");

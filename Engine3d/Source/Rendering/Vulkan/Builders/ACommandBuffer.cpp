@@ -24,7 +24,7 @@ namespace AVulkan
 	}
 
 	void ACommandBuffer::Record(VkCommandBuffer& commandBuffer, VkFramebuffer& frameBuffer, VkRenderPass& renderPass, 
-		VkExtent2D& swapchainExtent, VkPipeline& pipeline, Mesh& mesh) const
+		VkExtent2D& swapchainExtent, VkPipeline& pipeline, MeshVulkan& mesh) const
 	{
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;

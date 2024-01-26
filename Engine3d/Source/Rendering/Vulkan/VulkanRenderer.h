@@ -7,6 +7,8 @@
 
 #include "SwapChainData.h"
 #include "Rendering/IRenderer.h"
+#include "Rendering/Data/Mesh.h"
+#include "Rendering/Vulkan/Data/MeshVulkan.h"
 #include "Builders/AValidationLayers.h"
 #include "Builders/APhysicalDevice.h"
 #include "Builders/ALogicalDevice.h"
@@ -33,7 +35,7 @@ namespace AVulkan
 		void Render() override;
 		void FinanilizeRenderOperations() override;
 
-		void AddMesh(Mesh* mesh);
+		void AddMesh(Mesh& mesh) override;
 
 		void OnFramebufferResized() override;
 
@@ -57,7 +59,7 @@ namespace AVulkan
 		std::vector<VkSemaphore> renderFinishedSemaphores;
 		std::vector<VkFence> drawFences;
 
-		std::vector<Mesh*>* drawMeshes;
+		std::vector<MeshVulkan*>* drawMeshes;
 
 		uint16_t frame = 0;
 		uint16_t const maxFramesDraws = 2;

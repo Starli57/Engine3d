@@ -1,20 +1,20 @@
 #include "Pch.h"
 
-#include "Mesh.h"
-#include "Buffers/AVertexBuffer.h"
+#include "MeshVulkan.h"
+#include "Rendering/Vulkan/Builders/AVertexBuffer.h"
 
 #include "spdlog/spdlog.h"
 
 namespace AVulkan
 {
-	VkBuffer Mesh::GetVertexBuffer() { return vertexBuffer; }
+	VkBuffer MeshVulkan::GetVertexBuffer() { return vertexBuffer; }
 
-	uint32_t Mesh::GetVertexCount() { return static_cast<uint32_t>(vertices->size()); }
+	uint32_t MeshVulkan::GetVertexCount() { return static_cast<uint32_t>(vertices.size()); }
 
-	Mesh::Mesh(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, std::vector<Vertex>& vertices)
+	MeshVulkan::MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Mesh& mesh)
 	{
 		this->logicalDevice = &logicalDevice;
-		this->vertices = &vertices;
+		this->vertices = mesh.GetVertices();
 		
 		VkBufferCreateInfo bufferInfo{};
 		AVertexBuffer().Setup(vertices, bufferInfo);
@@ -43,13 +43,13 @@ namespace AVulkan
 		vkUnmapMemory(logicalDevice, vertexBufferMemory);
 	}
 
-	Mesh::~Mesh()
+	MeshVulkan::~MeshVulkan()
 	{
 		AVertexBuffer().Dispose(*logicalDevice, vertexBuffer);
 		vkFreeMemory(*logicalDevice, vertexBufferMemory, nullptr);
 	}
 
-	uint32_t Mesh::FindMemoryType(VkPhysicalDevice& physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
+	uint32_t MeshVulkan::FindMemoryType(VkPhysicalDevice& physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties)
 	{
 		VkPhysicalDeviceMemoryProperties memProperties;
 		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);

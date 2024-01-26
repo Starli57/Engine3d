@@ -1,7 +1,7 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include "Vertex.h"
+#include "Rendering/Data/Vertex.h"
 
 namespace AVulkan
 {
