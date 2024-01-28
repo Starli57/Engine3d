@@ -1,34 +1,31 @@
 #include "Pch.h"
+#include "ABuffer.h"
 #include "AVertexBuffer.h"
 #include "spdlog/spdlog.h"
 
 namespace AVulkan
 {
-	void AVertexBuffer::Create(VkDevice& logicalDevice, std::vector<Vertex>& vertices, 
-		VkBufferCreateInfo& bufferInfo, VkBuffer& vertexBuffer) const
+	void AVertexBuffer::Create(VkPhysicalDevice physicalDevice, VkDevice& logicalDevice, std::vector<Vertex>& vertices, 
+		VkBuffer& buffer, VkDeviceMemory& bufferMemory) const
 	{
 		spdlog::info("Create Vertex Buffer");
 
-		auto createStatus = vkCreateBuffer(logicalDevice, &bufferInfo, nullptr, &vertexBuffer);
-		if (createStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("Failed to create vertex buffer, status: " + createStatus);
-		}
+		uint64_t bufferSize = sizeof(Vertex) * vertices.size();
+		VkBufferUsageFlags usageFlags = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+		VkMemoryPropertyFlags memoryPropertyFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+
+		ABuffer().Create(physicalDevice, logicalDevice, bufferSize, usageFlags, memoryPropertyFlags, buffer, bufferMemory);
+
+		void* data;
+		vkMapMemory(logicalDevice, bufferMemory, 0, bufferSize, 0, &data);
+		memcpy(data, vertices.data(), (size_t)bufferSize);
+		vkUnmapMemory(logicalDevice, bufferMemory);
 	}
 
-	void AVertexBuffer::Setup(std::vector<Vertex>& vertices, VkBufferCreateInfo& bufferInfo) const
-	{
-		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-		bufferInfo.size = sizeof(Vertex) * vertices.size();
-		bufferInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	}
-
-	void AVertexBuffer::Dispose(VkDevice& logicalDevice, VkBuffer& vertexBuffer) const
+	void AVertexBuffer::Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const
 	{
 		spdlog::info("Dispose Vertex Buffer");
-
-		vkDestroyBuffer(logicalDevice, vertexBuffer, nullptr);
+		ABuffer().Dispose(logicalDevice, buffer, bufferMemory);
 	}
 
 	VkVertexInputBindingDescription AVertexBuffer::GetBindingDescription()
@@ -47,7 +44,7 @@ namespace AVulkan
 
 		attributeDescriptions[0].binding = 0;
 		attributeDescriptions[0].location = 0;
-		attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+		attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
 		attributeDescriptions[0].offset = offsetof(Vertex, position);
 
 		attributeDescriptions[1].binding = 0;

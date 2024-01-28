@@ -1,6 +1,6 @@
 #include "Pch.h"
 
-#include "Rendering/Vulkan/Buffers/AVertexBuffer.h"
+#include "Buffers/AVertexBuffer.h"
 
 #include "AGraphicsPipeline.h"
 #include "AShaderModule.h"

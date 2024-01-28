@@ -20,7 +20,7 @@
 #include "Builders/AGraphicsPipeline.h"
 #include "Builders/AFrameBuffer.h"
 #include "Builders/ACommandPool.h"
-#include "Builders/ACommandBuffer.h"
+#include "Builders/Buffers/ACommandBuffer.h"
 #include "Architecture/Rollback/Rollback.h"
 
 namespace AVulkan

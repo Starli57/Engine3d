@@ -22,7 +22,5 @@ namespace AVulkan
 
 		VkBuffer vertexBuffer;
 		VkDeviceMemory vertexBufferMemory;
-
-		uint32_t FindMemoryType(VkPhysicalDevice& physicalDevice, uint32_t typeFilter, VkMemoryPropertyFlags properties);
 	};
 }
