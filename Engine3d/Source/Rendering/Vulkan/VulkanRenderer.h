@@ -36,6 +36,7 @@ namespace AVulkan
 		void FinanilizeRenderOperations() override;
 
 		void AddMesh(Mesh& mesh) override;
+		void CleanMeshes() override;
 
 		void OnFramebufferResized() override;
 

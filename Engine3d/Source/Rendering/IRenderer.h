@@ -12,6 +12,7 @@ public:
     virtual void FinanilizeRenderOperations() = 0;
 
     virtual void AddMesh(Mesh& mesh) = 0;
+    virtual void CleanMeshes() = 0;
 
     virtual void OnFramebufferResized() = 0;
 };

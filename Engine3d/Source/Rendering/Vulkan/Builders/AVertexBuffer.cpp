@@ -1,12 +1,14 @@
 #include "Pch.h"
 #include "AVertexBuffer.h"
-
+#include "spdlog/spdlog.h"
 
 namespace AVulkan
 {
 	void AVertexBuffer::Create(VkDevice& logicalDevice, std::vector<Vertex>& vertices, 
 		VkBufferCreateInfo& bufferInfo, VkBuffer& vertexBuffer) const
 	{
+		spdlog::info("Create Vertex Buffer");
+
 		auto createStatus = vkCreateBuffer(logicalDevice, &bufferInfo, nullptr, &vertexBuffer);
 		if (createStatus != VK_SUCCESS)
 		{
@@ -24,6 +26,8 @@ namespace AVulkan
 
 	void AVertexBuffer::Dispose(VkDevice& logicalDevice, VkBuffer& vertexBuffer) const
 	{
+		spdlog::info("Dispose Vertex Buffer");
+
 		vkDestroyBuffer(logicalDevice, vertexBuffer, nullptr);
 	}
 

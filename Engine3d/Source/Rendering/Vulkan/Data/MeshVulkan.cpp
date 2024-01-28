@@ -54,7 +54,7 @@ namespace AVulkan
 		VkPhysicalDeviceMemoryProperties memProperties;
 		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
 
-		spdlog::info("Available memory types coint: {0}", memProperties.memoryTypeCount);
+		spdlog::info("Available memory types count: {0}", memProperties.memoryTypeCount);
 
 		for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) 
 		{

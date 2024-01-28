@@ -12,6 +12,6 @@ namespace AVulkan
 	public:
 		void Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, SwapChainData& swapChainData, int buffersCount) const;
 		void Record(VkCommandBuffer& commandBuffer, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
-			VkExtent2D& swapchainExtent, VkPipeline& pipeline, MeshVulkan& mesh) const;
+			VkExtent2D& swapchainExtent, VkPipeline& pipeline, std::vector<MeshVulkan*>& meshes) const;
 	};
 }
