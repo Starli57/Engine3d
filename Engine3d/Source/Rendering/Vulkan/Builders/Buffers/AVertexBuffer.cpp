@@ -6,20 +6,37 @@
 namespace AVulkan
 {
 	void AVertexBuffer::Create(VkPhysicalDevice physicalDevice, VkDevice& logicalDevice, std::vector<Vertex>& vertices, 
-		VkBuffer& buffer, VkDeviceMemory& bufferMemory) const
+		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool) const
 	{
 		spdlog::info("Create Vertex Buffer");
 
 		uint64_t bufferSize = sizeof(Vertex) * vertices.size();
-		VkBufferUsageFlags usageFlags = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-		VkMemoryPropertyFlags memoryPropertyFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 
-		ABuffer().Create(physicalDevice, logicalDevice, bufferSize, usageFlags, memoryPropertyFlags, buffer, bufferMemory);
+		VkBufferUsageFlags stagingUsageFlags = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+		VkBufferUsageFlags distUsageFlags    = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+
+		VkMemoryPropertyFlags stagingMemoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+		VkMemoryPropertyFlags distMemoryFlags    = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+
+		VkBuffer stagingBuffer;
+		VkDeviceMemory stagingMemory;
+
+		ABuffer bufferInterface;
+		bufferInterface.Create(physicalDevice, logicalDevice, bufferSize,
+			stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingMemory);
 
 		void* data;
-		vkMapMemory(logicalDevice, bufferMemory, 0, bufferSize, 0, &data);
+		vkMapMemory(logicalDevice, stagingMemory, 0, bufferSize, 0, &data);
 		memcpy(data, vertices.data(), (size_t)bufferSize);
-		vkUnmapMemory(logicalDevice, bufferMemory);
+		vkUnmapMemory(logicalDevice, stagingMemory);
+
+		bufferInterface.Create(physicalDevice, logicalDevice, bufferSize,
+			distUsageFlags, distMemoryFlags, vertexBuffer, bufferMemory);
+
+		bufferInterface.CopyBuffer(logicalDevice, graphicsQueue, stagingBuffer, vertexBuffer, bufferSize, commandPool);
+
+		vkDestroyBuffer(logicalDevice, stagingBuffer, nullptr);
+		vkFreeMemory(logicalDevice, stagingMemory, nullptr);
 	}
 
 	void AVertexBuffer::Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const

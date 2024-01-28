@@ -128,7 +128,7 @@ namespace AVulkan
 
 	void VulkanRenderer::AddMesh(Mesh& mesh)
 	{
-		drawMeshes->push_back(new MeshVulkan(physicalDevice, logicalDevice, mesh));
+		drawMeshes->push_back(new MeshVulkan(physicalDevice, logicalDevice, graphicsQueue, commandPool, mesh));
 	}
 
 	void VulkanRenderer::CleanMeshes()

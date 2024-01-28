@@ -11,7 +11,7 @@ namespace AVulkan
 	class MeshVulkan
 	{
 	public:
-		MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Mesh& mesh);
+		MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool, Mesh& mesh);
 		~MeshVulkan();
 
 		uint32_t GetVertexCount();

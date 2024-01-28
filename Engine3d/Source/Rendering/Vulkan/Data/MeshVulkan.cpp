@@ -11,12 +11,13 @@ namespace AVulkan
 
 	uint32_t MeshVulkan::GetVertexCount() { return static_cast<uint32_t>(vertices.size()); }
 
-	MeshVulkan::MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Mesh& mesh)
+	MeshVulkan::MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool, Mesh& mesh)
 	{
 		this->logicalDevice = &logicalDevice;
 		this->vertices = mesh.GetVertices();
 		
-		AVertexBuffer().Create(physicalDevice, logicalDevice, vertices, vertexBuffer, vertexBufferMemory);
+		AVertexBuffer().Create(physicalDevice, logicalDevice, vertices, vertexBuffer, vertexBufferMemory, 
+			graphicsQueue, commandPool);
 	}
 
 	MeshVulkan::~MeshVulkan()
