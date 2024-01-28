@@ -21,7 +21,7 @@ namespace AVulkan
 		BindMemory(physicalDevice, logicalDevice, memoryFlags, buffer, bufferMemory);
 	}
 
-	void ABuffer::CopyBuffer(VkDevice& logicalDevice, VkQueue& graphicsQueue, VkBuffer& srcBuffer, VkBuffer& dstBuffer, 
+	void ABuffer::Copy(VkDevice& logicalDevice, VkQueue& graphicsQueue, VkBuffer& srcBuffer, VkBuffer& dstBuffer, 
 		VkDeviceSize& size, VkCommandPool& commandPool) const
 	{
 		VkCommandBufferAllocateInfo allocInfo{};

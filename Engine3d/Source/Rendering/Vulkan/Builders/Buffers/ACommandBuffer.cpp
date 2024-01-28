@@ -23,7 +23,7 @@ namespace AVulkan
 		}
 	}
 
-	void ACommandBuffer::Record(VkCommandBuffer& commandBuffer, VkFramebuffer& frameBuffer, VkRenderPass& renderPass, 
+	void ACommandBuffer::Record(VkCommandBuffer& commandBuffer, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
 		VkExtent2D& swapchainExtent, VkPipeline& pipeline, std::vector<MeshVulkan*>& meshes) const
 	{
 		VkCommandBufferBeginInfo beginInfo{};
@@ -50,25 +50,26 @@ namespace AVulkan
 		renderPassInfo.clearValueCount = 1;
 		renderPassInfo.pClearValues = clearColors;
 
-		for (int i = 0; i < meshes.size(); i++)
+		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 		{
-			auto mesh = meshes.at(i);
-			vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-			{
-				vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
 
+			for (int i = 0; i < meshes.size(); i++)
+			{
+				auto mesh = meshes.at(i);
 				VkBuffer vertexBuffers[] = { mesh->GetVertexBuffer() };
 				VkDeviceSize offsets[] = { 0 };
 				vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+				vkCmdBindIndexBuffer(commandBuffer, mesh->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
 				uint32_t instanceCount = 1;
 				uint32_t firstVertexIndex = 0;
 				uint32_t firstInstanceIndex = 0;
 
-				vkCmdDraw(commandBuffer, mesh->GetVertexCount(), instanceCount, firstVertexIndex, firstInstanceIndex);
+				vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(mesh->GetIndicesCount()), 1, 0, 0, 0);
 			}
-			vkCmdEndRenderPass(commandBuffer);
 		}
+		vkCmdEndRenderPass(commandBuffer);
 
 		auto endStatus = vkEndCommandBuffer(commandBuffer);
 		if (endStatus != VK_SUCCESS)

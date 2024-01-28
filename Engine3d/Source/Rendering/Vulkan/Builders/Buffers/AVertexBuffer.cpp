@@ -5,7 +5,7 @@
 
 namespace AVulkan
 {
-	void AVertexBuffer::Create(VkPhysicalDevice physicalDevice, VkDevice& logicalDevice, std::vector<Vertex>& vertices, 
+	void AVertexBuffer::Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, std::vector<Vertex>& vertices, 
 		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool) const
 	{
 		spdlog::info("Create Vertex Buffer");
@@ -33,7 +33,7 @@ namespace AVulkan
 		bufferInterface.Create(physicalDevice, logicalDevice, bufferSize,
 			distUsageFlags, distMemoryFlags, vertexBuffer, bufferMemory);
 
-		bufferInterface.CopyBuffer(logicalDevice, graphicsQueue, stagingBuffer, vertexBuffer, bufferSize, commandPool);
+		bufferInterface.Copy(logicalDevice, graphicsQueue, stagingBuffer, vertexBuffer, bufferSize, commandPool);
 
 		vkDestroyBuffer(logicalDevice, stagingBuffer, nullptr);
 		vkFreeMemory(logicalDevice, stagingMemory, nullptr);

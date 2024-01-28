@@ -1,26 +1,34 @@
 #include "Pch.h"
 #include "Mesh.h"
 
-Mesh::Mesh(std::vector<Vertex> ff)
+Mesh::Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices)
 {
-	vertices.reserve(ff.size());
-
-	for(int i = 0; i < ff.size(); i++)
-	{
-		vertices.push_back(ff.at(i));
-	}
+	this->vertices = vertices;
+	this->indices = indices;
 }
 
 Mesh::~Mesh()
 {
+	delete indices;
+	delete vertices;
 }
 
-std::vector<Vertex> Mesh::GetVertices()
+std::vector<Vertex>* Mesh::GetVertices()
 {
 	return vertices;
 }
 
+std::vector<uint32_t>* Mesh::GetIndices()
+{
+	return indices;
+}
+
 uint32_t Mesh::GetVerticesCount()
 {
-	return vertices.size();
+	return vertices->size();
+}
+
+uint32_t Mesh::GetIndicesCount()
+{
+	return indices->size();
 }

@@ -8,7 +8,7 @@ namespace AVulkan
 	class AVertexBuffer
 	{
 	public:
-		void Create(VkPhysicalDevice physicalDevice, VkDevice& logicalDevice, std::vector<Vertex>& vertices,
+		void Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, std::vector<Vertex>& vertices,
 			VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool) const;
 
 		VkVertexInputBindingDescription GetBindingDescription();
