@@ -11,9 +11,18 @@ Engine::Engine()
 
 	spdlog::set_pattern("[%^%l%$] %v");
 
+	std::vector<Vertex> vertices;
+	vertices.reserve(3);
+	vertices.push_back(Vertex(glm::vec3( 0.0f, -0.5f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+	vertices.push_back(Vertex(glm::vec3( 0.5f,  0.5f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+	vertices.push_back(Vertex(glm::vec3(-0.5f,  0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+
 	engineRollback = new Rollback();
 	renderer = new Renderer(*engineRollback);
 	renderer->Init();
+
+	auto mesh = new Mesh(vertices);
+	renderer->AddMesh(*mesh);
 }
 
 Engine::~Engine()

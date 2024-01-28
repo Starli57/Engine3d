@@ -119,6 +119,12 @@ project "Engine3d"
 		"GLFW_INCLUDE_VULKAN"
 	}
 	
+	prebuildcommands 
+	{
+		"cd $(SolutionDir)",
+		"call compileShaders.bat"
+	} 
+
 	filter "system:windows"
 		defines
 		{

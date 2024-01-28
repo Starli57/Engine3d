@@ -1,12 +1,15 @@
 #include "Pch.h"
-#include "VulkanRenderer.h"
+
 #include <functional>
+
+#include "VulkanRenderer.h"
 
 namespace AVulkan
 {
 	VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
 		rollback = new Rollback(*vulkanRollback);
+		drawMeshes = new std::vector<MeshVulkan*>();
 		window = glfwWindow;
 	}
 
@@ -31,6 +34,8 @@ namespace AVulkan
 			CreateCommandPool();
 			CreateCommandBuffer();
 			CreateSyncObjects();
+
+			rollback->Add([this]() { CleanMeshes(); });
 		}
 		catch (const std::exception& e)
 		{
@@ -75,7 +80,7 @@ namespace AVulkan
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(swapChainData.commandbuffers[frame], 0);
 		ACommandBuffer().Record(swapChainData.commandbuffers[frame], swapChainData.framebuffers[imageIndex],
-			renderPass, swapChainData.extent, graphicsPipeline);
+			renderPass, swapChainData.extent, graphicsPipeline, *drawMeshes);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
@@ -121,11 +126,26 @@ namespace AVulkan
 		vkDeviceWaitIdle(logicalDevice);
 	}
 
+	void VulkanRenderer::AddMesh(Mesh& mesh)
+	{
+		drawMeshes->push_back(new MeshVulkan(physicalDevice, logicalDevice, mesh));
+	}
+
+	void VulkanRenderer::CleanMeshes()
+	{
+		for (int i = 0; i < drawMeshes->size(); i++)
+		{
+			delete drawMeshes->at(i);
+		}
+		delete drawMeshes;
+	}
+
 	void VulkanRenderer::CreateInstance()
 	{
 		AInstance().Create(instance);
 		rollback->Add([this]() { AInstance().Dispose(instance); });
 	}
+
 
 	void VulkanRenderer::CreateWindowSurface()
 	{

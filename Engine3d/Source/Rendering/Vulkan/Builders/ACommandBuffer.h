@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Rendering/Vulkan/SwapChainData.h"
+#include "Rendering/Vulkan/Data/MeshVulkan.h"
 
 namespace AVulkan
 {
@@ -11,6 +12,6 @@ namespace AVulkan
 	public:
 		void Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, SwapChainData& swapChainData, int buffersCount) const;
 		void Record(VkCommandBuffer& commandBuffer, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
-			VkExtent2D& swapchainExtent, VkPipeline& pipeline) const;
+			VkExtent2D& swapchainExtent, VkPipeline& pipeline, std::vector<MeshVulkan*>& meshes) const;
 	};
 }

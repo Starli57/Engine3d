@@ -5,6 +5,7 @@
 #include <array>
 
 #include "Architecture/Rollback/Rollback.h"
+#include "Rendering/Data/Vertex.h"
 
 namespace AVulkan
 {
@@ -40,7 +41,6 @@ namespace AVulkan
 		void CreateScissor(VkExtent2D& swapChainExtent);
 		void CreateColorBlendAttachment();
 
-		VkPipelineVertexInputStateCreateInfo SetupVertexInputData();
 		VkPipelineInputAssemblyStateCreateInfo SetupInputAssemblyData();
 		VkPipelineViewportStateCreateInfo SetupViewportAndScissor(VkExtent2D& swapChainExtent);
 		VkPipelineRasterizationStateCreateInfo SetupRasterizer();

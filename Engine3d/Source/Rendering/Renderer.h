@@ -16,6 +16,7 @@ public:
 
 	void Init();
 	void Run();
+	void AddMesh(Mesh& mesh);
 
 private: 
 	IRenderer* renderer;
