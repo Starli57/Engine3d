@@ -2,7 +2,7 @@
 #include "ALogicalDevice.h"
 #include "APhysicalDevice.h"
 #include "AValidationLayers.h"
-#include "Rendering/Vulkan/PhysicalDeviceExtensions.h"
+#include "Rendering/Vulkan/Extensions/PhysicalDeviceExtensions.h"
 
 namespace AVulkan
 {

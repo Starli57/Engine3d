@@ -2,9 +2,10 @@
 #include "Renderer.h"
 #include "spdlog/spdlog.h"
 
-Renderer::Renderer(Rollback& mainRollback) 
+Renderer::Renderer(Rollback* mainRollback, Level* level) 
 {
-	rollback = new Rollback(mainRollback);
+	this->rollback = new Rollback(*mainRollback);
+	this->level = level;
 }
 
 Renderer::~Renderer()
@@ -35,7 +36,7 @@ void Renderer::Init()
 		glfwSetWindowUserPointer(window, this);
 		glfwSetFramebufferSizeCallback(window, OnFramebufferResized);
 
-		renderer = new VulkanRenderer(window, rollback);
+		renderer = new VulkanRenderer(window, level, rollback);
 		renderer->Init();
 	}
 	catch (const std::exception& e)

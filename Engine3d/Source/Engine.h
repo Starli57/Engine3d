@@ -1,7 +1,10 @@
 #pragma once
 
 #include "Defines/DllDecDefines.h"
+
 #include "Rendering/Renderer.h"
+#include "Level/Level.h"
+
 #include "Architecture/Rollback/Rollback.h"
 
 class ENGINE_API Engine
@@ -14,6 +17,11 @@ public:
 
 private:
 	Renderer* renderer;
+
 	Rollback* engineRollback;
+
+	Level* level;
+
+	void InitLogger();
 };
 

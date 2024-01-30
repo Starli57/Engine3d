@@ -1,7 +1,7 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include "Rendering/Vulkan/SwapChainData.h"
+#include "Rendering/Vulkan/Data/SwapChainData.h"
 
 namespace AVulkan
 {

@@ -6,11 +6,11 @@
 
 namespace AVulkan
 {
-	VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow, Rollback* vulkanRollback)
+	VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow, Level* level, Rollback* vulkanRollback)
 	{
-		rollback = new Rollback(*vulkanRollback);
-		drawMeshes = new std::vector<MeshVulkan*>();
-		window = glfwWindow;
+		this->rollback = new Rollback(*vulkanRollback);
+		this->window = glfwWindow;
+		this->level = level;
 	}
 
 	VulkanRenderer::~VulkanRenderer()
@@ -34,8 +34,7 @@ namespace AVulkan
 			CreateCommandPool();
 			CreateCommandBuffer();
 			CreateSyncObjects();
-
-			rollback->Add([this]() { CleanMeshes(); });
+			CreateLevelMeshes();
 		}
 		catch (const std::exception& e)
 		{
@@ -66,6 +65,36 @@ namespace AVulkan
 		vkDeviceWaitIdle(logicalDevice);
 		rollback->Dispose();
 		Init();
+	}
+
+	void VulkanRenderer::CreateLevelMeshes()
+	{
+		if (this->drawMeshes != nullptr)
+		{
+			spdlog::critical("DrawMeshes vector was not disposed before allocation");
+		}
+
+		this->drawMeshes = new std::vector<MeshVulkan*>();
+
+		spdlog::info("Create render meshes");
+		auto meshes = level->GetMeshes();
+		int count = meshes->size();
+		for (int i = 0; i < count; i++)
+		{
+			AddMesh(*meshes->at(i));
+		}
+		rollback->Add([this]() { CleanMeshes(); });
+	}
+
+	void VulkanRenderer::CleanMeshes()
+	{
+		spdlog::info("Dispose render meshes");
+		for (int i = 0; i < drawMeshes->size(); i++)
+		{
+			delete drawMeshes->at(i);
+		}
+		delete drawMeshes;
+		drawMeshes = nullptr;
 	}
 
 	//todo: make refactoring of the function
@@ -129,15 +158,6 @@ namespace AVulkan
 	void VulkanRenderer::AddMesh(Mesh& mesh)
 	{
 		drawMeshes->push_back(new MeshVulkan(physicalDevice, logicalDevice, graphicsQueue, commandPool, mesh));
-	}
-
-	void VulkanRenderer::CleanMeshes()
-	{
-		for (int i = 0; i < drawMeshes->size(); i++)
-		{
-			delete drawMeshes->at(i);
-		}
-		delete drawMeshes;
 	}
 
 	void VulkanRenderer::CreateInstance()

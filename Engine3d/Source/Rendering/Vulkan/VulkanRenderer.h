@@ -5,7 +5,8 @@
 #include <stack>
 #include <vector>
 
-#include "SwapChainData.h"
+#include "Level/Level.h"
+#include "Data/SwapChainData.h"
 #include "Rendering/IRenderer.h"
 #include "Rendering/Data/Mesh.h"
 #include "Rendering/Vulkan/Data/MeshVulkan.h"
@@ -20,7 +21,7 @@
 #include "Builders/AGraphicsPipeline.h"
 #include "Builders/AFrameBuffer.h"
 #include "Builders/ACommandPool.h"
-#include "Builders/Buffers/ACommandBuffer.h"
+#include "Buffers/ACommandBuffer.h"
 #include "Architecture/Rollback/Rollback.h"
 
 namespace AVulkan
@@ -28,7 +29,7 @@ namespace AVulkan
 	class VulkanRenderer : public IRenderer
 	{
 	public:
-		VulkanRenderer(GLFWwindow* window, Rollback* vulkanRollback);
+		VulkanRenderer(GLFWwindow* window, Level* level, Rollback* vulkanRollback);
 		virtual ~VulkanRenderer() override;
 
 		void Init() override;
@@ -43,6 +44,7 @@ namespace AVulkan
 	private:
 		Rollback* rollback;
 		GLFWwindow* window;
+		Level* level;
 
 		VkInstance instance;
 		VkPhysicalDevice physicalDevice;
@@ -60,7 +62,7 @@ namespace AVulkan
 		std::vector<VkSemaphore> renderFinishedSemaphores;
 		std::vector<VkFence> drawFences;
 
-		std::vector<MeshVulkan*>* drawMeshes;
+		std::vector<MeshVulkan*>* drawMeshes = nullptr;
 
 		uint16_t frame = 0;
 		uint16_t const maxFramesDraws = 2;
@@ -82,5 +84,7 @@ namespace AVulkan
 		void CreateSyncObjects();
 
 		void RecreateSwapChain();
+
+		void CreateLevelMeshes();
 	};
 }
