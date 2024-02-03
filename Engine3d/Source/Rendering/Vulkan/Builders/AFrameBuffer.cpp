@@ -7,7 +7,7 @@ namespace AVulkan
     void AFrameBuffer::Create(VkDevice& logicalDevice, VkRenderPass& renderPass, SwapChainData& swapChainData) const
     {
         spdlog::info("Create frame buffers");
-        swapChainData.framebuffers.resize(swapChainData.imageViews.size());
+        swapChainData.frameBuffers.resize(swapChainData.imageViews.size());
 
         for (size_t i = 0; i < swapChainData.imageViews.size(); i++)
         {
@@ -25,7 +25,7 @@ namespace AVulkan
             framebufferInfo.height = swapChainData.extent.height;
             framebufferInfo.layers = 1;
 
-            auto createStatus = vkCreateFramebuffer(logicalDevice, &framebufferInfo, nullptr, &swapChainData.framebuffers[i]);
+            auto createStatus = vkCreateFramebuffer(logicalDevice, &framebufferInfo, nullptr, &swapChainData.frameBuffers[i]);
             if (createStatus != VK_SUCCESS) 
             {
                 throw std::runtime_error("Failed to create framebuffer, status = " + createStatus);
@@ -36,7 +36,7 @@ namespace AVulkan
     void AFrameBuffer::Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const
     {
         spdlog::info("Dispose frame buffers");
-        for (auto framebuffer : swapChainData.framebuffers)
+        for (auto framebuffer : swapChainData.frameBuffers)
         {
             vkDestroyFramebuffer(logicalDevice, framebuffer, nullptr);
         }

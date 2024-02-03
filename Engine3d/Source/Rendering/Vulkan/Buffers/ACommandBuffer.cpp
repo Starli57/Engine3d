@@ -8,24 +8,26 @@ namespace AVulkan
 	{
 		spdlog::info("Create command buffer");
 
-		swapChainData.commandbuffers.resize(buffersCount);
+		swapChainData.commandBuffers.resize(buffersCount);
 
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		allocInfo.commandPool = commandPool;
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandBufferCount = static_cast<uint32_t>(swapChainData.commandbuffers.size());
+		allocInfo.commandBufferCount = static_cast<uint32_t>(swapChainData.commandBuffers.size());
 
-		auto createStatus = vkAllocateCommandBuffers(logicalDevice, &allocInfo, swapChainData.commandbuffers.data());
+		auto createStatus = vkAllocateCommandBuffers(logicalDevice, &allocInfo, swapChainData.commandBuffers.data());
 		if (createStatus != VK_SUCCESS) 
 		{
 			throw std::runtime_error("Failed to allocate command buffers, status: " + createStatus);
 		}
 	}
 
-	void ACommandBuffer::Record(VkCommandBuffer& commandBuffer, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
-		VkExtent2D& swapchainExtent, VkPipeline& pipeline, std::vector<MeshVulkan*>& meshes) const
+	void ACommandBuffer::Record(uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
+		SwapChainData& swapChainData, GraphicsPipeline& pipeline, std::vector<MeshVulkan*>& meshes) const
 	{
+		auto commandBuffer = swapChainData.commandBuffers.at(frame);
+
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 		beginInfo.pInheritanceInfo = nullptr;
@@ -46,13 +48,13 @@ namespace AVulkan
 		renderPassInfo.renderPass = renderPass;
 		renderPassInfo.framebuffer = frameBuffer;
 		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = swapchainExtent;
+		renderPassInfo.renderArea.extent = swapChainData.extent;
 		renderPassInfo.clearValueCount = 1;
 		renderPassInfo.pClearValues = clearColors;
 
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 		{
-			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
+			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipeline());
 
 			for (int i = 0; i < meshes.size(); i++)
 			{
@@ -61,6 +63,9 @@ namespace AVulkan
 				VkDeviceSize offsets[] = { 0 };
 				vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 				vkCmdBindIndexBuffer(commandBuffer, mesh->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetLayout(), 
+					0, 1, &swapChainData.descriptorSets[frame], 0, nullptr);
 
 				uint32_t instanceCount = 1;
 				uint32_t firstVertexIndex = 0;

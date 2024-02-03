@@ -2,15 +2,16 @@
 
 #include "Rendering/Vulkan/Buffers/AVertexBuffer.h"
 
-#include "AGraphicsPipeline.h"
-#include "AShaderModule.h"
+#include "GraphicsPipeline.h"
+#include "Builders/AShaderModule.h"
 
 #include "spdlog/spdlog.h"
 
 namespace AVulkan
 {
-	AGraphicsPipeline::AGraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass) 
+	GraphicsPipeline::GraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass) 
 	{
+		//todo: create pipelineRollback from rendering rollback
 		rollback = new Rollback();
 
 		this->logicalDevice = logicalDevice;
@@ -18,20 +19,21 @@ namespace AVulkan
 		this->renderPass = renderPass;
 	}
 
-	AGraphicsPipeline::~AGraphicsPipeline()
+	GraphicsPipeline::~GraphicsPipeline()
 	{
 		rollback->Dispose();
+		Dispose();
 		delete rollback;
 	}
 
-	VkPipeline AGraphicsPipeline::Create()
+	void GraphicsPipeline::Create(VkDescriptorSetLayout& descriptorSetLayout)
 	{
 		spdlog::info("Create graphics pipeline");
 
 		try
 		{
 			auto shadersStages = CreateShadersModules();
-			CreatePipelineLayout();
+			CreatePipelineLayout(descriptorSetLayout);
 
 			auto bindingDescription = AVertexBuffer().GetBindingDescription();
 			auto attributeDescriptions = AVertexBuffer().GetAttributeDescriptions();
@@ -75,8 +77,6 @@ namespace AVulkan
 
 			rollback->Dispose();
 			spdlog::info("Graphics pipeline successfully created");
-
-			return graphicsPipeline;
 		}
 		catch (const std::exception& e)
 		{
@@ -85,13 +85,23 @@ namespace AVulkan
 		}
 	}
 
-	void AGraphicsPipeline::Dispose(VkPipeline& graphicsPipeline)
+	void GraphicsPipeline::Dispose()
 	{
 		spdlog::info("Dispose graphics pipeline");
 		vkDestroyPipeline(logicalDevice, graphicsPipeline, nullptr);
 	}
 
-	std::array<VkPipelineShaderStageCreateInfo, 2> AGraphicsPipeline::CreateShadersModules()
+	VkPipeline GraphicsPipeline::GetPipeline()
+	{
+		return graphicsPipeline;
+	}
+
+	VkPipelineLayout GraphicsPipeline::GetLayout()
+	{
+		return pipelineLayout;
+	}
+
+	std::array<VkPipelineShaderStageCreateInfo, 2> GraphicsPipeline::CreateShadersModules()
 	{
 		AShaderModule shaderModule;
 		vertShaderModule = shaderModule.CreateModule("vert.spv", logicalDevice);
@@ -112,7 +122,7 @@ namespace AVulkan
 		return shaderStages;
 	}
 	
-	VkPipelineInputAssemblyStateCreateInfo AGraphicsPipeline::SetupInputAssemblyData()
+	VkPipelineInputAssemblyStateCreateInfo GraphicsPipeline::SetupInputAssemblyData()
 	{
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -121,7 +131,7 @@ namespace AVulkan
 		return inputAssembly;
 	}
 
-	void AGraphicsPipeline::CreateViewport(VkExtent2D& swapChainExtent)
+	void GraphicsPipeline::CreateViewport(VkExtent2D& swapChainExtent)
 	{
 		viewport = new VkViewport();
 		viewport->x = 0.0f;
@@ -134,7 +144,7 @@ namespace AVulkan
 		rollback->Add([this] { delete viewport; });
 	}
 
-	void AGraphicsPipeline::CreateScissor(VkExtent2D& swapChainExtent)
+	void GraphicsPipeline::CreateScissor(VkExtent2D& swapChainExtent)
 	{
 		scissor = new VkRect2D();
 		scissor->offset = { 0, 0 };
@@ -143,7 +153,7 @@ namespace AVulkan
 		rollback->Add([this] { delete scissor; });
 	}
 
-	VkPipelineViewportStateCreateInfo AGraphicsPipeline::SetupViewportAndScissor(VkExtent2D& swapChainExtent)
+	VkPipelineViewportStateCreateInfo GraphicsPipeline::SetupViewportAndScissor(VkExtent2D& swapChainExtent)
 	{
 		CreateViewport(swapChainExtent);
 		CreateScissor(swapChainExtent);
@@ -158,7 +168,7 @@ namespace AVulkan
 		return viewportState;
 	}
 
-	VkPipelineRasterizationStateCreateInfo AGraphicsPipeline::SetupRasterizer()
+	VkPipelineRasterizationStateCreateInfo GraphicsPipeline::SetupRasterizer()
 	{
 		VkPipelineRasterizationStateCreateInfo rasterizer{};
 		rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -169,7 +179,7 @@ namespace AVulkan
 		rasterizer.lineWidth = 1.0f;
 
 		rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-		rasterizer.frontFace = VK_FRONT_FACE_CLOCKWISE;
+		rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
 
 		rasterizer.depthBiasEnable = VK_FALSE;
 		rasterizer.depthBiasConstantFactor = 0.0f;
@@ -179,7 +189,7 @@ namespace AVulkan
 		return rasterizer;
 	}
 
-	VkPipelineMultisampleStateCreateInfo AGraphicsPipeline::SetupMultisampling()
+	VkPipelineMultisampleStateCreateInfo GraphicsPipeline::SetupMultisampling()
 	{
 		VkPipelineMultisampleStateCreateInfo multisampling{};
 		multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
@@ -192,7 +202,7 @@ namespace AVulkan
 		return multisampling;
 	}
 
-	void AGraphicsPipeline::CreateColorBlendAttachment()
+	void GraphicsPipeline::CreateColorBlendAttachment()
 	{
 		colorBlendAttachment = new VkPipelineColorBlendAttachmentState();
 		colorBlendAttachment->colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | 
@@ -210,7 +220,7 @@ namespace AVulkan
 		rollback->Add([this] { delete colorBlendAttachment; });
 	}
 
-	VkPipelineColorBlendStateCreateInfo AGraphicsPipeline::SetupColorsBlending()
+	VkPipelineColorBlendStateCreateInfo GraphicsPipeline::SetupColorsBlending()
 	{
 		CreateColorBlendAttachment();
 		VkPipelineColorBlendStateCreateInfo colorBlending{};
@@ -221,12 +231,12 @@ namespace AVulkan
 		return colorBlending;
 	}
 
-	void AGraphicsPipeline::CreatePipelineLayout()
+	void GraphicsPipeline::CreatePipelineLayout(VkDescriptorSetLayout& descriptorSetLayout)
 	{
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = 0;
-		pipelineLayoutInfo.pSetLayouts = nullptr;
+		pipelineLayoutInfo.setLayoutCount = 1;
+		pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
 		pipelineLayoutInfo.pushConstantRangeCount = 0;
 		pipelineLayoutInfo.pPushConstantRanges = nullptr;
 

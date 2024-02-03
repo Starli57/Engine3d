@@ -4,6 +4,7 @@
 
 #include "Rendering/Vulkan/Data/SwapChainData.h"
 #include "Rendering/Vulkan/Data/MeshVulkan.h"
+#include "Rendering/Vulkan/GraphicsPipeline.h"
 
 namespace AVulkan
 {
@@ -11,7 +12,7 @@ namespace AVulkan
 	{
 	public:
 		void Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, SwapChainData& swapChainData, int buffersCount) const;
-		void Record(VkCommandBuffer& commandBuffer, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
-			VkExtent2D& swapchainExtent, VkPipeline& pipeline, std::vector<MeshVulkan*>& meshes) const;
+		void Record(uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
+			SwapChainData& swapChainData, GraphicsPipeline& pipeline, std::vector<MeshVulkan*>& meshes) const;
 	};
 }

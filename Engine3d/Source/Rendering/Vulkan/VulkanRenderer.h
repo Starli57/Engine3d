@@ -5,6 +5,7 @@
 #include <stack>
 #include <vector>
 
+#include "GraphicsPipeline.h"
 #include "Level/Level.h"
 #include "Data/SwapChainData.h"
 #include "Rendering/IRenderer.h"
@@ -18,9 +19,11 @@
 #include "Builders/AImageView.h"
 #include "Builders/AShaderModule.h"
 #include "Builders/ARenderPass.h"
-#include "Builders/AGraphicsPipeline.h"
 #include "Builders/AFrameBuffer.h"
 #include "Builders/ACommandPool.h"
+#include "Builders/ADescriptorLayout.h"
+#include "Builders/ADescriptorPool.h"
+#include "Builders/ADescriptorSet.h"
 #include "Buffers/ACommandBuffer.h"
 #include "Architecture/Rollback/Rollback.h"
 
@@ -53,17 +56,21 @@ namespace AVulkan
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;
 		VkRenderPass renderPass;
-		VkPipeline graphicsPipeline;
 		VkCommandPool commandPool;
+		VkDescriptorSetLayout descriptorSetLayout;
+		VkDescriptorPool descriptorPool;
 
 		SwapChainData swapChainData;
+		GraphicsPipeline* graphicsPipeline;
 
+		//todo: replace
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;
 		std::vector<VkFence> drawFences;
 
 		std::vector<MeshVulkan*>* drawMeshes = nullptr;
 
+		//todo: replace
 		uint16_t frame = 0;
 		uint16_t const maxFramesDraws = 2;
 		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
@@ -82,9 +89,16 @@ namespace AVulkan
 		void CreateCommandPool();
 		void CreateCommandBuffer();
 		void CreateSyncObjects();
-
+		void CreateDescriptorSetLayout();
+		void CreateDescriptorPool();
+		void CreateDescriptorSets();
 		void RecreateSwapChain();
 
 		void CreateLevelMeshes();
+
+		//todo: replace
+		void CreateUniformBuffers();
+		void DisposeUniformBuffers();
+		void UpdateUniformBuffer(uint32_t imageIndex);
 	};
 }
