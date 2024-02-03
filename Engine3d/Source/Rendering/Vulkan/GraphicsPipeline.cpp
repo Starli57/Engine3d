@@ -13,6 +13,7 @@ namespace AVulkan
 	{
 		//todo: create pipelineRollback from rendering rollback
 		rollback = new Rollback();
+		initializationRollback = new Rollback(*rollback);
 
 		this->logicalDevice = logicalDevice;
 		this->swapChainExtent = swapChainExtent;
@@ -22,7 +23,7 @@ namespace AVulkan
 	GraphicsPipeline::~GraphicsPipeline()
 	{
 		rollback->Dispose();
-		Dispose();
+		delete initializationRollback;
 		delete rollback;
 	}
 
@@ -67,7 +68,6 @@ namespace AVulkan
 			pipelineInfo.renderPass = renderPass;
 			pipelineInfo.subpass = 0;
 
-			VkPipeline graphicsPipeline;
 			auto createState = vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline);
 
 			if (createState != VK_SUCCESS)
@@ -75,12 +75,14 @@ namespace AVulkan
 				throw std::runtime_error("Failed to create graphics pipeline, state" + createState);
 			}
 
-			rollback->Dispose();
+			initializationRollback->Dispose();
+			rollback->Add([this]() { Dispose(); });
+
 			spdlog::info("Graphics pipeline successfully created");
 		}
 		catch (const std::exception& e)
 		{
-			rollback->Dispose();
+			initializationRollback->Dispose();
 			throw e;
 		}
 	}
@@ -111,7 +113,7 @@ namespace AVulkan
 		shaderStages[0] = shaderModule.SetupStageInfo(vertShaderModule, VK_SHADER_STAGE_VERTEX_BIT);
 		shaderStages[1] = shaderModule.SetupStageInfo(fragShaderModule, VK_SHADER_STAGE_FRAGMENT_BIT);
 
-		rollback->Add([this]
+		initializationRollback->Add([this]
 		{
 			spdlog::info("dispose ShadersModules");
 			AShaderModule shaderModule;
@@ -141,7 +143,7 @@ namespace AVulkan
 		viewport->minDepth = 0.0f;
 		viewport->maxDepth = 1.0f;
 
-		rollback->Add([this] { delete viewport; });
+		initializationRollback->Add([this] { delete viewport; });
 	}
 
 	void GraphicsPipeline::CreateScissor(VkExtent2D& swapChainExtent)
@@ -150,7 +152,7 @@ namespace AVulkan
 		scissor->offset = { 0, 0 };
 		scissor->extent = swapChainExtent;
 
-		rollback->Add([this] { delete scissor; });
+		initializationRollback->Add([this] { delete scissor; });
 	}
 
 	VkPipelineViewportStateCreateInfo GraphicsPipeline::SetupViewportAndScissor(VkExtent2D& swapChainExtent)
@@ -217,7 +219,7 @@ namespace AVulkan
 		colorBlendAttachment->dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
 		colorBlendAttachment->alphaBlendOp = VK_BLEND_OP_ADD;
 
-		rollback->Add([this] { delete colorBlendAttachment; });
+		initializationRollback->Add([this] { delete colorBlendAttachment; });
 	}
 
 	VkPipelineColorBlendStateCreateInfo GraphicsPipeline::SetupColorsBlending()

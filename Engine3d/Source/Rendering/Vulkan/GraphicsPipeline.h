@@ -23,6 +23,7 @@ namespace AVulkan
 
 	private:
 		Rollback* rollback;
+		Rollback* initializationRollback;
 
 		VkDevice logicalDevice;
 		VkExtent2D swapChainExtent;
