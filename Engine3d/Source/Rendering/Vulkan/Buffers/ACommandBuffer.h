@@ -4,7 +4,7 @@
 
 #include "Rendering/Vulkan/Model/SwapChainData.h"
 #include "Rendering/Vulkan/Mesh/MeshVulkan.h"
-#include "Rendering/Vulkan/GraphicsPipeline.h"
+#include "Rendering/Vulkan/Context/GraphicsPipeline.h"
 
 namespace AVulkan
 {
