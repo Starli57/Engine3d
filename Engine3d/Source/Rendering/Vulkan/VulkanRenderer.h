@@ -6,11 +6,11 @@
 #include <vector>
 
 #include "GraphicsPipeline.h"
-#include "Level/Level.h"
+#include "Base/Level.h"
 #include "Data/SwapChainData.h"
 #include "Rendering/IRenderer.h"
 #include "Rendering/Data/Mesh.h"
-#include "Rendering/Vulkan/Data/MeshVulkan.h"
+#include "Rendering/Vulkan/Mesh/MeshVulkan.h"
 #include "Builders/AValidationLayers.h"
 #include "Builders/APhysicalDevice.h"
 #include "Builders/ALogicalDevice.h"

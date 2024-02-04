@@ -1,8 +1,6 @@
 #include "Pch.h"
 
 #include <functional>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 
 #include "VulkanRenderer.h"
 
@@ -168,13 +166,15 @@ namespace AVulkan
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-		Mvp mvp{};
-		mvp.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		mvp.view = glm::lookAt(glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-		mvp.proj = glm::perspective(glm::radians(45.0f), swapChainData.extent.width / (float)swapChainData.extent.height, 0.1f, 10.0f);
-		mvp.proj[1][1] *= -1;
+		auto camera = level->GetCamera();
+		camera->UpdateScreenAspectRatio(swapChainData.extent.width / (float)swapChainData.extent.height);
+		camera->UpdateUboViewProjection();
+		auto mvp = camera->GetUboViewProjection();
 
-		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &mvp, sizeof(Mvp));
+		//todo: replace to separated uvo
+		mvp.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &mvp, sizeof(UboViewProjection));
 	}
 
 	void VulkanRenderer::FinanilizeRenderOperations()

@@ -28,7 +28,7 @@ namespace AVulkan
 			VkDescriptorBufferInfo bufferInfo{};
 			bufferInfo.buffer = swapChainData.uniformBuffers->at(i)->buffer;
 			bufferInfo.offset = 0;
-			bufferInfo.range = sizeof(Mvp);
+			bufferInfo.range = sizeof(UboViewProjection);
 
 			VkWriteDescriptorSet mvpWriteDesc{};
 			mvpWriteDesc.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
