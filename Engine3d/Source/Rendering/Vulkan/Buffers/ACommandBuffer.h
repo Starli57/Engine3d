@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Rendering/Vulkan/Data/SwapChainData.h"
+#include "Rendering/Vulkan/Model/SwapChainData.h"
 #include "Rendering/Vulkan/Mesh/MeshVulkan.h"
 #include "Rendering/Vulkan/GraphicsPipeline.h"
 

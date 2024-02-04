@@ -5,9 +5,9 @@
 #include <glm/glm.hpp>
 
 #include "Architecture/Rollback/Rollback.h"
-#include "Rendering/Data/Vertex.h"
-#include "Rendering/Data/Mesh.h"
-#include "BaseComponents/Camera.h"
+#include "Rendering/Model/Vertex.h"
+#include "Rendering/Model/Mesh.h"
+#include "ComponentsBase/Camera.h"
 
 class Level
 {

@@ -161,20 +161,17 @@ namespace AVulkan
 	//todo: replace
 	void VulkanRenderer::UpdateUniformBuffer(uint32_t imageIndex)
 	{
-		static auto startTime = std::chrono::high_resolution_clock::now();
-
-		auto currentTime = std::chrono::high_resolution_clock::now();
-		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
+		//todo: replace
 		auto camera = level->GetCamera();
 		camera->UpdateScreenAspectRatio(swapChainData.extent.width / (float)swapChainData.extent.height);
 		camera->UpdateUboViewProjection();
-		auto mvp = camera->GetUboViewProjection();
+
+		auto viewProjection = camera->GetUboViewProjection();
 
 		//todo: replace to separated uvo
 		mvp.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
-		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &mvp, sizeof(UboViewProjection));
+		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &viewProjection, sizeof(UboViewProjection));
 	}
 
 	void VulkanRenderer::FinanilizeRenderOperations()

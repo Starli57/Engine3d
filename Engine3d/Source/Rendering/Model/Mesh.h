@@ -13,8 +13,8 @@ public:
 	std::vector<Vertex>* GetVertices();
 	std::vector<uint32_t>* GetIndices();
 
-	uint32_t GetVerticesCount();
-	uint32_t GetIndicesCount();
+	size_t GetVerticesCount();
+	size_t GetIndicesCount();
 
 private:
 	std::vector<Vertex>* vertices;
