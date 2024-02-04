@@ -29,10 +29,14 @@ namespace AVulkan
 			CreateSwapChain();
 			CreateSwapChainImageViews();
 			CreateRenderPass();
+			CreateDescriptorSetLayout();
 			CreateGraphicsPipeline();
 			CreateFrameBuffers();
 			CreateCommandPool();
 			CreateCommandBuffer();
+			CreateUniformBuffers();
+			CreateDescriptorPool();
+			CreateDescriptorSets();
 			CreateSyncObjects();
 			CreateLevelMeshes();
 		}
@@ -67,6 +71,7 @@ namespace AVulkan
 		Init();
 	}
 
+	//todo: replace
 	void VulkanRenderer::CreateLevelMeshes()
 	{
 		if (this->drawMeshes != nullptr)
@@ -78,7 +83,7 @@ namespace AVulkan
 
 		spdlog::info("Create render meshes");
 		auto meshes = level->GetMeshes();
-		int count = meshes->size();
+		auto count = meshes->size();
 		for (int i = 0; i < count; i++)
 		{
 			AddMesh(*meshes->at(i));
@@ -86,6 +91,7 @@ namespace AVulkan
 		rollback->Add([this]() { CleanMeshes(); });
 	}
 
+	//todo: replace
 	void VulkanRenderer::CleanMeshes()
 	{
 		spdlog::info("Dispose render meshes");
@@ -106,10 +112,12 @@ namespace AVulkan
 		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData.swapChain, frameSyncTimeout,
 			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 
+		UpdateUniformBuffer(frame);
+
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
-		vkResetCommandBuffer(swapChainData.commandbuffers[frame], 0);
-		ACommandBuffer().Record(swapChainData.commandbuffers[frame], swapChainData.framebuffers[imageIndex],
-			renderPass, swapChainData.extent, graphicsPipeline, *drawMeshes);
+		vkResetCommandBuffer(swapChainData.commandBuffers[frame], 0);
+		ACommandBuffer().Record(frame, swapChainData.frameBuffers[imageIndex],
+			renderPass, swapChainData, *graphicsPipeline, *drawMeshes);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
@@ -123,7 +131,7 @@ namespace AVulkan
 		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[frame];
 
 		submitInfo.pWaitDstStageMask = waitStages;
-		submitInfo.pCommandBuffers = &swapChainData.commandbuffers[frame];
+		submitInfo.pCommandBuffers = &swapChainData.commandBuffers[frame];
 
 		auto submitStatus = vkQueueSubmit(graphicsQueue, 1, &submitInfo, drawFences[frame]);
 		if (submitStatus != VK_SUCCESS)  throw std::runtime_error("Failed to submit draw command buffer, status: " + submitStatus);
@@ -150,6 +158,25 @@ namespace AVulkan
 		frame = (frame + 1) % maxFramesDraws;
 	}
 
+	//todo: replace
+	void VulkanRenderer::UpdateUniformBuffer(uint32_t imageIndex)
+	{
+		static auto startTime = std::chrono::high_resolution_clock::now();
+
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+		auto camera = level->GetCamera();
+		camera->UpdateScreenAspectRatio(swapChainData.extent.width / (float)swapChainData.extent.height);
+		camera->UpdateUboViewProjection();
+		auto mvp = camera->GetUboViewProjection();
+
+		//todo: replace to separated uvo
+		mvp.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &mvp, sizeof(UboViewProjection));
+	}
+
 	void VulkanRenderer::FinanilizeRenderOperations()
 	{
 		vkDeviceWaitIdle(logicalDevice);
@@ -157,7 +184,7 @@ namespace AVulkan
 
 	void VulkanRenderer::AddMesh(Mesh& mesh)
 	{
-		drawMeshes->push_back(new MeshVulkan(physicalDevice, logicalDevice, graphicsQueue, commandPool, mesh));
+		drawMeshes->push_back(new MeshVulkan(physicalDevice, logicalDevice, swapChainData, graphicsQueue, commandPool, mesh));
 	}
 
 	void VulkanRenderer::CreateInstance()
@@ -165,7 +192,6 @@ namespace AVulkan
 		AInstance().Create(instance);
 		rollback->Add([this]() { AInstance().Dispose(instance); });
 	}
-
 
 	void VulkanRenderer::CreateWindowSurface()
 	{
@@ -207,8 +233,10 @@ namespace AVulkan
 
 	void VulkanRenderer::CreateGraphicsPipeline()
 	{
-		graphicsPipeline = AGraphicsPipeline(logicalDevice, swapChainData.extent, renderPass).Create();
-		rollback->Add([this]() { AGraphicsPipeline(logicalDevice, swapChainData.extent, renderPass).Dispose(graphicsPipeline); });
+		graphicsPipeline = new GraphicsPipeline(logicalDevice, swapChainData.extent, renderPass);
+		graphicsPipeline->Create(descriptorSetLayout);
+
+		rollback->Add([this]() { delete graphicsPipeline; });
 	}
 
 	void VulkanRenderer::CreateFrameBuffers()
@@ -226,6 +254,45 @@ namespace AVulkan
 	void VulkanRenderer::CreateCommandBuffer()
 	{
 		ACommandBuffer().Setup(logicalDevice, commandPool, swapChainData, maxFramesDraws);
+	}
+
+	void VulkanRenderer::CreateDescriptorSetLayout()
+	{
+		ADescriptorLayout().Create(logicalDevice, descriptorSetLayout);
+		rollback->Add([this]() { ADescriptorLayout().Dispose(logicalDevice, descriptorSetLayout); });
+	}
+
+	void VulkanRenderer::CreateDescriptorPool()
+	{
+		ADescriptorPool().Create(logicalDevice, swapChainData, descriptorPool);
+		rollback->Add([this]() { ADescriptorPool().Dispose(logicalDevice, descriptorPool); });
+	}
+
+	void VulkanRenderer::CreateDescriptorSets()
+	{
+		ADescriptorSet().Allocate(logicalDevice, swapChainData, descriptorPool, descriptorSetLayout);
+	}
+
+	void VulkanRenderer::CreateUniformBuffers()
+	{
+		auto buffersCount = swapChainData.images.size();
+		swapChainData.uniformBuffers = new std::vector<UniformBufferVulkan*>();
+		swapChainData.uniformBuffers->reserve(buffersCount);
+		for (int i = 0; i < buffersCount; i++)
+		{
+			swapChainData.uniformBuffers->push_back(new UniformBufferVulkan(physicalDevice, logicalDevice));
+		}
+
+		rollback->Add([this]() {DisposeUniformBuffers(); });
+	}
+
+	void VulkanRenderer::DisposeUniformBuffers()
+	{
+		for (int i = 0; i < swapChainData.uniformBuffers->size(); i++)
+		{
+			delete swapChainData.uniformBuffers->at(i);
+		}
+		delete swapChainData.uniformBuffers;
 	}
 
 	//todo: replace 

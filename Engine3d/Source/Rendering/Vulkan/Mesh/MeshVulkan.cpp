@@ -13,7 +13,8 @@ namespace AVulkan
 	uint32_t MeshVulkan::GetVertexCount() { return static_cast<uint32_t>(vertices->size()); }
 	uint32_t MeshVulkan::GetIndicesCount() { return static_cast<uint32_t>(indices->size()); }
 
-	MeshVulkan::MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool, Mesh& mesh)
+	MeshVulkan::MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData, 
+		VkQueue& graphicsQueue, VkCommandPool& commandPool, Mesh& mesh)
 	{
 		this->logicalDevice = &logicalDevice;
 		this->vertices = mesh.GetVertices();
@@ -23,6 +24,7 @@ namespace AVulkan
 			graphicsQueue, commandPool);
 		AIndexBuffer().Create(physicalDevice, logicalDevice, *indices, indexBuffer, indexBufferMemory,
 			graphicsQueue, commandPool);
+
 	}
 
 	MeshVulkan::~MeshVulkan()

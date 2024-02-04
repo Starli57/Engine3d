@@ -9,17 +9,21 @@
 
 namespace AVulkan
 {
-	class AGraphicsPipeline
+	class GraphicsPipeline
 	{
 	public:
-		AGraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
-		~AGraphicsPipeline();
+		GraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
+		~GraphicsPipeline();
 
-		VkPipeline Create();
-		void Dispose(VkPipeline& graphicsPipeline);
+		void Create(VkDescriptorSetLayout& descriptorSetLayout);
+		void Dispose();
+
+		VkPipeline GetPipeline();
+		VkPipelineLayout GetLayout();
 
 	private:
 		Rollback* rollback;
+		Rollback* initializationRollback;
 
 		VkDevice logicalDevice;
 		VkExtent2D swapChainExtent;
@@ -28,6 +32,7 @@ namespace AVulkan
 		VkShaderModule vertShaderModule;
 		VkShaderModule fragShaderModule;
 
+		VkPipeline graphicsPipeline;
 		VkPipelineLayout pipelineLayout;
 
 		VkViewport* viewport;
@@ -36,7 +41,7 @@ namespace AVulkan
 		VkPipelineColorBlendAttachmentState* colorBlendAttachment;
 
 		std::array<VkPipelineShaderStageCreateInfo, 2>  CreateShadersModules();
-		void CreatePipelineLayout();
+		void CreatePipelineLayout(VkDescriptorSetLayout& descriptorSetLayout);
 		void CreateViewport(VkExtent2D& swapChainExtent);
 		void CreateScissor(VkExtent2D& swapChainExtent);
 		void CreateColorBlendAttachment();
