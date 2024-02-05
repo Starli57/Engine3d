@@ -4,6 +4,7 @@
 
 #include "Architecture/Rollback/Rollback.h"
 
+#include "Rendering/Model/UboModel.h"
 #include "Rendering/Vulkan/Builders/APhysicalDevice.h"
 #include "Rendering/Vulkan/Builders/ALogicalDevice.h"
 
@@ -30,5 +31,7 @@ namespace AVulkan
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;
 
+		VkDeviceSize minUniformBufferOffset;
+		size_t modelUniformAligment;
 	};
 }

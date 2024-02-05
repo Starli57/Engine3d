@@ -9,6 +9,13 @@ namespace AVulkan
 
 		APhysicalDevice pdInterface;
 		physicalDevice = pdInterface.GetBestRenderingDevice(instance, surface);
+
+		VkPhysicalDeviceLimits deviceLimits;
+		pdInterface.SetupDeviceLimits(physicalDevice, deviceLimits);
+		minUniformBufferOffset = deviceLimits.minUniformBufferOffsetAlignment;
+
+		modelUniformAligment = (sizeof(UboModel) + minUniformBufferOffset - 1) & ~(minUniformBufferOffset - 1);
+
 		pdInterface.PrintDebugInformation(physicalDevice, surface);
 		
 		logicalDevice = ALogicalDevice().Create(physicalDevice, surface, graphicsQueue, presentationQueue);

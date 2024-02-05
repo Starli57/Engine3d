@@ -17,6 +17,9 @@ namespace AVulkan
 		VkPhysicalDevice GetBestRenderingDevice(VkInstance& instance, VkSurfaceKHR& surface) const;
 		QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface) const;
 
+		void SetupDeviceProperties(VkPhysicalDevice& device, VkPhysicalDeviceProperties& properties) const;
+		void SetupDeviceLimits(VkPhysicalDevice& device, VkPhysicalDeviceLimits& limits) const;
+
 		void PrintDebugInformation(VkPhysicalDevice& device, VkSurfaceKHR& surface) const;
 
 	private:
