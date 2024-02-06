@@ -3,10 +3,10 @@
 
 namespace AVulkan
 {
-	void ADescriptorSet::Allocate(VkDevice& logicalDevice, SwapChainData& swapChainData, VkDescriptorPool& descriptorPool,
+	void ADescriptorSet::Allocate(Device& deviceContext, SwapChainData& swapChainData, VkDescriptorPool& descriptorPool,
 		VkDescriptorSetLayout& descriptorSetLayout) const
 	{
-		auto setsCount = swapChainData.uniformBuffers->size();
+		auto setsCount = swapChainData.images.size();
 
 		std::vector<VkDescriptorSetLayout> layouts(setsCount, descriptorSetLayout);
 
@@ -17,7 +17,7 @@ namespace AVulkan
 		allocInfo.pSetLayouts = layouts.data();
 
 		swapChainData.descriptorSets.resize(setsCount);
-		auto allocateStatus = vkAllocateDescriptorSets(logicalDevice, &allocInfo, swapChainData.descriptorSets.data());
+		auto allocateStatus = vkAllocateDescriptorSets(deviceContext.GetLogicalDevice(), &allocInfo, swapChainData.descriptorSets.data());
 		if (allocateStatus != VK_SUCCESS)
 		{
 			throw std::runtime_error("Failed to allocate descriptor sets, status: " + allocateStatus);
@@ -25,23 +25,40 @@ namespace AVulkan
 
 		for (size_t i = 0; i < setsCount; i++)
 		{
-			VkDescriptorBufferInfo bufferInfo{};
-			bufferInfo.buffer = swapChainData.uniformBuffers->at(i)->buffer;
-			bufferInfo.offset = 0;
-			bufferInfo.range = sizeof(UboViewProjection);
+			VkDescriptorBufferInfo vpBufferInfo{};
+			vpBufferInfo.buffer = deviceContext.vpUniformBuffers->at(i)->buffer;
+			vpBufferInfo.offset = 0;
+			vpBufferInfo.range = sizeof(UboViewProjection);
 
-			VkWriteDescriptorSet mvpWriteDesc{};
-			mvpWriteDesc.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			mvpWriteDesc.dstSet = swapChainData.descriptorSets[i];
-			mvpWriteDesc.dstBinding = 0;
-			mvpWriteDesc.dstArrayElement = 0;
-			mvpWriteDesc.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			mvpWriteDesc.descriptorCount = 1;
-			mvpWriteDesc.pBufferInfo = &bufferInfo;
-			mvpWriteDesc.pImageInfo = nullptr;
-			mvpWriteDesc.pTexelBufferView = nullptr;
+			VkWriteDescriptorSet vpWriteDesc{};
+			vpWriteDesc.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			vpWriteDesc.dstSet = swapChainData.descriptorSets[i];
+			vpWriteDesc.dstBinding = 0;
+			vpWriteDesc.dstArrayElement = 0;
+			vpWriteDesc.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			vpWriteDesc.descriptorCount = 1;
+			vpWriteDesc.pBufferInfo = &vpBufferInfo;
+			vpWriteDesc.pImageInfo = nullptr;
+			vpWriteDesc.pTexelBufferView = nullptr;
 
-			vkUpdateDescriptorSets(logicalDevice, 1, &mvpWriteDesc, 0, nullptr);
+			VkDescriptorBufferInfo modelBufferInfo{};
+			modelBufferInfo.buffer = deviceContext.modelUniformBuffers->at(i)->buffer;
+			modelBufferInfo.offset = 0;
+			modelBufferInfo.range = deviceContext.GetModelUniformAligment();
+
+			VkWriteDescriptorSet modelWriteDesc{};
+			modelWriteDesc.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			modelWriteDesc.dstSet = swapChainData.descriptorSets[i];
+			modelWriteDesc.dstBinding = 1;
+			modelWriteDesc.dstArrayElement = 0;
+			modelWriteDesc.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+			modelWriteDesc.descriptorCount = 1;
+			modelWriteDesc.pBufferInfo = &modelBufferInfo;
+			modelWriteDesc.pImageInfo = nullptr;
+			modelWriteDesc.pTexelBufferView = nullptr;
+
+			std::vector< VkWriteDescriptorSet> sets = { vpWriteDesc , modelWriteDesc };
+			vkUpdateDescriptorSets(deviceContext.GetLogicalDevice(), static_cast<uint32_t>(sets.size()), sets.data(), 0, nullptr);
 		}
 	}
 }

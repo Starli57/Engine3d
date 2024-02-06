@@ -3,7 +3,7 @@
 
 namespace AVulkan
 {
-	UniformBufferVulkan::UniformBufferVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice)
+	UniformBufferVulkan::UniformBufferVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkDeviceSize bufferSize)
 	{
 		this->logicalDevice = &logicalDevice;
 

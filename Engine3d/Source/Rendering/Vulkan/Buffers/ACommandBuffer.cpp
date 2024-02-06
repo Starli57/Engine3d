@@ -23,7 +23,7 @@ namespace AVulkan
 		}
 	}
 
-	void ACommandBuffer::Record(uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
+	void ACommandBuffer::Record(Device& deviceContext, uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
 		SwapChainData& swapChainData, GraphicsPipeline& pipeline, std::vector<MeshVulkan*>& meshes) const
 	{
 		auto commandBuffer = swapChainData.commandBuffers.at(frame);
@@ -64,8 +64,10 @@ namespace AVulkan
 				vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 				vkCmdBindIndexBuffer(commandBuffer, mesh->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
+				uint32_t dynamicOffset = static_cast<uint32_t>(deviceContext.GetModelUniformAligment() * i);
+
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetLayout(), 
-					0, 1, &swapChainData.descriptorSets[frame], 0, nullptr);
+					0, 1, &swapChainData.descriptorSets[frame], 1, &dynamicOffset);
 
 				uint32_t instanceCount = 1;
 				uint32_t firstVertexIndex = 0;

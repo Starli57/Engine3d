@@ -94,6 +94,6 @@ namespace AVulkan
 		//todo: replace
 		void CreateUniformBuffers();
 		void DisposeUniformBuffers();
-		void UpdateUniformBuffer(uint32_t imageIndex);
+		void UpdateUniformBuffers(uint32_t imageIndex);
 	};
 }

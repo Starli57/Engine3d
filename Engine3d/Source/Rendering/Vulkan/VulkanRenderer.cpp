@@ -117,11 +117,11 @@ namespace AVulkan
 		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData.swapChain, frameSyncTimeout,
 			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 
-		UpdateUniformBuffer(frame);
+		UpdateUniformBuffers(frame);
 
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(swapChainData.commandBuffers[frame], 0);
-		ACommandBuffer().Record(frame, swapChainData.frameBuffers[imageIndex],
+		ACommandBuffer().Record(*device, frame, swapChainData.frameBuffers[imageIndex],
 			renderPass, swapChainData, *graphicsPipeline, *drawMeshes);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -164,7 +164,7 @@ namespace AVulkan
 	}
 
 	//todo: replace
-	void VulkanRenderer::UpdateUniformBuffer(uint32_t imageIndex)
+	void VulkanRenderer::UpdateUniformBuffers(uint32_t imageIndex)
 	{
 		//todo: replace
 		auto camera = level->GetCamera();
@@ -172,9 +172,12 @@ namespace AVulkan
 		camera->UpdateUboViewProjection();
 
 		auto viewProjection = camera->GetUboViewProjection();
-		//todo get model uvo
+		memcpy(device->vpUniformBuffers->at(imageIndex)->bufferMapped, &viewProjection, sizeof(UboViewProjection));
 
-		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &viewProjection, sizeof(UboViewProjection));
+		for (size_t i = 0; i < drawMeshes->size(); i++)
+		{
+			UboModel* model = (UboModel*)((uint64_t)device->GetModelUniformTransfer() + (i * device->GetModelUniformAligment()));
+		}
 	}
 
 	void VulkanRenderer::FinanilizeRenderOperations()
@@ -307,7 +310,10 @@ namespace AVulkan
 	void VulkanRenderer::CreateDescriptorPool()
 	{
 		auto logicalDevice = device->GetLogicalDevice();
-		ADescriptorPool().Create(logicalDevice, swapChainData, descriptorPool);
+		ADescriptorPool().Create(logicalDevice, swapChainData, 
+			static_cast<uint32_t>(device->vpUniformBuffers->size()), 
+			static_cast<uint32_t>(device->modelUniformBuffers->size()), 
+			descriptorPool);
 
 		rollback->Add([this]() 
 		{
@@ -319,32 +325,45 @@ namespace AVulkan
 	void VulkanRenderer::CreateDescriptorSets()
 	{
 		auto logicalDevice = device->GetLogicalDevice();
-		ADescriptorSet().Allocate(logicalDevice, swapChainData, descriptorPool, descriptorSetLayout);
+		ADescriptorSet().Allocate(*device, swapChainData, descriptorPool, descriptorSetLayout);
 	}
 
 	void VulkanRenderer::CreateUniformBuffers()
 	{
 		auto physicalDevice = device->GetPhysicalDevice();
 		auto logicalDevice = device->GetLogicalDevice();
-		
 		auto buffersCount = swapChainData.images.size();
-		swapChainData.uniformBuffers = new std::vector<UniformBufferVulkan*>();
-		swapChainData.uniformBuffers->reserve(buffersCount);
+		
+		auto vpBufferSize = sizeof(UboViewProjection);
+		device->vpUniformBuffers = new std::vector<UniformBufferVulkan*>();
+		device->vpUniformBuffers->reserve(buffersCount);
+
+		device->modelUniformBuffers = new std::vector<UniformBufferVulkan*>();
+		device->modelUniformBuffers->reserve(buffersCount);
+		auto modelBufferSize = device->GetModelUniformAligment() * device->modelsPerDynamicUniform;
+		
 		for (int i = 0; i < buffersCount; i++)
 		{
-			swapChainData.uniformBuffers->push_back(new UniformBufferVulkan(physicalDevice, logicalDevice));
+			device->vpUniformBuffers->push_back(new UniformBufferVulkan(physicalDevice, logicalDevice, vpBufferSize));
+			device->modelUniformBuffers->push_back(new UniformBufferVulkan(physicalDevice, logicalDevice, modelBufferSize));
 		}
 
-		rollback->Add([this]() {DisposeUniformBuffers(); });
+		rollback->Add([this]() { DisposeUniformBuffers(); });
 	}
 
 	void VulkanRenderer::DisposeUniformBuffers()
 	{
-		for (int i = 0; i < swapChainData.uniformBuffers->size(); i++)
+		for (int i = 0; i < device->vpUniformBuffers->size(); i++)
 		{
-			delete swapChainData.uniformBuffers->at(i);
+			delete device->vpUniformBuffers->at(i);
 		}
-		delete swapChainData.uniformBuffers;
+		delete device->vpUniformBuffers;
+
+		for (int i = 0; i < device->modelUniformBuffers->size(); i++)
+		{
+			delete device->modelUniformBuffers->at(i);
+		}
+		delete device->modelUniformBuffers;
 	}
 
 	//todo: replace 

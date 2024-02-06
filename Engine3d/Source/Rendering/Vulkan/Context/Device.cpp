@@ -15,11 +15,16 @@ namespace AVulkan
 		minUniformBufferOffset = deviceLimits.minUniformBufferOffsetAlignment;
 
 		modelUniformAligment = (sizeof(UboModel) + minUniformBufferOffset - 1) & ~(minUniformBufferOffset - 1);
+		modelUniformTransfer = (UboModel*)_aligned_malloc(modelUniformAligment * modelsPerDynamicUniform, modelUniformAligment);
 
 		pdInterface.PrintDebugInformation(physicalDevice, surface);
 		
 		logicalDevice = ALogicalDevice().Create(physicalDevice, surface, graphicsQueue, presentationQueue);
-		deviceRollback->Add([this]() { ALogicalDevice().Dispose(logicalDevice); });
+		deviceRollback->Add([this]() 
+		{
+			ALogicalDevice().Dispose(logicalDevice); 
+			_aligned_free(modelUniformTransfer);
+		});
 
 	}
 
@@ -33,4 +38,7 @@ namespace AVulkan
 
 	VkQueue Device::GetGraphicsQueue() { return graphicsQueue; }
 	VkQueue Device::GetPresentationQueue() { return presentationQueue; }
+
+	size_t Device::GetModelUniformAligment() { return modelUniformAligment; }
+	UboModel* Device::GetModelUniformTransfer() { return modelUniformTransfer; }
 }

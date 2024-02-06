@@ -10,7 +10,7 @@ namespace AVulkan
 	class UniformBufferVulkan
 	{
 	public:
-		UniformBufferVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice);
+		UniformBufferVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkDeviceSize bufferSize);
 		~UniformBufferVulkan();
 
 		VkBuffer buffer;

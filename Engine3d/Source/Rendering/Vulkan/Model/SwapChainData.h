@@ -4,8 +4,6 @@
 
 #include <vector>
 
-#include "Rendering/Vulkan/Buffers/UniformBufferVulkan.h"
-
 namespace AVulkan
 {
 	struct SwapChainData
@@ -20,6 +18,5 @@ namespace AVulkan
 		std::vector<VkFramebuffer> frameBuffers;
 		std::vector<VkCommandBuffer> commandBuffers;
 		std::vector<VkDescriptorSet> descriptorSets;
-		std::vector<UniformBufferVulkan*>* uniformBuffers;
 	};
 }

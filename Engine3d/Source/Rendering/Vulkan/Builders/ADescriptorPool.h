@@ -9,7 +9,9 @@ namespace AVulkan
 	class ADescriptorPool
 	{
 	public:
-		void Create(VkDevice& logicalDevice, SwapChainData& swapChainData, VkDescriptorPool& descriptorPool) const;
+		void Create(VkDevice& logicalDevice, SwapChainData& swapChainData, 
+			uint32_t vpUniformBufferSize, uint32_t modelUniformBufferSize,
+			VkDescriptorPool& descriptorPool) const;
 		void Dispose(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const;
 	};
 

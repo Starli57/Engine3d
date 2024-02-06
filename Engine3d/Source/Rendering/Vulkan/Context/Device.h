@@ -7,6 +7,7 @@
 #include "Rendering/Model/UboModel.h"
 #include "Rendering/Vulkan/Builders/APhysicalDevice.h"
 #include "Rendering/Vulkan/Builders/ALogicalDevice.h"
+#include "Rendering/Vulkan/Buffers/UniformBufferVulkan.h"
 
 namespace AVulkan
 {
@@ -22,6 +23,15 @@ namespace AVulkan
 		VkQueue GetGraphicsQueue();
 		VkQueue GetPresentationQueue();
 
+		size_t GetModelUniformAligment();
+		UboModel* GetModelUniformTransfer();
+
+		//todo: add getters
+		std::vector<UniformBufferVulkan*>* vpUniformBuffers;
+		std::vector<UniformBufferVulkan*>* modelUniformBuffers;
+
+		const uint16_t modelsPerDynamicUniform = 100;
+
 	private:
 		Rollback* deviceRollback;
 
@@ -33,5 +43,7 @@ namespace AVulkan
 
 		VkDeviceSize minUniformBufferOffset;
 		size_t modelUniformAligment;
+
+		UboModel* modelUniformTransfer;
 	};
 }

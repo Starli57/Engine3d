@@ -35,5 +35,6 @@ namespace AVulkan
 		VkBuffer indexBuffer;
 		VkDeviceMemory indexBufferMemory;
 
+		UniformBufferVulkan* modelUniformBuffer;
 	};
 }
