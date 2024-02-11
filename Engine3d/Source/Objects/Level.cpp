@@ -3,14 +3,10 @@
 
 #include "spdlog/spdlog.h"
 
-std::vector<Mesh*>* Level::GetMeshes()
+std::vector<EntityComponent> Level::GetComponents(std::string type)
 {
-	return meshes;
-}
-
-Camera* Level::GetCamera()
-{
-	return camera;
+	auto it = components->find(type);
+	return it != components->end() ? it->second : std::vector<EntityComponent>();
 }
 
 Level::Level(Rollback* rollback)
@@ -71,4 +67,59 @@ void Level::UnloadLevel()
 		delete meshes->at(i);
 	}
 	delete meshes;
+}
+
+void Level::AddEntity(Entity* entity)
+{
+}
+
+void Level::RemoveEntity(Entity* entity)
+{
+}
+
+void Level::AddEntityComponent(Entity* entity, IComponent* component)
+{
+}
+
+void Level::RemoveEntityComponent(Entity* entity, IComponent* component)
+{
+}
+
+void Level::RemoveEntityComponent(Entity* entity, std::string componentType)
+{
+
+}
+
+void Level::AddEntityComponent(std::vector<IComponent*>* componentsList, IComponent* component)
+{
+	componentsList->push_back(component);
+}
+
+void Level::RemoveEntityComponent(std::vector<IComponent*>* componentsList, IComponent* component)
+{
+	RemoveEntityComponent(GetComponentIndex(component->GetType()));
+}
+
+void Level::RemoveEntityComponent(std::vector<IComponent*>* componentsList, std::string componentType)
+{
+
+}
+void Entity::AddComponent(IComponent* component)
+{
+	components->push_back(component);
+}
+
+void Entity::RemoveComponent(IComponent* component)
+{
+	RemoveComponent(GetComponentIndex(component->GetType()));
+}
+
+void Entity::RemoveComponent(std::string type)
+{
+	RemoveComponent(GetComponentIndex(type));
+}
+
+void Entity::RemoveComponent(int16_t index)
+{
+	if (index >= 0) components->erase(components->begin() + index);
 }
