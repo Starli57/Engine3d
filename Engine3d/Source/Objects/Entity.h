@@ -8,25 +8,26 @@
 class Entity
 {
 public:
-	Entity(Level* level, std::string name);
+	Entity(std::string name);
 	~Entity();
 
-	void AddComponent(IComponent* component);
-	void RemoveComponent(IComponent* component);
-	void RemoveComponent(std::string type);
-	void RemoveComponent(int16_t index);
+	uint32_t GetUniqueId();
 
 	bool HasComponent(std::string type);
 	int16_t GetComponentIndex(std::string type);
-
 	IComponent* GetComponent(std::string type);
 
 	friend class Level;
 
 private:
-	Level* level;
+	uint32_t uniqueId;
 
 	std::string name;
 	std::vector<IComponent*>* components;
+
+	void AddComponent(IComponent* component);
+	void RemoveComponent(IComponent* component);
+	void RemoveComponent(std::string type);
+	void RemoveComponent(int16_t index);
 };
 

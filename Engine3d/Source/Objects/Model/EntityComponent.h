@@ -8,7 +8,7 @@ struct EntityComponent
 	Entity* entity;
 	IComponent* component;
 
-	EntityComponent(Entity* etity, IComponent* component)
+	EntityComponent(Entity* entity, IComponent* component)
 	{
 		this->entity = entity;
 		this->component = component;

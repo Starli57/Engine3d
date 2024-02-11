@@ -25,9 +25,9 @@ public:
 	void AddEntity(Entity* entity);
 	void RemoveEntity(Entity* entity);
 
-	void AddEntityComponent(Entity* entity, IComponent* component);
-	void RemoveEntityComponent(Entity* entity, IComponent* component);
-	void RemoveEntityComponent(Entity* entity, std::string componentType);
+	void AddComponent(Entity* entity, IComponent* component);
+	void RemoveComponent(Entity* entity, IComponent* component);
+	void RemoveComponent(Entity* entity, std::string componentType);
 
 private:
 	Rollback* rollback;

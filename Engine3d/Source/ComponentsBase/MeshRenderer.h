@@ -12,6 +12,8 @@ public:
 	MeshRenderer(Mesh* mesh);
 	~MeshRenderer();
 
+	void AddMesh(Mesh* mesh);
+	void DestroyMesh();
 	Mesh* GetMesh();
 
 	std::string GetType() override { return type; }

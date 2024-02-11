@@ -1,9 +1,15 @@
 #include "Pch.h"
-#include "Entity.h"
 
-Entity::Entity(Level* level, std::string name)
+#include "Entity.h"
+#include "Utilities/UniqueId.h"
+
+#include "spdlog/spdlog.h"
+
+Entity::Entity(std::string name)
 {
-	this->level = level;
+	this->uniqueId = UniqueId::GetId();
+	spdlog::info("Create Entity, id: " + uniqueId);
+
 	this->name = name;
 	this->components = new std::vector<IComponent*>();
 }

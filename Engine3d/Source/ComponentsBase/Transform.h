@@ -11,6 +11,7 @@
 class Transform : public IComponent
 {
 public:
+	Transform();
 	Transform(glm::vec3 position, glm::vec4 rotation, glm::vec3 scale);
 
 	UboModel GetUboModel();

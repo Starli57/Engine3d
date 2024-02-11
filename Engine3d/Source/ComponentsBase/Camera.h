@@ -12,7 +12,7 @@
 class Camera : public IComponent
 {
 public:
-	Camera(glm::vec3 position, glm::vec4 rotation, float pov, float screenAspectRatio);
+	Camera(float pov, float screenAspectRatio);
 	~Camera();
 
 	void UpdateScreenAspectRatio(float screenAspectRatio);
@@ -24,11 +24,9 @@ public:
 	void* GetComponent() override { return this; }
 
 private:
-	Transform* transform;
-
 	UboViewProjection uboViewProjection;
 
-	float pov;
+	float pov = 60;
 	float screenAspectRatio;
 
 	float zNear = 0.1f;

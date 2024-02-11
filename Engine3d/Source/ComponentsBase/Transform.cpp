@@ -1,6 +1,15 @@
 #include "Pch.h"
 #include "Transform.h"
 
+Transform::Transform()
+{
+	this->position = glm::vec3(0, 0, 0);
+	this->rotation = glm::vec4(0, 0, 0, 0);
+	this->scale = glm::vec3(1, 1, 1);
+
+	uboModel.model = glm::mat4(1.0f);
+}
+
 Transform::Transform(glm::vec3 position, glm::vec4 rotation, glm::vec3 scale)
 {
 	this->position = position;
