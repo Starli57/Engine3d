@@ -3,14 +3,14 @@
 #include <GLFW/glfw3.h>
 
 #include "ABuffer.h"
-#include "Rendering/Data/Mvp.h"
+#include "Rendering/Model/UboViewProjection.h"
 
 namespace AVulkan
 {
 	class UniformBufferVulkan
 	{
 	public:
-		UniformBufferVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice);
+		UniformBufferVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkDeviceSize bufferSize);
 		~UniformBufferVulkan();
 
 		VkBuffer buffer;

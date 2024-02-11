@@ -137,10 +137,22 @@ namespace AVulkan
         return ASwapChain().DoSupportSwapChain(device, surface);
     }
 
+    void APhysicalDevice::SetupDeviceProperties(VkPhysicalDevice& device, VkPhysicalDeviceProperties& properties) const
+    {
+        vkGetPhysicalDeviceProperties(device, &properties);
+    }
+
+    void APhysicalDevice::SetupDeviceLimits(VkPhysicalDevice& device, VkPhysicalDeviceLimits& limits) const
+    {
+        VkPhysicalDeviceProperties deviceProperties;
+        SetupDeviceProperties(device, deviceProperties);
+        limits = deviceProperties.limits;
+    }
+
     void APhysicalDevice::PrintDebugInformation(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface) const
     {
         VkPhysicalDeviceProperties deviceProperties;
-        vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
+        SetupDeviceProperties(physicalDevice, deviceProperties);
         spdlog::info("Rendering GPU: {0}", deviceProperties.deviceName);
 
         ASwapChain ASwapChain;

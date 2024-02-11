@@ -1,10 +1,8 @@
 #include "Pch.h"
 #include "Camera.h"
 
-Camera::Camera(glm::vec3 position, glm::vec4 rotation, float pov, float screenAspectRatio)
+Camera::Camera(float pov, float screenAspectRatio)
 {
-	transform = new Transform(position, rotation, glm::vec3(1, 1, 1));
-
 	this->pov = pov;
 
 	UpdateScreenAspectRatio(screenAspectRatio);

@@ -5,15 +5,14 @@
 #include <stack>
 #include <vector>
 
-#include "GraphicsPipeline.h"
-#include "Base/Level.h"
-#include "Data/SwapChainData.h"
+#include "Context/GraphicsPipeline.h"
+#include "Objects/Level.h"
+#include "Context/Device.h"
+#include "Model/SwapChainData.h"
 #include "Rendering/IRenderer.h"
-#include "Rendering/Data/Mesh.h"
+#include "Rendering/Model/Mesh.h"
 #include "Rendering/Vulkan/Mesh/MeshVulkan.h"
 #include "Builders/AValidationLayers.h"
-#include "Builders/APhysicalDevice.h"
-#include "Builders/ALogicalDevice.h"
 #include "Builders/AWindowsSurface.h"
 #include "Builders/AInstance.h"
 #include "Builders/AImageView.h"
@@ -48,13 +47,10 @@ namespace AVulkan
 		Rollback* rollback;
 		GLFWwindow* window;
 		Level* level;
+		Device* device;
 
 		VkInstance instance;
-		VkPhysicalDevice physicalDevice;
-		VkDevice logicalDevice;
 		VkSurfaceKHR windowSurface;
-		VkQueue graphicsQueue;
-		VkQueue presentationQueue;
 		VkRenderPass renderPass;
 		VkCommandPool commandPool;
 		VkDescriptorSetLayout descriptorSetLayout;
@@ -78,8 +74,7 @@ namespace AVulkan
 		bool needResizeWindow = false;
 
 		void CreateInstance();
-		void SelectPhysicalRenderingDevice();
-		void CreateLogicalDevice();
+		void CreateDevice();
 		void CreateWindowSurface();
 		void CreateSwapChain();
 		void CreateSwapChainImageViews();
@@ -99,6 +94,6 @@ namespace AVulkan
 		//todo: replace
 		void CreateUniformBuffers();
 		void DisposeUniformBuffers();
-		void UpdateUniformBuffer(uint32_t imageIndex);
+		void UpdateUniformBuffers(uint32_t imageIndex);
 	};
 }

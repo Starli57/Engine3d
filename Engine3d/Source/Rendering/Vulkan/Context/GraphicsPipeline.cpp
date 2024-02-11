@@ -3,7 +3,7 @@
 #include "Rendering/Vulkan/Buffers/AVertexBuffer.h"
 
 #include "GraphicsPipeline.h"
-#include "Builders/AShaderModule.h"
+#include "Rendering/Vulkan/Builders/AShaderModule.h"
 
 #include "spdlog/spdlog.h"
 

@@ -23,12 +23,12 @@ std::vector<uint32_t>* Mesh::GetIndices()
 	return indices;
 }
 
-uint32_t Mesh::GetVerticesCount()
+size_t Mesh::GetVerticesCount()
 {
 	return vertices->size();
 }
 
-uint32_t Mesh::GetIndicesCount()
+size_t Mesh::GetIndicesCount()
 {
 	return indices->size();
 }

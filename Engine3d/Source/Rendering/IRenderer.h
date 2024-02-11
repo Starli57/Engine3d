@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Rendering/Data/Mesh.h"
+#include "Rendering/Model/Mesh.h"
 
 class IRenderer
 {
