@@ -2,19 +2,19 @@
 
 #include <vector>
 
-#include "Vertex.h"
+#include "Rendering/Model/Vertex.h"
 
 class Mesh
 {
 public:
-	Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices);
-	~Mesh();
-
 	std::vector<Vertex>* GetVertices();
 	std::vector<uint32_t>* GetIndices();
 
-	uint32_t GetVerticesCount();
-	uint32_t GetIndicesCount();
+	size_t GetVerticesCount();
+	size_t GetIndicesCount();
+
+	Mesh(std::vector<Vertex>* vertices, std::vector<uint32_t>* indices);
+	~Mesh();
 
 private:
 	std::vector<Vertex>* vertices;

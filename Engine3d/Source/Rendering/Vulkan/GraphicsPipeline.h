@@ -5,21 +5,22 @@
 #include <array>
 
 #include "Architecture/Rollback/Rollback.h"
-#include "Rendering/Data/Vertex.h"
+#include "Rendering/Model/Vertex.h"
 
 namespace AVulkan
 {
 	class GraphicsPipeline
 	{
 	public:
+		VkPipeline GetPipeline();
+		VkPipelineLayout GetLayout();
+
 		GraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
 		~GraphicsPipeline();
 
 		void Create(VkDescriptorSetLayout& descriptorSetLayout);
 		void Dispose();
 
-		VkPipeline GetPipeline();
-		VkPipelineLayout GetLayout();
 
 	private:
 		Rollback* rollback;

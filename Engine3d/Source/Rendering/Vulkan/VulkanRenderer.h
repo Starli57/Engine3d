@@ -9,7 +9,7 @@
 #include "Base/Level.h"
 #include "Data/SwapChainData.h"
 #include "Rendering/IRenderer.h"
-#include "Rendering/Data/Mesh.h"
+#include "Rendering/Model/Mesh.h"
 #include "Rendering/Vulkan/Mesh/MeshVulkan.h"
 #include "Builders/AValidationLayers.h"
 #include "Builders/APhysicalDevice.h"

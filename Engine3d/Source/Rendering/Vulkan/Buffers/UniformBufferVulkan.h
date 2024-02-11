@@ -3,19 +3,20 @@
 #include <GLFW/glfw3.h>
 
 #include "ABuffer.h"
-#include "Rendering/Data/Mvp.h"
+#include "Rendering/Model/Mvp.h"
 
 namespace AVulkan
 {
 	class UniformBufferVulkan
 	{
 	public:
-		UniformBufferVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice);
-		~UniformBufferVulkan();
-
 		VkBuffer buffer;
 		VkDeviceMemory bufferMemory;
 		void* bufferMapped;
+
+		UniformBufferVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice);
+		~UniformBufferVulkan();
+
 
 	private:
 		VkDevice* logicalDevice;
