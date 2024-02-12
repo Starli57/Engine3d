@@ -1,5 +1,6 @@
 #include "Pch.h"
 #include "Engine.h"
+#include "entt.hpp"
 
 Engine::Engine()
 {
@@ -7,10 +8,10 @@ Engine::Engine()
 
 	engineRollback = new Rollback();
 
-	level = new Level(engineRollback);
+	level = new Level(ecs, engineRollback);
 	level->LoadLevel();
 
-	renderer = new Renderer(engineRollback, level);
+	renderer = new Renderer(ecs, engineRollback);
 	renderer->Init();
 }
 

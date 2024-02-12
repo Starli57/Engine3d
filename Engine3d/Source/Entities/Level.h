@@ -4,27 +4,26 @@
 
 #include <glm/glm.hpp>
 
+#include "Entity.h"
 #include "Architecture/Rollback/Rollback.h"
 #include "Rendering/Model/Vertex.h"
 #include "Rendering/Model/Mesh.h"
-#include "BaseComponents/Camera.h"
+#include "Components/Camera.h"
+
+#include <entt.hpp>
 
 class Level
 {
 public:
-	std::vector<Mesh*>* GetMeshes();
-	Camera* GetCamera();
-
-	Level(Rollback* rollback);
+	Level(entt::registry& ecs, Rollback* rollback);
 	~Level();
 
 	void LoadLevel();
 	void UnloadLevel();
 
 private:
+	entt::registry* ecs;
 	Rollback* rollback;
 
-	std::vector<Mesh*>* meshes;
-	Camera* camera;
 };
 

@@ -2,10 +2,10 @@
 #include "Renderer.h"
 #include "spdlog/spdlog.h"
 
-Renderer::Renderer(Rollback* mainRollback, Level* level) 
+Renderer::Renderer(entt::registry& ecs, Rollback* mainRollback)
 {
+	this->ecs = &ecs;
 	this->rollback = new Rollback(*mainRollback);
-	this->level = level;
 }
 
 Renderer::~Renderer()
@@ -36,7 +36,7 @@ void Renderer::Init()
 		glfwSetWindowUserPointer(window, this);
 		glfwSetFramebufferSizeCallback(window, OnFramebufferResized);
 
-		renderer = new VulkanRenderer(window, level, rollback);
+		renderer = new VulkanRenderer(ecs, window, rollback);
 		renderer->Init();
 	}
 	catch (const std::exception& e)
@@ -59,7 +59,7 @@ void Renderer::Run()
 	spdlog::info("Window closed");
 }
 
-void Renderer::AddMesh(Mesh& mesh)
+void Renderer::AddMesh(Ref<Mesh> mesh)
 {
 	renderer->AddMesh(mesh);
 }
