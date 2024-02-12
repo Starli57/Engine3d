@@ -8,9 +8,9 @@
 #include "Macroses/Ref.h"
 #include "spdlog/spdlog.h"
 
-Level::Level(entt::registry ecsReg, Rollback* rollback)
+Level::Level(entt::registry& ecs, Rollback* rollback)
 {
-	ecs = ecsReg;
+	this->ecs = &ecs;
 	this->rollback = rollback;
 }
 
@@ -35,7 +35,7 @@ void Level::LoadLevel()
 	indices->push_back(1);
 	indices->push_back(2);
 
-	auto entity = ecs.create();
+	auto entity = ecs->create();
 
 	auto triangleMesh1 = CreateRef<Mesh>(vertices, indices);
 	auto triangle1 = CreateRef<Entity>(ecs);

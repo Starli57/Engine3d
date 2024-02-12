@@ -13,7 +13,7 @@ class Renderer
 public:
 	GLFWwindow* window;
 
-	Renderer(entt::registry ecs, Rollback* engineRollback);
+	Renderer(entt::registry& ecs, Rollback* engineRollback);
 	~Renderer();
 
 	void Init();
@@ -21,7 +21,7 @@ public:
 	void AddMesh(Ref<Mesh> mesh);
 
 private: 
-	entt::registry ecs;
+	entt::registry* ecs;
 	IRenderer* renderer;
 
 	Rollback* rollback;

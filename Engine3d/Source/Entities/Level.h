@@ -15,14 +15,14 @@
 class Level
 {
 public:
-	Level(entt::registry ecsReg, Rollback* rollback);
+	Level(entt::registry& ecs, Rollback* rollback);
 	~Level();
 
 	void LoadLevel();
 	void UnloadLevel();
 
 private:
-	entt::registry ecs;
+	entt::registry* ecs;
 	Rollback* rollback;
 
 };
