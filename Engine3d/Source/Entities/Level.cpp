@@ -1,22 +1,17 @@
 #include "Pch.h"
 #include "Level.h"
 
+#include "Components/Camera.h"
+#include "Components/Transform.h"
+#include "Components/MeshContainer.h"
+
+#include "Macroses/Ref.h"
 #include "spdlog/spdlog.h"
 
-std::vector<Mesh*>* Level::GetMeshes()
+Level::Level(entt::registry ecsReg, Rollback* rollback)
 {
-	return meshes;
-}
-
-Camera* Level::GetCamera()
-{
-	return camera;
-}
-
-Level::Level(Rollback* rollback)
-{
+	ecs = ecsReg;
 	this->rollback = rollback;
-	meshes = new std::vector<Mesh*>();
 }
 
 Level::~Level()
@@ -28,33 +23,45 @@ void Level::LoadLevel()
 {
 	spdlog::info("Load level");
 
-	std::vector<Vertex>* vertices = new std::vector<Vertex>();
+	//mesh1
+	auto vertices = new std::vector<Vertex>();
 	vertices->reserve(3);
 	vertices->push_back(Vertex(glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	vertices->push_back(Vertex(glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 	vertices->push_back(Vertex(glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 
-	std::vector<uint32_t>* indices = new std::vector<uint32_t>();
+	auto indices = new std::vector<uint32_t>();
 	indices->push_back(0);
 	indices->push_back(1);
 	indices->push_back(2);
 
-	meshes->push_back(new Mesh(vertices, indices));
+	auto entity = ecs.create();
 
-	std::vector<Vertex>* vertices2 = new std::vector<Vertex>();
+	auto triangleMesh1 = CreateRef<Mesh>(vertices, indices);
+	auto triangle1 = CreateRef<Entity>(ecs);
+	triangle1->AddComponent<Transform>();
+	triangle1->AddComponent<MeshContainer>(triangleMesh1);
+
+	//mesh2
+	auto vertices2 = new std::vector<Vertex>();
 	vertices2->reserve(3);
 	vertices2->push_back(Vertex(glm::vec3(1.0f, -0.5f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	vertices2->push_back(Vertex(glm::vec3(1.5f, 0.5f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 	vertices2->push_back(Vertex(glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 
-	std::vector<uint32_t>* indices2 = new std::vector<uint32_t>();
+	auto indices2 = new std::vector<uint32_t>();
 	indices2->push_back(0);
 	indices2->push_back(1);
 	indices2->push_back(2);
 
-	meshes->push_back(new Mesh(vertices2, indices2));
+	auto triangleMesh2 = CreateRef<Mesh>(vertices2, indices2);
+	auto triangle2 = CreateRef<Entity>(ecs);
+	triangle2->AddComponent<Transform>();
+	triangle2->AddComponent<MeshContainer>(triangleMesh2);
 
-	camera = new Camera(glm::vec3(1, 1, 5), glm::vec4(0, 0, 0, 0), 60, 1);
+	//camera1
+	auto cameraEntity = CreateRef<Entity>(ecs);
+	cameraEntity->AddComponent<Camera>(60, 1);//todo: set real screen aspect ration
 
 	rollback->Add([this]() { UnloadLevel(); });
 }
@@ -62,13 +69,5 @@ void Level::LoadLevel()
 void Level::UnloadLevel()
 {
 	spdlog::info("Unload level");
-
-	delete camera;
-
-	auto size = meshes->size();
-	for (int i = 0; i < size; i++)
-	{
-		delete meshes->at(i);
-	}
-	delete meshes;
+	//todo: add unload logic
 }

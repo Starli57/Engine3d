@@ -11,7 +11,7 @@ class Camera
 public:
 	UboViewProjection GetUboViewProjection();
 
-	Camera(glm::vec3 position, glm::vec4 rotation, float pov, float screenAspectRatio);
+	Camera(float pov, float screenAspectRatio);
 	~Camera();
 
 	void UpdateScreenAspectRatio(float screenAspectRatio);
@@ -23,8 +23,8 @@ private:
 
 	UboViewProjection uboViewProjection;
 
-	float pov;
-	float screenAspectRatio;
+	float pov = 60;
+	float screenAspectRatio = 1;
 
 	float zNear = 0.1f;
 	float zFar = 1000;

@@ -6,11 +6,11 @@
 
 namespace AVulkan
 {
-	VulkanRenderer::VulkanRenderer(GLFWwindow* glfwWindow, Level* level, Rollback* vulkanRollback)
+	VulkanRenderer::VulkanRenderer(entt::registry* ecs, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
+		this->ecs = ecs;
 		this->rollback = new Rollback(*vulkanRollback);
 		this->window = glfwWindow;
-		this->level = level;
 	}
 
 	VulkanRenderer::~VulkanRenderer()
@@ -82,12 +82,14 @@ namespace AVulkan
 		this->drawMeshes = new std::vector<MeshVulkan*>();
 
 		spdlog::info("Create render meshes");
-		auto meshes = level->GetMeshes();
-		auto count = meshes->size();
-		for (int i = 0; i < count; i++)
+		auto meshContainers = ecs->view<Transform, MeshContainer>();
+		for (auto entity : meshContainers)
 		{
-			AddMesh(*meshes->at(i));
+			auto [transform, meshConatiner] = meshContainers.get<Transform, MeshContainer>(entity);
+			auto mesh = meshConatiner.GetMesh();
+			AddMesh(mesh);
 		}
+
 		rollback->Add([this]() { CleanMeshes(); });
 	}
 
@@ -166,10 +168,12 @@ namespace AVulkan
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-		auto camera = level->GetCamera();
-		camera->UpdateScreenAspectRatio(swapChainData.extent.width / (float)swapChainData.extent.height);
-		camera->UpdateUboViewProjection();
-		auto mvp = camera->GetUboViewProjection();
+		//todo: find most relevant camera
+		auto cameraEntities = ecs->view<Camera>();
+		auto [mainCamera] = cameraEntities.get(cameraEntities.front());
+		mainCamera.UpdateScreenAspectRatio(swapChainData.extent.width / (float)swapChainData.extent.height);
+		mainCamera.UpdateUboViewProjection();
+		auto mvp = mainCamera.GetUboViewProjection();
 
 		//todo: replace to separated uvo
 		mvp.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -182,7 +186,7 @@ namespace AVulkan
 		vkDeviceWaitIdle(logicalDevice);
 	}
 
-	void VulkanRenderer::AddMesh(Mesh& mesh)
+	void VulkanRenderer::AddMesh(Ref<Mesh> mesh)
 	{
 		drawMeshes->push_back(new MeshVulkan(physicalDevice, logicalDevice, swapChainData, graphicsQueue, commandPool, mesh));
 	}

@@ -8,6 +8,7 @@
 #include "Rendering/Model/Vertex.h"
 #include "Rendering/Vulkan/Data/SwapChainData.h"
 #include "Rendering/Vulkan/Buffers/UniformBufferVulkan.h"
+#include "Macroses/Ref.h"
 
 namespace AVulkan
 {
@@ -21,7 +22,7 @@ namespace AVulkan
 		VkBuffer GetIndexBuffer();
 
 		MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData, 
-			VkQueue& graphicsQueue, VkCommandPool& commandPool, Mesh& mesh);
+			VkQueue& graphicsQueue, VkCommandPool& commandPool, Ref<Mesh> mesh);
 		~MeshVulkan();
 
 
