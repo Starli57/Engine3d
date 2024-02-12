@@ -11,7 +11,7 @@ Engine::Engine()
 	level = new Level(ecs, engineRollback);
 	level->LoadLevel();
 
-	renderer = new Renderer(ecs, engineRollback);
+	renderer = new Renderer(ecs, *engineRollback);
 	renderer->Init();
 }
 

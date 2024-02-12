@@ -6,12 +6,14 @@
 #include "Transform.h"
 #include "Rendering/Model/Mvp.h"
 
+#include "Macroses/Ref.h"
+
 class Camera
 {
 public:
 	UboViewProjection GetUboViewProjection();
 
-	Camera(float pov, float screenAspectRatio);
+	Camera(Ref<Transform> transform, float pov, float screenAspectRatio);
 	~Camera();
 
 	void UpdateScreenAspectRatio(float screenAspectRatio);
@@ -19,7 +21,7 @@ public:
 
 
 private:
-	Transform* transform;
+	Ref<Transform> transform;
 
 	UboViewProjection uboViewProjection;
 

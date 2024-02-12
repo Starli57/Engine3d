@@ -13,7 +13,7 @@ class Renderer
 public:
 	GLFWwindow* window;
 
-	Renderer(entt::registry& ecs, Rollback* engineRollback);
+	Renderer(entt::registry& ecs, Rollback& engineRollback);
 	~Renderer();
 
 	void Init();
