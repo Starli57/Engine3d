@@ -10,12 +10,14 @@ Externals = {}
 Externals["Glfw"] = "Externals/GLFW"
 Externals["Glm"] = "Externals/Glm"
 Externals["SpdLog"] = "Externals/SpdLog"
+Externals["Entt"] = "Externals/Entt"
 
 Includes = {}
 Includes["Glfw"] = "%{Externals.Glfw}/include"
 Includes["Glm"] = "%{Externals.Glm}"
 Includes["Vulkan"] = "%{VulkanSdk}/Include"
 Includes["SpdLog"] = "%{Externals.SpdLog}/include"
+Includes["Entt"] = "%{Externals.Entt}/single_include/entt"
 
 LibFolders = {}
 LibFolders["Vulkan"] = "%{VulkanSdk}/Lib"
@@ -45,6 +47,7 @@ project "ExampleProject"
 		"%{Includes.Glm}",
 		"%{Includes.Vulkan}",
 		"%{Includes.SpdLog}",
+		"%{Includes.Entt}",
 		"Engine3d/Source"
 	}
 	
@@ -105,7 +108,8 @@ project "Engine3d"
 		"%{Includes.Glfw}",
 		"%{Includes.Glm}",
 		"%{Includes.Vulkan}",
-		"%{Includes.SpdLog}"
+		"%{Includes.SpdLog}",
+		"%{Includes.Entt}"
 	}
 
 	links

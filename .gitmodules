@@ -7,3 +7,6 @@
 [submodule "Externals/SpdLog"]
 	path = Externals/SpdLog
 	url = git@github.com:gabime/spdlog.git
+[submodule "Externals/Entt"]
+	path = Externals/Entt
+	url = git@github.com:skypjack/entt.git

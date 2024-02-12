@@ -10,12 +10,13 @@ namespace AVulkan
 	class UniformBufferVulkan
 	{
 	public:
-		UniformBufferVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkDeviceSize bufferSize);
-		~UniformBufferVulkan();
-
 		VkBuffer buffer;
 		VkDeviceMemory bufferMemory;
 		void* bufferMapped;
+
+		UniformBufferVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkDeviceSize bufferSize);
+		~UniformBufferVulkan();
+
 
 	private:
 		VkDevice* logicalDevice;

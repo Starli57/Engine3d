@@ -12,14 +12,15 @@ namespace AVulkan
 	class GraphicsPipeline
 	{
 	public:
+		VkPipeline GetPipeline();
+		VkPipelineLayout GetLayout();
+
 		GraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
 		~GraphicsPipeline();
 
 		void Create(VkDescriptorSetLayout& descriptorSetLayout);
 		void Dispose();
 
-		VkPipeline GetPipeline();
-		VkPipelineLayout GetLayout();
 
 	private:
 		Rollback* rollback;

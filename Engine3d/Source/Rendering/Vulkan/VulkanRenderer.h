@@ -6,8 +6,7 @@
 #include <vector>
 
 #include "Context/GraphicsPipeline.h"
-#include "Objects/Level.h"
-#include "Context/Device.h"
+#include "Entities/Level.h"
 #include "Model/SwapChainData.h"
 #include "Rendering/IRenderer.h"
 #include "Rendering/Model/Mesh.h"
@@ -25,28 +24,32 @@
 #include "Builders/ADescriptorSet.h"
 #include "Buffers/ACommandBuffer.h"
 #include "Architecture/Rollback/Rollback.h"
+#include "Components/Transform.h"
+#include "Components/MeshContainer.h"
+#include "Components/Camera.h"
 
 namespace AVulkan
 {
+
 	class VulkanRenderer : public IRenderer
 	{
 	public:
-		VulkanRenderer(GLFWwindow* window, Level* level, Rollback* vulkanRollback);
+		VulkanRenderer(entt::registry* ecs, GLFWwindow* window, Rollback* vulkanRollback);
 		virtual ~VulkanRenderer() override;
 
 		void Init() override;
 		void Render() override;
 		void FinanilizeRenderOperations() override;
 
-		void AddMesh(Mesh& mesh) override;
+		void AddMesh(Ref<Mesh> mesh) override;
 		void CleanMeshes() override;
 
 		void OnFramebufferResized() override;
 
 	private:
+		entt::registry* ecs;
 		Rollback* rollback;
 		GLFWwindow* window;
-		Level* level;
 		Device* device;
 
 		VkInstance instance;

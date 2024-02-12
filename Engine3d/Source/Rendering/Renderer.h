@@ -3,7 +3,8 @@
 #include "IRenderer.h"
 #include "Vulkan/VulkanRenderer.h"
 #include "Architecture/Rollback/Rollback.h"
-#include "Objects/Level.h"
+#include "Entities/Level.h"
+#include "Macroses/Ref.h"
 
 using namespace AVulkan;
 
@@ -12,16 +13,16 @@ class Renderer
 public:
 	GLFWwindow* window;
 
-	Renderer(Rollback* engineRollback, Level* level);
+	Renderer(entt::registry& ecs, Rollback& engineRollback);
 	~Renderer();
 
 	void Init();
 	void Run();
-	void AddMesh(Mesh& mesh);
+	void AddMesh(Ref<Mesh> mesh);
 
 private: 
+	entt::registry* ecs;
 	IRenderer* renderer;
-	Level* level;
 
 	Rollback* rollback;
 
