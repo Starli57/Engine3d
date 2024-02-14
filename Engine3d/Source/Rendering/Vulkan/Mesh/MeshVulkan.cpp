@@ -29,7 +29,7 @@ namespace AVulkan
 
 	MeshVulkan::~MeshVulkan()
 	{
-		AVertexBuffer().Dispose(*logicalDevice, vertexBuffer, vertexBufferMemory);
 		AIndexBuffer().Dispose(*logicalDevice, indexBuffer, indexBufferMemory);
+		AVertexBuffer().Dispose(*logicalDevice, vertexBuffer, vertexBufferMemory);
 	}
 }

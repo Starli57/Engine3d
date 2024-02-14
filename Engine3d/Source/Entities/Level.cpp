@@ -35,8 +35,6 @@ void Level::LoadLevel()
 	indices->push_back(1);
 	indices->push_back(2);
 
-	auto entity = ecs->create();
-
 	auto triangleMesh1 = CreateRef<Mesh>(vertices, indices);
 	auto triangle1 = CreateRef<Entity>(ecs);
 	triangle1->AddComponent<Transform>();

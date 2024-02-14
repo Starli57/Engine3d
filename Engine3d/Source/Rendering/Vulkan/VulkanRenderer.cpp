@@ -173,9 +173,25 @@ namespace AVulkan
 		auto [mainCamera] = cameraEntities.get(cameraEntities.front());
 		mainCamera.UpdateScreenAspectRatio(swapChainData.extent.width / (float)swapChainData.extent.height);
 		mainCamera.UpdateUboViewProjection();
-		auto viewProjection = mainCamera.GetUboViewProjection();
 
+		auto viewProjection = mainCamera.GetUboViewProjection();
 		memcpy(device->vpUniformBuffers->at(imageIndex)->bufferMapped, &viewProjection, sizeof(UboViewProjection));
+
+		auto meshContainers = ecs->view<Transform, MeshContainer>();
+		int i = 0;
+		for (auto entity : meshContainers)
+		{
+			auto [transform, meshConatiner] = meshContainers.get<Transform, MeshContainer>(entity);
+			auto uboModel = transform.GetUboModel();
+			////
+			UboModel* modelPlacement = (UboModel*)((uint64_t)device->GetModelUniformTransfer() + (i * device->GetModelUniformAligment()));
+			*modelPlacement = uboModel;
+
+			i++;
+		}
+
+		memcpy(device->modelUniformBuffers->at(imageIndex)->bufferMapped, device->GetModelUniformTransfer(),
+			device->GetModelUniformAligment() * drawMeshes->size());
 	}
 
 	void VulkanRenderer::FinanilizeRenderOperations()
