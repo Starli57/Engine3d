@@ -5,12 +5,12 @@
 
 namespace AVulkan
 {
-	void AIndexBuffer::Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, std::vector<uint32_t>& indices,
+	void AIndexBuffer::Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<std::vector<uint32_t>> indices,
         VkBuffer& indexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool) const
 	{
         spdlog::info("Create Index buffer");
 
-        VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+        VkDeviceSize bufferSize = sizeof(indices->at(0)) * indices->size();
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
@@ -26,7 +26,7 @@ namespace AVulkan
 
         void* data;
         vkMapMemory(logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, indices.data(), (size_t)bufferSize);
+        memcpy(data, indices->data(), (size_t)bufferSize);
         vkUnmapMemory(logicalDevice, stagingBufferMemory);
 
         bufferInterface.Create(physicalDevice, logicalDevice, bufferSize, distUsageFlags, distMemoryFlags, indexBuffer, bufferMemory);

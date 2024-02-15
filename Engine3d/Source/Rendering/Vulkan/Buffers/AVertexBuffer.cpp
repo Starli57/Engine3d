@@ -5,12 +5,12 @@
 
 namespace AVulkan
 {
-	void AVertexBuffer::Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, std::vector<Vertex>& vertices, 
+	void AVertexBuffer::Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<std::vector<Vertex>> vertices, 
 		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool) const
 	{
 		spdlog::info("Create Vertex Buffer");
 
-		uint64_t bufferSize = sizeof(Vertex) * vertices.size();
+		uint64_t bufferSize = sizeof(Vertex) * vertices->size();
 
 		VkBufferUsageFlags stagingUsageFlags = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 		VkBufferUsageFlags distUsageFlags    = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
@@ -27,7 +27,7 @@ namespace AVulkan
 
 		void* data;
 		vkMapMemory(logicalDevice, stagingMemory, 0, bufferSize, 0, &data);
-		memcpy(data, vertices.data(), (size_t)bufferSize);
+		memcpy(data, vertices->data(), (size_t)bufferSize);
 		vkUnmapMemory(logicalDevice, stagingMemory);
 
 		bufferInterface.Create(physicalDevice, logicalDevice, bufferSize,

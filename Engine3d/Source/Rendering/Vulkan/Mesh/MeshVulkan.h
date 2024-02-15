@@ -28,8 +28,8 @@ namespace AVulkan
 
 	private:
 		VkDevice* logicalDevice;
-		std::vector<Vertex>* vertices;
-		std::vector<uint32_t>* indices;
+		Ref<std::vector<Vertex>> vertices;
+		Ref<std::vector<uint32_t>> indices;
 
 		VkBuffer vertexBuffer;
 		VkDeviceMemory vertexBufferMemory;

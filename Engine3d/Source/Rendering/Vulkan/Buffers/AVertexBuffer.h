@@ -1,6 +1,8 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
+
+#include "Macroses/Ref.h"
 #include "Rendering/Model/Vertex.h"
 
 namespace AVulkan
@@ -11,7 +13,7 @@ namespace AVulkan
 		VkVertexInputBindingDescription GetBindingDescription();
 		std::array<VkVertexInputAttributeDescription, 2> GetAttributeDescriptions();
 
-		void Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, std::vector<Vertex>& vertices,
+		void Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<std::vector<Vertex>> vertices,
 			VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool) const;
 
 		void Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const;
