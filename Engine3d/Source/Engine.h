@@ -3,7 +3,7 @@
 #include "Defines/DllDecDefines.h"
 
 #include "Rendering/Renderer.h"
-#include "Entities/Level.h"
+#include "Entities/World.h"
 
 #include "Architecture/Rollback/Rollback.h"
 
@@ -20,7 +20,7 @@ private:
 
 	Rollback* engineRollback;
 
-	Level* level;
+	World* world;
 
 	entt::registry ecs;
 

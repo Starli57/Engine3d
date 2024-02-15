@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "Context/GraphicsPipeline.h"
-#include "Entities/Level.h"
+#include "Entities/World.h"
 #include "Model/SwapChainData.h"
 #include "Rendering/IRenderer.h"
 #include "Rendering/Model/Mesh.h"

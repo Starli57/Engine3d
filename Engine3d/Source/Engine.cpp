@@ -8,8 +8,8 @@ Engine::Engine()
 
 	engineRollback = new Rollback();
 
-	level = new Level(ecs, engineRollback);
-	level->LoadLevel();
+	world = new World(ecs, engineRollback);
+	world->LoadLevel();
 
 	renderer = new Renderer(ecs, *engineRollback);
 	renderer->Init();

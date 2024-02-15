@@ -119,13 +119,13 @@ namespace AVulkan
 		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData.swapChain, frameSyncTimeout,
 			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 
-		UpdateUniformBuffers(frame);
 
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(swapChainData.commandBuffers[frame], 0);
 		ACommandBuffer().Record(*device, frame, swapChainData.frameBuffers[imageIndex],
 			renderPass, swapChainData, *graphicsPipeline, *drawMeshes);
 
+		UpdateUniformBuffers(frame);
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
 		VkSubmitInfo submitInfo{};

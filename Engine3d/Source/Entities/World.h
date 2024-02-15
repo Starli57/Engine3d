@@ -12,11 +12,11 @@
 
 #include <entt.hpp>
 
-class Level
+class World
 {
 public:
-	Level(entt::registry& ecs, Rollback* rollback);
-	~Level();
+	World(entt::registry& ecs, Rollback* rollback);
+	~World();
 
 	void LoadLevel();
 	void UnloadLevel();
