@@ -6,16 +6,16 @@
 
 #include "Entity.h"
 #include "Architecture/Rollback/Rollback.h"
+#include "Rendering/IRenderer.h"
 #include "Rendering/Model/Vertex.h"
 #include "Rendering/Model/Mesh.h"
 #include "Components/Camera.h"
-
 #include <entt.hpp>
 
 class Level
 {
 public:
-	Level(Ref<entt::registry> ecs, Rollback* rollback);
+	Level(Ref<entt::registry> ecs, IRenderer* renderer, Rollback* rollback);
 	~Level();
 
 	void LoadLevel();
@@ -23,6 +23,7 @@ public:
 
 private:
 	Ref<entt::registry> ecs;
+	IRenderer* renderer;
 	Rollback* rollback;
 
 };

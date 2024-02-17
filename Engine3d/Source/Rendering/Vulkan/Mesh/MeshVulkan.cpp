@@ -10,15 +10,11 @@ namespace AVulkan
 	VkBuffer MeshVulkan::GetVertexBuffer() { return vertexBuffer; }
 	VkBuffer MeshVulkan::GetIndexBuffer()  { return indexBuffer; }
 
-	uint32_t MeshVulkan::GetVertexCount() { return static_cast<uint32_t>(vertices->size()); }
-	uint32_t MeshVulkan::GetIndicesCount() { return static_cast<uint32_t>(indices->size()); }
-
 	MeshVulkan::MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData, 
-		VkQueue& graphicsQueue, VkCommandPool& commandPool, Ref<Mesh> mesh)
+		VkQueue& graphicsQueue, VkCommandPool& commandPool, 
+		Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) : Mesh(vertices, indices)
 	{
 		this->logicalDevice = &logicalDevice;
-		this->vertices = mesh->GetVertices();
-		this->indices = mesh->GetIndices();
 
 		AVertexBuffer().Create(physicalDevice, logicalDevice, vertices, vertexBuffer, vertexBufferMemory, 
 			graphicsQueue, commandPool);

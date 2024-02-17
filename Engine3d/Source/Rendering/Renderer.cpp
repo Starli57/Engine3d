@@ -21,7 +21,7 @@ void Renderer::Init()
 	try
 	{
 		window = glfwCreateWindow(1000, 1000, "Engine window", nullptr, nullptr);
-		if (window == nullptr) throw std::runtime_error("glfw window can't be created");
+		if (window == nullptr) throw std::runtime_error("GLFW window can't be created");
 
 		rollback->Add([this]()
 		{
@@ -56,11 +56,6 @@ void Renderer::Run()
 	}
 	renderer->FinanilizeRenderOperations(); 
 	spdlog::info("Window closed");
-}
-
-void Renderer::AddMesh(Ref<Mesh> mesh)
-{
-	renderer->AddMesh(mesh);
 }
 
 void Renderer::OnFramebufferResized(GLFWwindow* window, int width, int height)

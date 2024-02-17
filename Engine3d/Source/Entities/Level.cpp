@@ -8,9 +8,10 @@
 
 #include "spdlog/spdlog.h"
 
-Level::Level(Ref<entt::registry> ecs, Rollback* rollback)
+Level::Level(Ref<entt::registry> ecs, IRenderer* renderer, Rollback* rollback)
 {
 	this->ecs = ecs;
+	this->renderer = renderer;
 	this->rollback = new Rollback("Level", *rollback);
 }
 
@@ -35,9 +36,7 @@ void Level::LoadLevel()
 	indices->push_back(1);
 	indices->push_back(2);
 
-	auto entity = ecs->create();
-
-	auto triangleMesh1 = CreateRef<Mesh>(vertices, indices);
+	auto triangleMesh1 = renderer->CreateMesh(vertices, indices);
 	auto triangle1 = CreateRef<Entity>(ecs);
 	triangle1->AddComponent<Transform>(glm::vec3(-1, 0, 0), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
 	triangle1->AddComponent<MeshContainer>(triangleMesh1);
@@ -54,7 +53,7 @@ void Level::LoadLevel()
 	indices2->push_back(1);
 	indices2->push_back(2);
 
-	auto triangleMesh2 = CreateRef<Mesh>(vertices2, indices2);
+	auto triangleMesh2 = renderer->CreateMesh(vertices2, indices2);
 	auto triangle2 = CreateRef<Entity>(ecs);
 	triangle2->AddComponent<Transform>(glm::vec3(1, 0, 0), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
 	triangle2->AddComponent<MeshContainer>(triangleMesh2);
@@ -70,4 +69,5 @@ void Level::LoadLevel()
 void Level::UnloadLevel()
 {
 	spdlog::info("Unload level");
+	ecs->clear();
 }

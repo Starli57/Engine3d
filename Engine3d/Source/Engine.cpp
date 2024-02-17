@@ -13,13 +13,13 @@ Engine::Engine()
 
 	ecs = CreateRef<entt::registry>();
 
-	level = new Level(ecs, engineRollback);
-	level->LoadLevel();
-	engineRollback->Add([this] { delete level; });
-
 	renderer = new Renderer(ecs, *engineRollback);
 	renderer->Init();
 	engineRollback->Add([this] { delete renderer; });
+
+	level = new Level(ecs, renderer->GetSpecificRenderer(), engineRollback);
+	level->LoadLevel();
+	engineRollback->Add([this] { delete level; });
 
 	spdlog::info("--Engine init finished--");
 }

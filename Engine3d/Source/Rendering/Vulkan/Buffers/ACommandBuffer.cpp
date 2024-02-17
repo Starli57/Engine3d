@@ -23,8 +23,8 @@ namespace AVulkan
 		}
 	}
 
-	void ACommandBuffer::Record(uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
-		SwapChainData& swapChainData, GraphicsPipeline& pipeline, std::vector<MeshVulkan*>& meshes) const
+	void ACommandBuffer::Record(Ref<entt::registry> ecs, uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
+		SwapChainData& swapChainData, GraphicsPipeline& pipeline) const
 	{
 		auto commandBuffer = swapChainData.commandBuffers.at(frame);
 
@@ -56,13 +56,20 @@ namespace AVulkan
 		{
 			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipeline());
 
-			for (int i = 0; i < meshes.size(); i++)
+			auto meshContainers = ecs->view<Transform, MeshContainer>();
+			for (auto entity : meshContainers)
 			{
-				auto mesh = meshes.at(i);
-				VkBuffer vertexBuffers[] = { mesh->GetVertexBuffer() };
+				auto [transform, meshConatiner] = meshContainers.get<Transform, MeshContainer>(entity);
+				auto meshVulkan = static_pointer_cast<MeshVulkan>(meshConatiner.GetMesh());
+
+				VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };
 				VkDeviceSize offsets[] = { 0 };
 				vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-				vkCmdBindIndexBuffer(commandBuffer, mesh->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+				vkCmdBindIndexBuffer(commandBuffer, meshVulkan->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+				auto uboModel = transform.GetUboModel();
+				vkCmdPushConstants(commandBuffer, pipeline.GetLayout(), VK_SHADER_STAGE_VERTEX_BIT,
+					0, sizeof(UboModel), &uboModel);
 
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetLayout(), 
 					0, 1, &swapChainData.descriptorSets[frame], 0, nullptr);
@@ -71,7 +78,7 @@ namespace AVulkan
 				uint32_t firstVertexIndex = 0;
 				uint32_t firstInstanceIndex = 0;
 
-				vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(mesh->GetIndicesCount()), 1, 0, 0, 0);
+				vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(meshVulkan->GetIndicesCount()), 1, 0, 0, 0);
 			}
 		}
 		vkCmdEndRenderPass(commandBuffer);

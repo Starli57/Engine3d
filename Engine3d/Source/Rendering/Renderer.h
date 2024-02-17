@@ -8,17 +8,20 @@
 
 using namespace AVulkan;
 
+//todo: no reason to have separated Renderer and specific Renderer classes, need to remove additional layer
 class Renderer
 {
 public:
+	//todo: use getter
 	GLFWwindow* window;
+
+	IRenderer* GetSpecificRenderer() { return renderer; }
 
 	Renderer(Ref<entt::registry> ecs, Rollback& engineRollback);
 	~Renderer();
 
 	void Init();
 	void Run();
-	void AddMesh(Ref<Mesh> mesh);
 
 private: 
 	Ref<entt::registry> ecs;

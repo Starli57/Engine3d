@@ -15,9 +15,9 @@ public:
 	size_t GetIndicesCount();
 
 	Mesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices);
-	~Mesh();
+	virtual ~Mesh();
 
-private:
+protected:
 	Ref<std::vector<Vertex>> vertices;
 	Ref<std::vector<uint32_t>> indices;
 };
