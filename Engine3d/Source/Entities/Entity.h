@@ -1,11 +1,12 @@
 #pragma once
 
 #include <entt.hpp>
+#include <Architecture/Ref.h>
 
 class Entity
 {
 public:
-	Entity(entt::registry* ecs)
+	Entity(Ref<entt::registry> ecs)
 	{
 		this->ecs = ecs;
 		this->ecsEntity = ecs->create();
@@ -60,7 +61,7 @@ public:
 	}
 
 private:
-	entt::registry* ecs;
+	Ref<entt::registry> ecs;
 	entt::entity ecsEntity;
 };
 

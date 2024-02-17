@@ -1,16 +1,16 @@
 #include "Pch.h"
-#include "Level.h"
 
+#include "Level.h"
+#include "Architecture/Ref.h"
 #include "Components/Camera.h"
 #include "Components/Transform.h"
 #include "Components/MeshContainer.h"
 
-#include "Architecture/Ref.h"
 #include "spdlog/spdlog.h"
 
-Level::Level(entt::registry& ecs, Rollback* rollback)
+Level::Level(Ref<entt::registry> ecs, Rollback* rollback)
 {
-	this->ecs = &ecs;
+	this->ecs = ecs;
 	this->rollback = new Rollback("Level", *rollback);
 }
 
@@ -39,7 +39,7 @@ void Level::LoadLevel()
 
 	auto triangleMesh1 = CreateRef<Mesh>(vertices, indices);
 	auto triangle1 = CreateRef<Entity>(ecs);
-	triangle1->AddComponent<Transform>();
+	triangle1->AddComponent<Transform>(glm::vec3(-1, 0, 0), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
 	triangle1->AddComponent<MeshContainer>(triangleMesh1);
 
 	//mesh2
@@ -56,7 +56,7 @@ void Level::LoadLevel()
 
 	auto triangleMesh2 = CreateRef<Mesh>(vertices2, indices2);
 	auto triangle2 = CreateRef<Entity>(ecs);
-	triangle2->AddComponent<Transform>();
+	triangle2->AddComponent<Transform>(glm::vec3(1, 0, 0), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
 	triangle2->AddComponent<MeshContainer>(triangleMesh2);
 
 	//camera1
@@ -70,5 +70,4 @@ void Level::LoadLevel()
 void Level::UnloadLevel()
 {
 	spdlog::info("Unload level");
-	//todo: add unload logic
 }

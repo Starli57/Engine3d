@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "GraphicsPipeline.h"
+#include "Architecture/Ref.h"
 #include "Entities/Level.h"
 #include "Data/SwapChainData.h"
 #include "Rendering/IRenderer.h"
@@ -35,7 +36,7 @@ namespace AVulkan
 	class VulkanRenderer : public IRenderer
 	{
 	public:
-		VulkanRenderer(entt::registry* ecs, GLFWwindow* window, Rollback* vulkanRollback);
+		VulkanRenderer(Ref<entt::registry> ecs, GLFWwindow* window, Rollback* vulkanRollback);
 		virtual ~VulkanRenderer() override;
 
 		void Init() override;
@@ -48,7 +49,7 @@ namespace AVulkan
 		void OnFramebufferResized() override;
 
 	private:
-		entt::registry* ecs;
+		Ref<entt::registry> ecs;
 		Rollback* rollback;
 		GLFWwindow* window;
 

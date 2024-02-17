@@ -29,7 +29,10 @@ UboModel Transform::GetUboModel()
 	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
 	//todo: replace
-	uboModel.model = glm::rotate(glm::mat4(1.0f), time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	uboModel.model = glm::mat4(1.0f);
+	uboModel.model = glm::translate(uboModel.model, position);
+	uboModel.model = glm::rotate(uboModel.model, time * glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	uboModel.model = glm::scale(uboModel.model, scale);
 
 	return uboModel;
 }

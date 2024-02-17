@@ -2,6 +2,7 @@
 
 #include "Defines/DllDecDefines.h"
 
+#include "Architecture/Ref.h"
 #include "Rendering/Renderer.h"
 #include "Entities/Level.h"
 
@@ -17,12 +18,12 @@ public:
 
 private:
 	Renderer* renderer;
+	Level* level;
 
 	Rollback* engineRollback;
 
-	Level* level;
 
-	entt::registry ecs;
+	Ref<entt::registry> ecs;
 
 	void InitLogger();
 };

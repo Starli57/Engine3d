@@ -2,9 +2,9 @@
 #include "Renderer.h"
 #include "spdlog/spdlog.h"
 
-Renderer::Renderer(entt::registry& ecs, Rollback& mainRollback)
+Renderer::Renderer(Ref<entt::registry> ecs, Rollback& mainRollback)
 {
-	this->ecs = &ecs;
+	this->ecs = ecs;
 	this->rollback = new Rollback("Renderer", mainRollback);
 }
 

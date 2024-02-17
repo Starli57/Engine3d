@@ -14,7 +14,7 @@ std::vector<char> IOUtility::ReadFile(const std::string& filepath) const
 
     if (!file.is_open())
     {
-        throw std::runtime_error("failed to open file " + filepath);
+        throw std::runtime_error("Failed to open file " + filepath);
     }
 
     size_t fileSize = (size_t)file.tellg();

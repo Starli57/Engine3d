@@ -11,6 +11,8 @@ Engine::Engine()
 
 	engineRollback = new Rollback("Engine");
 
+	ecs = CreateRef<entt::registry>();
+
 	level = new Level(ecs, engineRollback);
 	level->LoadLevel();
 	engineRollback->Add([this] { delete level; });
