@@ -5,14 +5,11 @@
 Renderer::Renderer(entt::registry& ecs, Rollback& mainRollback)
 {
 	this->ecs = &ecs;
-	this->rollback = new Rollback(mainRollback);
+	this->rollback = new Rollback("Renderer", mainRollback);
 }
 
 Renderer::~Renderer()
 {
-	rollback->Dispose();
-
-	delete renderer;
 	delete rollback;
 }
 
@@ -38,6 +35,8 @@ void Renderer::Init()
 
 		renderer = new VulkanRenderer(ecs, window, rollback);
 		renderer->Init();
+
+		rollback->Add([this] { delete renderer; });
 	}
 	catch (const std::exception& e)
 	{

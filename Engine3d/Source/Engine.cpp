@@ -1,24 +1,30 @@
 #include "Pch.h"
-#include "Engine.h"
+
+#include <spdlog/spdlog.h>
 #include "entt.hpp"
+
+#include "Engine.h"
 
 Engine::Engine()
 {
 	InitLogger();
 
-	engineRollback = new Rollback();
+	engineRollback = new Rollback("Engine");
 
 	level = new Level(ecs, engineRollback);
 	level->LoadLevel();
+	engineRollback->Add([this] { delete level; });
 
 	renderer = new Renderer(ecs, *engineRollback);
 	renderer->Init();
+	engineRollback->Add([this] { delete renderer; });
+
+	spdlog::info("--Engine init finished--");
 }
 
 Engine::~Engine()
 {
-	engineRollback->Dispose();
-	delete renderer;
+	delete engineRollback;
 }
 
 void Engine::Run()

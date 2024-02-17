@@ -9,11 +9,10 @@
 
 namespace AVulkan
 {
-	GraphicsPipeline::GraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass) 
+	GraphicsPipeline::GraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass, Rollback* vulkanRollback)
 	{
-		//todo: create pipelineRollback from rendering rollback
-		rollback = new Rollback();
-		initializationRollback = new Rollback(*rollback);
+		rollback = new Rollback("GraphicsPipeline", *vulkanRollback);
+		initializationRollback = new Rollback("GraphicsPipelineInit", *rollback);
 
 		this->logicalDevice = logicalDevice;
 		this->swapChainExtent = swapChainExtent;
@@ -22,7 +21,6 @@ namespace AVulkan
 
 	GraphicsPipeline::~GraphicsPipeline()
 	{
-		rollback->Dispose();
 		delete initializationRollback;
 		delete rollback;
 	}
@@ -115,7 +113,7 @@ namespace AVulkan
 
 		initializationRollback->Add([this]
 		{
-			spdlog::info("dispose ShadersModules");
+			spdlog::info("Dispose ShadersModules");
 			AShaderModule shaderModule;
 			shaderModule.DisposeModule(logicalDevice, vertShaderModule);
 			shaderModule.DisposeModule(logicalDevice, fragShaderModule);
@@ -250,7 +248,7 @@ namespace AVulkan
 
 		rollback->Add([this]
 		{
-			spdlog::info("dispose pipeline layout");
+			spdlog::info("Dispose pipeline layout");
 			vkDestroyPipelineLayout(logicalDevice, pipelineLayout, nullptr);
 		});
 	

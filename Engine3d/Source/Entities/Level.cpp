@@ -11,7 +11,7 @@
 Level::Level(entt::registry& ecs, Rollback* rollback)
 {
 	this->ecs = &ecs;
-	this->rollback = rollback;
+	this->rollback = new Rollback("Level", *rollback);
 }
 
 Level::~Level()

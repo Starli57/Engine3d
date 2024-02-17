@@ -15,7 +15,7 @@ namespace AVulkan
 		VkPipeline GetPipeline();
 		VkPipelineLayout GetLayout();
 
-		GraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass);
+		GraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass, Rollback* vulkanRollback);
 		~GraphicsPipeline();
 
 		void Create(VkDescriptorSetLayout& descriptorSetLayout);

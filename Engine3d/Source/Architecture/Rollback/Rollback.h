@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <stack>
 #include <functional>
 
@@ -8,8 +9,8 @@ class RollbackExtension;
 class Rollback
 {
 public:
-	Rollback();
-	Rollback(Rollback& parentRollback);
+	Rollback(const std::string& name);
+	Rollback(const std::string& name, Rollback& parentRollback);
 	~Rollback();
 
 	void Add(std::function<void()> function);
@@ -19,5 +20,7 @@ public:
 
 private:
 	std::stack<std::function<void()>>* disposeStack;
+
+	std::string name;
 };
 

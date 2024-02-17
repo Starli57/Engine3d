@@ -9,13 +9,13 @@ namespace AVulkan
 	VulkanRenderer::VulkanRenderer(entt::registry* ecs, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
 		this->ecs = ecs;
-		this->rollback = new Rollback(*vulkanRollback);
+		this->rollback = new Rollback("VulkanRenderer", *vulkanRollback);
 		this->window = glfwWindow;
 	}
 
 	VulkanRenderer::~VulkanRenderer()
 	{
-		rollback->Dispose();
+		delete rollback;
 	}
 
 	void VulkanRenderer::Init()
@@ -237,7 +237,7 @@ namespace AVulkan
 
 	void VulkanRenderer::CreateGraphicsPipeline()
 	{
-		graphicsPipeline = new GraphicsPipeline(logicalDevice, swapChainData.extent, renderPass);
+		graphicsPipeline = new GraphicsPipeline(logicalDevice, swapChainData.extent, renderPass, rollback);
 		graphicsPipeline->Create(descriptorSetLayout);
 
 		rollback->Add([this]() { delete graphicsPipeline; });
