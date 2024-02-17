@@ -5,7 +5,7 @@
 #include "Components/Transform.h"
 #include "Components/MeshContainer.h"
 
-#include "Macroses/Ref.h"
+#include "Architecture/Ref.h"
 #include "spdlog/spdlog.h"
 
 Level::Level(entt::registry& ecs, Rollback* rollback)
@@ -24,13 +24,13 @@ void Level::LoadLevel()
 	spdlog::info("Load level");
 
 	//mesh1
-	auto vertices = new std::vector<Vertex>();
+	auto vertices = CreateRef<std::vector<Vertex>>();
 	vertices->reserve(3);
 	vertices->push_back(Vertex(glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	vertices->push_back(Vertex(glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 	vertices->push_back(Vertex(glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 
-	auto indices = new std::vector<uint32_t>();
+	auto indices = CreateRef<std::vector<uint32_t>>();
 	indices->push_back(0);
 	indices->push_back(1);
 	indices->push_back(2);
@@ -43,13 +43,13 @@ void Level::LoadLevel()
 	triangle1->AddComponent<MeshContainer>(triangleMesh1);
 
 	//mesh2
-	auto vertices2 = new std::vector<Vertex>();
+	auto vertices2 = CreateRef<std::vector<Vertex>>();
 	vertices2->reserve(3);
 	vertices2->push_back(Vertex(glm::vec3(1.0f, -0.5f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	vertices2->push_back(Vertex(glm::vec3(1.5f, 0.5f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
 	vertices2->push_back(Vertex(glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 
-	auto indices2 = new std::vector<uint32_t>();
+	auto indices2 = CreateRef<std::vector<uint32_t>>();
 	indices2->push_back(0);
 	indices2->push_back(1);
 	indices2->push_back(2);

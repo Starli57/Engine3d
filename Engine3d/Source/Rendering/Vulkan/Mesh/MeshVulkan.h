@@ -8,7 +8,7 @@
 #include "Rendering/Model/Vertex.h"
 #include "Rendering/Vulkan/Data/SwapChainData.h"
 #include "Rendering/Vulkan/Buffers/UniformBufferVulkan.h"
-#include "Macroses/Ref.h"
+#include "Architecture/Ref.h"
 
 namespace AVulkan
 {
@@ -28,8 +28,8 @@ namespace AVulkan
 
 	private:
 		VkDevice* logicalDevice;
-		std::vector<Vertex>* vertices;
-		std::vector<uint32_t>* indices;
+		Ref<std::vector<Vertex>> vertices;
+		Ref<std::vector<uint32_t>> indices;
 
 		VkBuffer vertexBuffer;
 		VkDeviceMemory vertexBufferMemory;
