@@ -12,8 +12,8 @@ namespace AVulkan
 	GraphicsPipeline::GraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass) 
 	{
 		//todo: create pipelineRollback from rendering rollback
-		rollback = new Rollback();
-		initializationRollback = new Rollback(*rollback);
+		rollback = new Rollback("Graphics Pipeline");
+		initializationRollback = new Rollback("Graphics Pipeline Initialization", * rollback);
 
 		this->logicalDevice = logicalDevice;
 		this->swapChainExtent = swapChainExtent;

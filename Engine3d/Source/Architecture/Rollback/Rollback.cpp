@@ -5,13 +5,15 @@
 
 #include "spdlog/spdlog.h"
 
-Rollback::Rollback()
+Rollback::Rollback(std::string name)
 {
+    this->name = name;
     disposeStack = new std::stack<std::function<void()>>();
 }
 
-Rollback::Rollback(Rollback& parentRollback)
+Rollback::Rollback(std::string name, Rollback& parentRollback)
 {
+    this->name = name;
     disposeStack = new std::stack<std::function<void()>>();
     parentRollback.Add([this]() { RollbackExtension().Dispose(disposeStack); });
 }
@@ -29,5 +31,12 @@ void Rollback::Add(std::function<void()> function)
 
 void Rollback::Dispose()
 {
+    if (isDisposed)
+    {
+        spdlog::critical("Rollback already disposed: " + name);
+        return;
+    }
+
     RollbackExtension().Dispose(disposeStack);
+    isDisposed = true;
 }

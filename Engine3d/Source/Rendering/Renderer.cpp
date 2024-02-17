@@ -10,8 +10,6 @@ Renderer::Renderer(entt::registry& ecs, Rollback& mainRollback)
 
 Renderer::~Renderer()
 {
-	rollback->Dispose();
-
 	delete renderer;
 	delete rollback;
 }

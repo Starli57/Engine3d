@@ -1,9 +1,11 @@
 #include "Pch.h"
 #include "Transform.h"
 #include "Utilities/UniqueId.h"
+#include "spdlog/spdlog.h"
 
 Transform::Transform()
 {
+	spdlog::info("Create transform default");
 	this->position = glm::vec3(0, 0, 0);
 	this->rotation = glm::vec4(0, 0, 0, 0);
 	this->scale = glm::vec3(1, 1, 1);
@@ -13,6 +15,7 @@ Transform::Transform()
 
 Transform::Transform(glm::vec3 position, glm::vec4 rotation, glm::vec3 scale)
 {
+	spdlog::info("Create transform");
 	this->position = position;
 	this->rotation = rotation;
 	this->scale = scale;

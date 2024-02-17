@@ -71,7 +71,7 @@ namespace AVulkan
 
 		//todo: replace
 		uint16_t frame = 0;
-		uint16_t const maxFramesDraws = 2;
+		uint16_t const maxFramesDraws = 3;
 		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
 
 		bool needResizeWindow = false;

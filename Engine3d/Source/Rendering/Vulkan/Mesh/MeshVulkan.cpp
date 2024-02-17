@@ -29,6 +29,7 @@ namespace AVulkan
 
 	MeshVulkan::~MeshVulkan()
 	{
+		spdlog::info("Destroy mesh vulkan");
 		AIndexBuffer().Dispose(*logicalDevice, indexBuffer, indexBufferMemory);
 		AVertexBuffer().Dispose(*logicalDevice, vertexBuffer, vertexBufferMemory);
 	}

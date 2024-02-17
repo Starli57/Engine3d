@@ -1,10 +1,14 @@
 #include "Pch.h"
 #include "UniformBufferVulkan.h"
 
+#include "spdlog/spdlog.h"
+
 namespace AVulkan
 {
 	UniformBufferVulkan::UniformBufferVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkDeviceSize bufferSize)
 	{
+		spdlog::info("Create uniform buffer");
+
 		this->logicalDevice = &logicalDevice;
 
 		VkBufferUsageFlags stagingUsageFlags = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
@@ -22,6 +26,8 @@ namespace AVulkan
 
 	UniformBufferVulkan::~UniformBufferVulkan()
 	{
+		spdlog::info("Dispose uniform buffer");
+
 		ABuffer().Dispose(*logicalDevice, buffer, bufferMemory);
 	}
 }

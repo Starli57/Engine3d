@@ -1,4 +1,7 @@
 #include "Pch.h"
+
+#include <spdlog/spdlog.h>
+
 #include "Engine.h"
 #include "entt.hpp"
 
@@ -6,13 +9,15 @@ Engine::Engine()
 {
 	InitLogger();
 
-	engineRollback = new Rollback();
+	engineRollback = new Rollback("Engine");
 
 	world = new World(ecs, engineRollback);
 	world->LoadLevel();
+	spdlog::info("World init completed");
 
 	renderer = new Renderer(ecs, *engineRollback);
 	renderer->Init();
+	spdlog::info("Renderer init completed");
 }
 
 Engine::~Engine()

@@ -2,12 +2,15 @@
 
 #include <functional>
 
+#include <spdlog/spdlog.h>
+
 #include "VulkanRenderer.h"
 
 namespace AVulkan
 {
 	VulkanRenderer::VulkanRenderer(entt::registry* ecs, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
+		spdlog::info("VulkanRenderer constructor");
 		this->ecs = ecs;
 		this->rollback = new Rollback(*vulkanRollback);
 		this->window = glfwWindow;
@@ -15,6 +18,7 @@ namespace AVulkan
 
 	VulkanRenderer::~VulkanRenderer()
 	{
+		spdlog::info("VulkanRenderer dispose");
 		rollback->Dispose();
 	}
 

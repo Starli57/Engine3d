@@ -34,9 +34,7 @@ namespace AVulkan
 			distUsageFlags, distMemoryFlags, vertexBuffer, bufferMemory);
 
 		bufferInterface.Copy(logicalDevice, graphicsQueue, stagingBuffer, vertexBuffer, bufferSize, commandPool);
-
-		vkDestroyBuffer(logicalDevice, stagingBuffer, nullptr);
-		vkFreeMemory(logicalDevice, stagingMemory, nullptr);
+		bufferInterface.Dispose(logicalDevice, stagingBuffer, stagingMemory);
 	}
 
 	void AVertexBuffer::Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const
