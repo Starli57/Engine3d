@@ -3,10 +3,10 @@
 #include "Rendering/Model/Mesh.h"
 #include "Architecture/Ref.h"
 
-class IRenderer
+class IGraphicsApi
 {
 public:
-    virtual ~IRenderer() = default;
+    virtual ~IGraphicsApi() = default;
 
     virtual void Init() = 0;
     virtual void Render() = 0;

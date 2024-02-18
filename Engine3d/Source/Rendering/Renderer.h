@@ -1,21 +1,20 @@
 #pragma once
 
-#include "IRenderer.h"
-#include "Vulkan/VulkanRenderer.h"
+#include "IGraphicsApi.h"
+#include "Vulkan/VulkanGraphicsApi.h"
 #include "Architecture/Rollback/Rollback.h"
 #include "Architecture/Ref.h"
 #include "Entities/Level.h"
 
 using namespace AVulkan;
 
-//todo: no reason to have separated Renderer and specific Renderer classes, need to remove additional layer
 class Renderer
 {
 public:
 	//todo: use getter
 	GLFWwindow* window;
 
-	IRenderer* GetSpecificRenderer() { return renderer; }
+	IGraphicsApi* GetGraphicsApi() { return graphicsApi; }
 
 	Renderer(Ref<entt::registry> ecs, Rollback& engineRollback);
 	~Renderer();
@@ -25,7 +24,7 @@ public:
 
 private: 
 	Ref<entt::registry> ecs;
-	IRenderer* renderer;
+	IGraphicsApi* graphicsApi;
 
 	Rollback* rollback;
 

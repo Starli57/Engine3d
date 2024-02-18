@@ -9,7 +9,7 @@
 #include "Architecture/Ref.h"
 #include "Entities/Level.h"
 #include "Data/SwapChainData.h"
-#include "Rendering/IRenderer.h"
+#include "Rendering/IGraphicsApi.h"
 #include "Rendering/Model/Mesh.h"
 #include "Rendering/Vulkan/Mesh/MeshVulkan.h"
 #include "Builders/AValidationLayers.h"
@@ -33,11 +33,11 @@
 
 namespace AVulkan
 {
-	class VulkanRenderer : public IRenderer
+	class VulkanGraphicsApi : public IGraphicsApi
 	{
 	public:
-		VulkanRenderer(Ref<entt::registry> ecs, GLFWwindow* window, Rollback* vulkanRollback);
-		virtual ~VulkanRenderer() override;
+		VulkanGraphicsApi(Ref<entt::registry> ecs, GLFWwindow* window, Rollback* vulkanRollback);
+		virtual ~VulkanGraphicsApi() override;
 
 		void Init() override;
 		void Render() override;

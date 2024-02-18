@@ -22,13 +22,13 @@ void Renderer::Init()
 		CreateAppWindow();
 
 #if GLFW_INCLUDE_VULKAN
-		renderer = new VulkanRenderer(ecs, window, rollback);
-		renderer->Init();
+		graphicsApi = new VulkanGraphicsApi(ecs, window, rollback);
+		graphicsApi->Init();
 #else
 		throw std::runtime_error("Rendering api is not selected");
 #endif
 
-		rollback->Add([this] { delete renderer; });
+		rollback->Add([this] { delete graphicsApi; });
 	}
 	catch (const std::exception& e)
 	{
@@ -74,9 +74,9 @@ void Renderer::Run()
 		glfwPollEvents();
 
 		//todo: handle exceptions and errors
-		renderer->Render();
+		graphicsApi->Render();
 	}
-	renderer->FinanilizeRenderOperations(); 
+	graphicsApi->FinanilizeRenderOperations();
 	spdlog::info("Window closed");
 }
 
@@ -84,5 +84,5 @@ void Renderer::OnFramebufferResized(GLFWwindow* window, int width, int height)
 {
 	spdlog::debug("FramebufferResized");
 	auto render = reinterpret_cast<Renderer*>(glfwGetWindowUserPointer(window));
-	render->renderer->OnFramebufferResized();
+	render->graphicsApi->OnFramebufferResized();
 }

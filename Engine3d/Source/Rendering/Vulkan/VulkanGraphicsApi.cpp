@@ -2,23 +2,23 @@
 
 #include <functional>
 
-#include "VulkanRenderer.h"
+#include "VulkanGraphicsApi.h"
 
 namespace AVulkan
 {
-	VulkanRenderer::VulkanRenderer(Ref<entt::registry> ecs, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
+	VulkanGraphicsApi::VulkanGraphicsApi(Ref<entt::registry> ecs, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
 		this->ecs = ecs;
-		this->rollback = new Rollback("VulkanRenderer", *vulkanRollback);
+		this->rollback = new Rollback("VulkanGraphicsApi", *vulkanRollback);
 		this->window = glfwWindow;
 	}
 
-	VulkanRenderer::~VulkanRenderer()
+	VulkanGraphicsApi::~VulkanGraphicsApi()
 	{
 		delete rollback;
 	}
 
-	void VulkanRenderer::Init()
+	void VulkanGraphicsApi::Init()
 	{
 		try
 		{
@@ -41,13 +41,13 @@ namespace AVulkan
 		}
 		catch (const std::exception& e)
 		{
-			spdlog::critical("VulkanRenderer critical error: {0}", e.what());
+			spdlog::critical("VulkanGraphicsApi critical error: {0}", e.what());
 			rollback->Dispose();
 			throw e;
 		}
 	}
 
-	void VulkanRenderer::RecreateSwapChain()
+	void VulkanGraphicsApi::RecreateSwapChain()
 	{
 		/// to recreate spawnchain it's enough to dispose and recreate only the next 3 components:
 		/// swapchain, spwanchainImageView and commandBuffers
@@ -71,7 +71,7 @@ namespace AVulkan
 	}
 
 	//todo: make refactoring of the function
-	void VulkanRenderer::Render()
+	void VulkanGraphicsApi::Render()
 	{
 		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, frameSyncTimeout);
 
@@ -124,7 +124,7 @@ namespace AVulkan
 	}
 
 	//todo: replace
-	void VulkanRenderer::UpdateUniformBuffer(uint32_t imageIndex)
+	void VulkanGraphicsApi::UpdateUniformBuffer(uint32_t imageIndex)
 	{
 		static auto startTime = std::chrono::high_resolution_clock::now();
 
@@ -141,61 +141,61 @@ namespace AVulkan
 		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &mvp, sizeof(UboViewProjection));
 	}
 
-	void VulkanRenderer::FinanilizeRenderOperations()
+	void VulkanGraphicsApi::FinanilizeRenderOperations()
 	{
 		vkDeviceWaitIdle(logicalDevice);
 	}
 
-	Ref<Mesh> VulkanRenderer::CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices)
+	Ref<Mesh> VulkanGraphicsApi::CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices)
 	{
 		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, swapChainData, graphicsQueue, commandPool, vertices, indices);
 	}
 
-	void VulkanRenderer::CreateInstance()
+	void VulkanGraphicsApi::CreateInstance()
 	{
 		AInstance().Create(instance);
 		rollback->Add([this]() { AInstance().Dispose(instance); });
 	}
 
-	void VulkanRenderer::CreateWindowSurface()
+	void VulkanGraphicsApi::CreateWindowSurface()
 	{
 		windowSurface = AWindowsSurface().Create(instance, *window);
 		rollback->Add([this]() { AWindowsSurface().Dispose(instance, windowSurface); });
 	}
 
-	void VulkanRenderer::SelectPhysicalRenderingDevice()
+	void VulkanGraphicsApi::SelectPhysicalRenderingDevice()
 	{
 		APhysicalDevice pdInterface;
 		physicalDevice = pdInterface.GetBestRenderingDevice(instance, windowSurface);
 		pdInterface.PrintDebugInformation(physicalDevice, windowSurface);
 	}
 
-	void VulkanRenderer::CreateLogicalDevice()
+	void VulkanGraphicsApi::CreateLogicalDevice()
 	{
 		logicalDevice = ALogicalDevice().Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
 		rollback->Add([this]() { ALogicalDevice().Dispose(logicalDevice); });
 	}
 
-	void VulkanRenderer::CreateSwapChain()
+	void VulkanGraphicsApi::CreateSwapChain()
 	{
 		auto queueIndices = APhysicalDevice().GetQueueFamilies(physicalDevice, windowSurface);
 		swapChainData = ASwapChain().Create(*window, physicalDevice, logicalDevice, windowSurface, queueIndices);
 		rollback->Add([this]() { ASwapChain().Dispose(logicalDevice, swapChainData); });
 	}
 
-	void VulkanRenderer::CreateSwapChainImageViews()
+	void VulkanGraphicsApi::CreateSwapChainImageViews()
 	{
 		AImageView().Create(logicalDevice, swapChainData);
 		rollback->Add([this]() { AImageView().Dispose(logicalDevice, swapChainData); });
 	}
 
-	void VulkanRenderer::CreateRenderPass()
+	void VulkanGraphicsApi::CreateRenderPass()
 	{
 		renderPass = ARenderPass().Create(logicalDevice, swapChainData.imageFormat);
 		rollback->Add([this]() { ARenderPass().Dispose(logicalDevice, renderPass);; });
 	}
 
-	void VulkanRenderer::CreateGraphicsPipeline()
+	void VulkanGraphicsApi::CreateGraphicsPipeline()
 	{
 		graphicsPipeline = new GraphicsPipeline(logicalDevice, swapChainData.extent, renderPass, rollback);
 		graphicsPipeline->Create(descriptorSetLayout);
@@ -203,41 +203,41 @@ namespace AVulkan
 		rollback->Add([this]() { delete graphicsPipeline; });
 	}
 
-	void VulkanRenderer::CreateFrameBuffers()
+	void VulkanGraphicsApi::CreateFrameBuffers()
 	{
 		AFrameBuffer().Create(logicalDevice, renderPass, swapChainData);
 		rollback->Add([this]() { AFrameBuffer().Dispose(logicalDevice, swapChainData); });
 	}
 
-	void VulkanRenderer::CreateCommandPool()
+	void VulkanGraphicsApi::CreateCommandPool()
 	{
 		commandPool = ACommandPool().Create(logicalDevice, physicalDevice, windowSurface);
 		rollback->Add([this]() { ACommandPool().Dispose(logicalDevice, commandPool); });
 	}
 
-	void VulkanRenderer::CreateCommandBuffer()
+	void VulkanGraphicsApi::CreateCommandBuffer()
 	{
 		ACommandBuffer().Setup(logicalDevice, commandPool, swapChainData, maxFramesDraws);
 	}
 
-	void VulkanRenderer::CreateDescriptorSetLayout()
+	void VulkanGraphicsApi::CreateDescriptorSetLayout()
 	{
 		ADescriptorLayout().Create(logicalDevice, descriptorSetLayout);
 		rollback->Add([this]() { ADescriptorLayout().Dispose(logicalDevice, descriptorSetLayout); });
 	}
 
-	void VulkanRenderer::CreateDescriptorPool()
+	void VulkanGraphicsApi::CreateDescriptorPool()
 	{
 		ADescriptorPool().Create(logicalDevice, swapChainData, descriptorPool);
 		rollback->Add([this]() { ADescriptorPool().Dispose(logicalDevice, descriptorPool); });
 	}
 
-	void VulkanRenderer::CreateDescriptorSets()
+	void VulkanGraphicsApi::CreateDescriptorSets()
 	{
 		ADescriptorSet().Allocate(logicalDevice, swapChainData, descriptorPool, descriptorSetLayout);
 	}
 
-	void VulkanRenderer::CreateUniformBuffers()
+	void VulkanGraphicsApi::CreateUniformBuffers()
 	{
 		auto buffersCount = swapChainData.images.size();
 		swapChainData.uniformBuffers = new std::vector<UniformBufferVulkan*>();
@@ -250,7 +250,7 @@ namespace AVulkan
 		rollback->Add([this]() {DisposeUniformBuffers(); });
 	}
 
-	void VulkanRenderer::DisposeUniformBuffers()
+	void VulkanGraphicsApi::DisposeUniformBuffers()
 	{
 		for (int i = 0; i < swapChainData.uniformBuffers->size(); i++)
 		{
@@ -260,7 +260,7 @@ namespace AVulkan
 	}
 
 	//todo: replace 
-	void VulkanRenderer::CreateSyncObjects()
+	void VulkanGraphicsApi::CreateSyncObjects()
 	{
 		imageAvailableSemaphores.resize(maxFramesDraws);
 		renderFinishedSemaphores.resize(maxFramesDraws);
@@ -289,7 +289,7 @@ namespace AVulkan
 		}
 	}
 
-	void VulkanRenderer::OnFramebufferResized()
+	void VulkanGraphicsApi::OnFramebufferResized()
 	{
 		needResizeWindow = true;
 	}

@@ -16,7 +16,7 @@ Engine::Engine()
 	renderer->Init();
 	engineRollback->Add([this] { delete renderer; });
 
-	level = new Level(ecs, renderer->GetSpecificRenderer(), engineRollback);
+	level = new Level(ecs, renderer->GetGraphicsApi(), engineRollback);
 	level->LoadLevel();
 	engineRollback->Add([this] { delete level; });
 
