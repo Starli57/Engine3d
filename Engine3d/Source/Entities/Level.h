@@ -3,19 +3,19 @@
 #include <vector>
 
 #include <glm/glm.hpp>
+#include <entt.hpp>
 
 #include "Entity.h"
 #include "Architecture/Rollback/Rollback.h"
 #include "Rendering/Model/Vertex.h"
 #include "Rendering/Model/Mesh.h"
 #include "Components/Camera.h"
-
-#include <entt.hpp>
+#include "Rendering/IRenderer.h"
 
 class Level
 {
 public:
-	Level(Ref<entt::registry> ecs, Rollback* rollback);
+	Level(Ref<entt::registry> ecs, IRenderer* renderer, Rollback* rollback);
 	~Level();
 
 	void LoadLevel();
@@ -23,6 +23,7 @@ public:
 
 private:
 	Ref<entt::registry> ecs;
+	IRenderer* renderer;
 	Rollback* rollback;
 
 };

@@ -38,7 +38,6 @@ namespace AVulkan
 			CreateDescriptorPool();
 			CreateDescriptorSets();
 			CreateSyncObjects();
-			CreateLevelMeshes();
 		}
 		catch (const std::exception& e)
 		{
@@ -71,40 +70,6 @@ namespace AVulkan
 		Init();
 	}
 
-	//todo: replace
-	void VulkanRenderer::CreateLevelMeshes()
-	{
-		if (this->drawMeshes != nullptr)
-		{
-			spdlog::critical("DrawMeshes vector was not disposed before allocation");
-		}
-
-		this->drawMeshes = new std::vector<MeshVulkan*>();
-
-		spdlog::info("Create render meshes");
-		auto meshContainers = ecs->view<Transform, MeshContainer>();
-		for (auto entity : meshContainers)
-		{
-			auto [transform, meshConatiner] = meshContainers.get<Transform, MeshContainer>(entity);
-			auto mesh = meshConatiner.GetMesh();
-			AddMesh(mesh);
-		}
-
-		rollback->Add([this]() { CleanMeshes(); });
-	}
-
-	//todo: replace
-	void VulkanRenderer::CleanMeshes()
-	{
-		spdlog::info("Dispose render meshes");
-		for (int i = 0; i < drawMeshes->size(); i++)
-		{
-			delete drawMeshes->at(i);
-		}
-		delete drawMeshes;
-		drawMeshes = nullptr;
-	}
-
 	//todo: make refactoring of the function
 	void VulkanRenderer::Render()
 	{
@@ -118,8 +83,8 @@ namespace AVulkan
 
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(swapChainData.commandBuffers[frame], 0);
-		ACommandBuffer().Record(frame, swapChainData.frameBuffers[imageIndex],
-			renderPass, swapChainData, *graphicsPipeline, *drawMeshes);
+		ACommandBuffer().Record(ecs, frame, swapChainData.frameBuffers[imageIndex],
+			renderPass, swapChainData, *graphicsPipeline);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
@@ -186,9 +151,9 @@ namespace AVulkan
 		vkDeviceWaitIdle(logicalDevice);
 	}
 
-	void VulkanRenderer::AddMesh(Ref<Mesh> mesh)
+	Ref<Mesh> VulkanRenderer::CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices)
 	{
-		drawMeshes->push_back(new MeshVulkan(physicalDevice, logicalDevice, swapChainData, graphicsQueue, commandPool, mesh));
+		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, swapChainData, graphicsQueue, commandPool, vertices, indices);
 	}
 
 	void VulkanRenderer::CreateInstance()

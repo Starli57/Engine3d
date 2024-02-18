@@ -43,8 +43,7 @@ namespace AVulkan
 		void Render() override;
 		void FinanilizeRenderOperations() override;
 
-		void AddMesh(Ref<Mesh> mesh) override;
-		void CleanMeshes() override;
+		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
 
 		void OnFramebufferResized() override;
 
@@ -97,8 +96,6 @@ namespace AVulkan
 		void CreateDescriptorPool();
 		void CreateDescriptorSets();
 		void RecreateSwapChain();
-
-		void CreateLevelMeshes();
 
 		//todo: replace
 		void CreateUniformBuffers();
