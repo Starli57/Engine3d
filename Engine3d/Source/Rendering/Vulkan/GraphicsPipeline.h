@@ -6,6 +6,7 @@
 
 #include "Architecture/Rollback/Rollback.h"
 #include "Rendering/Model/Vertex.h"
+#include "Rendering/Model/UboModel.h"
 
 namespace AVulkan
 {
@@ -40,6 +41,8 @@ namespace AVulkan
 		VkRect2D* scissor;
 
 		VkPipelineColorBlendAttachmentState* colorBlendAttachment;
+
+		VkPushConstantRange pushContantRange;
 
 		std::array<VkPipelineShaderStageCreateInfo, 2>  CreateShadersModules();
 		void CreatePipelineLayout(VkDescriptorSetLayout& descriptorSetLayout);

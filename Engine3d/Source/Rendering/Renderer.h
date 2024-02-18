@@ -12,6 +12,7 @@ using namespace AVulkan;
 class Renderer
 {
 public:
+	//todo: use getter
 	GLFWwindow* window;
 
 	IRenderer* GetSpecificRenderer() { return renderer; }
