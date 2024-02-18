@@ -101,7 +101,7 @@ namespace AVulkan
 		submitInfo.pCommandBuffers = &swapChainData.commandBuffers[frame];
 
 		auto submitStatus = vkQueueSubmit(graphicsQueue, 1, &submitInfo, drawFences[frame]);
-		if (submitStatus != VK_SUCCESS)  throw std::runtime_error("Failed to submit draw command buffer, status: " + submitStatus);
+		CAssert::Check(submitStatus == VK_SUCCESS, "Failed to submit draw command buffer, status: " + submitStatus);
 
 		VkPresentInfoKHR presentInfo{};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -117,10 +117,8 @@ namespace AVulkan
 		{
 			RecreateSwapChain();
 		}
-		else if (presentStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("Failed to present draw command buffer, status: " + presentStatus);
-		}
+
+		CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
 
 		frame = (frame + 1) % maxFramesDraws;
 	}

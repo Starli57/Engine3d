@@ -12,3 +12,5 @@
 #include <optional>
 
 #include "spdlog/spdlog.h"
+
+#include "Architecture/CustomAssert.h"

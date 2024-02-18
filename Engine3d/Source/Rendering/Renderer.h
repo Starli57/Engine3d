@@ -3,8 +3,8 @@
 #include "IRenderer.h"
 #include "Vulkan/VulkanRenderer.h"
 #include "Architecture/Rollback/Rollback.h"
-#include "Entities/Level.h"
 #include "Architecture/Ref.h"
+#include "Entities/Level.h"
 
 using namespace AVulkan;
 
@@ -28,6 +28,10 @@ private:
 	IRenderer* renderer;
 
 	Rollback* rollback;
+
+	void InitGlfw();
+	void SetupGlfwHints();
+	void CreateAppWindow();
 
 	static void OnFramebufferResized(GLFWwindow* window, int width, int height);
 };

@@ -1,6 +1,6 @@
 #include "Pch.h"
-#include "Renderer.h"
 #include "spdlog/spdlog.h"
+#include "Renderer.h"
 
 Renderer::Renderer(Ref<entt::registry> ecs, Rollback& mainRollback)
 {
@@ -15,26 +15,18 @@ Renderer::~Renderer()
 
 void Renderer::Init()
 {
-	glfwInit();
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);//todo: replace to Vulkan specific logic
-
 	try
 	{
-		window = glfwCreateWindow(1000, 1000, "Engine window", nullptr, nullptr);
-		if (window == nullptr) throw std::runtime_error("GLFW window can't be created");
+		InitGlfw();
+		SetupGlfwHints();
+		CreateAppWindow();
 
-		rollback->Add([this]()
-		{
-			spdlog::info("Dispose glfw window");
-			glfwDestroyWindow(window);
-			glfwTerminate();
-		});
-
-		glfwSetWindowUserPointer(window, this);
-		glfwSetFramebufferSizeCallback(window, OnFramebufferResized);
-
+#if GLFW_INCLUDE_VULKAN
 		renderer = new VulkanRenderer(ecs, window, rollback);
 		renderer->Init();
+#else
+		throw std::runtime_error("Rendering api is not selected");
+#endif
 
 		rollback->Add([this] { delete renderer; });
 	}
@@ -45,6 +37,36 @@ void Renderer::Init()
 		throw e;
 	}
 }
+
+void Renderer::InitGlfw()
+{
+	auto status = glfwInit();
+	CAssert::Check(status == GLFW_TRUE, "Glfw can't be init");
+}
+
+void Renderer::SetupGlfwHints()
+{
+#if GLFW_INCLUDE_VULKAN
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+#endif
+}
+
+void Renderer::CreateAppWindow()
+{
+	window = glfwCreateWindow(1000, 1000, "Engine window", nullptr, nullptr);
+	CAssert::Check(window != nullptr, "GLFW window can't be created");
+
+	rollback->Add([this]()
+	{
+		spdlog::info("Dispose glfw window");
+		glfwDestroyWindow(window);
+		glfwTerminate();
+	});
+
+	glfwSetWindowUserPointer(window, this);
+	glfwSetFramebufferSizeCallback(window, OnFramebufferResized);
+}
+
 void Renderer::Run()
 {
 	while (!glfwWindowShouldClose(window))

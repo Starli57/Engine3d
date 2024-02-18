@@ -67,11 +67,7 @@ namespace AVulkan
 			pipelineInfo.subpass = 0;
 
 			auto createState = vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline);
-
-			if (createState != VK_SUCCESS)
-			{
-				throw std::runtime_error("Failed to create graphics pipeline, state" + createState);
-			}
+			CAssert::Check(createState == VK_SUCCESS, "Failed to create graphics pipeline, state" + createState);
 
 			initializationRollback->Dispose();
 			rollback->Add([this]() { Dispose(); });
@@ -245,10 +241,7 @@ namespace AVulkan
 		pipelineLayoutInfo.pPushConstantRanges = &pushContantRange;
 
 		auto createStatus = vkCreatePipelineLayout(logicalDevice, &pipelineLayoutInfo, nullptr, &pipelineLayout);
-		if (createStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("Failed to create pipeline layout, status: " + createStatus);
-		}
+		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create pipeline layout, status: " + createStatus);
 
 		rollback->Add([this]
 		{
