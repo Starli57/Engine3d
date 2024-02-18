@@ -67,10 +67,6 @@ namespace AVulkan
 				vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 				vkCmdBindIndexBuffer(commandBuffer, meshVulkan->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
-				auto uboModel = transform.GetUboModel();
-				vkCmdPushConstants(commandBuffer, pipeline.GetLayout(), VK_SHADER_STAGE_VERTEX_BIT,
-					0, sizeof(UboModel), &uboModel);
-
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetLayout(), 
 					0, 1, &swapChainData.descriptorSets[frame], 0, nullptr);
 

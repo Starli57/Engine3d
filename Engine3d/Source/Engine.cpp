@@ -1,7 +1,6 @@
 #include "Pch.h"
 
 #include <spdlog/spdlog.h>
-#include "entt.hpp"
 
 #include "Engine.h"
 

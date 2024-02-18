@@ -1,5 +1,6 @@
 #pragma once
 
+#include <entt.hpp>
 #include "Defines/DllDecDefines.h"
 
 #include "Architecture/Ref.h"
