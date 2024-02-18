@@ -58,10 +58,7 @@ namespace AVulkan
 
 		VkRenderPass renderPass;
 		auto createStatus = vkCreateRenderPass(logicalDevice, &renderPassInfo, nullptr, &renderPass);
-		if (createStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("Failed to create render pass, status: " + createStatus);
-		}
+		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create render pass, status: " + createStatus);
 
 		return renderPass;
 	}

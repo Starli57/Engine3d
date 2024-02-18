@@ -22,11 +22,7 @@ namespace AVulkan
 
 		VkShaderModule shaderModule;
 		auto createStatus = vkCreateShaderModule(logicalDevice, &createInfo, nullptr, &shaderModule);
-
-		if (createStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("Failed to create shader module, statuc: " + createStatus);
-		}
+		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create shader module, statuc: " + createStatus);
 
 		return shaderModule;
 	}

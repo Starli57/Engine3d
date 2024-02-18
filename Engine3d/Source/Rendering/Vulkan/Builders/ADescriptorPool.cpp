@@ -16,10 +16,7 @@ namespace AVulkan
 		poolInfo.maxSets = static_cast<uint32_t>(swapChainData.images.size());
 
 		auto createStatus = vkCreateDescriptorPool(logicalDevice, &poolInfo, nullptr, &descriptorPool);
-		if (createStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("Failed to create descriptor pool, status: " + createStatus);
-		}
+		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create descriptor pool, status: " + createStatus);
 	}
 
 	void ADescriptorPool::Dispose(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const

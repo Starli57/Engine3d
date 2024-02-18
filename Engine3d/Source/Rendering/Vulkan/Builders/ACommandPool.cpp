@@ -17,10 +17,7 @@ namespace AVulkan
 
 		VkCommandPool commandPool;
 		auto createStatus = vkCreateCommandPool(logicalDevice, &poolInfo, nullptr, &commandPool);
-		if (createStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("Failed to create command pool, status = " + createStatus);
-		}
+		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create command pool, status = " + createStatus);
 
 		return commandPool;
 	}

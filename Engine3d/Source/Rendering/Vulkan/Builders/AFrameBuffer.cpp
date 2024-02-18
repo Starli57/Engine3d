@@ -26,10 +26,7 @@ namespace AVulkan
             framebufferInfo.layers = 1;
 
             auto createStatus = vkCreateFramebuffer(logicalDevice, &framebufferInfo, nullptr, &swapChainData.frameBuffers[i]);
-            if (createStatus != VK_SUCCESS) 
-            {
-                throw std::runtime_error("Failed to create framebuffer, status = " + createStatus);
-            }
+            CAssert::Check(createStatus == VK_SUCCESS, "Failed to create framebuffer, status = " + createStatus);
         }
     }
 

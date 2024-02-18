@@ -17,10 +17,7 @@ namespace AVulkan
 		allocInfo.commandBufferCount = static_cast<uint32_t>(swapChainData.commandBuffers.size());
 
 		auto createStatus = vkAllocateCommandBuffers(logicalDevice, &allocInfo, swapChainData.commandBuffers.data());
-		if (createStatus != VK_SUCCESS) 
-		{
-			throw std::runtime_error("Failed to allocate command buffers, status: " + createStatus);
-		}
+		CAssert::Check(createStatus == VK_SUCCESS, "Failed to allocate command buffers, status: " + createStatus);
 	}
 
 	void ACommandBuffer::Record(Ref<entt::registry> ecs, uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
@@ -38,10 +35,7 @@ namespace AVulkan
 		};
 
 		auto beginStatus = vkBeginCommandBuffer(commandBuffer, &beginInfo);
-		if (beginStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("Failed to begin recording a command buffer, status: " + beginStatus);
-		}
+		CAssert::Check(beginStatus == VK_SUCCESS, "Failed to begin recording a command buffer, status: " + beginStatus);
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -84,9 +78,6 @@ namespace AVulkan
 		vkCmdEndRenderPass(commandBuffer);
 
 		auto endStatus = vkEndCommandBuffer(commandBuffer);
-		if (endStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("Failed to end recording a command buffer, status: " + endStatus);
-		}
+		CAssert::Check(endStatus == VK_SUCCESS, "Failed to end recording a command buffer, status: " + endStatus);
 	}
 }

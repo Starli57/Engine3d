@@ -17,10 +17,7 @@ namespace AVulkan
         layoutInfo.pBindings = &uboLayoutBinding;
 
         auto createStatus = vkCreateDescriptorSetLayout(logicalDevice, &layoutInfo, nullptr, &descriptorSetLayout);
-        if (createStatus != VK_SUCCESS) 
-        {
-            throw std::runtime_error("Failed to create descriptor set layout, status: " + createStatus);
-        }
+        CAssert::Check(createStatus == VK_SUCCESS, "Failed to create descriptor set layout, status: " + createStatus);
     }
 
     void ADescriptorLayout::Dispose(VkDevice& logicalDevice, VkDescriptorSetLayout& descriptorSetLayout) const

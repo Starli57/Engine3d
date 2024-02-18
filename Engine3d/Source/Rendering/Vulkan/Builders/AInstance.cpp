@@ -27,7 +27,7 @@ namespace AVulkan
 		validation.Setup(createInfo);
 
 		VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
-		if (result != VK_SUCCESS) throw std::runtime_error("vulkan instance can't be created: " + result);
+		CAssert::Check(result == VK_SUCCESS, "vulkan instance can't be created: " + result);
 	}
 
 	void AInstance::Dispose(VkInstance& instance) const

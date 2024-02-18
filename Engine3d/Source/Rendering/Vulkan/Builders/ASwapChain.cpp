@@ -12,7 +12,7 @@ namespace AVulkan
 		SwapChainData swapChainData;
 
 		auto details = GetSwapChainDetails(physicalDevice, surface);
-		if (!DoSupportSwapChain(details)) throw std::runtime_error("Swap chains are not supported");
+		CAssert::Check(DoSupportSwapChain(details), "Swap chains are not supported");
 
 		VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(details.formats);
 		VkPresentModeKHR presentMode = ChoosePresentMode(details.presentModes);
@@ -33,7 +33,7 @@ namespace AVulkan
 		SetupSwapChainInfo(createInfo, surface, extent, presentMode, surfaceFormat, details.capabilities, physicalDeviceQueueIndices, imageCount);
 
 		auto createStatus = vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &swapChainData.swapChain);
-		if (createStatus != VK_SUCCESS) throw std::runtime_error("Failed to create swap chain, status: " + createStatus);
+		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create swap chain, status: " + createStatus);
 
 		vkGetSwapchainImagesKHR(logicalDevice, swapChainData.swapChain, &imageCount, nullptr);
 		swapChainData.images.resize(imageCount);

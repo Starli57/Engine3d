@@ -9,7 +9,8 @@ namespace AVulkan
 
 		VkSurfaceKHR surface;
 		auto createResult = glfwCreateWindowSurface(instance, &window, nullptr, &surface);
-		if (createResult != VK_SUCCESS) throw std::runtime_error("Cant't create vulkan window surface, status: " + createResult);
+		CAssert::Check(createResult == VK_SUCCESS, "Cant't create vulkan window surface, status: " + createResult);
+
 		return surface;
 	}
 

@@ -18,10 +18,7 @@ namespace AVulkan
 
 		swapChainData.descriptorSets.resize(setsCount);
 		auto allocateStatus = vkAllocateDescriptorSets(logicalDevice, &allocInfo, swapChainData.descriptorSets.data());
-		if (allocateStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("Failed to allocate descriptor sets, status: " + allocateStatus);
-		}
+		CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate descriptor sets, status: " + allocateStatus);
 
 		for (size_t i = 0; i < setsCount; i++)
 		{

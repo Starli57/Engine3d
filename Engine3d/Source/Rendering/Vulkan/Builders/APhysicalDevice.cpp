@@ -10,8 +10,8 @@ namespace AVulkan
 
         auto devices = GetRenderingDevicesList(instance, surface);
 
-        if (devices.size() == 0) throw std::runtime_error("Physical rendering device not found");
-        else spdlog::info("Physical rendering devices found: {0}", devices.size());
+        CAssert::Check(devices.size() != 0, "Physical rendering device not found");
+        spdlog::info("Physical rendering devices found: {0}", devices.size());
 
         VkPhysicalDevice bestDevice = VK_NULL_HANDLE;
         uint64_t bestScore = 0;

@@ -50,10 +50,7 @@ namespace AVulkan
 
 		VkDevice logicalDevice;
 		auto createStatus = vkCreateDevice(physicalDevice, &createInfo, nullptr, &logicalDevice);
-		if (createStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("failed to create logical device, status: " + createStatus);
-		}
+		CAssert::Check(createStatus == VK_SUCCESS, "failed to create logical device, status: " + createStatus);
 
 		vkGetDeviceQueue(logicalDevice, queueFamilies.graphicsFamily.value(), 0, &graphicsQueue);
 		vkGetDeviceQueue(logicalDevice, queueFamilies.presentationFamily.value(), 0, &presentationQueue);

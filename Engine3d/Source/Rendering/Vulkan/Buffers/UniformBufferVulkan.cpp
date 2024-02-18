@@ -16,10 +16,7 @@ namespace AVulkan
 			stagingUsageFlags, stagingMemoryFlags, buffer, bufferMemory);
 
 		auto mapStatus = vkMapMemory(logicalDevice, bufferMemory, 0, bufferSize, 0, &bufferMapped);
-		if (mapStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("Uniform buffer can't be created, status: " + mapStatus);
-		}
+		CAssert::Check(mapStatus == VK_SUCCESS, "Uniform buffer can't be created, status: " + mapStatus);
 	}
 
 	UniformBufferVulkan::~UniformBufferVulkan()

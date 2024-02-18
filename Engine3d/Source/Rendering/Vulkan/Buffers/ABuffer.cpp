@@ -13,11 +13,8 @@ namespace AVulkan
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 		auto createStatus = vkCreateBuffer(logicalDevice, &bufferInfo, nullptr, &buffer);
-		if (createStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("Failed to create buffer, status: " + createStatus);
-		}
-
+		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create buffer, status: " + createStatus);
+	
 		BindMemory(physicalDevice, logicalDevice, memoryFlags, buffer, bufferMemory);
 	}
 
@@ -75,10 +72,7 @@ namespace AVulkan
 		allocInfo.memoryTypeIndex = FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, memoryFlags);
 
 		auto allocateStatus = vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &bufferMemory);
-		if (allocateStatus != VK_SUCCESS)
-		{
-			throw std::runtime_error("Can't allocate memory for vertex buffer, status: " + allocateStatus);
-		}
+		CAssert::Check(allocateStatus == VK_SUCCESS, "Can't allocate memory for vertex buffer, status: " + allocateStatus);
 
 		vkBindBufferMemory(logicalDevice, buffer, bufferMemory, 0);
 	}

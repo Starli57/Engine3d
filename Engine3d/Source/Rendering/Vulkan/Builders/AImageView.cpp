@@ -29,12 +29,8 @@ namespace AVulkan
 			createInfo.subresourceRange.layerCount = 1;
 
 			auto createStatus = vkCreateImageView(logicalDevice, &createInfo, nullptr, &swapChainData.imageViews[i]);
-			if (createStatus != VK_SUCCESS)
-			{
-				throw std::runtime_error("Swap chain image view can't be created, status: " + createStatus);
-			}
+			CAssert::Check(createStatus == VK_SUCCESS, "Swap chain image view can't be created, status: " + createStatus);
 		}
-
 	}
 
 	void AImageView::Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const
