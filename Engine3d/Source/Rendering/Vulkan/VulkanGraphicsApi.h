@@ -9,6 +9,7 @@
 #include "Architecture/Ref.h"
 #include "Entities/Level.h"
 #include "Data/SwapChainData.h"
+#include "Data/DepthBufferModel.h"
 #include "Rendering/IGraphicsApi.h"
 #include "Rendering/Model/Mesh.h"
 #include "Rendering/Vulkan/Mesh/MeshVulkan.h"
@@ -17,6 +18,7 @@
 #include "Builders/ALogicalDevice.h"
 #include "Builders/AWindowsSurface.h"
 #include "Builders/AInstance.h"
+#include "Builders/AImage.h"
 #include "Builders/AImageView.h"
 #include "Builders/AShaderModule.h"
 #include "Builders/ARenderPass.h"
@@ -64,14 +66,13 @@ namespace AVulkan
 		VkDescriptorPool descriptorPool;
 
 		SwapChainData swapChainData;
+		Ref<DepthBufferModel> depthBufferModel;
 		GraphicsPipeline* graphicsPipeline;
 
 		//todo: replace
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;
 		std::vector<VkFence> drawFences;
-
-		std::vector<MeshVulkan*>* drawMeshes = nullptr;
 
 		//todo: replace
 		uint16_t frame = 0;
@@ -95,6 +96,8 @@ namespace AVulkan
 		void CreateDescriptorSetLayout();
 		void CreateDescriptorPool();
 		void CreateDescriptorSets();
+		void CreateDepthBuffer();
+
 		void RecreateSwapChain();
 
 		//todo: replace

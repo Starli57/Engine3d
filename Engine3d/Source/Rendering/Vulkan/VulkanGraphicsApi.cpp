@@ -3,6 +3,9 @@
 #include <functional>
 
 #include "VulkanGraphicsApi.h"
+#include "Rendering/Vulkan/Utilities/VkFormatUtility.h"
+#include "Utilities/VkImageViewUtility.h"
+#include "Utilities/VkMemoryUtility.h"
 
 namespace AVulkan
 {
@@ -31,6 +34,7 @@ namespace AVulkan
 			CreateRenderPass();
 			CreateDescriptorSetLayout();
 			CreateGraphicsPipeline();
+			CreateDepthBuffer();
 			CreateFrameBuffers();
 			CreateCommandPool();
 			CreateCommandBuffer();
@@ -57,7 +61,7 @@ namespace AVulkan
 		glfwGetFramebufferSize(window, &width, &height);
 
 		//todo: make it with no loop
-		while (width == 0 || height == 0) 
+		while (width == 0 || height == 0)
 		{
 			glfwGetFramebufferSize(window, &width, &height);
 			glfwWaitEvents();
@@ -66,8 +70,12 @@ namespace AVulkan
 		spdlog::info("Recreate swapchain");
 		needResizeWindow = false;
 		vkDeviceWaitIdle(logicalDevice);
+
+		//todo: need to dispose meshes
 		rollback->Dispose();
+
 		Init();
+		//todo: need to recreate meshes
 	}
 
 	//todo: make refactoring of the function
@@ -191,7 +199,7 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateRenderPass()
 	{
-		renderPass = ARenderPass().Create(logicalDevice, swapChainData.imageFormat);
+		renderPass = ARenderPass().Create(physicalDevice, logicalDevice, swapChainData.imageFormat);
 		rollback->Add([this]() { ARenderPass().Dispose(logicalDevice, renderPass);; });
 	}
 
@@ -205,7 +213,7 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateFrameBuffers()
 	{
-		AFrameBuffer().Create(logicalDevice, renderPass, swapChainData);
+		AFrameBuffer().Create(logicalDevice, renderPass, swapChainData, depthBufferModel);
 		rollback->Add([this]() { AFrameBuffer().Dispose(logicalDevice, swapChainData); });
 	}
 
@@ -235,6 +243,31 @@ namespace AVulkan
 	void VulkanGraphicsApi::CreateDescriptorSets()
 	{
 		ADescriptorSet().Allocate(logicalDevice, swapChainData, descriptorPool, descriptorSetLayout);
+	}
+
+	void VulkanGraphicsApi::CreateDepthBuffer()
+	{
+		VkFormat depthFormat = VkFormatUtility::FindDepthBufferFormat(physicalDevice);
+		depthBufferModel = CreateRef<DepthBufferModel>();
+		
+		depthBufferModel->image = AImage().Create(
+			physicalDevice, logicalDevice, 
+			swapChainData.extent.width, swapChainData.extent.height, depthFormat, 
+			VK_IMAGE_TILING_OPTIMAL, 
+			VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 
+			depthBufferModel->imageMemory);
+
+		VkImageViewUtility::Create(logicalDevice, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
+			depthBufferModel->image, depthBufferModel->imageView);
+
+		rollback->Add([this]()
+		{
+			VkImageViewUtility::Destroy(logicalDevice, depthBufferModel->imageView);
+			AImage().Destroy(logicalDevice, depthBufferModel->image);
+			VkMemoryUtility::FreeDeviceMemory(logicalDevice, depthBufferModel->imageMemory);
+			depthBufferModel.reset();
+		});
 	}
 
 	void VulkanGraphicsApi::CreateUniformBuffers()
@@ -275,16 +308,13 @@ namespace AVulkan
 
 		for (int i = 0; i < maxFramesDraws; i++) 
 		{
-			auto imageSemaphoreStatus = vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]);
-			if (imageSemaphoreStatus != VK_SUCCESS) throw std::runtime_error("Failed to create image sync semaphor");
+			vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]);
 			rollback->Add([i, this]() { vkDestroySemaphore(logicalDevice, imageAvailableSemaphores[i], nullptr); });
 
-			auto renderFinishedSemaphoreStatus = vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]);
-			if (renderFinishedSemaphoreStatus != VK_SUCCESS) throw std::runtime_error("Failed to create render finished sync semaphor");;
+			vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]);
 			rollback->Add([i, this]() { vkDestroySemaphore(logicalDevice, renderFinishedSemaphores[i], nullptr); });
 
-			auto inFlightFenceStatus = vkCreateFence(logicalDevice, &fenceInfo, nullptr, &drawFences[i]);
-			if (inFlightFenceStatus != VK_SUCCESS) throw std::runtime_error("Failed to create sync fence!");
+			vkCreateFence(logicalDevice, &fenceInfo, nullptr, &drawFences[i]);
 			rollback->Add([i, this]() { vkDestroyFence(logicalDevice, drawFences[i], nullptr); });
 		}
 	}

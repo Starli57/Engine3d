@@ -29,10 +29,9 @@ namespace AVulkan
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 		beginInfo.pInheritanceInfo = nullptr;
 
-		VkClearValue clearColors[] =
-		{
-			{0.015f, 0.015f, 0.04f, 1.0f}
-		};
+		std::array<VkClearValue, 2> clearColors {};
+		clearColors[0].color = { 0.015f, 0.015f, 0.04f, 1.0f };
+		clearColors[1].depthStencil.depth = 1.0f;
 
 		auto beginStatus = vkBeginCommandBuffer(commandBuffer, &beginInfo);
 		CAssert::Check(beginStatus == VK_SUCCESS, "Failed to begin recording a command buffer, status: " + beginStatus);
@@ -43,8 +42,8 @@ namespace AVulkan
 		renderPassInfo.framebuffer = frameBuffer;
 		renderPassInfo.renderArea.offset = { 0, 0 };
 		renderPassInfo.renderArea.extent = swapChainData.extent;
-		renderPassInfo.clearValueCount = 1;
-		renderPassInfo.pClearValues = clearColors;
+		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearColors.size());
+		renderPassInfo.pClearValues = clearColors.data();
 
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 		{

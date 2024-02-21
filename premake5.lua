@@ -59,7 +59,8 @@ project "ExampleProject"
 	defines
 	{
 		"GLFW_INCLUDE_VULKAN",
-		"GLM_FORCE_RADIANS"
+		"GLM_FORCE_RADIANS",
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE"
 	}
 
 	cppdialect "C++20"
@@ -122,7 +123,8 @@ project "Engine3d"
 	defines
 	{
 		"GLFW_INCLUDE_VULKAN",
-		"GLM_FORCE_RADIANS"
+		"GLM_FORCE_RADIANS",
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE"
 	}
 	
 	prebuildcommands 

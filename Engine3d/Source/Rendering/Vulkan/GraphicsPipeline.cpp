@@ -50,6 +50,14 @@ namespace AVulkan
 			auto multisample = SetupMultisampling();
 			auto colorBlend = SetupColorsBlending();
 
+			VkPipelineDepthStencilStateCreateInfo depthStencil{};
+			depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+			depthStencil.depthTestEnable = VK_TRUE;
+			depthStencil.depthWriteEnable = VK_TRUE;
+			depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
+			depthStencil.depthBoundsTestEnable = VK_FALSE;
+			depthStencil.stencilTestEnable = VK_FALSE;
+
 			VkGraphicsPipelineCreateInfo pipelineInfo{};
 			pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 			pipelineInfo.stageCount = 2;
@@ -61,10 +69,10 @@ namespace AVulkan
 			pipelineInfo.pMultisampleState = &multisample;
 			pipelineInfo.pColorBlendState = &colorBlend;
 			pipelineInfo.pDynamicState = nullptr;
-			pipelineInfo.pDepthStencilState = nullptr;
 			pipelineInfo.layout = pipelineLayout;
 			pipelineInfo.renderPass = renderPass;
 			pipelineInfo.subpass = 0;
+			pipelineInfo.pDepthStencilState = &depthStencil;
 
 			auto createState = vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline);
 			CAssert::Check(createState == VK_SUCCESS, "Failed to create graphics pipeline, state" + createState);

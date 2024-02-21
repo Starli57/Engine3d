@@ -18,7 +18,5 @@ namespace AVulkan
 	private:
 		void BindMemory(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkMemoryPropertyFlags& memoryFlags,
 			VkBuffer& buffer, VkDeviceMemory& bufferMemory) const;
-
-		uint32_t FindMemoryType(VkPhysicalDevice& physicalDevice, uint32_t& typeFilter, VkMemoryPropertyFlags& properties) const;
 	};
 }

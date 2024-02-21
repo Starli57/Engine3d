@@ -4,23 +4,24 @@
 
 namespace AVulkan
 {
-    void AFrameBuffer::Create(VkDevice& logicalDevice, VkRenderPass& renderPass, SwapChainData& swapChainData) const
+    void AFrameBuffer::Create(VkDevice& logicalDevice, VkRenderPass& renderPass, SwapChainData& swapChainData, Ref<DepthBufferModel> depthBufferModel) const
     {
         spdlog::info("Create frame buffers");
         swapChainData.frameBuffers.resize(swapChainData.imageViews.size());
 
         for (size_t i = 0; i < swapChainData.imageViews.size(); i++)
         {
-            VkImageView attachments[] =
+            std::array<VkImageView, 2> attachments =
             {
-                swapChainData.imageViews[i]
+                swapChainData.imageViews[i],
+                depthBufferModel->imageView
             };
 
             VkFramebufferCreateInfo framebufferInfo{};
             framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
             framebufferInfo.renderPass = renderPass;
-            framebufferInfo.attachmentCount = 1;
-            framebufferInfo.pAttachments = attachments;
+            framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+            framebufferInfo.pAttachments = attachments.data();
             framebufferInfo.width = swapChainData.extent.width;
             framebufferInfo.height = swapChainData.extent.height;
             framebufferInfo.layers = 1;
