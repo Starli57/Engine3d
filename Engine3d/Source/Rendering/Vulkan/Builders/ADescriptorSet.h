@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Rendering/Model/Mvp.h"
-#include "Rendering/Vulkan/Data/SwapChainData.h"
+#include "Rendering/Vulkan/Models/SwapChainData.h"
 
 namespace AVulkan
 {

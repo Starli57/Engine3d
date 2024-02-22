@@ -6,7 +6,7 @@
 #include "Rendering/Model/Mesh.h"
 #include "Rendering/Model/Mvp.h"
 #include "Rendering/Model/Vertex.h"
-#include "Rendering/Vulkan/Data/SwapChainData.h"
+#include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Buffers/UniformBufferVulkan.h"
 #include "Architecture/Ref.h"
 

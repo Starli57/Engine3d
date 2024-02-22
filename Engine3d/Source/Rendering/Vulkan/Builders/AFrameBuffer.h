@@ -1,8 +1,8 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include "Rendering/Vulkan/Data/SwapChainData.h"
-#include "Rendering/Vulkan/Data/DepthBufferModel.h"
+#include "Rendering/Vulkan/Models/SwapChainData.h"
+#include "Rendering/Vulkan/Models/DepthBufferModel.h"
 #include "Architecture/Ref.h"
 
 namespace AVulkan
