@@ -25,5 +25,6 @@ namespace AVulkan
 		{
 			vkDestroyImageView(logicalDevice, imageView, nullptr);
 		}
+		swapChainData.imageViews.clear();
 	}
 }

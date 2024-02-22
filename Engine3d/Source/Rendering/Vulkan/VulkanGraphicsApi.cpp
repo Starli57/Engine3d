@@ -13,6 +13,7 @@ namespace AVulkan
 	{
 		this->ecs = ecs;
 		this->rollback = new Rollback("VulkanGraphicsApi", *vulkanRollback);
+		this->swapchainRollback = CreateRef<Rollback>("SwapchainRollback");
 		this->window = glfwWindow;
 	}
 
@@ -42,6 +43,8 @@ namespace AVulkan
 			CreateDescriptorPool();
 			CreateDescriptorSets();
 			CreateSyncObjects();
+
+			rollback->Add([this]() {swapchainRollback->Dispose(); });
 		}
 		catch (const std::exception& e)
 		{
@@ -71,11 +74,13 @@ namespace AVulkan
 		needResizeWindow = false;
 		vkDeviceWaitIdle(logicalDevice);
 
-		//todo: need to dispose meshes
-		rollback->Dispose();
+		swapchainRollback->Dispose();
 
-		Init();
-		//todo: need to recreate meshes
+		CreateSwapChain();
+		CreateSwapChainImageViews();
+		CreateDepthBuffer();
+		CreateFrameBuffers();
+
 	}
 
 	//todo: make refactoring of the function
@@ -86,6 +91,16 @@ namespace AVulkan
 		uint32_t imageIndex = 0;
 		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData.swapChain, frameSyncTimeout,
 			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
+		
+		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR) 
+		{
+			RecreateSwapChain();
+			return;
+		}
+		else
+		{
+			CAssert::Check(acquireStatus == VK_SUCCESS || acquireStatus == VK_SUBOPTIMAL_KHR, "Failed to acquire swap chain image!");
+		}
 
 		UpdateUniformBuffer(frame);
 
@@ -125,8 +140,10 @@ namespace AVulkan
 		{
 			RecreateSwapChain();
 		}
-
-		CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
+		else
+		{
+			CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
+		}
 
 		frame = (frame + 1) % maxFramesDraws;
 	}
@@ -134,11 +151,6 @@ namespace AVulkan
 	//todo: replace
 	void VulkanGraphicsApi::UpdateUniformBuffer(uint32_t imageIndex)
 	{
-		static auto startTime = std::chrono::high_resolution_clock::now();
-
-		auto currentTime = std::chrono::high_resolution_clock::now();
-		float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
 		//todo: find most relevant camera
 		auto cameraEntities = ecs->view<Camera>();
 		auto [mainCamera] = cameraEntities.get(cameraEntities.front());
@@ -187,14 +199,14 @@ namespace AVulkan
 	void VulkanGraphicsApi::CreateSwapChain()
 	{
 		auto queueIndices = APhysicalDevice().GetQueueFamilies(physicalDevice, windowSurface);
-		swapChainData = ASwapChain().Create(*window, physicalDevice, logicalDevice, windowSurface, queueIndices);
-		rollback->Add([this]() { ASwapChain().Dispose(logicalDevice, swapChainData); });
+		ASwapChain().Create(*window, physicalDevice, logicalDevice, windowSurface, queueIndices, swapChainData);
+		swapchainRollback->Add([this]() { ASwapChain().Dispose(logicalDevice, swapChainData); });
 	}
 
 	void VulkanGraphicsApi::CreateSwapChainImageViews()
 	{
 		AImageView().Create(logicalDevice, swapChainData);
-		rollback->Add([this]() { AImageView().Dispose(logicalDevice, swapChainData); });
+		swapchainRollback->Add([this]() { AImageView().Dispose(logicalDevice, swapChainData); });
 	}
 
 	void VulkanGraphicsApi::CreateRenderPass()
@@ -214,7 +226,7 @@ namespace AVulkan
 	void VulkanGraphicsApi::CreateFrameBuffers()
 	{
 		AFrameBuffer().Create(logicalDevice, renderPass, swapChainData, depthBufferModel);
-		rollback->Add([this]() { AFrameBuffer().Dispose(logicalDevice, swapChainData); });
+		swapchainRollback->Add([this]() { AFrameBuffer().Dispose(logicalDevice, swapChainData); });
 	}
 
 	void VulkanGraphicsApi::CreateCommandPool()
@@ -247,6 +259,8 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateDepthBuffer()
 	{
+		spdlog::info("Create depth buffer");
+
 		VkFormat depthFormat = VkFormatUtility::FindDepthBufferFormat(physicalDevice);
 		depthBufferModel = CreateRef<DepthBufferModel>();
 		
@@ -261,7 +275,7 @@ namespace AVulkan
 		VkImageViewUtility::Create(logicalDevice, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
 			depthBufferModel->image, depthBufferModel->imageView);
 
-		rollback->Add([this]()
+		swapchainRollback->Add([this]()
 		{
 			VkImageViewUtility::Destroy(logicalDevice, depthBufferModel->imageView);
 			AImage().Destroy(logicalDevice, depthBufferModel->image);
@@ -280,7 +294,7 @@ namespace AVulkan
 			swapChainData.uniformBuffers->push_back(new UniformBufferVulkan(physicalDevice, logicalDevice));
 		}
 
-		rollback->Add([this]() {DisposeUniformBuffers(); });
+		rollback->Add([this]() { DisposeUniformBuffers(); });
 	}
 
 	void VulkanGraphicsApi::DisposeUniformBuffers()

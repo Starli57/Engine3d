@@ -38,5 +38,6 @@ namespace AVulkan
         {
             vkDestroyFramebuffer(logicalDevice, framebuffer, nullptr);
         }
+        swapChainData.frameBuffers.clear();
     }
 }

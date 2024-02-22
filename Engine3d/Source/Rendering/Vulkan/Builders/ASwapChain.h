@@ -12,8 +12,8 @@ namespace AVulkan
 	class ASwapChain
 	{
 	public:
-		SwapChainData Create(GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
-			VkSurfaceKHR& surface, QueueFamilyIndices& physicalDeviceQueueIndices) const;
+		void Create(GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
+			VkSurfaceKHR& surface, QueueFamilyIndices& physicalDeviceQueueIndices, SwapChainData& swapChainData) const;
 		void Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
 
 		SwapChainSurfaceSettings GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const;

@@ -4,13 +4,11 @@
 namespace AVulkan
 {
 	//todo: div to smaller functions
-	SwapChainData ASwapChain::Create(GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
-		VkSurfaceKHR& surface, QueueFamilyIndices& physicalDeviceQueueIndices) const
+	void ASwapChain::Create(GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
+		VkSurfaceKHR& surface, QueueFamilyIndices& physicalDeviceQueueIndices, SwapChainData& swapChainData) const
 	{
 		spdlog::info("Create swap chain");
-
-		SwapChainData swapChainData;
-
+		
 		auto details = GetSwapChainDetails(physicalDevice, surface);
 		CAssert::Check(DoSupportSwapChain(details), "Swap chains are not supported");
 
@@ -41,8 +39,6 @@ namespace AVulkan
 
 		swapChainData.imageFormat = surfaceFormat.format;
 		swapChainData.extent = extent;
-
-		return swapChainData;
 	}
 
 	void ASwapChain::Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const

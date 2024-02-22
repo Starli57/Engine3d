@@ -51,8 +51,10 @@ namespace AVulkan
 
 	private:
 		Ref<entt::registry> ecs;
-		Rollback* rollback;
 		GLFWwindow* window;
+
+		Rollback* rollback;
+		Ref<Rollback> swapchainRollback;
 
 		VkInstance instance;
 		VkPhysicalDevice physicalDevice;
