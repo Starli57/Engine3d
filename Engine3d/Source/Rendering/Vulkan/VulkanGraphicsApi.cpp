@@ -56,14 +56,9 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::RecreateSwapChain()
 	{
-		/// to recreate spawnchain it's enough to dispose and recreate only the next 3 components:
-		/// swapchain, spwanchainImageView and commandBuffers
-		/// but for better architecture we dispose all components and start the initialization from beginning
-
 		int width = 0, height = 0;
 		glfwGetFramebufferSize(window, &width, &height);
 
-		//todo: make it with no loop
 		while (width == 0 || height == 0)
 		{
 			glfwGetFramebufferSize(window, &width, &height);
@@ -72,7 +67,7 @@ namespace AVulkan
 
 		spdlog::info("Recreate swapchain");
 		needResizeWindow = false;
-		vkDeviceWaitIdle(logicalDevice);
+		FinanilizeRenderOperations();
 
 		swapchainRollback->Dispose();
 
@@ -81,6 +76,10 @@ namespace AVulkan
 		CreateDepthBuffer();
 		CreateFrameBuffers();
 
+		auto cameraEntities = ecs->view<Camera>();
+		auto [mainCamera] = cameraEntities.get(cameraEntities.front());
+		mainCamera.UpdateScreenAspectRatio(swapChainData.extent.width / (float)swapChainData.extent.height);
+		mainCamera.UpdateUbo();
 	}
 
 	//todo: make refactoring of the function
@@ -97,10 +96,8 @@ namespace AVulkan
 			RecreateSwapChain();
 			return;
 		}
-		else
-		{
-			CAssert::Check(acquireStatus == VK_SUCCESS || acquireStatus == VK_SUBOPTIMAL_KHR, "Failed to acquire swap chain image!");
-		}
+		
+		CAssert::Check(acquireStatus == VK_SUCCESS || acquireStatus == VK_SUBOPTIMAL_KHR, "Failed to acquire swap chain image!");
 
 		UpdateUniformBuffer(frame);
 
@@ -139,12 +136,11 @@ namespace AVulkan
 		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR || needResizeWindow)
 		{
 			RecreateSwapChain();
+			return;
 		}
-		else
-		{
-			CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
-		}
-
+		
+		CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
+		
 		frame = (frame + 1) % maxFramesDraws;
 	}
 
@@ -154,11 +150,9 @@ namespace AVulkan
 		//todo: find most relevant camera
 		auto cameraEntities = ecs->view<Camera>();
 		auto [mainCamera] = cameraEntities.get(cameraEntities.front());
-		mainCamera.UpdateScreenAspectRatio(swapChainData.extent.width / (float)swapChainData.extent.height);
-		mainCamera.UpdateUboViewProjection();
-		auto mvp = mainCamera.GetUboViewProjection();
+		auto ubo = mainCamera.GetUbo();
 
-		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &mvp, sizeof(UboViewProjection));
+		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &ubo, sizeof(UboViewProjection));
 	}
 
 	void VulkanGraphicsApi::FinanilizeRenderOperations()

@@ -11,13 +11,13 @@
 class Camera
 {
 public:
-	UboViewProjection GetUboViewProjection();
+	UboViewProjection GetUbo();
 
 	Camera(Ref<Transform> transform, float pov, float screenAspectRatio);
 	~Camera();
 
 	void UpdateScreenAspectRatio(float screenAspectRatio);
-	void UpdateUboViewProjection();
+	void UpdateUbo();
 
 
 private:

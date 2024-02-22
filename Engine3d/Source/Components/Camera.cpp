@@ -7,7 +7,7 @@ Camera::Camera(Ref<Transform> transform, float pov, float screenAspectRatio)
 	this->pov = pov;
 
 	UpdateScreenAspectRatio(screenAspectRatio);
-	UpdateUboViewProjection();
+	UpdateUbo();
 }
 
 Camera::~Camera()
@@ -19,14 +19,14 @@ void Camera::UpdateScreenAspectRatio(float screenAspectRatio)
 	this->screenAspectRatio = screenAspectRatio;
 }
 
-void Camera::UpdateUboViewProjection()
+void Camera::UpdateUbo()
 {
 	uboViewProjection.view = glm::lookAt(transform->position, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	uboViewProjection.proj = glm::perspective(glm::radians(pov), screenAspectRatio, zNear, zFar);
 	uboViewProjection.proj[1][1] *= -1;
 }
 
-UboViewProjection Camera::GetUboViewProjection()
+UboViewProjection Camera::GetUbo()
 {
 	return uboViewProjection;
 }
