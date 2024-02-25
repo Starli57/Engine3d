@@ -11,6 +11,7 @@ Externals["Glfw"] = "Externals/GLFW"
 Externals["Glm"] = "Externals/Glm"
 Externals["SpdLog"] = "Externals/SpdLog"
 Externals["Entt"] = "Externals/Entt"
+Externals["Stb"] = "Externals/Stb"
 
 Includes = {}
 Includes["Glfw"] = "%{Externals.Glfw}/include"
@@ -18,6 +19,7 @@ Includes["Glm"] = "%{Externals.Glm}"
 Includes["Vulkan"] = "%{VulkanSdk}/Include"
 Includes["SpdLog"] = "%{Externals.SpdLog}/include"
 Includes["Entt"] = "%{Externals.Entt}/single_include/entt"
+Includes["Stb"] = "%{Externals.Stb}"
 
 LibFolders = {}
 LibFolders["Vulkan"] = "%{VulkanSdk}/Lib"
@@ -48,6 +50,7 @@ project "ExampleProject"
 		"%{Includes.Vulkan}",
 		"%{Includes.SpdLog}",
 		"%{Includes.Entt}",
+		"%{Includes.Stb}",
 		"Engine3d/Source"
 	}
 	
@@ -110,7 +113,8 @@ project "Engine3d"
 		"%{Includes.Glm}",
 		"%{Includes.Vulkan}",
 		"%{Includes.SpdLog}",
-		"%{Includes.Entt}"
+		"%{Includes.Entt}",
+		"%{Includes.Stb}"
 	}
 
 	links
@@ -124,7 +128,8 @@ project "Engine3d"
 	{
 		"GLFW_INCLUDE_VULKAN",
 		"GLM_FORCE_RADIANS",
-		"GLM_FORCE_DEPTH_ZERO_TO_ONE"
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"STB_IMAGE_IMPLEMENTATION"
 	}
 	
 	prebuildcommands 
