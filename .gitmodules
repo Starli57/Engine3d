@@ -10,3 +10,6 @@
 [submodule "Externals/Entt"]
 	path = Externals/Entt
 	url = git@github.com:skypjack/entt.git
+[submodule "Externals/Stb"]
+	path = Externals/Stb
+	url = git@github.com:nothings/stb.git
