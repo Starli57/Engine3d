@@ -15,6 +15,9 @@ namespace AVulkan
 
 		void Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const;
 
+		VkCommandBuffer BeginCommandBuffer(VkDevice& logicalDevice, VkCommandPool& commandPool) const;
+		void SubmitCommandBuffer(VkQueue& graphicsQueue, VkCommandBuffer& commandBuffer) const;
+
 	private:
 		void BindMemory(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkMemoryPropertyFlags& memoryFlags,
 			VkBuffer& buffer, VkDeviceMemory& bufferMemory) const;

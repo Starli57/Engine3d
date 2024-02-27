@@ -31,6 +31,7 @@ private:
 	void InitGlfw();
 	void SetupGlfwHints();
 	void CreateAppWindow();
+	void InitGraphicsApi();
 
 	static void OnFramebufferResized(GLFWwindow* window, int width, int height);
 };

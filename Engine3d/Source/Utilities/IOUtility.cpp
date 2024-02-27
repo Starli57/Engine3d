@@ -5,6 +5,8 @@
 #include "IOUtility.h"
 #include "spdlog/spdlog.h"
 
+
+//todo: return a pointer instead
 std::vector<char> IOUtility::ReadFile(const std::string& filepath) const
 {
     std::ifstream file(filepath, std::ios::ate | std::ios::binary);
@@ -25,4 +27,11 @@ std::vector<char> IOUtility::ReadFile(const std::string& filepath) const
     file.close();
 
     return buffer;
+}
+
+//todo: make async
+Ref<stbi_uc> IOUtility::LoadTexture(const std::string& filepath, int* width, int* height, int* channels, int channelsFormat)
+{
+    auto pixels = stbi_load(filepath.c_str(), width, height, channels, channelsFormat);
+    return CreateRef<stbi_uc>(pixels);
 }

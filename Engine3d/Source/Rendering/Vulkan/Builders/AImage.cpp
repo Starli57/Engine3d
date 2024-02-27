@@ -2,6 +2,7 @@
 #include "AImage.h"
 #include "Architecture/CustomAssert.h"
 #include "Rendering/Vulkan/Utilities/VkMemoryUtility.h"
+#include "Rendering/Vulkan/Buffers/ABuffer.h"
 
 namespace AVulkan
 {
@@ -41,6 +42,33 @@ namespace AVulkan
 
         vkBindImageMemory(logicalDevice, image, imageMemory, 0);
         return image;
+    }
+
+    void AImage::CopyBufferToImage(VkDevice& logicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool, VkBuffer& buffer, 
+        VkImage& image, uint32_t width, uint32_t height) const
+    {
+        ABuffer bufferUtility;
+        auto commandBuffer = bufferUtility.BeginCommandBuffer(logicalDevice, commandPool);
+
+        VkBufferImageCopy imageRegion{};
+        imageRegion.bufferOffset = 0;
+        imageRegion.bufferRowLength = 0;
+        imageRegion.bufferImageHeight = 0;
+
+        imageRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        imageRegion.imageSubresource.mipLevel = 0;
+        imageRegion.imageSubresource.baseArrayLayer = 0;
+        imageRegion.imageSubresource.layerCount = 1;
+        imageRegion.imageSubresource.mipLevel = 1;
+
+        imageRegion.imageOffset = { 0, 0, 0 };
+        imageRegion.imageExtent = { width, height, 1 };
+
+        vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageRegion);
+
+        vkEndCommandBuffer(commandBuffer);
+        bufferUtility.SubmitCommandBuffer(graphicsQueue, commandBuffer);
+        vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
     }
 
     void AImage::Destroy(VkDevice& logicalDevice, VkImage& image) const

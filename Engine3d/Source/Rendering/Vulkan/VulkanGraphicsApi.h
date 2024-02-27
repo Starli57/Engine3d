@@ -12,7 +12,7 @@
 #include "Models/DepthBufferModel.h"
 #include "Rendering/IGraphicsApi.h"
 #include "Rendering/Model/Mesh.h"
-#include "Rendering/Vulkan/Mesh/MeshVulkan.h"
+#include "Rendering/Vulkan/Entities/MeshVulkan.h"
 #include "Builders/AValidationLayers.h"
 #include "Builders/APhysicalDevice.h"
 #include "Builders/ALogicalDevice.h"
@@ -32,6 +32,7 @@
 #include "Components/Transform.h"
 #include "Components/MeshContainer.h"
 #include "Components/Camera.h"
+#include "AssetsDatabaseVulkan.h"
 
 namespace AVulkan
 {
@@ -80,6 +81,9 @@ namespace AVulkan
 		uint16_t frame = 0;
 		uint16_t const maxFramesDraws = 2;
 		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
+
+		//todo: replace
+		Ref<AssetsDatabaseVulkan> assetsDatabase;
 
 		bool needResizeWindow = false;
 

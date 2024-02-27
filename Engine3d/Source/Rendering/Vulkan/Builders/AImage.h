@@ -11,6 +11,9 @@ namespace AVulkan
             VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
             VkMemoryPropertyFlags properties, VkDeviceMemory& imageMemory) const;
 
+        void CopyBufferToImage(VkDevice& logicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool,
+            VkBuffer& buffer, VkImage& image, uint32_t width, uint32_t height) const;
+
         void Destroy(VkDevice& logicalDevice, VkImage& image) const;
     };
 }
