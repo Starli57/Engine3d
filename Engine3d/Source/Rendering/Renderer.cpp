@@ -20,15 +20,8 @@ void Renderer::Init()
 		InitGlfw();
 		SetupGlfwHints();
 		CreateAppWindow();
+		InitGraphicsApi();
 
-#if GLFW_INCLUDE_VULKAN
-		graphicsApi = new VulkanGraphicsApi(ecs, window, rollback);
-		graphicsApi->Init();
-#else
-		throw std::runtime_error("Rendering api is not selected");
-#endif
-
-		rollback->Add([this] { delete graphicsApi; });
 	}
 	catch (const std::exception& e)
 	{
@@ -65,6 +58,17 @@ void Renderer::CreateAppWindow()
 
 	glfwSetWindowUserPointer(window, this);
 	glfwSetFramebufferSizeCallback(window, OnFramebufferResized);
+}
+
+void Renderer::InitGraphicsApi()
+{
+#if GLFW_INCLUDE_VULKAN
+	graphicsApi = new VulkanGraphicsApi(ecs, window, rollback);
+	graphicsApi->Init();
+	rollback->Add([this] { delete graphicsApi; });
+#else
+	throw std::runtime_error("Rendering api is not selected");
+#endif
 }
 
 void Renderer::Run()
