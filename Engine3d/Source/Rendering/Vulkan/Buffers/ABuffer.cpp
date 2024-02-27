@@ -4,7 +4,7 @@
 
 namespace AVulkan
 {
-	void ABuffer::Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, uint64_t bufferSize, 
+	void ABuffer::Create(Ref<VulkanContext> vulkanContext, uint64_t bufferSize,
 		VkBufferUsageFlags& usageFlags, VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const
 	{
 		VkBufferCreateInfo bufferInfo{};
@@ -13,23 +13,22 @@ namespace AVulkan
 		bufferInfo.usage = usageFlags;
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-		auto createStatus = vkCreateBuffer(logicalDevice, &bufferInfo, nullptr, &buffer);
+		auto createStatus = vkCreateBuffer(*vulkanContext->GetVkLogicalDevice().get(), &bufferInfo, nullptr, &buffer);
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create buffer, status: " + createStatus);
 	
-		BindMemory(physicalDevice, logicalDevice, memoryFlags, buffer, bufferMemory);
+		BindMemory(vulkanContext, memoryFlags, buffer, bufferMemory);
 	}
 
-	void ABuffer::Copy(VkDevice& logicalDevice, VkQueue& graphicsQueue, VkBuffer& srcBuffer, VkBuffer& dstBuffer, 
-		VkDeviceSize& size, VkCommandPool& commandPool) const
+	void ABuffer::Copy(Ref<VulkanContext> vulkanContext, VkBuffer& srcBuffer, VkBuffer& dstBuffer, VkDeviceSize& size) const
 	{
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandPool = commandPool;
+		allocInfo.commandPool = *vulkanContext->GetVkCommandPool();
 		allocInfo.commandBufferCount = 1;
 
 		VkCommandBuffer commandBuffer;
-		vkAllocateCommandBuffers(logicalDevice, &allocInfo, &commandBuffer);
+		vkAllocateCommandBuffers(*vulkanContext->GetVkLogicalDevice(), &allocInfo, &commandBuffer);
 
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -48,10 +47,12 @@ namespace AVulkan
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		submitInfo.commandBufferCount = 1;
 		submitInfo.pCommandBuffers = &commandBuffer;
-		vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-		vkQueueWaitIdle(graphicsQueue);
 
-		vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
+		auto graphicsQueue = vulkanContext->GetVkGraphicsQueue();
+		vkQueueSubmit(*graphicsQueue.get(), 1, &submitInfo, VK_NULL_HANDLE);
+		vkQueueWaitIdle(*graphicsQueue.get());
+
+		vkFreeCommandBuffers(*vulkanContext->GetVkLogicalDevice(), *vulkanContext->GetVkCommandPool(), 1, &commandBuffer);
 	}
 
 	void ABuffer::Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const

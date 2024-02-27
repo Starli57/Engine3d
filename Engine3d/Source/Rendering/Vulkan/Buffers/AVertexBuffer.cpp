@@ -5,8 +5,8 @@
 
 namespace AVulkan
 {
-	void AVertexBuffer::Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<std::vector<Vertex>> vertices, 
-		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool) const
+	void AVertexBuffer::Create(Ref<VulkanContext> vulkanContext, Ref<std::vector<Vertex>> vertices,
+		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory) const
 	{
 		spdlog::info("Create Vertex Buffer");
 

@@ -10,11 +10,10 @@ namespace AVulkan
 	VkBuffer MeshVulkan::GetVertexBuffer() { return vertexBuffer; }
 	VkBuffer MeshVulkan::GetIndexBuffer()  { return indexBuffer; }
 
-	MeshVulkan::MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData, 
-		VkQueue& graphicsQueue, VkCommandPool& commandPool, 
+	MeshVulkan::MeshVulkan(Ref<VulkanContext> vulkanContext,
 		Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) : Mesh(vertices, indices)
 	{
-		this->logicalDevice = &logicalDevice;
+		this->vulkanContext = vulkanContext;
 
 		AVertexBuffer().Create(physicalDevice, logicalDevice, vertices, vertexBuffer, vertexBufferMemory, 
 			graphicsQueue, commandPool);
@@ -25,7 +24,8 @@ namespace AVulkan
 
 	MeshVulkan::~MeshVulkan()
 	{
-		AVertexBuffer().Dispose(*logicalDevice, vertexBuffer, vertexBufferMemory);
-		AIndexBuffer().Dispose(*logicalDevice, indexBuffer, indexBufferMemory);
+		auto logicalDevice = vulkanContext->GetVkLogicalDevice();
+		AVertexBuffer().Dispose(logicalDevice, vertexBuffer, vertexBufferMemory);
+		AIndexBuffer().Dispose(logicalDevice, indexBuffer, indexBufferMemory);
 	}
 }

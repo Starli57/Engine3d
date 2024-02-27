@@ -4,6 +4,7 @@
 
 #include "Architecture/Ref.h"
 #include "Rendering/Model/Vertex.h"
+#include "Rendering/Vulkan/VulkanContext.h"
 
 namespace AVulkan
 {
@@ -13,10 +14,10 @@ namespace AVulkan
 		VkVertexInputBindingDescription GetBindingDescription();
 		std::array<VkVertexInputAttributeDescription, 2> GetAttributeDescriptions();
 
-		void Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<std::vector<Vertex>> vertices,
-			VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool) const;
+		void Create(Ref<VulkanContext> vulkanContext, Ref<std::vector<Vertex>> vertices,
+			VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory) const;
 
-		void Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const;
+		void Dispose(Ref<VulkanContext> vulkanContext, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const;
 
 
 	};

@@ -4,9 +4,8 @@
 #include <entt.hpp>
 
 #include "Architecture/Ref.h"
-#include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Mesh/MeshVulkan.h"
-#include "Rendering/Vulkan/GraphicsPipeline.h"
+#include "Rendering/Vulkan/VulkanContext.h"
 #include "Components/MeshContainer.h"
 #include "Components/Transform.h"
 
@@ -15,8 +14,7 @@ namespace AVulkan
 	class ACommandBuffer
 	{
 	public:
-		void Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, SwapChainData& swapChainData, int buffersCount) const;
-		void Record(Ref<entt::registry> ecs, uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
-			SwapChainData& swapChainData, GraphicsPipeline& pipeline) const;
+		void Setup(Ref<VulkanContext> vulkanContext, int buffersCount) const;
+		void Record(Ref<entt::registry> ecs, Ref<VulkanContext> vulkanContext, uint32_t imageIndex) const;
 	};
 }

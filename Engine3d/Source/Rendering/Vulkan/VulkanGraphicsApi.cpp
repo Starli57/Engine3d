@@ -12,9 +12,10 @@ namespace AVulkan
 	VulkanGraphicsApi::VulkanGraphicsApi(Ref<entt::registry> ecs, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
 		this->ecs = ecs;
+		this->window = glfwWindow;
 		this->rollback = new Rollback("VulkanGraphicsApi", *vulkanRollback);
 		this->swapchainRollback = CreateRef<Rollback>("SwapchainRollback");
-		this->window = glfwWindow;
+		this->context = CreateRef<VulkanContext>();
 	}
 
 	VulkanGraphicsApi::~VulkanGraphicsApi()
@@ -66,7 +67,7 @@ namespace AVulkan
 		}
 
 		spdlog::info("Recreate swapchain");
-		needResizeWindow = false;
+		context->ResetWindowResizeFlag();
 		FinanilizeRenderOperations();
 
 		swapchainRollback->Dispose();
@@ -76,20 +77,25 @@ namespace AVulkan
 		CreateDepthBuffer();
 		CreateFrameBuffers();
 
+		auto swapChainExtent = context->GetSwapChainData()->extent;
 		auto cameraEntities = ecs->view<Camera>();
 		auto [mainCamera] = cameraEntities.get(cameraEntities.front());
-		mainCamera.UpdateScreenAspectRatio(swapChainData.extent.width / (float)swapChainData.extent.height);
+		mainCamera.UpdateScreenAspectRatio(swapChainExtent.width / (float)swapChainExtent.height);
 		mainCamera.UpdateUbo();
 	}
 
 	//todo: make refactoring of the function
 	void VulkanGraphicsApi::Render()
 	{
-		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, frameSyncTimeout);
+		auto frame = context->GetFrame();
+
+		vkWaitForFences(*context->GetVkLogicalDevice().get(), 1, 
+			&context->drawFences[frame], VK_TRUE, context->frameSyncTimeout);
 
 		uint32_t imageIndex = 0;
-		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData.swapChain, frameSyncTimeout,
-			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
+		auto acquireStatus = vkAcquireNextImageKHR(*context->GetVkLogicalDevice().get(), 
+			context->GetSwapChainData()->swapChain, context->frameSyncTimeout,
+			context->imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 		
 		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR) 
 		{
@@ -101,10 +107,9 @@ namespace AVulkan
 
 		UpdateUniformBuffer(frame);
 
-		vkResetFences(logicalDevice, 1, &drawFences[frame]);
-		vkResetCommandBuffer(swapChainData.commandBuffers[frame], 0);
-		ACommandBuffer().Record(ecs, frame, swapChainData.frameBuffers[imageIndex],
-			renderPass, swapChainData, *graphicsPipeline);
+		vkResetFences(*context->GetVkLogicalDevice().get(), 1, &context->drawFences[frame]);
+		vkResetCommandBuffer(context->GetSwapChainData()->commandBuffers[frame], 0);
+		ACommandBuffer().Record(ecs, context, imageIndex);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
@@ -114,26 +119,26 @@ namespace AVulkan
 		submitInfo.commandBufferCount = 1;
 		submitInfo.signalSemaphoreCount = 1;
 		
-		submitInfo.pWaitSemaphores = &imageAvailableSemaphores[frame];
-		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[frame];
+		submitInfo.pWaitSemaphores = &context->imageAvailableSemaphores[frame];
+		submitInfo.pSignalSemaphores = &context->renderFinishedSemaphores[frame];
 
 		submitInfo.pWaitDstStageMask = waitStages;
-		submitInfo.pCommandBuffers = &swapChainData.commandBuffers[frame];
+		submitInfo.pCommandBuffers = &context->GetSwapChainData()->commandBuffers[frame];
 
-		auto submitStatus = vkQueueSubmit(graphicsQueue, 1, &submitInfo, drawFences[frame]);
+		auto submitStatus = vkQueueSubmit(*context->GetVkGraphicsQueue(), 1, &submitInfo, context->drawFences[frame]);
 		CAssert::Check(submitStatus == VK_SUCCESS, "Failed to submit draw command buffer, status: " + submitStatus);
 
 		VkPresentInfoKHR presentInfo{};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 		presentInfo.waitSemaphoreCount = 1;
-		presentInfo.pWaitSemaphores = &renderFinishedSemaphores[frame];
+		presentInfo.pWaitSemaphores = &context->renderFinishedSemaphores[frame];
 		presentInfo.swapchainCount = 1;
-		presentInfo.pSwapchains = &swapChainData.swapChain;
+		presentInfo.pSwapchains = &context->GetSwapChainData()->swapChain;
 		presentInfo.pImageIndices = &imageIndex;
 
-		auto presentStatus = vkQueuePresentKHR(presentationQueue, &presentInfo);
+		auto presentStatus = vkQueuePresentKHR(*context->GetVkPresentationQueue(), &presentInfo);
 
-		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR || needResizeWindow)
+		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR || context->GetNeedToResizeValue())
 		{
 			RecreateSwapChain();
 			return;
@@ -141,7 +146,7 @@ namespace AVulkan
 		
 		CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
 		
-		frame = (frame + 1) % maxFramesDraws;
+		context->IncrementFrame();
 	}
 
 	//todo: replace
@@ -151,13 +156,14 @@ namespace AVulkan
 		auto cameraEntities = ecs->view<Camera>();
 		auto [mainCamera] = cameraEntities.get(cameraEntities.front());
 		auto ubo = mainCamera.GetUbo();
+		auto uniformBuffer = context->GetSwapChainData()->uniformBuffers->at(imageIndex);
 
-		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &ubo, sizeof(UboViewProjection));
+		memcpy(uniformBuffer->bufferMapped, &ubo, sizeof(UboViewProjection));
 	}
 
 	void VulkanGraphicsApi::FinanilizeRenderOperations()
 	{
-		vkDeviceWaitIdle(logicalDevice);
+		vkDeviceWaitIdle(*context->GetVkLogicalDevice());
 	}
 
 	Ref<Mesh> VulkanGraphicsApi::CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices)
@@ -186,7 +192,7 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateLogicalDevice()
 	{
-		logicalDevice = ALogicalDevice().Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
+		context->SetVkLogicalDevice(ALogicalDevice().Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue));
 		rollback->Add([this]() { ALogicalDevice().Dispose(logicalDevice); });
 	}
 
@@ -303,9 +309,9 @@ namespace AVulkan
 	//todo: replace 
 	void VulkanGraphicsApi::CreateSyncObjects()
 	{
-		imageAvailableSemaphores.resize(maxFramesDraws);
-		renderFinishedSemaphores.resize(maxFramesDraws);
-		drawFences.resize(maxFramesDraws);
+		context->imageAvailableSemaphores.resize(context->maxFramesDraws);
+		context->renderFinishedSemaphores.resize(context->maxFramesDraws);
+		context->drawFences.resize(context->maxFramesDraws);
 
 		VkSemaphoreCreateInfo semaphoreInfo{};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -314,16 +320,16 @@ namespace AVulkan
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-		for (int i = 0; i < maxFramesDraws; i++) 
+		for (int i = 0; i < context->maxFramesDraws; i++)
 		{
-			vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]);
-			rollback->Add([i, this]() { vkDestroySemaphore(logicalDevice, imageAvailableSemaphores[i], nullptr); });
+			vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &context->imageAvailableSemaphores[i]);
+			rollback->Add([i, this]() { vkDestroySemaphore(logicalDevice, context->imageAvailableSemaphores[i], nullptr); });
 
-			vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]);
-			rollback->Add([i, this]() { vkDestroySemaphore(logicalDevice, renderFinishedSemaphores[i], nullptr); });
+			vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &context->renderFinishedSemaphores[i]);
+			rollback->Add([i, this]() { vkDestroySemaphore(logicalDevice, context->renderFinishedSemaphores[i], nullptr); });
 
-			vkCreateFence(logicalDevice, &fenceInfo, nullptr, &drawFences[i]);
-			rollback->Add([i, this]() { vkDestroyFence(logicalDevice, drawFences[i], nullptr); });
+			vkCreateFence(logicalDevice, &fenceInfo, nullptr, &context->drawFences[i]);
+			rollback->Add([i, this]() { vkDestroyFence(logicalDevice, context->drawFences[i], nullptr); });
 		}
 	}
 

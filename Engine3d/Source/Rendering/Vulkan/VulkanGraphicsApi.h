@@ -5,6 +5,7 @@
 #include <stack>
 #include <vector>
 
+#include "VulkanContext.h"
 #include "GraphicsPipeline.h"
 #include "Architecture/Ref.h"
 #include "Entities/Level.h"
@@ -56,32 +57,7 @@ namespace AVulkan
 		Rollback* rollback;
 		Ref<Rollback> swapchainRollback;
 
-		VkInstance instance;
-		VkPhysicalDevice physicalDevice;
-		VkDevice logicalDevice;
-		VkSurfaceKHR windowSurface;
-		VkQueue graphicsQueue;
-		VkQueue presentationQueue;
-		VkRenderPass renderPass;
-		VkCommandPool commandPool;
-		VkDescriptorSetLayout descriptorSetLayout;
-		VkDescriptorPool descriptorPool;
-
-		SwapChainData swapChainData;
-		Ref<DepthBufferModel> depthBufferModel;
-		GraphicsPipeline* graphicsPipeline;
-
-		//todo: replace
-		std::vector<VkSemaphore> imageAvailableSemaphores;
-		std::vector<VkSemaphore> renderFinishedSemaphores;
-		std::vector<VkFence> drawFences;
-
-		//todo: replace
-		uint16_t frame = 0;
-		uint16_t const maxFramesDraws = 2;
-		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
-
-		bool needResizeWindow = false;
+		Ref<VulkanContext> context;
 
 		void CreateInstance();
 		void SelectPhysicalRenderingDevice();
