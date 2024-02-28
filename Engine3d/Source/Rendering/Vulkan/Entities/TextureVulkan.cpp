@@ -56,9 +56,15 @@ namespace AVulkan
         VkImageUsageFlags usageFlags = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
         VkMemoryPropertyFlags memoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
         
-        AImage imageUtility;
-        imageUtility.Create(physicalDevice, logicalDevice, width, height, imgFormat, tiling, usageFlags, memoryFlags, *textureMemory.get());
-        imageUtility.CopyBufferToImage(logicalDevice, graphicsQueue, commandPool, stagingBuffer, *texture.get(), width, height);
+        AImage imageUtility(physicalDevice, logicalDevice, graphicsQueue, commandPool);
+        
+        texture = CreateRef<VkImage>(imageUtility.Create(width, height, imgFormat, 
+            tiling, usageFlags, memoryFlags, *textureMemory.get()));
+
+        imageUtility.TransitionImageLayout(texture, imgFormat, 
+            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+        imageUtility.CopyBufferToImage(stagingBuffer, *texture.get(), width, height);
 
         vkDestroyBuffer(logicalDevice, stagingBuffer, nullptr);
         vkFreeMemory(logicalDevice, stagingMemory, nullptr);

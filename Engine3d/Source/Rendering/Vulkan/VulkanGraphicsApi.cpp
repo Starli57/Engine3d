@@ -258,8 +258,7 @@ namespace AVulkan
 		VkFormat depthFormat = VkFormatUtility::FindDepthBufferFormat(physicalDevice);
 		depthBufferModel = CreateRef<DepthBufferModel>();
 		
-		depthBufferModel->image = AImage().Create(
-			physicalDevice, logicalDevice, 
+		depthBufferModel->image = AImage(physicalDevice, logicalDevice, graphicsQueue, commandPool).Create(
 			swapChainData.extent.width, swapChainData.extent.height, depthFormat, 
 			VK_IMAGE_TILING_OPTIMAL, 
 			VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
@@ -272,7 +271,7 @@ namespace AVulkan
 		swapchainRollback->Add([this]()
 		{
 			VkImageViewUtility::Destroy(logicalDevice, depthBufferModel->imageView);
-			AImage().Destroy(logicalDevice, depthBufferModel->image);
+			AImage(physicalDevice, logicalDevice, graphicsQueue, commandPool).Destroy(depthBufferModel->image);
 			VkMemoryUtility::FreeDeviceMemory(logicalDevice, depthBufferModel->imageMemory);
 			depthBufferModel.reset();
 		});
