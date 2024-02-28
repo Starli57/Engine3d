@@ -1,7 +1,7 @@
 #include "Pch.h"
 #include "Material.h"
 
-Material::Material(Ref<AVulkan::AssetsDatabaseVulkan> assetsDatabase, const std::string& mainTexturePath)
+Material::Material(Ref<AssetsDatabase> assetsDatabase, const std::string& mainTexturePath)
 {
 	if (assetsDatabase->HasTexture(mainTexturePath))
 	{

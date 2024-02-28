@@ -32,7 +32,6 @@
 #include "Components/Transform.h"
 #include "Components/MeshContainer.h"
 #include "Components/Camera.h"
-#include "AssetsDatabaseVulkan.h"
 
 namespace AVulkan
 {

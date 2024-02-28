@@ -8,7 +8,7 @@
 
 #include "spdlog/spdlog.h"
 
-Level::Level(Ref<entt::registry> ecs, Ref<AVulkan::AssetsDatabaseVulkan> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
+Level::Level(Ref<entt::registry> ecs, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
 {
 	this->ecs = ecs;
 	this->assetDatabase = assetDatabase;

@@ -11,12 +11,12 @@
 #include "Rendering/Entity/Mesh.h"
 #include "Components/Camera.h"
 #include "Rendering/IGraphicsApi.h"
-#include "Rendering/Vulkan/AssetsDatabaseVulkan.h"
+#include "AssetsDatabase.h"
 
 class Level
 {
 public:
-	Level(Ref<entt::registry> ecs, Ref<AVulkan::AssetsDatabaseVulkan> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback);
+	Level(Ref<entt::registry> ecs, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback);
 	~Level();
 
 	void LoadLevel();
@@ -24,7 +24,7 @@ public:
 
 private:
 	Ref<entt::registry> ecs;
-	Ref<AVulkan::AssetsDatabaseVulkan> assetDatabase;
+	Ref<AssetsDatabase> assetDatabase;
 
 	IGraphicsApi* graphicsApi;
 	Rollback* rollback;

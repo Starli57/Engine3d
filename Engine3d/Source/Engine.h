@@ -3,6 +3,7 @@
 #include <entt.hpp>
 #include "Defines/DllDecDefines.h"
 
+#include "AssetsDatabase.h"
 #include "Architecture/Ref.h"
 #include "Rendering/Renderer.h"
 #include "Entities/Level.h"
@@ -25,7 +26,7 @@ private:
 
 
 	Ref<entt::registry> ecs;
-	Ref<AssetsDatabaseVulkan> assetsDatabase;
+	Ref<AssetsDatabase> assetsDatabase;
 
 	void InitLogger();
 };

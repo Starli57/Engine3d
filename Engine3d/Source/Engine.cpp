@@ -12,7 +12,7 @@ Engine::Engine()
 
 	ecs = CreateRef<entt::registry>();
 
-	assetsDatabase = CreateRef<AssetsDatabaseVulkan>();
+	assetsDatabase = CreateRef<AssetsDatabase>();
 	engineRollback->Add([this]() { assetsDatabase.reset(); });
 
 	renderer = new Renderer(ecs, *engineRollback);
