@@ -25,6 +25,7 @@ private:
 
 
 	Ref<entt::registry> ecs;
+	Ref<AssetsDatabaseVulkan> assetsDatabase;
 
 	void InitLogger();
 };

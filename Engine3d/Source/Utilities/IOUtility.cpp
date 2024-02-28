@@ -28,10 +28,3 @@ std::vector<char> IOUtility::ReadFile(const std::string& filepath) const
 
     return buffer;
 }
-
-//todo: make async
-Ref<stbi_uc> IOUtility::LoadTexture(const std::string& filepath, int* width, int* height, int* channels, int channelsFormat)
-{
-    auto pixels = stbi_load(filepath.c_str(), width, height, channels, channelsFormat);
-    return CreateRef<stbi_uc>(pixels);
-}

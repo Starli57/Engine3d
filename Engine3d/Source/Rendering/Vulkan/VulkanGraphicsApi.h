@@ -82,9 +82,6 @@ namespace AVulkan
 		uint16_t const maxFramesDraws = 2;
 		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
 
-		//todo: replace
-		Ref<AssetsDatabaseVulkan> assetsDatabase;
-
 		bool needResizeWindow = false;
 
 		void CreateInstance();

@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #include "Architecture/Ref.h"
-#include "Rendering/Vulkan/Entities/TextureVulkan.h"
+#include "Rendering/Entity/Texture.h"
 
 namespace AVulkan
 {
@@ -15,12 +15,12 @@ namespace AVulkan
 		AssetsDatabaseVulkan();
 		~AssetsDatabaseVulkan();
 
-		bool HasTexture(std::string path);
-		Ref<TextureVulkan> GetTexture(std::string path);
-		void AddTexture(Ref<TextureVulkan> texture);
-		void RemoveTexture(Ref<TextureVulkan> texture);
+		bool HasTexture(const std::string& path);
+		Ref<Texture> GetTexture(const std::string& path);
+		void AddTexture(Ref<Texture> texture);
+		void RemoveTexture(Ref<Texture> texture);
 
 	private:
-		std::unordered_map<std::string, Ref<TextureVulkan>> textures;
+		std::unordered_map<std::string, Ref<Texture>> textures;
 	};
 }

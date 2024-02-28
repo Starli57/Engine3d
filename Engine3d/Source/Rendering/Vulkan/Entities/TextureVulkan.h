@@ -13,21 +13,15 @@ namespace AVulkan
 	{
 	public:
 		TextureVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
-			VkQueue& graphicsQueue, VkCommandPool& commandPool, AssetsDatabaseVulkan& assetsDatabase,
-			const std::string& filePath, int& width, int& height);
+			VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& filePath);
 		virtual ~TextureVulkan() override;
-
-		const std::string& path;
 
 		//todo: make public getters and private setters
 		Ref<VkImage> texture;
 		Ref<VkDeviceMemory> textureMemory;
 
 	private:
-		Ref<stbi_uc> Load(const std::string& filePath, int& width, int& height, VkDeviceSize* imageSize);
-		void Create(VkPhysicalDevice& physicalDevice,
-			VkQueue& graphicsQueue, VkCommandPool& commandPool, AssetsDatabaseVulkan& assetsDatabase,
-			const std::string& filePath, int& width, int& height);
+		void Create(VkPhysicalDevice& physicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& filePath);
 
 		VkDevice& logicalDevice;
 	};

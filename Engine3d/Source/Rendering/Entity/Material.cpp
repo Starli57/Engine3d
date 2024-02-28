@@ -1,11 +1,17 @@
 #include "Pch.h"
 #include "Material.h"
 
-Material::Material(const std::string& mainTexturePath)
+Material::Material(Ref<AVulkan::AssetsDatabaseVulkan> assetsDatabase, const std::string& mainTexturePath)
 {
-	int width;
-	int height;
-	mainTexture = CreateRef<Texture>(mainTexturePath, width, height);
+	if (assetsDatabase->HasTexture(mainTexturePath))
+	{
+		mainTexture = assetsDatabase->GetTexture(mainTexturePath);
+	}
+	else
+	{
+		mainTexture = CreateRef<Texture>(mainTexturePath);
+		assetsDatabase->AddTexture(mainTexture);
+	}
 }
 
 Material::~Material()

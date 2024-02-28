@@ -15,9 +15,6 @@ namespace AVulkan
 		this->rollback = new Rollback("VulkanGraphicsApi", *vulkanRollback);
 		this->swapchainRollback = CreateRef<Rollback>("SwapchainRollback");
 		this->window = glfwWindow;
-
-		assetsDatabase = CreateRef<AssetsDatabaseVulkan>();
-		rollback->Add([this]() { assetsDatabase.reset(); });
 	}
 
 	VulkanGraphicsApi::~VulkanGraphicsApi()

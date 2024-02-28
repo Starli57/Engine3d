@@ -4,15 +4,14 @@
 #include "Architecture/CustomAssert.h"
 #include "Rendering/Vulkan/Buffers/ABuffer.h"
 #include "Rendering/Vulkan/Builders/AImage.h"
-#include "Rendering/Vulkan/AssetsDatabaseVulkan.h"
 
 namespace AVulkan
 {
     TextureVulkan::TextureVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
-        VkQueue& graphicsQueue, VkCommandPool& commandPool, AssetsDatabaseVulkan& assetsDatabase,
-        const std::string& filePath, int& width, int& height) : Texture(filePath, width, height), path(filePath), logicalDevice(logicalDevice)
+        VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& filePath) 
+        : Texture(filePath), logicalDevice(logicalDevice)
     {
-        Create(physicalDevice, graphicsQueue, commandPool, assetsDatabase, filePath, width, height);
+        Create(physicalDevice, graphicsQueue, commandPool, filePath);
     }
 
     TextureVulkan::~TextureVulkan()
@@ -22,39 +21,34 @@ namespace AVulkan
     }
 
     //todo: make async
-    Ref<stbi_uc> TextureVulkan::Load(const std::string& filePath, int& width, int& height, VkDeviceSize* imageSize)
+    void TextureVulkan::Create(VkPhysicalDevice& physicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& filePath)
     {
+        int width;
+        int height;
+        int texChannels;
         uint64_t bitesPerPixel = 4;
-        auto pixels = IOUtility().LoadTexture(filePath, &width, &height, 0, STBI_rgb_alpha);
-        VkDeviceSize imageSize = width * height * bitesPerPixel;
-
-        CAssert::Check(pixels.get() != nullptr, "Failed to load texture image: " + filePath);
-
-        return pixels;
-    }
-
-    //todo: make async
-    void TextureVulkan::Create(VkPhysicalDevice& physicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool,
-        AssetsDatabaseVulkan& assetsDatabase, const std::string& filePath, int& width, int& height)
-    {
         VkDeviceSize imageSize;
-        auto textureData = Load(filePath, width, height, &imageSize);
+
+        auto pixels = stbi_load(filePath.c_str(), &width, &height, &texChannels, STBI_rgb_alpha);
+        imageSize = width * height * bitesPerPixel;
+
+        CAssert::Check(pixels != nullptr, "Failed to load texture image: " + filePath);
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingMemory;
 
-        VkBufferUsageFlags usageFlags = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-        VkMemoryPropertyFlags memoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+        VkBufferUsageFlags usageFlagsStaging = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+        VkMemoryPropertyFlags memoryFlagsStaging = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 
         ABuffer().Create(physicalDevice, logicalDevice, imageSize,
-            usageFlags, memoryFlags, stagingBuffer, stagingMemory);
+            usageFlagsStaging, memoryFlagsStaging, stagingBuffer, stagingMemory);
 
         void* data;
         vkMapMemory(logicalDevice, stagingMemory, 0, imageSize, 0, &data);
-        memcpy(data, textureData.get(), static_cast<size_t>(imageSize));
+        memcpy(data, pixels, static_cast<size_t>(imageSize));
         vkUnmapMemory(logicalDevice, stagingMemory);
 
-        stbi_image_free(textureData.get());
+        stbi_image_free(pixels);
 
         //todo: find suitable format firstly
         VkFormat imgFormat = VK_FORMAT_R8G8B8A8_SRGB;
@@ -65,7 +59,6 @@ namespace AVulkan
         AImage imageUtility;
         imageUtility.Create(physicalDevice, logicalDevice, width, height, imgFormat, tiling, usageFlags, memoryFlags, *textureMemory.get());
         imageUtility.CopyBufferToImage(logicalDevice, graphicsQueue, commandPool, stagingBuffer, *texture.get(), width, height);
-        assetsDatabase.AddTexture(CreateRef<TextureVulkan>(this));
 
         vkDestroyBuffer(logicalDevice, stagingBuffer, nullptr);
         vkFreeMemory(logicalDevice, stagingMemory, nullptr);

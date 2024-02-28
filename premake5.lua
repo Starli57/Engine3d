@@ -63,7 +63,8 @@ project "ExampleProject"
 	{
 		"GLFW_INCLUDE_VULKAN",
 		"GLM_FORCE_RADIANS",
-		"GLM_FORCE_DEPTH_ZERO_TO_ONE"
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"STB_IMAGE_IMPLEMENTATION"
 	}
 
 	cppdialect "C++20"

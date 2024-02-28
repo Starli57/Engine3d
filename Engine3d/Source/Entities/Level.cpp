@@ -8,9 +8,10 @@
 
 #include "spdlog/spdlog.h"
 
-Level::Level(Ref<entt::registry> ecs, IGraphicsApi* graphicsApi, Rollback* rollback)
+Level::Level(Ref<entt::registry> ecs, Ref<AVulkan::AssetsDatabaseVulkan> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
 {
 	this->ecs = ecs;
+	this->assetDatabase = assetDatabase;
 	this->graphicsApi = graphicsApi;
 	this->rollback = new Rollback("Level", *rollback);
 }
@@ -36,7 +37,7 @@ void Level::LoadLevel()
 	indices->push_back(1);
 	indices->push_back(2);
 
-	auto defaultMateral = CreateRef<Material>("Textures/GroundDirtWeedsPatchy004_COL_2K.jpg");
+	auto defaultMateral = CreateRef<Material>(assetDatabase, "Textures/GroundDirtWeedsPatchy004_COL_2K.jpg");
 
 	auto triangleMesh1 = graphicsApi->CreateMesh(vertices, indices);
 	auto triangle1 = CreateRef<Entity>(ecs);

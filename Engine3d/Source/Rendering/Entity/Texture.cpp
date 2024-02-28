@@ -1,12 +1,10 @@
 #include "Pch.h"
 #include "Texture.h"
 
-Texture::Texture(const std::string& path, int& width, int& height)
+Texture::Texture(const std::string& path) : path(path)
 {
-	throw std::runtime_error("Not implemented");
 }
 
 Texture::~Texture()
 {
-	throw std::runtime_error("Not implemented");
 }
