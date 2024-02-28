@@ -17,12 +17,17 @@ namespace AVulkan
 		virtual ~TextureVulkan() override;
 
 		//todo: make public getters and private setters
-		Ref<VkImage> texture;
-		Ref<VkDeviceMemory> textureMemory;
+		Ref<VkImage> image;
+		Ref<VkImageView> imageView;
+		Ref<VkDeviceMemory> imageMemory;
 
 	private:
-		void Create(VkPhysicalDevice& physicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& filePath);
+		void CreateImage(const std::string& filePath);
+		void CreateImageView();
 
+		VkPhysicalDevice& physicalDevice;
 		VkDevice& logicalDevice;
+		VkQueue& graphicsQueue;
+		VkCommandPool& commandPool;
 	};
 }

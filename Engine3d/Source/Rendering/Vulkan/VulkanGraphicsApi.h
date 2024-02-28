@@ -81,6 +81,9 @@ namespace AVulkan
 		uint16_t const maxFramesDraws = 2;
 		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
 
+		//todo: replace
+		VkSampler textureSampler;
+
 		bool needResizeWindow = false;
 
 		void CreateInstance();
@@ -99,6 +102,7 @@ namespace AVulkan
 		void CreateDescriptorPool();
 		void CreateDescriptorSets();
 		void CreateDepthBuffer();
+		void CreateTextureSampler();
 
 		void RecreateSwapChain();
 

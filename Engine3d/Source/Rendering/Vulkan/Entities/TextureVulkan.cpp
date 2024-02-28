@@ -4,24 +4,28 @@
 #include "Architecture/CustomAssert.h"
 #include "Rendering/Vulkan/Buffers/ABuffer.h"
 #include "Rendering/Vulkan/Builders/AImage.h"
+#include "Rendering/Vulkan/Utilities/VkImageViewUtility.h"
 
 namespace AVulkan
 {
     TextureVulkan::TextureVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
         VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& filePath) 
-        : Texture(filePath), logicalDevice(logicalDevice)
+        : Texture(filePath), physicalDevice(physicalDevice), logicalDevice(logicalDevice), 
+                             graphicsQueue(graphicsQueue), commandPool(commandPool)
     {
-        Create(physicalDevice, graphicsQueue, commandPool, filePath);
+        CreateImage(filePath);
+        CreateImageView();
     }
 
     TextureVulkan::~TextureVulkan()
     {
-        vkDestroyImage(logicalDevice, *texture.get(), nullptr);
-        vkFreeMemory(logicalDevice, *textureMemory.get(), nullptr);
+        VkImageViewUtility::Destroy(logicalDevice, *imageView.get());
+        vkDestroyImage(logicalDevice, *image.get(), nullptr);
+        vkFreeMemory(logicalDevice, *imageMemory.get(), nullptr);
     }
 
     //todo: make async
-    void TextureVulkan::Create(VkPhysicalDevice& physicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& filePath)
+    void TextureVulkan::CreateImage(const std::string& filePath)
     {
         int width;
         int height;
@@ -58,15 +62,27 @@ namespace AVulkan
         
         AImage imageUtility(physicalDevice, logicalDevice, graphicsQueue, commandPool);
         
-        texture = CreateRef<VkImage>(imageUtility.Create(width, height, imgFormat, 
-            tiling, usageFlags, memoryFlags, *textureMemory.get()));
+        image = CreateRef<VkImage>(imageUtility.Create(width, height, imgFormat, 
+            tiling, usageFlags, memoryFlags, *imageMemory.get()));
 
-        imageUtility.TransitionImageLayout(texture, imgFormat, 
+        imageUtility.TransitionImageLayout(image, imgFormat, 
+            VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+
+        imageUtility.CopyBufferToImage(stagingBuffer, *image.get(), width, height);
+
+        imageUtility.TransitionImageLayout(image, imgFormat,
             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-
-        imageUtility.CopyBufferToImage(stagingBuffer, *texture.get(), width, height);
 
         vkDestroyBuffer(logicalDevice, stagingBuffer, nullptr);
         vkFreeMemory(logicalDevice, stagingMemory, nullptr);
+    }
+
+    void TextureVulkan::CreateImageView()
+    {
+        //todo: find suitable format firstly
+        VkFormat imgFormat = VK_FORMAT_R8G8B8A8_SRGB;
+        VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
+        VkImageViewUtility::Create(logicalDevice, imgFormat, aspectFlags, *image.get(), *imageView.get());
+
     }
 }
