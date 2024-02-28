@@ -2,21 +2,25 @@
 
 #include <GLFW/glfw3.h>
 #include <vector>
+#include <unordered_map>
 
 #include "Architecture/Ref.h"
+#include "Rendering/Vulkan/Entities/TextureVulkan.h"
 
 namespace AVulkan
 {
 	class AssetsDatabaseVulkan
 	{
 	public:
-		URef<std::vector<VkImage>> textures;
-		URef<std::vector<VkDeviceMemory>> texturesMemory;
-
 		AssetsDatabaseVulkan();
 		~AssetsDatabaseVulkan();
 
-		void AddTexture(VkImage& image, VkDeviceMemory& memory);
-		void RemoveTexture(VkImage& image, VkDeviceMemory& memory);
+		bool HasTexture(std::string path);
+		Ref<TextureVulkan> GetTexture(std::string path);
+		void AddTexture(Ref<TextureVulkan> texture);
+		void RemoveTexture(Ref<TextureVulkan> texture);
+
+	private:
+		std::unordered_map<std::string, Ref<TextureVulkan>> textures;
 	};
 }

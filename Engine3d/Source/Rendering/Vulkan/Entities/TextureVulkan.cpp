@@ -8,6 +8,19 @@
 
 namespace AVulkan
 {
+    TextureVulkan::TextureVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
+        VkQueue& graphicsQueue, VkCommandPool& commandPool, AssetsDatabaseVulkan& assetsDatabase,
+        const std::string& filePath, int& width, int& height) : Texture(filePath, width, height), path(filePath), logicalDevice(logicalDevice)
+    {
+        Create(physicalDevice, graphicsQueue, commandPool, assetsDatabase, filePath, width, height);
+    }
+
+    TextureVulkan::~TextureVulkan()
+    {
+        vkDestroyImage(logicalDevice, *texture.get(), nullptr);
+        vkFreeMemory(logicalDevice, *textureMemory.get(), nullptr);
+    }
+
     //todo: make async
     Ref<stbi_uc> TextureVulkan::Load(const std::string& filePath, int& width, int& height, VkDeviceSize* imageSize)
     {
@@ -21,7 +34,7 @@ namespace AVulkan
     }
 
     //todo: make async
-    size_t TextureVulkan::Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool,
+    void TextureVulkan::Create(VkPhysicalDevice& physicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool,
         AssetsDatabaseVulkan& assetsDatabase, const std::string& filePath, int& width, int& height)
     {
         VkDeviceSize imageSize;
@@ -43,9 +56,6 @@ namespace AVulkan
 
         stbi_image_free(textureData.get());
 
-        VkImage texture;
-        VkDeviceMemory textureMemory;
-
         //todo: find suitable format firstly
         VkFormat imgFormat = VK_FORMAT_R8G8B8A8_SRGB;
         VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL;
@@ -53,14 +63,11 @@ namespace AVulkan
         VkMemoryPropertyFlags memoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
         
         AImage imageUtility;
-        imageUtility.Create(physicalDevice, logicalDevice, width, height, imgFormat, tiling, usageFlags, memoryFlags, textureMemory);
-        imageUtility.CopyBufferToImage(logicalDevice, graphicsQueue, commandPool, stagingBuffer, texture, width, height);
-        assetsDatabase.AddTexture(texture, textureMemory);
+        imageUtility.Create(physicalDevice, logicalDevice, width, height, imgFormat, tiling, usageFlags, memoryFlags, *textureMemory.get());
+        imageUtility.CopyBufferToImage(logicalDevice, graphicsQueue, commandPool, stagingBuffer, *texture.get(), width, height);
+        assetsDatabase.AddTexture(CreateRef<TextureVulkan>(this));
 
         vkDestroyBuffer(logicalDevice, stagingBuffer, nullptr);
         vkFreeMemory(logicalDevice, stagingMemory, nullptr);
-
-        int textureIndex = assetsDatabase.textures.get()->size() - 1;
-        return textureIndex;
     }
 }

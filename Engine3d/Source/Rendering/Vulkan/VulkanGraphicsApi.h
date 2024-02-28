@@ -11,7 +11,7 @@
 #include "Models/SwapChainData.h"
 #include "Models/DepthBufferModel.h"
 #include "Rendering/IGraphicsApi.h"
-#include "Rendering/Model/Mesh.h"
+#include "Rendering/Entity/Mesh.h"
 #include "Rendering/Vulkan/Entities/MeshVulkan.h"
 #include "Builders/AValidationLayers.h"
 #include "Builders/APhysicalDevice.h"

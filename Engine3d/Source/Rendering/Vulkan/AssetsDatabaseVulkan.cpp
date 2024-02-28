@@ -1,30 +1,46 @@
 #include "Pch.h"
 #include "AssetsDatabaseVulkan.h"
+#include "Architecture/CustomAssert.h"
 
 namespace AVulkan
 {
 	AssetsDatabaseVulkan::AssetsDatabaseVulkan()
 	{
-		textures = CreateUniqueRef<std::vector<VkImage>>();
-		texturesMemory = CreateUniqueRef<std::vector<VkDeviceMemory>>();
+		textures = std::unordered_map<std::string, Ref<TextureVulkan>>();
 	}
 	
 	AssetsDatabaseVulkan::~AssetsDatabaseVulkan()
 	{
 		//todo: check if vk objects are disposed correctly
-		textures.reset();
-		texturesMemory.reset();
+		for (auto& pair : textures) {
+			Ref<TextureVulkan>& textureRef = pair.second;
+			textureRef.reset();
+		}
+
+		textures.clear();
 	}
 
-	void AssetsDatabaseVulkan::AddTexture(VkImage& image, VkDeviceMemory& memory)
+	bool AssetsDatabaseVulkan::HasTexture(std::string path)
 	{
-		textures->push_back(image);
-		texturesMemory->push_back(memory);
+		return textures.find(path) != textures.end();
 	}
 
-	void AssetsDatabaseVulkan::RemoveTexture(VkImage& image, VkDeviceMemory& memory)
+	Ref<TextureVulkan> AssetsDatabaseVulkan::GetTexture(std::string path)
 	{
-		//todo: add an implementation
-		throw std::runtime_error("Not implemented");
+		auto it = textures.find(path);
+		CAssert::Check(it != textures.end(), "Assets database dosn't have a texture with path: " + path);
+		return it->second;
+	}
+
+	void AssetsDatabaseVulkan::AddTexture(Ref<TextureVulkan> texture)
+	{
+		if (!HasTexture(texture->path)) textures.insert({ texture->path, texture });
+	}
+
+	void AssetsDatabaseVulkan::RemoveTexture(Ref<TextureVulkan> texture)
+	{
+		auto it = textures.find(texture->path);
+		CAssert::Check(it != textures.end(), "Assets database dosn't have a texture with path: " + texture->path);
+		textures.erase(it->first);
 	}
 }

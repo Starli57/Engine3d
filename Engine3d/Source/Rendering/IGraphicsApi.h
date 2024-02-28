@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Rendering/Model/Mesh.h"
+#include "Rendering/Entity/Mesh.h"
 #include "Architecture/Ref.h"
 
 class IGraphicsApi

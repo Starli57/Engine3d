@@ -36,15 +36,17 @@ void Level::LoadLevel()
 	indices->push_back(1);
 	indices->push_back(2);
 
+	auto defaultMateral = CreateRef<Material>("Textures/GroundDirtWeedsPatchy004_COL_2K.jpg");
+
 	auto triangleMesh1 = graphicsApi->CreateMesh(vertices, indices);
 	auto triangle1 = CreateRef<Entity>(ecs);
 	triangle1->AddComponent<Transform>(glm::vec3(-0.5f, 0, -1), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
-	triangle1->AddComponent<MeshContainer>(triangleMesh1);
+	triangle1->AddComponent<MeshContainer>(triangleMesh1, defaultMateral);
 
 	auto triangleMesh2 = graphicsApi->CreateMesh(vertices, indices);
 	auto triangle2 = CreateRef<Entity>(ecs);
 	triangle2->AddComponent<Transform>(glm::vec3(0.5f, 0, 0), glm::vec4(0, 0, 0, 0), glm::vec3(2, 2, 2));
-	triangle2->AddComponent<MeshContainer>(triangleMesh2);
+	triangle2->AddComponent<MeshContainer>(triangleMesh2, defaultMateral);
 
 	//camera1
 	auto cameraEntity = CreateRef<Entity>(ecs);
