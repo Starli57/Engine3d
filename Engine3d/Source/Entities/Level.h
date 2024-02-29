@@ -8,7 +8,7 @@
 #include "Entity.h"
 #include "Architecture/Rollback/Rollback.h"
 #include "Rendering/Model/Vertex.h"
-#include "Rendering/Entity/Mesh.h"
+#include "Entities/Mesh.h"
 #include "Components/Camera.h"
 #include "Rendering/IGraphicsApi.h"
 #include "AssetsDatabase.h"

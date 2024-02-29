@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
-#include "Rendering/Entity/Texture.h"
+#include "Entities/Texture.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Utilities/IOUtility.h"
 

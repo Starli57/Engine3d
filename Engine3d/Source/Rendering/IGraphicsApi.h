@@ -1,8 +1,8 @@
 #pragma once
 
 #include "AssetsDatabase.h"
-#include "Rendering/Entity/Mesh.h"
-#include "Rendering/Entity/Texture.h"
+#include "Entities/Mesh.h"
+#include "Entities/Texture.h"
 #include "Architecture/Ref.h"
 
 class IGraphicsApi

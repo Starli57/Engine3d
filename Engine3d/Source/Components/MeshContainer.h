@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Rendering/Entity/Mesh.h"
-#include "Rendering/Entity/Material.h"
+#include "Entities/Mesh.h"
+#include "Entities/Material.h"
 #include "Architecture/Ref.h"
 
 class MeshContainer

@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 #include "Architecture/Ref.h"
-#include "Rendering/Entity/Texture.h"
+#include "Entities/Texture.h"
 
 class AssetsDatabase
 {

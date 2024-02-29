@@ -8,13 +8,14 @@
 #include "AssetsDatabase.h"
 #include "GraphicsPipeline.h"
 #include "Architecture/Ref.h"
+
 #include "Entities/Level.h"
+#include "Entities/Mesh.h"
 
 #include "Models/SwapChainData.h"
 #include "Models/DepthBufferModel.h"
 
 #include "Rendering/IGraphicsApi.h"
-#include "Rendering/Entity/Mesh.h"
 #include "Rendering/Vulkan/Entities/MeshVulkan.h"
 #include "Rendering/Vulkan/Entities/TextureVulkan.h"
 
