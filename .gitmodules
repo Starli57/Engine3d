@@ -13,3 +13,6 @@
 [submodule "Externals/Stb"]
 	path = Externals/Stb
 	url = git@github.com:nothings/stb.git
+[submodule "Externals/TinyObjLoader"]
+	path = Externals/TinyObjLoader
+	url = git@github.com:tinyobjloader/tinyobjloader.git
