@@ -12,11 +12,14 @@ Engine::Engine()
 
 	ecs = CreateRef<entt::registry>();
 
-	renderer = new Renderer(ecs, *engineRollback);
+	assetsDatabase = CreateRef<AssetsDatabase>();
+	engineRollback->Add([this]() { assetsDatabase.reset(); });
+
+	renderer = new Renderer(ecs, assetsDatabase, *engineRollback);
 	renderer->Init();
 	engineRollback->Add([this] { delete renderer; });
 
-	level = new Level(ecs, renderer->GetGraphicsApi(), engineRollback);
+	level = new Level(ecs, assetsDatabase, renderer->GetGraphicsApi(), engineRollback);
 	level->LoadLevel();
 	engineRollback->Add([this] { delete level; });
 

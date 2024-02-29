@@ -19,8 +19,7 @@ namespace AVulkan
 		BindMemory(physicalDevice, logicalDevice, memoryFlags, buffer, bufferMemory);
 	}
 
-	void ABuffer::Copy(VkDevice& logicalDevice, VkQueue& graphicsQueue, VkBuffer& srcBuffer, VkBuffer& dstBuffer, 
-		VkDeviceSize& size, VkCommandPool& commandPool) const
+	VkCommandBuffer ABuffer::BeginCommandBuffer(VkDevice& logicalDevice, VkCommandPool& commandPool) const
 	{
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -36,6 +35,24 @@ namespace AVulkan
 		beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 		vkBeginCommandBuffer(commandBuffer, &beginInfo);
 
+		return commandBuffer;
+	}
+
+	void ABuffer::SubmitCommandBuffer(VkQueue& graphicsQueue, VkCommandBuffer& commandBuffer) const
+	{
+		VkSubmitInfo submitInfo{};
+		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		submitInfo.commandBufferCount = 1;
+		submitInfo.pCommandBuffers = &commandBuffer;
+		vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
+		vkQueueWaitIdle(graphicsQueue);
+	}
+
+	void ABuffer::Copy(VkDevice& logicalDevice, VkQueue& graphicsQueue, VkBuffer& srcBuffer, VkBuffer& dstBuffer, 
+		VkDeviceSize& size, VkCommandPool& commandPool) const
+	{
+		auto commandBuffer = BeginCommandBuffer(logicalDevice, commandPool);
+
 		VkBufferCopy copyRegion{};
 		copyRegion.srcOffset = 0;
 		copyRegion.dstOffset = 0;
@@ -44,12 +61,7 @@ namespace AVulkan
 
 		vkEndCommandBuffer(commandBuffer);
 
-		VkSubmitInfo submitInfo{};
-		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-		submitInfo.commandBufferCount = 1;
-		submitInfo.pCommandBuffers = &commandBuffer;
-		vkQueueSubmit(graphicsQueue, 1, &submitInfo, VK_NULL_HANDLE);
-		vkQueueWaitIdle(graphicsQueue);
+		SubmitCommandBuffer(graphicsQueue, commandBuffer);
 
 		vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
 	}

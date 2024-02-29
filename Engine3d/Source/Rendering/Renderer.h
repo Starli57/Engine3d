@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AssetsDatabase.h"
 #include "IGraphicsApi.h"
 #include "Vulkan/VulkanGraphicsApi.h"
 #include "Architecture/Rollback/Rollback.h"
@@ -16,7 +17,7 @@ public:
 
 	IGraphicsApi* GetGraphicsApi() { return graphicsApi; }
 
-	Renderer(Ref<entt::registry> ecs, Rollback& engineRollback);
+	Renderer(Ref<entt::registry> ecs, Ref<AssetsDatabase> assetsDatabase, Rollback& engineRollback);
 	~Renderer();
 
 	void Init();
@@ -24,6 +25,8 @@ public:
 
 private: 
 	Ref<entt::registry> ecs;
+	Ref<AssetsDatabase> assetsDatabase;
+
 	IGraphicsApi* graphicsApi;
 
 	Rollback* rollback;

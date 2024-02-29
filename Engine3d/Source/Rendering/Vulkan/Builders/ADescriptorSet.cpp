@@ -3,8 +3,9 @@
 
 namespace AVulkan
 {
+	//todo make one descriptor per material
 	void ADescriptorSet::Allocate(VkDevice& logicalDevice, SwapChainData& swapChainData, VkDescriptorPool& descriptorPool,
-		VkDescriptorSetLayout& descriptorSetLayout) const
+		VkDescriptorSetLayout& descriptorSetLayout, VkImageView& textureImageView, VkSampler& textureSampler) const
 	{
 		auto setsCount = swapChainData.uniformBuffers->size();
 
@@ -22,23 +23,37 @@ namespace AVulkan
 
 		for (size_t i = 0; i < setsCount; i++)
 		{
+			auto descriptorSet = swapChainData.descriptorSets.at(i);
+
 			VkDescriptorBufferInfo bufferInfo{};
 			bufferInfo.buffer = swapChainData.uniformBuffers->at(i)->buffer;
 			bufferInfo.offset = 0;
 			bufferInfo.range = sizeof(UboViewProjection);
 
-			VkWriteDescriptorSet mvpWriteDesc{};
-			mvpWriteDesc.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			mvpWriteDesc.dstSet = swapChainData.descriptorSets[i];
-			mvpWriteDesc.dstBinding = 0;
-			mvpWriteDesc.dstArrayElement = 0;
-			mvpWriteDesc.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-			mvpWriteDesc.descriptorCount = 1;
-			mvpWriteDesc.pBufferInfo = &bufferInfo;
-			mvpWriteDesc.pImageInfo = nullptr;
-			mvpWriteDesc.pTexelBufferView = nullptr;
+			VkDescriptorImageInfo imageInfo{};
+			imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+			imageInfo.imageView = textureImageView;
+			imageInfo.sampler = textureSampler;
 
-			vkUpdateDescriptorSets(logicalDevice, 1, &mvpWriteDesc, 0, nullptr);
+			std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
+
+			descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[0].dstSet = descriptorSet;
+			descriptorWrites[0].dstBinding = 0;
+			descriptorWrites[0].dstArrayElement = 0;
+			descriptorWrites[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+			descriptorWrites[0].descriptorCount = 1;
+			descriptorWrites[0].pBufferInfo = &bufferInfo;
+
+			descriptorWrites[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[1].dstSet = descriptorSet;
+			descriptorWrites[1].dstBinding = 1;
+			descriptorWrites[1].dstArrayElement = 0;
+			descriptorWrites[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrites[1].descriptorCount = 1;
+			descriptorWrites[1].pImageInfo = &imageInfo;
+
+			vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 		}
 	}
 }

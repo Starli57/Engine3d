@@ -9,9 +9,10 @@
 
 namespace AVulkan
 {
-	VulkanGraphicsApi::VulkanGraphicsApi(Ref<entt::registry> ecs, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
+	VulkanGraphicsApi::VulkanGraphicsApi(Ref<entt::registry> ecs, Ref<AssetsDatabase> assetsDatabase, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
 		this->ecs = ecs;
+		this->assetsDatabase = assetsDatabase;
 		this->rollback = new Rollback("VulkanGraphicsApi", *vulkanRollback);
 		this->swapchainRollback = CreateRef<Rollback>("SwapchainRollback");
 		this->window = glfwWindow;
@@ -39,12 +40,13 @@ namespace AVulkan
 			CreateFrameBuffers();
 			CreateCommandPool();
 			CreateCommandBuffer();
+			CreateTextureSampler();
 			CreateUniformBuffers();
 			CreateDescriptorPool();
 			CreateDescriptorSets();
 			CreateSyncObjects();
 
-			rollback->Add([this]() {swapchainRollback->Dispose(); });
+			rollback->Add([this]() { swapchainRollback->Dispose(); });
 		}
 		catch (const std::exception& e)
 		{
@@ -165,6 +167,12 @@ namespace AVulkan
 		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, swapChainData, graphicsQueue, commandPool, vertices, indices);
 	}
 
+	Ref<Texture> VulkanGraphicsApi::CreateTexture(const std::string& filePath)
+	{
+		return CreateRef<TextureVulkan>(physicalDevice, logicalDevice, swapChainData,
+			descriptorPool, descriptorSetLayout, textureSampler, graphicsQueue, commandPool, filePath);
+	}
+
 	void VulkanGraphicsApi::CreateInstance()
 	{
 		AInstance().Create(instance);
@@ -248,7 +256,6 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateDescriptorSets()
 	{
-		ADescriptorSet().Allocate(logicalDevice, swapChainData, descriptorPool, descriptorSetLayout);
 	}
 
 	void VulkanGraphicsApi::CreateDepthBuffer()
@@ -258,8 +265,7 @@ namespace AVulkan
 		VkFormat depthFormat = VkFormatUtility::FindDepthBufferFormat(physicalDevice);
 		depthBufferModel = CreateRef<DepthBufferModel>();
 		
-		depthBufferModel->image = AImage().Create(
-			physicalDevice, logicalDevice, 
+		depthBufferModel->image = AImage(physicalDevice, logicalDevice, graphicsQueue, commandPool).Create(
 			swapChainData.extent.width, swapChainData.extent.height, depthFormat, 
 			VK_IMAGE_TILING_OPTIMAL, 
 			VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
@@ -272,10 +278,40 @@ namespace AVulkan
 		swapchainRollback->Add([this]()
 		{
 			VkImageViewUtility::Destroy(logicalDevice, depthBufferModel->imageView);
-			AImage().Destroy(logicalDevice, depthBufferModel->image);
+			AImage(physicalDevice, logicalDevice, graphicsQueue, commandPool).Destroy(depthBufferModel->image);
 			VkMemoryUtility::FreeDeviceMemory(logicalDevice, depthBufferModel->imageMemory);
 			depthBufferModel.reset();
 		});
+	}
+
+	void VulkanGraphicsApi::CreateTextureSampler()
+	{
+		//todo: replace logic to helper class
+		VkPhysicalDeviceProperties properties{};
+		vkGetPhysicalDeviceProperties(physicalDevice, &properties);
+
+		VkSamplerCreateInfo samplerInfo{};
+		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+		samplerInfo.magFilter = VK_FILTER_LINEAR;
+		samplerInfo.minFilter = VK_FILTER_LINEAR;
+		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
+		samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
+		samplerInfo.anisotropyEnable = VK_TRUE;
+		samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
+		samplerInfo.unnormalizedCoordinates = VK_FALSE;
+		samplerInfo.compareEnable = VK_FALSE;
+		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+		samplerInfo.mipLodBias = 0.0f;
+		samplerInfo.minLod = 0.0f;
+		samplerInfo.maxLod = 0.0f;
+
+		auto createStatus = vkCreateSampler(logicalDevice, &samplerInfo, nullptr, &textureSampler);
+		CAssert::Check(createStatus == VK_SUCCESS, "Textures sampler can't be created");
+
+		rollback->Add([this]() { vkDestroySampler(logicalDevice, textureSampler, nullptr); });
 	}
 
 	void VulkanGraphicsApi::CreateUniformBuffers()

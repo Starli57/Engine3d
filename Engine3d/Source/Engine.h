@@ -3,6 +3,7 @@
 #include <entt.hpp>
 #include "Defines/DllDecDefines.h"
 
+#include "AssetsDatabase.h"
 #include "Architecture/Ref.h"
 #include "Rendering/Renderer.h"
 #include "Entities/Level.h"
@@ -23,8 +24,8 @@ private:
 
 	Rollback* engineRollback;
 
-
 	Ref<entt::registry> ecs;
+	Ref<AssetsDatabase> assetsDatabase;
 
 	void InitLogger();
 };

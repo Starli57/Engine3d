@@ -5,14 +5,19 @@
 #include <stack>
 #include <vector>
 
+#include "AssetsDatabase.h"
 #include "GraphicsPipeline.h"
 #include "Architecture/Ref.h"
 #include "Entities/Level.h"
+
 #include "Models/SwapChainData.h"
 #include "Models/DepthBufferModel.h"
+
 #include "Rendering/IGraphicsApi.h"
-#include "Rendering/Model/Mesh.h"
-#include "Rendering/Vulkan/Mesh/MeshVulkan.h"
+#include "Rendering/Entity/Mesh.h"
+#include "Rendering/Vulkan/Entities/MeshVulkan.h"
+#include "Rendering/Vulkan/Entities/TextureVulkan.h"
+
 #include "Builders/AValidationLayers.h"
 #include "Builders/APhysicalDevice.h"
 #include "Builders/ALogicalDevice.h"
@@ -27,8 +32,11 @@
 #include "Builders/ADescriptorLayout.h"
 #include "Builders/ADescriptorPool.h"
 #include "Builders/ADescriptorSet.h"
+
 #include "Buffers/ACommandBuffer.h"
+
 #include "Architecture/Rollback/Rollback.h"
+
 #include "Components/Transform.h"
 #include "Components/MeshContainer.h"
 #include "Components/Camera.h"
@@ -38,7 +46,7 @@ namespace AVulkan
 	class VulkanGraphicsApi : public IGraphicsApi
 	{
 	public:
-		VulkanGraphicsApi(Ref<entt::registry> ecs, GLFWwindow* window, Rollback* vulkanRollback);
+		VulkanGraphicsApi(Ref<entt::registry> ecs, Ref<AssetsDatabase> assetsDatabase, GLFWwindow* window, Rollback* vulkanRollback);
 		virtual ~VulkanGraphicsApi() override;
 
 		void Init() override;
@@ -46,11 +54,14 @@ namespace AVulkan
 		void FinanilizeRenderOperations() override;
 
 		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
+		Ref<Texture> CreateTexture(const std::string& filePath) override;
 
 		void OnFramebufferResized() override;
 
 	private:
 		Ref<entt::registry> ecs;
+		Ref<AssetsDatabase> assetsDatabase;
+
 		GLFWwindow* window;
 
 		Rollback* rollback;
@@ -81,6 +92,9 @@ namespace AVulkan
 		uint16_t const maxFramesDraws = 2;
 		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
 
+		//todo: replace
+		VkSampler textureSampler;
+
 		bool needResizeWindow = false;
 
 		void CreateInstance();
@@ -99,6 +113,7 @@ namespace AVulkan
 		void CreateDescriptorPool();
 		void CreateDescriptorSets();
 		void CreateDepthBuffer();
+		void CreateTextureSampler();
 
 		void RecreateSwapChain();
 

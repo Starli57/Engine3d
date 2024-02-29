@@ -11,6 +11,6 @@ namespace AVulkan
 	{
 	public:
 		void Allocate(VkDevice& logicalDevice, SwapChainData& swapChainData, VkDescriptorPool& descriptorPool,
-			VkDescriptorSetLayout& descriptorSetLayout) const;
+			VkDescriptorSetLayout& descriptorSetLayout, VkImageView& textureImageView, VkSampler& textureSampler) const;
 	};
 }

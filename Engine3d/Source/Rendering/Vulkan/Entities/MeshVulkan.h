@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
-#include "Rendering/Model/Mesh.h"
+#include "Rendering/Entity/Mesh.h"
 #include "Rendering/Model/Mvp.h"
 #include "Rendering/Model/Vertex.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"

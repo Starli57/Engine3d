@@ -1,5 +1,6 @@
 
 #include <Engine.h>
+#include <iostream>
 
 int main() 
 {
@@ -11,7 +12,7 @@ int main()
 	}
 	catch (const std::exception& e)
 	{
-
+		std::cout << "Critical error: " << e.what();
 	}
 
 	return 0;

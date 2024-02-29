@@ -2,9 +2,10 @@
 #include "spdlog/spdlog.h"
 #include "Renderer.h"
 
-Renderer::Renderer(Ref<entt::registry> ecs, Rollback& mainRollback)
+Renderer::Renderer(Ref<entt::registry> ecs, Ref<AssetsDatabase> assetsDatabase, Rollback& mainRollback)
 {
 	this->ecs = ecs;
+	this->assetsDatabase = assetsDatabase;
 	this->rollback = new Rollback("Renderer", mainRollback);
 }
 
@@ -21,7 +22,6 @@ void Renderer::Init()
 		SetupGlfwHints();
 		CreateAppWindow();
 		InitGraphicsApi();
-
 	}
 	catch (const std::exception& e)
 	{
@@ -63,7 +63,7 @@ void Renderer::CreateAppWindow()
 void Renderer::InitGraphicsApi()
 {
 #if GLFW_INCLUDE_VULKAN
-	graphicsApi = new VulkanGraphicsApi(ecs, window, rollback);
+	graphicsApi = new VulkanGraphicsApi(ecs, assetsDatabase, window, rollback);
 	graphicsApi->Init();
 	rollback->Add([this] { delete graphicsApi; });
 #else

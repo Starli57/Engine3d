@@ -2,6 +2,8 @@
 
 #include <fstream>
 
+#include <Architecture/Ref.h>
+
 class IOUtility
 {
 public:
