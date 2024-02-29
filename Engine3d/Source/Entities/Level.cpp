@@ -29,9 +29,9 @@ void Level::LoadLevel()
 	//mesh1
 	auto vertices = CreateRef<std::vector<Vertex>>();
 	vertices->reserve(3);
-	vertices->push_back(Vertex(glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-	vertices->push_back(Vertex(glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-	vertices->push_back(Vertex(glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+	vertices->push_back(Vertex(glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0,0)));
+	vertices->push_back(Vertex(glm::vec3(0.5f, 0.5f, 0.0f),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1,1)));
+	vertices->push_back(Vertex(glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0,1)));
 
 	auto indices = CreateRef<std::vector<uint32_t>>();
 	indices->push_back(0);
