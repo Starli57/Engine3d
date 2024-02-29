@@ -62,7 +62,6 @@ namespace AVulkan
         imageRegion.imageSubresource.mipLevel = 0;
         imageRegion.imageSubresource.baseArrayLayer = 0;
         imageRegion.imageSubresource.layerCount = 1;
-        imageRegion.imageSubresource.mipLevel = 1;
 
         imageRegion.imageOffset = { 0, 0, 0 };
         imageRegion.imageExtent = { width, height, 1 };
@@ -74,7 +73,7 @@ namespace AVulkan
         vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
     }
 
-    void AImage::TransitionImageLayout(Ref<VkImage> image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) const
+    void AImage::TransitionImageLayout(VkImage& image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) const
     {
         ABuffer bufferUtility;
         auto commandBuffer = bufferUtility.BeginCommandBuffer(logicalDevice, commandPool);
@@ -85,7 +84,7 @@ namespace AVulkan
         barrier.newLayout = newLayout;
         barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
         barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        barrier.image = *image.get();
+        barrier.image = image;
         barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         barrier.subresourceRange.baseMipLevel = 0;
         barrier.subresourceRange.levelCount = 1;

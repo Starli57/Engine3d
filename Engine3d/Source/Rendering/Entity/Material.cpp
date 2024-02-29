@@ -1,20 +1,13 @@
 #include "Pch.h"
 #include "Material.h"
 
-Material::Material(Ref<AssetsDatabase> assetsDatabase, const std::string& mainTexturePath)
+Material::Material(Ref<Texture> texture)
 {
-	if (assetsDatabase->HasTexture(mainTexturePath))
-	{
-		mainTexture = assetsDatabase->GetTexture(mainTexturePath);
-	}
-	else
-	{
-		mainTexture = CreateRef<Texture>(mainTexturePath);
-		assetsDatabase->AddTexture(mainTexture);
-	}
+	//todo: increment texture usage counter
+	this->mainTexture = texture;
 }
 
 Material::~Material()
 {
-	mainTexture.reset();
+	//todo: decrement texture usage counter
 }

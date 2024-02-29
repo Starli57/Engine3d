@@ -24,7 +24,6 @@ private:
 
 	Rollback* engineRollback;
 
-
 	Ref<entt::registry> ecs;
 	Ref<AssetsDatabase> assetsDatabase;
 

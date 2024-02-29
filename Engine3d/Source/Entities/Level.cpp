@@ -5,6 +5,7 @@
 #include "Components/Camera.h"
 #include "Components/Transform.h"
 #include "Components/MeshContainer.h"
+#include "Resources/TexturesList.h"
 
 #include "spdlog/spdlog.h"
 
@@ -37,7 +38,13 @@ void Level::LoadLevel()
 	indices->push_back(1);
 	indices->push_back(2);
 
-	auto defaultMateral = CreateRef<Material>(assetDatabase, "Textures/GroundDirtWeedsPatchy004_COL_2K.jpg");
+	auto defaultTexture = graphicsApi->CreateTexture(textures[static_cast<size_t>(TextureId::GroundDirtWeedsPatchy004_COL_2K)]);
+	assetDatabase->AddTexture(defaultTexture);
+
+	//todo: make dispose for textures better
+	rollback->Add([this]() {assetDatabase->RemoveTexture(textures[static_cast<size_t>(TextureId::GroundDirtWeedsPatchy004_COL_2K)]); });
+
+	auto defaultMateral = CreateRef<Material>(defaultTexture);
 
 	auto triangleMesh1 = graphicsApi->CreateMesh(vertices, indices);
 	auto triangle1 = CreateRef<Entity>(ecs);

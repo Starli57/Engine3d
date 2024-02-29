@@ -15,7 +15,7 @@ namespace AVulkan
 
         void CopyBufferToImage(VkBuffer& buffer, VkImage& image, uint32_t width, uint32_t height) const;
 
-        void TransitionImageLayout(Ref<VkImage> image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) const;
+        void TransitionImageLayout(VkImage& image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) const;
 
         void Destroy(VkImage& image) const;
 

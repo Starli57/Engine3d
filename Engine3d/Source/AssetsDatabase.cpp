@@ -2,6 +2,8 @@
 #include "AssetsDatabase.h"
 #include "Architecture/CustomAssert.h"
 
+//todo: calculate texture links count to be able to dispose if not used
+
 AssetsDatabase::AssetsDatabase()
 {
 	textures = std::unordered_map<std::string, Ref<Texture>>();
@@ -26,7 +28,7 @@ bool AssetsDatabase::HasTexture(const std::string& path)
 Ref<Texture> AssetsDatabase::GetTexture(const std::string& path)
 {
 	auto it = textures.find(path);
-	CAssert::Check(it != textures.end(), "Assets database dosn't have a texture with path: " + path);
+	CAssert::Check(it != textures.end(), "Assets database doesn't have a texture with path: " + path);
 	return it->second;
 }
 
@@ -37,7 +39,12 @@ void AssetsDatabase::AddTexture(Ref<Texture> texture)
 
 void AssetsDatabase::RemoveTexture(Ref<Texture> texture)
 {
-	auto it = textures.find(texture->path);
-	CAssert::Check(it != textures.end(), "Assets database dosn't have a texture with path: " + texture->path);
+	RemoveTexture(texture->path);
+}
+
+void AssetsDatabase::RemoveTexture(const std::string& path)
+{
+	auto it = textures.find(path);
+	CAssert::Check(it != textures.end(), "Assets database doesn't have a texture with path: " + path);
 	textures.erase(it->first);
 }

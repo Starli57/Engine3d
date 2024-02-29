@@ -4,24 +4,31 @@
 #include "Architecture/CustomAssert.h"
 #include "Rendering/Vulkan/Buffers/ABuffer.h"
 #include "Rendering/Vulkan/Builders/AImage.h"
+#include "Rendering/Vulkan/Builders/ADescriptorSet.h"
 #include "Rendering/Vulkan/Utilities/VkImageViewUtility.h"
+
+#include <stb_image.h>
+#include <filesystem>
 
 namespace AVulkan
 {
-    TextureVulkan::TextureVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
+    TextureVulkan::TextureVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData, 
+        VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, VkSampler& textureSampler,
         VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& filePath) 
         : Texture(filePath), physicalDevice(physicalDevice), logicalDevice(logicalDevice), 
                              graphicsQueue(graphicsQueue), commandPool(commandPool)
     {
         CreateImage(filePath);
         CreateImageView();
+
+        ADescriptorSet().Allocate(logicalDevice, swapChainData, descriptorPool, descriptorSetLayout, imageView, textureSampler);
     }
 
     TextureVulkan::~TextureVulkan()
     {
-        VkImageViewUtility::Destroy(logicalDevice, *imageView.get());
-        vkDestroyImage(logicalDevice, *image.get(), nullptr);
-        vkFreeMemory(logicalDevice, *imageMemory.get(), nullptr);
+        VkImageViewUtility::Destroy(logicalDevice, imageView);
+        vkDestroyImage(logicalDevice, image, nullptr);
+        vkFreeMemory(logicalDevice, imageMemory, nullptr);
     }
 
     //todo: make async
@@ -36,7 +43,11 @@ namespace AVulkan
         auto pixels = stbi_load(filePath.c_str(), &width, &height, &texChannels, STBI_rgb_alpha);
         imageSize = width * height * bitesPerPixel;
 
-        CAssert::Check(pixels != nullptr, "Failed to load texture image: " + filePath);
+        if (pixels == nullptr)
+        {
+            std::filesystem::path fullPath = std::filesystem::absolute(filePath);
+            CAssert::Check(pixels != nullptr, "Failed to load texture image: " + fullPath.string());
+        }
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingMemory;
@@ -62,13 +73,13 @@ namespace AVulkan
         
         AImage imageUtility(physicalDevice, logicalDevice, graphicsQueue, commandPool);
         
-        image = CreateRef<VkImage>(imageUtility.Create(width, height, imgFormat, 
-            tiling, usageFlags, memoryFlags, *imageMemory.get()));
+        image = imageUtility.Create(width, height, imgFormat, 
+            tiling, usageFlags, memoryFlags, imageMemory);
 
         imageUtility.TransitionImageLayout(image, imgFormat, 
             VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-        imageUtility.CopyBufferToImage(stagingBuffer, *image.get(), width, height);
+        imageUtility.CopyBufferToImage(stagingBuffer, image, width, height);
 
         imageUtility.TransitionImageLayout(image, imgFormat,
             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
@@ -82,7 +93,7 @@ namespace AVulkan
         //todo: find suitable format firstly
         VkFormat imgFormat = VK_FORMAT_R8G8B8A8_SRGB;
         VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
-        VkImageViewUtility::Create(logicalDevice, imgFormat, aspectFlags, *image.get(), *imageView.get());
+        VkImageViewUtility::Create(logicalDevice, imgFormat, aspectFlags, image, imageView);
 
     }
 }

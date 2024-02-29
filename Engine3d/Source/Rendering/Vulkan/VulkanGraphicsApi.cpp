@@ -9,9 +9,10 @@
 
 namespace AVulkan
 {
-	VulkanGraphicsApi::VulkanGraphicsApi(Ref<entt::registry> ecs, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
+	VulkanGraphicsApi::VulkanGraphicsApi(Ref<entt::registry> ecs, Ref<AssetsDatabase> assetsDatabase, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
 		this->ecs = ecs;
+		this->assetsDatabase = assetsDatabase;
 		this->rollback = new Rollback("VulkanGraphicsApi", *vulkanRollback);
 		this->swapchainRollback = CreateRef<Rollback>("SwapchainRollback");
 		this->window = glfwWindow;
@@ -45,7 +46,7 @@ namespace AVulkan
 			CreateDescriptorSets();
 			CreateSyncObjects();
 
-			rollback->Add([this]() {swapchainRollback->Dispose(); });
+			rollback->Add([this]() { swapchainRollback->Dispose(); });
 		}
 		catch (const std::exception& e)
 		{
@@ -166,6 +167,12 @@ namespace AVulkan
 		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, swapChainData, graphicsQueue, commandPool, vertices, indices);
 	}
 
+	Ref<Texture> VulkanGraphicsApi::CreateTexture(const std::string& filePath)
+	{
+		return CreateRef<TextureVulkan>(physicalDevice, logicalDevice, swapChainData,
+			descriptorPool, descriptorSetLayout, textureSampler, graphicsQueue, commandPool, filePath);
+	}
+
 	void VulkanGraphicsApi::CreateInstance()
 	{
 		AInstance().Create(instance);
@@ -249,7 +256,6 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateDescriptorSets()
 	{
-		ADescriptorSet().Allocate(logicalDevice, swapChainData, descriptorPool, descriptorSetLayout);
 	}
 
 	void VulkanGraphicsApi::CreateDepthBuffer()

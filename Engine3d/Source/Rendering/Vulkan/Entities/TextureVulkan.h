@@ -1,10 +1,10 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include <stb_image.h>
 #include <string>
 
 #include "Rendering/Entity/Texture.h"
+#include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Utilities/IOUtility.h"
 
 namespace AVulkan
@@ -12,14 +12,15 @@ namespace AVulkan
 	class TextureVulkan : public Texture
 	{
 	public:
-		TextureVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
+		TextureVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData,
+			VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, VkSampler& textureSampler,
 			VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& filePath);
 		virtual ~TextureVulkan() override;
 
 		//todo: make public getters and private setters
-		Ref<VkImage> image;
-		Ref<VkImageView> imageView;
-		Ref<VkDeviceMemory> imageMemory;
+		VkImage image;
+		VkImageView imageView;
+		VkDeviceMemory imageMemory;
 
 	private:
 		void CreateImage(const std::string& filePath);

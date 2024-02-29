@@ -17,6 +17,7 @@ public:
 	Ref<Texture> GetTexture(const std::string& path);
 	void AddTexture(Ref<Texture> texture);
 	void RemoveTexture(Ref<Texture> texture);
+	void RemoveTexture(const std::string& path);
 
 private:
 	std::unordered_map<std::string, Ref<Texture>> textures;
