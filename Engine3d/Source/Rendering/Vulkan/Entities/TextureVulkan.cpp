@@ -9,6 +9,7 @@
 
 #include <stb_image.h>
 #include <filesystem>
+#include <spdlog/spdlog.h>
 
 namespace AVulkan
 {
@@ -47,6 +48,10 @@ namespace AVulkan
         {
             std::filesystem::path fullPath = std::filesystem::absolute(filePath);
             CAssert::Check(pixels != nullptr, "Failed to load texture image: " + fullPath.string());
+        }
+        else
+        {
+            spdlog::debug("Image loaded: " + filePath);
         }
 
         VkBuffer stagingBuffer;

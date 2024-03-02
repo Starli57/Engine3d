@@ -6,13 +6,15 @@
 enum class TextureId 
 {
     GroundDirtWeedsPatchy004_COL_2K = 0,
-    GroundDirtWeedsPatchy004_NRM_2K = 1,
+    GroundGrassGreen002_COL_1K = 1,
+    viking_room = 2,
 
-    Count //always the last, represent number of textures in the list
+    Count //always the last, represents the number of textures in the list
 };
 
 std::array<std::string, static_cast<size_t>(TextureId::Count)> textures =
 {
     "Textures/GroundDirtWeedsPatchy004_COL_2K.jpg",
-    "Textures/GroundDirtWeedsPatchy004_NRM_2K.jpg" 
+    "Textures/GroundGrassGreen002_COL_1K.jpg",
+    "Textures/viking_room.png"
 };

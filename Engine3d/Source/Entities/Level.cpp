@@ -1,13 +1,15 @@
 #include "Pch.h"
 
+#include <spdlog/spdlog.h>
+#include <tiny_obj_loader.h>
+
 #include "Level.h"
 #include "Architecture/Ref.h"
 #include "Components/Camera.h"
 #include "Components/Transform.h"
 #include "Components/MeshContainer.h"
 #include "Resources/TexturesList.h"
-
-#include "spdlog/spdlog.h"
+#include "Resources/MeshesList.h"
 
 Level::Level(Ref<entt::registry> ecs, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
 {
@@ -26,39 +28,59 @@ void Level::LoadLevel()
 {
 	spdlog::info("Load level");
 
-	//mesh1
-	auto vertices = CreateRef<std::vector<Vertex>>();
-	vertices->reserve(3);
-	vertices->push_back(Vertex(glm::vec3(0.0f, -0.5f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec2(0,0)));
-	vertices->push_back(Vertex(glm::vec3(0.5f, 0.5f, 0.0f),  glm::vec3(0.0f, 1.0f, 0.0f), glm::vec2(1,1)));
-	vertices->push_back(Vertex(glm::vec3(-0.5f, 0.5f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f), glm::vec2(0,1)));
-
-	auto indices = CreateRef<std::vector<uint32_t>>();
-	indices->push_back(0);
-	indices->push_back(1);
-	indices->push_back(2);
-
-	auto defaultTexture = graphicsApi->CreateTexture(textures[static_cast<size_t>(TextureId::GroundDirtWeedsPatchy004_COL_2K)]);
-	assetDatabase->AddTexture(defaultTexture);
+	auto vikingRoomTexture = graphicsApi->CreateTexture(textures[static_cast<size_t>(TextureId::viking_room)]);
+	assetDatabase->AddTexture(vikingRoomTexture);
 
 	//todo: make dispose for textures better
-	rollback->Add([this]() {assetDatabase->RemoveTexture(textures[static_cast<size_t>(TextureId::GroundDirtWeedsPatchy004_COL_2K)]); });
+	rollback->Add([this]() {assetDatabase->RemoveTexture(textures[static_cast<size_t>(TextureId::viking_room)]); });
 
-	auto defaultMateral = CreateRef<Material>(defaultTexture);
+	auto vikingRoomMaterial = CreateRef<Material>(vikingRoomTexture);
+	
+	tinyobj::attrib_t attrib;
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
+	std::string warn, err;
 
-	auto triangleMesh1 = graphicsApi->CreateMesh(vertices, indices);
-	auto triangle1 = CreateRef<Entity>(ecs);
-	triangle1->AddComponent<Transform>(glm::vec3(-0.5f, 0, -1), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
-	triangle1->AddComponent<MeshContainer>(triangleMesh1, defaultMateral);
+	auto isLoaded = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, meshes[0].c_str());
+	CAssert::Check(isLoaded, warn + err);
 
-	auto triangleMesh2 = graphicsApi->CreateMesh(vertices, indices);
-	auto triangle2 = CreateRef<Entity>(ecs);
-	triangle2->AddComponent<Transform>(glm::vec3(0.5f, 0, 0), glm::vec4(0, 0, 0, 0), glm::vec3(2, 2, 2));
-	triangle2->AddComponent<MeshContainer>(triangleMesh2, defaultMateral);
+	auto vertices = CreateRef<std::vector<Vertex>>();
+	auto indices = CreateRef<std::vector<uint32_t>>();
+	for (const auto& shape : shapes) 
+	{
+		for (const auto& index : shape.mesh.indices)
+		{
+			Vertex vertex;
+			
+			vertex.position = 
+			{
+				attrib.vertices[3 * index.vertex_index + 0],
+				attrib.vertices[3 * index.vertex_index + 1],
+				attrib.vertices[3 * index.vertex_index + 2]
+			};
+
+			vertex.uv = 
+			{
+				attrib.texcoords[2 * index.texcoord_index + 0],
+				1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
+			};
+
+			vertex.color = { 1.0f, 1.0f, 1.0f };
+
+			vertices->push_back(vertex);
+			indices->push_back(indices->size());
+		}
+	}
+
+
+	auto vikingRoomMesh = graphicsApi->CreateMesh(vertices, indices);
+	auto vikingRoom = CreateRef<Entity>(ecs);
+	vikingRoom->AddComponent<Transform>(glm::vec3(-0.5f, 0, -1), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
+	vikingRoom->AddComponent<MeshContainer>(vikingRoomMesh, vikingRoomMaterial);
 
 	//camera1
 	auto cameraEntity = CreateRef<Entity>(ecs);
-	auto cameraTransform = CreateRef<Transform>(glm::vec3(0, 1, 5), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
+	auto cameraTransform = CreateRef<Transform>(glm::vec3(0, 1, 2), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
 	cameraEntity->AddComponent<Camera>(cameraTransform, 60, 1);//todo: set real screen aspect ration
 
 	rollback->Add([this]() { UnloadLevel(); });

@@ -12,6 +12,7 @@ Externals["Glm"] = "Externals/Glm"
 Externals["SpdLog"] = "Externals/SpdLog"
 Externals["Entt"] = "Externals/Entt"
 Externals["Stb"] = "Externals/Stb"
+Externals["TinyObjLoader"] = "Externals/TinyObjLoader"
 
 Includes = {}
 Includes["Glfw"] = "%{Externals.Glfw}/include"
@@ -20,6 +21,7 @@ Includes["Vulkan"] = "%{VulkanSdk}/Include"
 Includes["SpdLog"] = "%{Externals.SpdLog}/include"
 Includes["Entt"] = "%{Externals.Entt}/single_include/entt"
 Includes["Stb"] = "%{Externals.Stb}"
+Includes["TinyObjLoader"] = "%{Externals.TinyObjLoader}"
 
 LibFolders = {}
 LibFolders["Vulkan"] = "%{VulkanSdk}/Lib"
@@ -51,6 +53,7 @@ project "ExampleProject"
 		"%{Includes.SpdLog}",
 		"%{Includes.Entt}",
 		"%{Includes.Stb}",
+		"%{Includes.TinyObjLoader}",
 		"Engine3d/Source"
 	}
 	
@@ -64,7 +67,8 @@ project "ExampleProject"
 		"GLFW_INCLUDE_VULKAN",
 		"GLM_FORCE_RADIANS",
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
-		"STB_IMAGE_IMPLEMENTATION"
+		"STB_IMAGE_IMPLEMENTATION",
+		"TINYOBJLOADER_IMPLEMENTATION"
 	}
 
 	cppdialect "C++20"
@@ -115,7 +119,8 @@ project "Engine3d"
 		"%{Includes.Vulkan}",
 		"%{Includes.SpdLog}",
 		"%{Includes.Entt}",
-		"%{Includes.Stb}"
+		"%{Includes.Stb}",
+		"%{Includes.TinyObjLoader}"
 	}
 
 	links
@@ -130,7 +135,8 @@ project "Engine3d"
 		"GLFW_INCLUDE_VULKAN",
 		"GLM_FORCE_RADIANS",
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
-		"STB_IMAGE_IMPLEMENTATION"
+		"STB_IMAGE_IMPLEMENTATION",
+		"TINYOBJLOADER_IMPLEMENTATION"
 	}
 	
 	prebuildcommands 
