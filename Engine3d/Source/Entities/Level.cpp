@@ -28,11 +28,11 @@ void Level::LoadLevel()
 {
 	spdlog::info("Load level");
 
-	auto vikingRoomTexture = graphicsApi->CreateTexture(textures[static_cast<size_t>(TextureId::viking_room)]);
+	auto vikingRoomTexture = graphicsApi->CreateTexture(textures[static_cast<size_t>(TextureId::formula1_Diffuse)]);
 	assetDatabase->AddTexture(vikingRoomTexture);
 
 	//todo: make dispose for textures better
-	rollback->Add([this]() {assetDatabase->RemoveTexture(textures[static_cast<size_t>(TextureId::viking_room)]); });
+	rollback->Add([this]() {assetDatabase->RemoveTexture(textures[static_cast<size_t>(TextureId::formula1_Diffuse)]); });
 
 	auto vikingRoomMaterial = CreateRef<Material>(vikingRoomTexture);
 	
@@ -41,7 +41,7 @@ void Level::LoadLevel()
 	std::vector<tinyobj::material_t> materials;
 	std::string warn, err;
 
-	auto isLoaded = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, meshes[0].c_str());
+	auto isLoaded = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, meshes[1].c_str());
 	CAssert::Check(isLoaded, warn + err);
 
 	auto vertices = CreateRef<std::vector<Vertex>>();
