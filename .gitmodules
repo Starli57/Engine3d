@@ -16,3 +16,6 @@
 [submodule "Externals/TinyObjLoader"]
 	path = Externals/TinyObjLoader
 	url = git@github.com:tinyobjloader/tinyobjloader.git
+[submodule "Externals/TinyGltfLoader"]
+	path = Externals/TinyGltfLoader
+	url = git@github.com:syoyo/tinygltf.git
