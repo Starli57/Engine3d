@@ -16,4 +16,11 @@ struct Vertex
 		this->color = color;
 		this->uv = uv;
 	}
+
+	bool operator==(const Vertex& other) const 
+	{
+		return position == other.position 
+			&& color == other.color 
+			&& uv == other.uv;
+	}
 };
