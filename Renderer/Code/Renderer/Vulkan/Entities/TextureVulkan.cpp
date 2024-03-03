@@ -2,10 +2,10 @@
 #include "TextureVulkan.h"
 
 #include "SharedLib/CustomAssert.h"
-#include "Vulkan/Buffers/ABuffer.h"
-#include "Vulkan/Builders/AImage.h"
-#include "Vulkan/Builders/ADescriptorSet.h"
-#include "Vulkan/Utilities/VkImageViewUtility.h"
+#include "Renderer/Vulkan/Buffers/ABuffer.h"
+#include "Renderer/Vulkan/Builders/AImage.h"
+#include "Renderer/Vulkan/Builders/ADescriptorSet.h"
+#include "Renderer/Vulkan/Utilities/VkImageViewUtility.h"
 
 #include <stb_image.h>
 #include <filesystem>

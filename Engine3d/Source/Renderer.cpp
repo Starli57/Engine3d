@@ -95,11 +95,16 @@ void Renderer::Run()
 		glfwPollEvents();
 
 		auto meshContainers = ecs->view<Transform, MeshContainer>();
+		std::vector<RenderModel> renderModels;
+		//renderModels.reserve(meshContainers.size_hint)//todo: can reserve?
+
 		for (auto entity : meshContainers)
 		{
 			auto [transform, meshConatiner] = meshContainers.get<Transform, MeshContainer>(entity);
+			auto uboModel = transform.GetUboModel();
+			auto mesh = meshConatiner.GetMesh();
+			renderModels.push_back(RenderModel(uboModel, mesh));
 		}
-
 
 		//todo: find most relevant camera
 		auto cameraEntities = ecs->view<Camera>();
@@ -107,8 +112,9 @@ void Renderer::Run()
 		auto ubo = mainCamera.GetUbo();
 
 		//todo: handle exceptions and errors
-		graphicsApi->Render(ubo);
+		graphicsApi->Render(renderModels, ubo);
 	}
+
 	graphicsApi->FinanilizeRenderOperations();
 	spdlog::info("Window closed");
 }

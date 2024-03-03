@@ -1,7 +1,7 @@
 
 #include "Pch.h"
-#include "Vulkan/Buffers/ABuffer.h"
-#include "Vulkan/Utilities/VkMemoryUtility.h"
+#include "Renderer/Vulkan/Buffers/ABuffer.h"
+#include "Renderer/Vulkan/Utilities/VkMemoryUtility.h"
 
 namespace AVulkan
 {

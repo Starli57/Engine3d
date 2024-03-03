@@ -15,6 +15,8 @@ Externals["Stb"] = "Externals/Stb"
 Externals["TinyObjLoader"] = "Externals/TinyObjLoader"
 
 Includes = {}
+Includes["ExampleProject"] = "ExampleProject/Source"
+Includes["Engine"] = "Engine3d/Source"
 Includes["Renderer"] = "Renderer/Code"
 Includes["SharedLib"] = "SharedLib/Code"
 Includes["Glfw"] = "%{Externals.Glfw}/include"
@@ -49,14 +51,18 @@ project "ExampleProject"
 
 	includedirs
 	{
+		"%{Includes.ExampleProject}",
+		"%{Includes.Engine}",
+		"%{Includes.Renderer}",
+		"%{Includes.SharedLib}",
+
 		"%{Includes.Glfw}",
 		"%{Includes.Glm}",
 		"%{Includes.Vulkan}",
 		"%{Includes.SpdLog}",
 		"%{Includes.Entt}",
 		"%{Includes.Stb}",
-		"%{Includes.TinyObjLoader}",
-		"Engine3d/Source"
+		"%{Includes.TinyObjLoader}"
 	}
 	
 	links
@@ -115,7 +121,7 @@ project "Engine3d"
 	
 	includedirs
 	{
-		"%{prj.name}/Source",
+		"%{Includes.Engine}",
 		"%{Includes.Renderer}",
 		"%{Includes.SharedLib}",
 
@@ -195,7 +201,7 @@ project "Renderer"
 
 	includedirs
 	{
-		"%{prj.name}/Code/Renderer",
+		"%{Includes.Renderer}",
 		"%{Includes.SharedLib}",
 
 		"%{Includes.Glfw}",
@@ -251,7 +257,7 @@ project "SharedLib"
 	
 	includedirs
 	{
-		"%{prj.name}/Code",
+		"%{Includes.SharedLib}",
 		"%{Includes.SpdLog}"
 	}
 

@@ -7,15 +7,15 @@
 
 #include "GraphicsPipeline.h"
 
-#include "Entities/Mesh.h"
+#include "Renderer/Entities/Mesh.h"
 
 #include "Models/SwapChainData.h"
 #include "Models/DepthBufferModel.h"
-#include "Model/UboViewProjection.h"
+#include "Renderer/Model/UboViewProjection.h"
 
-#include "IGraphicsApi.h"
-#include "Vulkan/Entities/MeshVulkan.h"
-#include "Vulkan/Entities/TextureVulkan.h"
+#include "Renderer/IGraphicsApi.h"
+#include "Renderer/Vulkan/Entities/MeshVulkan.h"
+#include "Renderer/Vulkan/Entities/TextureVulkan.h"
 
 #include "Builders/AValidationLayers.h"
 #include "Builders/APhysicalDevice.h"
@@ -48,7 +48,7 @@ namespace AVulkan
 		virtual ~VulkanGraphicsApi() override;
 
 		void Init() override;
-		void Render(UboViewProjection& uboViewProjection) override;
+		void Render(std::vector<RenderModel>& renderModels, UboViewProjection& uboViewProjection) override;
 		void FinanilizeRenderOperations() override;
 
 		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;

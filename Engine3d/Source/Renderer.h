@@ -5,6 +5,7 @@
 
 #include "Renderer/IGraphicsApi.h"
 #include "Renderer/Vulkan/VulkanGraphicsApi.h"
+#include "Renderer/Model/RenderModel.h"
 
 #include "SharedLib/Rollback/Rollback.h"
 #include "SharedLib/Ref.h"

@@ -4,7 +4,7 @@
 
 #include <vector>
 
-#include "Vulkan/Buffers/UniformBufferVulkan.h"
+#include "Renderer/Vulkan/Buffers/UniformBufferVulkan.h"
 
 namespace AVulkan
 {

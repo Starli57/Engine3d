@@ -1,5 +1,5 @@
 @echo off
-set "ShaderPath=Engine3d/Source/Rendering/Shaders"
+set "ShaderPath=Renderer/Code/Renderer/Shaders"
 @echo on
 
 %VULKAN_SDK%/Bin/glslc.exe %ShaderPath%/Vert.vert -o %ShaderPath%/vert.spv

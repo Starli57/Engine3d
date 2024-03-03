@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "SharedLib/Ref.h"
-#include "Model/Vertex.h"
+#include "Renderer/Model/Vertex.h"
 
 class Mesh
 {

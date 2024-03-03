@@ -1,9 +1,10 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
+#include <vector>
 
 #include "SharedLib/Ref.h"
-#include "Model/Vertex.h"
+#include "Renderer/Model/Vertex.h"
 
 namespace AVulkan
 {

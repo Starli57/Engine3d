@@ -5,8 +5,8 @@
 #include <array>
 
 #include "SharedLib/Rollback/Rollback.h"
-#include "Model/Vertex.h"
-#include "Model/UboModel.h"
+#include "Renderer/Model/Vertex.h"
+#include "Renderer/Model/UboModel.h"
 
 namespace AVulkan
 {

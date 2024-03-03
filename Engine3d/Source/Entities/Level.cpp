@@ -79,6 +79,7 @@ void Level::LoadLevel()
 	//camera1
 	auto cameraEntity = CreateRef<Entity>(ecs);
 	auto cameraTransform = CreateRef<Transform>(glm::vec3(0, 1, 500), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
+//	cameraEntity->AddComponent<Transform>(cameraTransform);
 	cameraEntity->AddComponent<Camera>(cameraTransform, 60, 1);//todo: set real screen aspect ration
 
 	rollback->Add([this]() { UnloadLevel(); });

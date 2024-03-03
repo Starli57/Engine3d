@@ -3,11 +3,11 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
-#include "Entities/Mesh.h"
-#include "Model/UboViewProjection.h"
-#include "Model/Vertex.h"
-#include "Vulkan/Models/SwapChainData.h"
-#include "Vulkan/Buffers/UniformBufferVulkan.h"
+#include "Renderer/Entities/Mesh.h"
+#include "Renderer/Model/UboViewProjection.h"
+#include "Renderer/Model/Vertex.h"
+#include "Renderer/Vulkan/Models/SwapChainData.h"
+#include "Renderer/Vulkan/Buffers/UniformBufferVulkan.h"
 #include "SharedLib/Ref.h"
 
 namespace AVulkan

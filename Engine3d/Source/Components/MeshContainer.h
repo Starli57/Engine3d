@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Entities/Mesh.h"
-#include "Entities/Material.h"
-#include "Ref.h"
+#include "Renderer/Entities/Mesh.h"
+#include "Renderer/Entities/Material.h"
+#include "SharedLib/Ref.h"
 
 class MeshContainer
 {

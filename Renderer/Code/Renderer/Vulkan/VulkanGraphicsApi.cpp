@@ -4,7 +4,7 @@
 #include <spdlog/spdlog.h>
 
 #include "VulkanGraphicsApi.h"
-#include "Vulkan/Utilities/VkFormatUtility.h"
+#include "Renderer/Vulkan/Utilities/VkFormatUtility.h"
 #include "Utilities/VkImageViewUtility.h"
 #include "Utilities/VkMemoryUtility.h"
 
@@ -81,7 +81,7 @@ namespace AVulkan
 	}
 
 	//todo: make refactoring of the function
-	void VulkanGraphicsApi::Render(UboViewProjection& uboViewProjection)
+	void VulkanGraphicsApi::Render(std::vector<RenderModel>& renderModels, UboViewProjection& uboViewProjection)
 	{
 		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, frameSyncTimeout);
 
@@ -101,7 +101,7 @@ namespace AVulkan
 
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(swapChainData.commandBuffers[frame], 0);
-		ACommandBuffer().Record(frame, swapChainData.frameBuffers[imageIndex],
+		ACommandBuffer().Record(renderModels, frame, swapChainData.frameBuffers[imageIndex],
 			renderPass, swapChainData, *graphicsPipeline);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };

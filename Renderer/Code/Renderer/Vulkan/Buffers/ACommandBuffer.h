@@ -3,9 +3,10 @@
 #include <GLFW/glfw3.h>
 
 #include "SharedLib/Ref.h"
-#include "Vulkan/Models/SwapChainData.h"
-#include "Vulkan/Entities/MeshVulkan.h"
-#include "Vulkan/GraphicsPipeline.h"
+#include "Renderer/Model/RenderModel.h"
+#include "Renderer/Vulkan/Models/SwapChainData.h"
+#include "Renderer/Vulkan/Entities/MeshVulkan.h"
+#include "Renderer/Vulkan/GraphicsPipeline.h"
 
 namespace AVulkan
 {
@@ -13,7 +14,7 @@ namespace AVulkan
 	{
 	public:
 		void Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, SwapChainData& swapChainData, int buffersCount) const;
-		void Record(uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
+		void Record(std::vector<RenderModel>& renderModels, uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
 			SwapChainData& swapChainData, GraphicsPipeline& pipeline) const;
 	};
 }

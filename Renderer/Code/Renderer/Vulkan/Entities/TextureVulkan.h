@@ -3,8 +3,8 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
-#include "Entities/Texture.h"
-#include "Vulkan/Models/SwapChainData.h"
+#include "Renderer/Entities/Texture.h"
+#include "Renderer/Vulkan/Models/SwapChainData.h"
 #include "SharedLib/IOUtility.h"
 
 namespace AVulkan

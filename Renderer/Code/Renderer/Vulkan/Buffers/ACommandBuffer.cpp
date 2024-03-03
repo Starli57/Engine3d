@@ -21,7 +21,7 @@ namespace AVulkan
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to allocate command buffers, status: " + createStatus);
 	}
 
-	void ACommandBuffer::Record(uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
+	void ACommandBuffer::Record(std::vector<RenderModel>& renderModels, uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
 		SwapChainData& swapChainData, GraphicsPipeline& pipeline) const
 	{
 		auto commandBuffer = swapChainData.commandBuffers.at(frame);
@@ -50,18 +50,16 @@ namespace AVulkan
 		{
 			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipeline());
 
-			auto meshContainers = ecs->view<Transform, MeshContainer>();
-			for (auto entity : meshContainers)
+			for (auto renderModel : renderModels)
 			{
-				auto [transform, meshConatiner] = meshContainers.get<Transform, MeshContainer>(entity);
-				auto meshVulkan = static_pointer_cast<MeshVulkan>(meshConatiner.GetMesh());
+				auto meshVulkan = static_pointer_cast<MeshVulkan>(renderModel.mesh);
 
 				VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };
 				VkDeviceSize offsets[] = { 0 };
 				vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 				vkCmdBindIndexBuffer(commandBuffer, meshVulkan->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 				
-				auto uboModel = transform.GetUboModel();
+				auto uboModel = renderModel.uboModel;
 				vkCmdPushConstants(commandBuffer, pipeline.GetLayout(), VK_SHADER_STAGE_VERTEX_BIT,
 					0, sizeof(UboModel), &uboModel);
 
