@@ -1,7 +1,4 @@
 #include "Pch.h"
-
-#include <spdlog/spdlog.h>
-
 #include "Engine.h"
 
 Engine::Engine()
@@ -15,7 +12,7 @@ Engine::Engine()
 	assetsDatabase = CreateRef<AssetsDatabase>();
 	engineRollback->Add([this]() { assetsDatabase.reset(); });
 
-	renderer = new Renderer(ecs, assetsDatabase, *engineRollback);
+	renderer = new Renderer(ecs, *engineRollback);
 	renderer->Init();
 	engineRollback->Add([this] { delete renderer; });
 

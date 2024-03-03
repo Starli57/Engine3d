@@ -6,12 +6,15 @@
 #include <entt.hpp>
 
 #include "Entity.h"
-#include "Architecture/Rollback/Rollback.h"
-#include "Rendering/Model/Vertex.h"
-#include "Entities/Mesh.h"
 #include "Components/Camera.h"
-#include "Rendering/IGraphicsApi.h"
 #include "AssetsDatabase.h"
+
+#include "SharedLib/Rollback/Rollback.h"
+
+#include "Renderer/Model/Vertex.h"
+#include "Renderer/Entities/Mesh.h"
+#include "Renderer/Entities/Material.h"
+#include "Renderer/IGraphicsApi.h"
 
 class Level
 {

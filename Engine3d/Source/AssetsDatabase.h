@@ -4,8 +4,8 @@
 #include <vector>
 #include <unordered_map>
 
-#include "Architecture/Ref.h"
-#include "Entities/Texture.h"
+#include "SharedLib/Ref.h"
+#include "Renderer/Entities/Texture.h"
 
 class AssetsDatabase
 {

@@ -4,9 +4,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Transform.h"
-#include "Rendering/Model/Mvp.h"
+#include "Renderer/Model/UboViewProjection.h"
 
-#include "Architecture/Ref.h"
+#include "SharedLib/Ref.h"
 
 class Camera
 {
