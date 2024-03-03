@@ -5,7 +5,6 @@
 #include <stack>
 #include <vector>
 
-#include "AssetsDatabase.h"
 #include "GraphicsPipeline.h"
 #include "Architecture/Ref.h"
 
@@ -47,7 +46,7 @@ namespace AVulkan
 	class VulkanGraphicsApi : public IGraphicsApi
 	{
 	public:
-		VulkanGraphicsApi(Ref<entt::registry> ecs, Ref<AssetsDatabase> assetsDatabase, GLFWwindow* window, Rollback* vulkanRollback);
+		VulkanGraphicsApi(Ref<entt::registry> ecs, GLFWwindow* window, Rollback* vulkanRollback);
 		virtual ~VulkanGraphicsApi() override;
 
 		void Init() override;
@@ -61,7 +60,6 @@ namespace AVulkan
 
 	private:
 		Ref<entt::registry> ecs;
-		Ref<AssetsDatabase> assetsDatabase;
 
 		GLFWwindow* window;
 

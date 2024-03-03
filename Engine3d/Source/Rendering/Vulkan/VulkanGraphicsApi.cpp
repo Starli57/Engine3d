@@ -9,10 +9,9 @@
 
 namespace AVulkan
 {
-	VulkanGraphicsApi::VulkanGraphicsApi(Ref<entt::registry> ecs, Ref<AssetsDatabase> assetsDatabase, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
+	VulkanGraphicsApi::VulkanGraphicsApi(Ref<entt::registry> ecs, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
 		this->ecs = ecs;
-		this->assetsDatabase = assetsDatabase;
 		this->rollback = new Rollback("VulkanGraphicsApi", *vulkanRollback);
 		this->swapchainRollback = CreateRef<Rollback>("SwapchainRollback");
 		this->window = glfwWindow;
@@ -78,10 +77,7 @@ namespace AVulkan
 		CreateDepthBuffer();
 		CreateFrameBuffers();
 
-		auto cameraEntities = ecs->view<Camera>();
-		auto [mainCamera] = cameraEntities.get(cameraEntities.front());
-		mainCamera.UpdateScreenAspectRatio(swapChainData.extent.width / (float)swapChainData.extent.height);
-		mainCamera.UpdateUbo();
+		OnFrameBufferAspectRatioChanged.Invoke(swapChainData.extent.width / (float)swapChainData.extent.height);
 	}
 
 	//todo: make refactoring of the function

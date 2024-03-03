@@ -22,6 +22,7 @@ void Renderer::Init()
 		SetupGlfwHints();
 		CreateAppWindow();
 		InitGraphicsApi();
+		SubscribeGraphicsApiEvents();
 	}
 	catch (const std::exception& e)
 	{
@@ -63,12 +64,27 @@ void Renderer::CreateAppWindow()
 void Renderer::InitGraphicsApi()
 {
 #if GLFW_INCLUDE_VULKAN
-	graphicsApi = new VulkanGraphicsApi(ecs, assetsDatabase, window, rollback);
+	graphicsApi = new VulkanGraphicsApi(ecs, window, rollback);
 	graphicsApi->Init();
 	rollback->Add([this] { delete graphicsApi; });
 #else
 	throw std::runtime_error("Rendering api is not selected");
 #endif
+}
+
+void Renderer::SubscribeGraphicsApiEvents()
+{
+	graphicsApi->OnFrameBufferAspectRatioChanged.AddHandler([this](float aspectRation)
+		{
+			auto cameraEntities = ecs->view<Camera>();
+			for (auto entity : cameraEntities)
+			{
+				auto camera = cameraEntities.get<Camera>(entity);
+				camera.UpdateScreenAspectRatio(aspectRation);
+				camera.UpdateUbo();
+			}
+		});
+	//todo: remove the handler in rollback
 }
 
 void Renderer::Run()
