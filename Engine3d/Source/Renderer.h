@@ -1,7 +1,10 @@
 #pragma once
 
-#include "IGraphicsApi.h"
-#include "Vulkan/VulkanGraphicsApi.h"
+#include <GLFW/glfw3.h>
+#include <entt.hpp>
+
+#include "Renderer/IGraphicsApi.h"
+#include "Renderer/Vulkan/VulkanGraphicsApi.h"
 
 #include "SharedLib/Rollback/Rollback.h"
 #include "SharedLib/Ref.h"
@@ -34,6 +37,7 @@ private:
 	void SetupGlfwHints();
 	void CreateAppWindow();
 	void InitGraphicsApi();
+	void SubscribeGraphicsApiEvents();
 
 	static void OnFramebufferResized(GLFWwindow* window, int width, int height);
 };

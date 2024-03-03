@@ -11,6 +11,7 @@
 
 #include "Models/SwapChainData.h"
 #include "Models/DepthBufferModel.h"
+#include "Model/UboViewProjection.h"
 
 #include "IGraphicsApi.h"
 #include "Vulkan/Entities/MeshVulkan.h"
@@ -36,6 +37,7 @@
 #include "SharedLib/Ref.h"
 #include "SharedLib/CustomAssert.h"
 #include "SharedLib/Rollback/Rollback.h"
+#include "SharedLib/EventHandler.h"
 
 namespace AVulkan
 {
@@ -46,13 +48,14 @@ namespace AVulkan
 		virtual ~VulkanGraphicsApi() override;
 
 		void Init() override;
-		void Render() override;
+		void Render(UboViewProjection& uboViewProjection) override;
 		void FinanilizeRenderOperations() override;
 
 		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
 		Ref<Texture> CreateTexture(const std::string& filePath) override;
 
 		void OnFramebufferResized() override;
+
 
 	private:
 		GLFWwindow* window;
@@ -113,6 +116,6 @@ namespace AVulkan
 		//todo: replace
 		void CreateUniformBuffers();
 		void DisposeUniformBuffers();
-		void UpdateUniformBuffer(uint32_t imageIndex);
+		void UpdateUniformBuffer(uint32_t imageIndex, UboViewProjection& uboViewProjection);
 	};
 }

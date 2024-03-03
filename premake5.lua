@@ -15,6 +15,7 @@ Externals["Stb"] = "Externals/Stb"
 Externals["TinyObjLoader"] = "Externals/TinyObjLoader"
 
 Includes = {}
+Includes["Renderer"] = "Renderer/Code"
 Includes["SharedLib"] = "SharedLib/Code"
 Includes["Glfw"] = "%{Externals.Glfw}/include"
 Includes["Glm"] = "%{Externals.Glm}"
@@ -115,6 +116,7 @@ project "Engine3d"
 	includedirs
 	{
 		"%{prj.name}/Source",
+		"%{Includes.Renderer}",
 		"%{Includes.SharedLib}",
 
 		"%{Includes.Glfw}",

@@ -1,4 +1,7 @@
 #include "Pch.h"
+#include "Components/MeshContainer.h"
+#include "Components/Transform.h"
+#include "Components/Camera.h"
 #include "Renderer.h"
 
 Renderer::Renderer(Ref<entt::registry> ecs, Rollback& mainRollback)
@@ -20,6 +23,7 @@ void Renderer::Init()
 		SetupGlfwHints();
 		CreateAppWindow();
 		InitGraphicsApi();
+		SubscribeGraphicsApiEvents();
 	}
 	catch (const std::exception& e)
 	{
@@ -61,12 +65,27 @@ void Renderer::CreateAppWindow()
 void Renderer::InitGraphicsApi()
 {
 #if GLFW_INCLUDE_VULKAN
-	graphicsApi = new VulkanGraphicsApi(ecs, window, rollback);
+	graphicsApi = new VulkanGraphicsApi(window, rollback);
 	graphicsApi->Init();
 	rollback->Add([this] { delete graphicsApi; });
 #else
 	throw std::runtime_error("Rendering api is not selected");
 #endif
+}
+
+void Renderer::SubscribeGraphicsApiEvents()
+{
+	graphicsApi->OnFrameBufferAspectRatioChanged.AddHandler([this](float aspectRation)
+		{
+			auto cameraEntities = ecs->view<Camera>();
+			for (auto entity : cameraEntities)
+			{
+				auto camera = cameraEntities.get<Camera>(entity);
+				camera.UpdateScreenAspectRatio(aspectRation);
+				camera.UpdateUbo();
+			}
+		});
+	//todo: remove the handler in rollback
 }
 
 void Renderer::Run()
@@ -75,8 +94,20 @@ void Renderer::Run()
 	{
 		glfwPollEvents();
 
+		auto meshContainers = ecs->view<Transform, MeshContainer>();
+		for (auto entity : meshContainers)
+		{
+			auto [transform, meshConatiner] = meshContainers.get<Transform, MeshContainer>(entity);
+		}
+
+
+		//todo: find most relevant camera
+		auto cameraEntities = ecs->view<Camera>();
+		auto [mainCamera] = cameraEntities.get(cameraEntities.front());
+		auto ubo = mainCamera.GetUbo();
+
 		//todo: handle exceptions and errors
-		graphicsApi->Render();
+		graphicsApi->Render(ubo);
 	}
 	graphicsApi->FinanilizeRenderOperations();
 	spdlog::info("Window closed");

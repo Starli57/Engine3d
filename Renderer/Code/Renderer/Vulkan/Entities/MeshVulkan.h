@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "Entities/Mesh.h"
-#include "Model/Mvp.h"
+#include "Model/UboViewProjection.h"
 #include "Model/Vertex.h"
 #include "Vulkan/Models/SwapChainData.h"
 #include "Vulkan/Buffers/UniformBufferVulkan.h"

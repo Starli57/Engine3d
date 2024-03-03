@@ -5,14 +5,16 @@
 #include <glm/glm.hpp>
 #include <entt.hpp>
 
+#include "Entity.h"
+#include "Components/Camera.h"
+#include "AssetsDatabase.h"
+
 #include "SharedLib/Rollback/Rollback.h"
 
-#include "Entity.h"
-#include "Model/Vertex.h"
-#include "Entities/Mesh.h"
-#include "Components/Camera.h"
-#include "IGraphicsApi.h"
-#include "AssetsDatabase.h"
+#include "Renderer/Model/Vertex.h"
+#include "Renderer/Entities/Mesh.h"
+#include "Renderer/Entities/Material.h"
+#include "Renderer/IGraphicsApi.h"
 
 class Level
 {

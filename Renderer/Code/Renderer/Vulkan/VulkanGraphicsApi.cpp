@@ -77,14 +77,11 @@ namespace AVulkan
 		CreateDepthBuffer();
 		CreateFrameBuffers();
 
-		auto cameraEntities = ecs->view<Camera>();
-		auto [mainCamera] = cameraEntities.get(cameraEntities.front());
-		mainCamera.UpdateScreenAspectRatio(swapChainData.extent.width / (float)swapChainData.extent.height);
-		mainCamera.UpdateUbo();
+		OnFrameBufferAspectRatioChanged.Invoke(swapChainData.extent.width / (float)swapChainData.extent.height);
 	}
 
 	//todo: make refactoring of the function
-	void VulkanGraphicsApi::Render()
+	void VulkanGraphicsApi::Render(UboViewProjection& uboViewProjection)
 	{
 		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, frameSyncTimeout);
 
@@ -100,7 +97,7 @@ namespace AVulkan
 		
 		CAssert::Check(acquireStatus == VK_SUCCESS || acquireStatus == VK_SUBOPTIMAL_KHR, "Failed to acquire swap chain image!");
 
-		UpdateUniformBuffer(frame);
+		UpdateUniformBuffer(frame, uboViewProjection);
 
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(swapChainData.commandBuffers[frame], 0);
@@ -146,14 +143,9 @@ namespace AVulkan
 	}
 
 	//todo: replace
-	void VulkanGraphicsApi::UpdateUniformBuffer(uint32_t imageIndex)
+	void VulkanGraphicsApi::UpdateUniformBuffer(uint32_t imageIndex, UboViewProjection& uboViewProjection)
 	{
-		//todo: find most relevant camera
-		auto cameraEntities = ecs->view<Camera>();
-		auto [mainCamera] = cameraEntities.get(cameraEntities.front());
-		auto ubo = mainCamera.GetUbo();
-
-		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &ubo, sizeof(UboViewProjection));
+		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &uboViewProjection, sizeof(UboViewProjection));
 	}
 
 	void VulkanGraphicsApi::FinanilizeRenderOperations()
