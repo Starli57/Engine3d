@@ -1,6 +1,5 @@
 #include "Pch.h"
 #include "AssetsDatabase.h"
-#include "Architecture/CustomAssert.h"
 
 //todo: calculate texture links count to be able to dispose if not used
 

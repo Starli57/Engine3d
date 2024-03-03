@@ -1,10 +1,8 @@
 #include "Pch.h"
 
-#include <spdlog/spdlog.h>
 #include <tiny_obj_loader.h>
 
 #include "Level.h"
-#include "Architecture/Ref.h"
 #include "Components/Camera.h"
 #include "Components/Transform.h"
 #include "Components/MeshContainer.h"
@@ -80,7 +78,7 @@ void Level::LoadLevel()
 
 	//camera1
 	auto cameraEntity = CreateRef<Entity>(ecs);
-	auto cameraTransform = CreateRef<Transform>(glm::vec3(0, 1, 2), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
+	auto cameraTransform = CreateRef<Transform>(glm::vec3(0, 1, 500), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
 	cameraEntity->AddComponent<Camera>(cameraTransform, 60, 1);//todo: set real screen aspect ration
 
 	rollback->Add([this]() { UnloadLevel(); });

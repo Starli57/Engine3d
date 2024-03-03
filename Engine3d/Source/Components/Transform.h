@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include "Rendering/Model/UboModel.h"
+#include "Model/UboModel.h"
 
 class Transform
 {

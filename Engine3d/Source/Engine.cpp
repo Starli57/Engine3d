@@ -1,7 +1,4 @@
 #include "Pch.h"
-
-#include <spdlog/spdlog.h>
-
 #include "Engine.h"
 
 Engine::Engine()

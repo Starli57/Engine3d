@@ -15,6 +15,7 @@ Externals["Stb"] = "Externals/Stb"
 Externals["TinyObjLoader"] = "Externals/TinyObjLoader"
 
 Includes = {}
+Includes["SharedLib"] = "SharedLib/Code"
 Includes["Glfw"] = "%{Externals.Glfw}/include"
 Includes["Glm"] = "%{Externals.Glm}"
 Includes["Vulkan"] = "%{VulkanSdk}/Include"
@@ -114,6 +115,8 @@ project "Engine3d"
 	includedirs
 	{
 		"%{prj.name}/Source",
+		"%{Includes.SharedLib}",
+
 		"%{Includes.Glfw}",
 		"%{Includes.Glm}",
 		"%{Includes.Vulkan}",
@@ -125,6 +128,8 @@ project "Engine3d"
 
 	links
 	{
+		"SharedLib",
+		"Renderer",
 		"Glfw",
 		"Glm",
 		"%{Libs.Vulkan}"
@@ -166,6 +171,96 @@ project "Engine3d"
 	filter "configurations:Release"
 		optimize "On"
 
+project "Renderer"
+	location "Renderer"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "On"
+	systemversion "latest"
+	
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+	
+	pchheader "Pch.h"
+	pchsource "%{prj.name}/Code/Renderer/Pch.cpp"
+
+	files
+	{
+		"%{prj.name}/Code/**.h",
+		"%{prj.name}/Code/**.cpp",
+	}
+
+	includedirs
+	{
+		"%{prj.name}/Code/Renderer",
+		"%{Includes.SharedLib}",
+
+		"%{Includes.Glfw}",
+		"%{Includes.Glm}",
+		"%{Includes.Vulkan}",
+		"%{Includes.SpdLog}",
+		"%{Includes.Entt}",
+		"%{Includes.Stb}",
+		"%{Includes.TinyObjLoader}"
+	}
+
+	links
+	{
+		"SharedLib",
+		"Glfw",
+		"Glm",
+		"%{Libs.Vulkan}"
+	}
+	
+	defines
+	{
+		"GLFW_INCLUDE_VULKAN",
+		"GLM_FORCE_RADIANS",
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"STB_IMAGE_IMPLEMENTATION",
+		"TINYOBJLOADER_IMPLEMENTATION"
+	}
+
+	filter "configurations:Debug"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		runtime "Release"
+		optimize "on"
+
+project "SharedLib"
+	location "SharedLib"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "On"
+	systemversion "latest"
+	
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+	
+	files
+	{
+		"%{prj.name}/Code/**.h",
+		"%{prj.name}/Code/**.cpp",
+	}
+	
+	includedirs
+	{
+		"%{prj.name}/Code",
+		"%{Includes.SpdLog}"
+	}
+
+	filter "configurations:Debug"
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		runtime "Release"
+		optimize "on"
+
 project "Glfw"
 	kind "StaticLib"
 	language "C"
@@ -173,14 +268,14 @@ project "Glfw"
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
 	
+	systemversion "latest"
+	staticruntime "On"
+
 	files
 	{
 		"%{Externals.Glfw}/src/**.h",
 		"%{Externals.Glfw}/src/**.c"
-	}
-		
-	systemversion "latest"
-	staticruntime "On"
+	}	
 	
 	filter "system:windows"
 		defines 
@@ -208,6 +303,9 @@ project "Glm"
 	kind "StaticLib"
 	language "C++"
 	
+	systemversion "latest"
+	staticruntime "On"
+
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
 	
@@ -222,6 +320,3 @@ project "Glm"
 	{
 		"%{Includes.Glm}"
 	}
-
-	systemversion "latest"
-	staticruntime "On"

@@ -5,12 +5,13 @@
 #include <glm/glm.hpp>
 #include <entt.hpp>
 
+#include "SharedLib/Rollback/Rollback.h"
+
 #include "Entity.h"
-#include "Architecture/Rollback/Rollback.h"
-#include "Rendering/Model/Vertex.h"
+#include "Model/Vertex.h"
 #include "Entities/Mesh.h"
 #include "Components/Camera.h"
-#include "Rendering/IGraphicsApi.h"
+#include "IGraphicsApi.h"
 #include "AssetsDatabase.h"
 
 class Level
