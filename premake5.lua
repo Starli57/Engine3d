@@ -151,11 +151,25 @@ project "Engine3d"
 			"ENGINE_WIN",
 			"ENGINE_DLL_BUILD"
 		}
-
+		
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Meshes" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Textures" }
 		postbuildcommands { "copy $(SolutionDir)Output\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.dll $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject" }
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Shaders $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Meshes $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Meshes" }
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Textures $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Textures" }
 		
 	filter { "not system:windows" }
+		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject" }
+		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
+		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Meshes" }
+		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Textures" }
 		postbuildcommands { "copy $(SolutionDir)Output/" .. outputdir .. "/%{prj.name}/%{prj.name}.dll $(SolutionDir)Output/" .. outputdir .. "/ExampleProject" }
+		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Shaders $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
+		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Meshes $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Meshes" }
+		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Textures $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Textures" }
 
 	filter "configurations:Debug"
 		defines

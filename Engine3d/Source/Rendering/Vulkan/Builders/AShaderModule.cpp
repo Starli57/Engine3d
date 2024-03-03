@@ -10,7 +10,7 @@ namespace AVulkan
 	{
 		spdlog::info("Create shader module: {0}", fileName);
 
-		auto shadersFolderPath = "../Engine3d/Source/Rendering/Shaders/";
+		auto shadersFolderPath = "Shaders/";
 		auto shaderPath = shadersFolderPath + fileName;
 
 		const std::vector<char>& shaderCode = IOUtility().ReadFile(shaderPath);
