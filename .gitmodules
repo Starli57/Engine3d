@@ -16,3 +16,6 @@
 [submodule "Externals/TinyObjLoader"]
 	path = Externals/TinyObjLoader
 	url = git@github.com:tinyobjloader/tinyobjloader.git
+[submodule "Externals/DearImgui"]
+	path = Externals/DearImgui
+	url = git@github.com:ocornut/imgui.git
