@@ -13,6 +13,7 @@ Externals["SpdLog"] = "Externals/SpdLog"
 Externals["Entt"] = "Externals/Entt"
 Externals["Stb"] = "Externals/Stb"
 Externals["TinyObjLoader"] = "Externals/TinyObjLoader"
+Externals["DearImgui"] = "Externals/DearImgui"
 
 Includes = {}
 Includes["Glfw"] = "%{Externals.Glfw}/include"
@@ -22,6 +23,7 @@ Includes["SpdLog"] = "%{Externals.SpdLog}/include"
 Includes["Entt"] = "%{Externals.Entt}/single_include/entt"
 Includes["Stb"] = "%{Externals.Stb}"
 Includes["TinyObjLoader"] = "%{Externals.TinyObjLoader}"
+Includes["DearImgui"] = "%{Externals.DearImgui}"
 
 LibFolders = {}
 LibFolders["Vulkan"] = "%{VulkanSdk}/Lib"
@@ -35,6 +37,9 @@ project "ExampleProject"
 	location "ExampleProject"
 	kind "ConsoleApp"
 	language "C++"
+	cppdialect "C++20"
+	staticruntime "On"
+	systemversion "latest"
 
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -71,9 +76,74 @@ project "ExampleProject"
 		"TINYOBJLOADER_IMPLEMENTATION"
 	}
 
+	filter "system:windows"
+		defines
+		{
+			"ENGINE_WIN"
+		}
+
+	filter "configurations:Debug"
+		defines
+		{
+			"DEBUG"
+		}
+
+	filter "configurations:Release"
+		optimize "On"
+
+		
+project "Editor"
+	location "Editor"
+	kind "ConsoleApp"
+	language "C++"
 	cppdialect "C++20"
 	staticruntime "On"
 	systemversion "latest"
+
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/Source/**.h",
+		"%{prj.name}/Source/**.cpp",
+		
+		"%{Includes.DearImgui}/imconfig.h",
+		"%{Includes.DearImgui}/imgui.cpp",
+		"%{Includes.DearImgui}/imgui.h",
+		"%{Includes.DearImgui}/imgui_draw.cpp",
+		"%{Includes.DearImgui}/imgui_internal.h",
+		"%{Includes.DearImgui}/imgui_tables.cpp",
+		"%{Includes.DearImgui}/imgui_widgets.cpp",
+		"%{Includes.DearImgui}/imstb_rectpack.h",
+		"%{Includes.DearImgui}/imstb_textedit.h",
+		"%{Includes.DearImgui}/imstb_truetype.h",
+		
+		"%{Includes.DearImgui}/backends/imgui_impl_vulkan.cpp",
+		"%{Includes.DearImgui}/backends/imgui_impl_vulkan.h"
+	}
+
+	includedirs
+	{
+		"%{prj.name}/Source",
+		"Engine3d/Source",
+		"%{Includes.DearImgui}"
+	}
+	
+	links
+	{
+		"Engine3d",
+		"DearImgui"
+	}
+	
+	defines
+	{
+		"GLFW_INCLUDE_VULKAN",
+		"GLM_FORCE_RADIANS",
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"STB_IMAGE_IMPLEMENTATION",
+		"TINYOBJLOADER_IMPLEMENTATION"
+	}
 
 	filter "system:windows"
 		defines
@@ -183,6 +253,8 @@ project "Engine3d"
 project "Glfw"
 	kind "StaticLib"
 	language "C"
+	systemversion "latest"
+	staticruntime "On"
 	
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -192,9 +264,6 @@ project "Glfw"
 		"%{Externals.Glfw}/src/**.h",
 		"%{Externals.Glfw}/src/**.c"
 	}
-		
-	systemversion "latest"
-	staticruntime "On"
 	
 	filter "system:windows"
 		defines 
@@ -221,6 +290,8 @@ project "Glfw"
 project "Glm"
 	kind "StaticLib"
 	language "C++"
+	systemversion "latest"
+	staticruntime "On"
 	
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -236,6 +307,46 @@ project "Glm"
 	{
 		"%{Includes.Glm}"
 	}
-
+		
+project "DearImgui"
+	kind "StaticLib"
+	language "C++"
 	systemversion "latest"
 	staticruntime "On"
+	
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+	
+	files
+	{
+		"%{Includes.DearImgui}/imconfig.h",
+		"%{Includes.DearImgui}/imgui.cpp",
+		"%{Includes.DearImgui}/imgui.h",
+		"%{Includes.DearImgui}/imgui_draw.cpp",
+		"%{Includes.DearImgui}/imgui_internal.h",
+		"%{Includes.DearImgui}/imgui_tables.cpp",
+		"%{Includes.DearImgui}/imgui_widgets.cpp",
+		"%{Includes.DearImgui}/imstb_rectpack.h",
+		"%{Includes.DearImgui}/imstb_textedit.h",
+		"%{Includes.DearImgui}/imstb_truetype.h",
+		
+		"%{Includes.DearImgui}/backends/imgui_impl_vulkan.cpp",
+		"%{Includes.DearImgui}/backends/imgui_impl_vulkan.h"
+
+	}
+
+	includedirs
+	{
+		"%{Includes.DearImgui}",
+		"%{Includes.Vulkan}"
+	}
+	
+	links
+	{
+		"%{Libs.Vulkan}"
+	}
+	
+	defines
+	{
+		"GLFW_INCLUDE_VULKAN"
+	}
