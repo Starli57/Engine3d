@@ -106,28 +106,22 @@ project "Editor"
 	files
 	{
 		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp",
-		
-		"%{Includes.DearImgui}/imconfig.h",
-		"%{Includes.DearImgui}/imgui.cpp",
-		"%{Includes.DearImgui}/imgui.h",
-		"%{Includes.DearImgui}/imgui_draw.cpp",
-		"%{Includes.DearImgui}/imgui_internal.h",
-		"%{Includes.DearImgui}/imgui_tables.cpp",
-		"%{Includes.DearImgui}/imgui_widgets.cpp",
-		"%{Includes.DearImgui}/imstb_rectpack.h",
-		"%{Includes.DearImgui}/imstb_textedit.h",
-		"%{Includes.DearImgui}/imstb_truetype.h",
-		
-		"%{Includes.DearImgui}/backends/imgui_impl_vulkan.cpp",
-		"%{Includes.DearImgui}/backends/imgui_impl_vulkan.h"
+		"%{prj.name}/Source/**.cpp"
 	}
 
 	includedirs
 	{
 		"%{prj.name}/Source",
 		"Engine3d/Source",
-		"%{Includes.DearImgui}"
+		
+		"%{Includes.DearImgui}",
+		"%{Includes.Glfw}",
+		"%{Includes.Glm}",
+		"%{Includes.Vulkan}",
+		"%{Includes.SpdLog}",
+		"%{Includes.Entt}",
+		"%{Includes.Stb}",
+		"%{Includes.TinyObjLoader}"
 	}
 	
 	links
@@ -230,6 +224,16 @@ project "Engine3d"
 		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Shaders $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
 		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Meshes $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Meshes" }
 		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Textures $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Textures" }
+
+		
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\Editor" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\Editor\\Shaders" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\Editor\\Meshes" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\Editor\\Textures" }
+		postbuildcommands { "copy $(SolutionDir)Output\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.dll $(SolutionDir)Output\\" .. outputdir .. "\\Editor" }
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Shaders $(SolutionDir)Output\\" .. outputdir .. "\\Editor\\Shaders" }
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Meshes $(SolutionDir)Output\\" .. outputdir .. "\\Editor\\Meshes" }
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Textures $(SolutionDir)Output\\" .. outputdir .. "\\Editor\\Textures" }
 		
 	filter { "not system:windows" }
 		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject" }
@@ -240,6 +244,16 @@ project "Engine3d"
 		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Shaders $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
 		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Meshes $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Meshes" }
 		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Textures $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Textures" }
+
+		
+		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/Editor" }
+		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/Editor/Shaders" }
+		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/Editor/Meshes" }
+		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/Editor/Textures" }
+		postbuildcommands { "copy $(SolutionDir)Output/" .. outputdir .. "/%{prj.name}/%{prj.name}.dll $(SolutionDir)Output/" .. outputdir .. "/Editor" }
+		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Shaders $(SolutionDir)Output/" .. outputdir .. "/Editor/Shaders" }
+		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Meshes $(SolutionDir)Output/" .. outputdir .. "/Editor/Meshes" }
+		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Textures $(SolutionDir)Output/" .. outputdir .. "/Editor/Textures" }
 
 	filter "configurations:Debug"
 		defines
@@ -319,17 +333,8 @@ project "DearImgui"
 	
 	files
 	{
-		"%{Includes.DearImgui}/imconfig.h",
-		"%{Includes.DearImgui}/imgui.cpp",
-		"%{Includes.DearImgui}/imgui.h",
-		"%{Includes.DearImgui}/imgui_draw.cpp",
-		"%{Includes.DearImgui}/imgui_internal.h",
-		"%{Includes.DearImgui}/imgui_tables.cpp",
-		"%{Includes.DearImgui}/imgui_widgets.cpp",
-		"%{Includes.DearImgui}/imstb_rectpack.h",
-		"%{Includes.DearImgui}/imstb_textedit.h",
-		"%{Includes.DearImgui}/imstb_truetype.h",
-		
+		"%{Includes.DearImgui}/*.h",
+		"%{Includes.DearImgui}/*.cpp",
 		"%{Includes.DearImgui}/backends/imgui_impl_vulkan.cpp",
 		"%{Includes.DearImgui}/backends/imgui_impl_vulkan.h"
 
