@@ -3,8 +3,8 @@
 #include "AssetsDatabase.h"
 #include "Entities/Mesh.h"
 #include "Entities/Texture.h"
-#include "Architecture/Ref.h"
-#include "Architecture/EventHandler.h"
+#include "SharedLib/Ref.h"
+#include "SharedLib/EventHandler.h"
 
 class IGraphicsApi
 {

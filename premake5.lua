@@ -15,6 +15,9 @@ Externals["Stb"] = "Externals/Stb"
 Externals["TinyObjLoader"] = "Externals/TinyObjLoader"
 
 Includes = {}
+Includes["Engine"] = "Engine3d/Source"
+Includes["Shared"] = "Shared/Source"
+
 Includes["Glfw"] = "%{Externals.Glfw}/include"
 Includes["Glm"] = "%{Externals.Glm}"
 Includes["Vulkan"] = "%{VulkanSdk}/Include"
@@ -47,19 +50,22 @@ project "ExampleProject"
 
 	includedirs
 	{
+		"%{Includes.Engine}",
+		"%{Includes.Shared}",
+
 		"%{Includes.Glfw}",
 		"%{Includes.Glm}",
 		"%{Includes.Vulkan}",
 		"%{Includes.SpdLog}",
 		"%{Includes.Entt}",
 		"%{Includes.Stb}",
-		"%{Includes.TinyObjLoader}",
-		"Engine3d/Source"
+		"%{Includes.TinyObjLoader}"
 	}
 	
 	links
 	{
-		"Engine3d"
+		"Engine3d",
+		"Shared"
 	}
 	
 	defines
@@ -114,6 +120,8 @@ project "Engine3d"
 	includedirs
 	{
 		"%{prj.name}/Source",
+		"%{Includes.Shared}",
+
 		"%{Includes.Glfw}",
 		"%{Includes.Glm}",
 		"%{Includes.Vulkan}",
@@ -125,6 +133,7 @@ project "Engine3d"
 
 	links
 	{
+		"Shared",
 		"Glfw",
 		"Glm",
 		"%{Libs.Vulkan}"
@@ -179,6 +188,30 @@ project "Engine3d"
 
 	filter "configurations:Release"
 		optimize "On"
+
+project "Shared"
+	location "Shared"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "On"
+	systemversion "latest"
+
+
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/Source/**.h",
+		"%{prj.name}/Source/**.cpp",
+	}
+	
+	includedirs
+	{
+		"%{prj.name}/Source",
+		"%{Includes.SpdLog}"
+	}
 
 project "Glfw"
 	kind "StaticLib"

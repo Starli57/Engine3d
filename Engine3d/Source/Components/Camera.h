@@ -6,7 +6,7 @@
 #include "Transform.h"
 #include "Rendering/Model/UboViewProjection.h"
 
-#include "Architecture/Ref.h"
+#include "SharedLib/Ref.h"
 
 class Camera
 {

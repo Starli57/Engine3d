@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "GraphicsPipeline.h"
-#include "Architecture/Ref.h"
+#include "SharedLib/Ref.h"
 
 #include "Entities/Level.h"
 #include "Entities/Mesh.h"
@@ -35,7 +35,7 @@
 
 #include "Buffers/ACommandBuffer.h"
 
-#include "Architecture/Rollback/Rollback.h"
+#include "SharedLib/Rollback/Rollback.h"
 
 #include "Components/Transform.h"
 #include "Components/MeshContainer.h"

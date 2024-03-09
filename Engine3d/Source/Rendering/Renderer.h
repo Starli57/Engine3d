@@ -3,8 +3,8 @@
 #include "AssetsDatabase.h"
 #include "IGraphicsApi.h"
 #include "Vulkan/VulkanGraphicsApi.h"
-#include "Architecture/Rollback/Rollback.h"
-#include "Architecture/Ref.h"
+#include "SharedLib/Rollback/Rollback.h"
+#include "SharedLib/Ref.h"
 #include "Entities/Level.h"
 
 using namespace AVulkan;

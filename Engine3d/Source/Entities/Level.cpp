@@ -4,7 +4,7 @@
 #include <tiny_obj_loader.h>
 
 #include "Level.h"
-#include "Architecture/Ref.h"
+#include "SharedLib/Ref.h"
 #include "Components/Camera.h"
 #include "Components/Transform.h"
 #include "Components/MeshContainer.h"

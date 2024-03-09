@@ -4,11 +4,11 @@
 #include "Defines/DllDecDefines.h"
 
 #include "AssetsDatabase.h"
-#include "Architecture/Ref.h"
+#include "SharedLib/Ref.h"
 #include "Rendering/Renderer.h"
 #include "Entities/Level.h"
 
-#include "Architecture/Rollback/Rollback.h"
+#include "SharedLib/Rollback/Rollback.h"
 
 class ENGINE_API Engine
 {

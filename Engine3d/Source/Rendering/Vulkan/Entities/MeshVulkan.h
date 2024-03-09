@@ -8,7 +8,7 @@
 #include "Rendering/Model/Vertex.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Buffers/UniformBufferVulkan.h"
-#include "Architecture/Ref.h"
+#include "SharedLib/Ref.h"
 
 namespace AVulkan
 {

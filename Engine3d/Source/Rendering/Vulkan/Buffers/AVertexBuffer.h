@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Architecture/Ref.h"
+#include "SharedLib/Ref.h"
 #include "Rendering/Model/Vertex.h"
 
 namespace AVulkan

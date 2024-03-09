@@ -5,7 +5,7 @@
 
 #include "Entities/Texture.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
-#include "Utilities/IOUtility.h"
+#include "SharedLib/IOUtility.h"
 
 namespace AVulkan
 {
