@@ -28,13 +28,13 @@ void Level::LoadLevel()
 {
 	spdlog::info("Load level");
 
-	auto vikingRoomTexture = graphicsApi->CreateTexture(textures[static_cast<size_t>(TextureId::formula1_Diffuse)]);
-	assetDatabase->AddTexture(vikingRoomTexture);
+	auto texture = graphicsApi->CreateTexture(textures[static_cast<size_t>(TextureId::formula1_Diffuse)]);
+	assetDatabase->AddTexture(texture);
 
 	//todo: make dispose for textures better
 	rollback->Add([this]() {assetDatabase->RemoveTexture(textures[static_cast<size_t>(TextureId::formula1_Diffuse)]); });
 
-	auto vikingRoomMaterial = CreateRef<Material>(vikingRoomTexture);
+	auto material = CreateRef<Material>(texture);
 	
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
@@ -73,14 +73,15 @@ void Level::LoadLevel()
 	}
 
 
-	auto vikingRoomMesh = graphicsApi->CreateMesh(vertices, indices);
-	auto vikingRoom = CreateRef<Entity>(ecs);
-	vikingRoom->AddComponent<Transform>(glm::vec3(-0.5f, 0, -1), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
-	vikingRoom->AddComponent<MeshContainer>(vikingRoomMesh, vikingRoomMaterial);
+	auto carMesh = graphicsApi->CreateMesh(vertices, indices);
+	auto car = CreateRef<Entity>(ecs);
+	car->AddComponent<Transform>(glm::vec3(-0.5f, 0, -1), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
+	car->AddComponent<Rotator>(car);
+	car->AddComponent<MeshContainer>(carMesh, material);
 
 	//camera1
 	auto cameraEntity = CreateRef<Entity>(ecs);
-	auto cameraTransform = CreateRef<Transform>(glm::vec3(0, 1, 2), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
+	auto cameraTransform = CreateRef<Transform>(glm::vec3(0, 1, 500), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
 	cameraEntity->AddComponent<Camera>(cameraTransform, 60, 1);//todo: set real screen aspect ration
 
 	rollback->Add([this]() { UnloadLevel(); });

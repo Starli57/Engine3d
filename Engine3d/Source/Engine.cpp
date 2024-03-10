@@ -35,8 +35,6 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 	engineRollback->Add([this] { delete level; });
 
 	spdlog::info("--Engine init finished--");
-
-	Run();
 }
 
 Engine::~Engine()
@@ -98,7 +96,7 @@ void Engine::InitGraphicsApi()
 
 void Engine::SubscribeGraphicsApiEvents()
 {
-	auto handler = [this](float aspectRation)
+	auto cameraScreenRationHandler = [this](float aspectRation)
 	{
 		auto cameraEntities = ecs->view<Camera>();
 		for (auto entity : cameraEntities)
@@ -109,10 +107,10 @@ void Engine::SubscribeGraphicsApiEvents()
 		}
 	};
 
-	graphicsApi->OnFrameBufferAspectRatioChanged.AddHandler(handler);
+	graphicsApi->OnFrameBufferAspectRatioChanged.AddHandler(cameraScreenRationHandler);
 
 	//todo: fix subscription dispose
-//	engineRollback->Add([this, handler] { graphicsApi->OnFrameBufferAspectRatioChanged.RemoveHandler(handler); });
+//	engineRollback->Add([this, handler] { graphicsApi->OnFrameBufferAspectRatioChanged.RemoveHandler(cameraScreenRationHandler); });
 }
 
 void Engine::Run()
@@ -121,9 +119,15 @@ void Engine::Run()
 	{
 		glfwPollEvents();
 
+		ecs->view<IComponent>().each([](IComponent& component) 
+		{
+			component.Update();
+		});
+
 		//todo: handle exceptions and errors
 		graphicsApi->Render();
 	}
+
 	graphicsApi->FinanilizeRenderOperations();
 	spdlog::info("Window closed");
 }
