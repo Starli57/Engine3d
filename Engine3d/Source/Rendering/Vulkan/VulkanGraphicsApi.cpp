@@ -9,9 +9,10 @@
 
 namespace AVulkan
 {
-	VulkanGraphicsApi::VulkanGraphicsApi(Ref<entt::registry> ecs, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
+	VulkanGraphicsApi::VulkanGraphicsApi(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
 		this->ecs = ecs;
+		this->projectSettings = projectSettings;
 		this->rollback = new Rollback("VulkanGraphicsApi", *vulkanRollback);
 		this->swapchainRollback = CreateRef<Rollback>("SwapchainRollback");
 		this->window = glfwWindow;
@@ -215,7 +216,7 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateGraphicsPipeline()
 	{
-		graphicsPipeline = new GraphicsPipeline(logicalDevice, swapChainData.extent, renderPass, rollback);
+		graphicsPipeline = new GraphicsPipeline(projectSettings, logicalDevice, swapChainData.extent, renderPass, rollback);
 		graphicsPipeline->Create(descriptorSetLayout);
 
 		rollback->Add([this]() { delete graphicsPipeline; });

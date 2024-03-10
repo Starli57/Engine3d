@@ -30,7 +30,7 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 		throw e;
 	}
 
-	level = new Level(ecs, assetsDatabase, graphicsApi, engineRollback);
+	level = new Level(ecs, projectSettings, assetsDatabase, graphicsApi, engineRollback);
 	level->LoadLevel();
 	engineRollback->Add([this] { delete level; });
 
@@ -86,7 +86,7 @@ void Engine::CreateAppWindow()
 void Engine::InitGraphicsApi()
 {
 #if GLFW_INCLUDE_VULKAN
-	graphicsApi = new AVulkan::VulkanGraphicsApi(ecs, window, engineRollback);
+	graphicsApi = new AVulkan::VulkanGraphicsApi(ecs, projectSettings, window, engineRollback);
 	graphicsApi->Init();
 	engineRollback->Add([this] { delete graphicsApi; });
 #else

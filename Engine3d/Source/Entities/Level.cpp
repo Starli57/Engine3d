@@ -11,9 +11,10 @@
 #include "Resources/TexturesList.h"
 #include "Resources/MeshesList.h"
 
-Level::Level(Ref<entt::registry> ecs, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
+Level::Level(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
 {
 	this->ecs = ecs;
+	this->projectSettings = projectSettings;
 	this->assetDatabase = assetDatabase;
 	this->graphicsApi = graphicsApi;
 	this->rollback = new Rollback("Level", *rollback);
@@ -28,11 +29,11 @@ void Level::LoadLevel()
 {
 	spdlog::info("Load level");
 
-	auto texture = graphicsApi->CreateTexture(textures[static_cast<size_t>(TextureId::formula1_Diffuse)]);
+	auto texture = graphicsApi->CreateTexture(projectSettings->projectPath + textures[static_cast<size_t>(TextureId::formula1_Diffuse)]);
 	assetDatabase->AddTexture(texture);
 
 	//todo: make dispose for textures better
-	rollback->Add([this]() {assetDatabase->RemoveTexture(textures[static_cast<size_t>(TextureId::formula1_Diffuse)]); });
+	rollback->Add([this]() { assetDatabase->RemoveTexture(projectSettings->projectPath + textures[static_cast<size_t>(TextureId::formula1_Diffuse)]); });
 
 	auto material = CreateRef<Material>(texture);
 	
@@ -41,7 +42,7 @@ void Level::LoadLevel()
 	std::vector<tinyobj::material_t> materials;
 	std::string warn, err;
 
-	auto isLoaded = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, meshes[1].c_str());
+	auto isLoaded = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, (projectSettings->projectPath + meshes[1]).c_str());
 	CAssert::Check(isLoaded, warn + err);
 
 	auto vertices = CreateRef<std::vector<Vertex>>();

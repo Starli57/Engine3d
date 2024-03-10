@@ -8,8 +8,7 @@
 int main()
 {
 	Ref<ProjectSettigns> projectSettings = CreateRef<ProjectSettigns>(
-		"../ExampleProject/Resources/",
-		"../ExampleProject/Shaders/"
+		"../ExampleProject/"
 	);
 
 	try

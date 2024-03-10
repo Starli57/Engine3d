@@ -3,11 +3,9 @@
 
 struct ProjectSettigns
 {
-	const std::string resourcesPath = "Resources/";
-	const std::string shadersPath = "Shaders/";
+	const std::string projectPath = "";
 
-	ProjectSettigns(const std::string& resources, const std::string& shaders)
-		: resourcesPath(resources), shadersPath(shaders) 
+	ProjectSettigns(const std::string& projectPath) : projectPath(projectPath)
 	{
 	};
 };

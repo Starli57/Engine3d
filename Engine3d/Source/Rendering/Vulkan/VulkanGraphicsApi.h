@@ -35,6 +35,7 @@
 
 #include "Buffers/ACommandBuffer.h"
 
+#include "ProjectSettings.h"
 #include "SharedLib/Rollback/Rollback.h"
 
 #include "Components/Transform.h"
@@ -46,7 +47,7 @@ namespace AVulkan
 	class VulkanGraphicsApi : public IGraphicsApi
 	{
 	public:
-		VulkanGraphicsApi(Ref<entt::registry> ecs, GLFWwindow* window, Rollback* vulkanRollback);
+		VulkanGraphicsApi(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* window, Rollback* vulkanRollback);
 		virtual ~VulkanGraphicsApi() override;
 
 		void Init() override;
@@ -60,6 +61,7 @@ namespace AVulkan
 
 	private:
 		Ref<entt::registry> ecs;
+		Ref<ProjectSettigns> projectSettings;
 
 		GLFWwindow* window;
 

@@ -6,12 +6,9 @@
 
 namespace AVulkan
 {
-	VkShaderModule AShaderModule::CreateModule(const std::string& fileName, VkDevice& logicalDevice) const
+	VkShaderModule AShaderModule::CreateModule(const std::string& shaderPath, VkDevice& logicalDevice) const
 	{
-		spdlog::info("Create shader module: {0}", fileName);
-
-		auto shadersFolderPath = "Shaders/";
-		auto shaderPath = shadersFolderPath + fileName;
+		spdlog::info("Create shader module: {0}", shaderPath);
 
 		const std::vector<char>& shaderCode = IOUtility().ReadFile(shaderPath);
 
