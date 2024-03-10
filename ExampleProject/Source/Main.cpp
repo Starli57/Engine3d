@@ -2,13 +2,18 @@
 #include <Engine.h>
 #include <iostream>
 
+#include <SharedLib/Ref.h>
+
 int main() 
 {
+	Ref<ProjectSettigns> projectSettings = CreateRef<ProjectSettigns>(
+		"Resources/",
+		"Shaders/"
+	);
+
 	try
 	{
-		Engine* engine = new Engine();
-		engine->Run();
-		delete engine;
+		URef<Engine> engine = CreateUniqueRef<Engine>(projectSettings);
 	}
 	catch (const std::exception& e)
 	{
