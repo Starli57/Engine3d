@@ -1,6 +1,7 @@
 #include "Pch.h"
 #include "Transform.h"
 
+//todo: reduce duplicatons in constructors
 Transform::Transform()
 {
 	this->position = glm::vec3(0, 0, 0);
@@ -8,6 +9,8 @@ Transform::Transform()
 	this->scale = glm::vec3(1, 1, 1);
 
 	uboModel.model = glm::mat4(1.0f);
+	uboModel.model = glm::translate(uboModel.model, position);
+	uboModel.model = glm::scale(uboModel.model, scale);
 }
 
 Transform::Transform(glm::vec3 position, glm::vec4 rotation, glm::vec3 scale)
@@ -17,22 +20,16 @@ Transform::Transform(glm::vec3 position, glm::vec4 rotation, glm::vec3 scale)
 	this->scale = scale;
 
 	uboModel.model = glm::mat4(1.0f);
+	uboModel.model = glm::translate(uboModel.model, position);
+	uboModel.model = glm::scale(uboModel.model, scale);
 }
 
 UboModel Transform::GetUboModel()
 {
-	//todo: replace
-	static auto startTime = std::chrono::high_resolution_clock::now();
-
-	//todo: replace
-	auto currentTime = std::chrono::high_resolution_clock::now();
-	float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-
-	//todo: replace
-	uboModel.model = glm::mat4(1.0f);
-	uboModel.model = glm::translate(uboModel.model, position);
-	uboModel.model = glm::rotate(uboModel.model, time * glm::radians(30.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	uboModel.model = glm::scale(uboModel.model, scale);
-
 	return uboModel;
+}
+
+void Transform::TransformUboModel(UboModel& model)
+{
+	uboModel.model = model.model;
 }

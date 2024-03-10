@@ -17,6 +17,8 @@ public:
 	Engine(Ref<ProjectSettigns> projectSettings);
 	virtual ~Engine();
 
+	void Run();
+
 private:
 	const Ref<ProjectSettigns> projectSettings;
 
@@ -29,7 +31,6 @@ private:
 
 	Rollback* engineRollback;
 
-	void Run();
 
 	void InitLogger();
 	void InitGlfw();
