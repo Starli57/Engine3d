@@ -164,10 +164,10 @@ namespace AVulkan
 		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, swapChainData, graphicsQueue, commandPool, vertices, indices);
 	}
 
-	Ref<Texture> VulkanGraphicsApi::CreateTexture(const std::string& filePath)
+	Ref<Texture> VulkanGraphicsApi::CreateTexture(TextureId textureId)
 	{
-		return CreateRef<TextureVulkan>(physicalDevice, logicalDevice, swapChainData,
-			descriptorPool, descriptorSetLayout, textureSampler, graphicsQueue, commandPool, filePath);
+		return CreateRef<TextureVulkan>(projectSettings, physicalDevice, logicalDevice, swapChainData,
+			descriptorPool, descriptorSetLayout, textureSampler, graphicsQueue, commandPool, textureId);
 	}
 
 	void VulkanGraphicsApi::CreateInstance()

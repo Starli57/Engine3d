@@ -55,7 +55,7 @@ namespace AVulkan
 		void FinanilizeRenderOperations() override;
 
 		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
-		Ref<Texture> CreateTexture(const std::string& filePath) override;
+		Ref<Texture> CreateTexture(TextureId textureIdh) override;
 
 		void OnFramebufferResized() override;
 
