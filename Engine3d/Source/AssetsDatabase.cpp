@@ -6,7 +6,7 @@
 
 AssetsDatabase::AssetsDatabase()
 {
-	textures = std::unordered_map<std::string, Ref<Texture>>();
+	textures = std::unordered_map<TextureId, Ref<Texture>>();
 }
 	
 AssetsDatabase::~AssetsDatabase()
@@ -20,31 +20,26 @@ AssetsDatabase::~AssetsDatabase()
 	textures.clear();
 }
 
-bool AssetsDatabase::HasTexture(const std::string& path)
+bool AssetsDatabase::HasTexture(TextureId textureId)
 {
-	return textures.find(path) != textures.end();
+	return textures.find(textureId) != textures.end();
 }
 
-Ref<Texture> AssetsDatabase::GetTexture(const std::string& path)
+Ref<Texture> AssetsDatabase::GetTexture(TextureId textureId)
 {
-	auto it = textures.find(path);
-	CAssert::Check(it != textures.end(), "Assets database doesn't have a texture with path: " + path);
+	auto it = textures.find(textureId);
+	CAssert::Check(it != textures.end(), "Assets database doesn't have a texture with path: " + (int)textureId);
 	return it->second;
 }
 
 void AssetsDatabase::AddTexture(Ref<Texture> texture)
 {
-	if (!HasTexture(texture->path)) textures.insert({ texture->path, texture });
+	if (!HasTexture(texture->textureId)) textures.insert({ texture->textureId, texture });
 }
 
-void AssetsDatabase::RemoveTexture(Ref<Texture> texture)
+void AssetsDatabase::RemoveTexture(TextureId textureId)
 {
-	RemoveTexture(texture->path);
-}
-
-void AssetsDatabase::RemoveTexture(const std::string& path)
-{
-	auto it = textures.find(path);
-	CAssert::Check(it != textures.end(), "Assets database doesn't have a texture with path: " + path);
+	auto it = textures.find(textureId);
+	CAssert::Check(it != textures.end(), "Assets database doesn't have a texture with path: " + (int)textureId);
 	textures.erase(it->first);
 }

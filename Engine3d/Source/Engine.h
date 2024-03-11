@@ -11,7 +11,7 @@
 #include "SharedLib/Ref.h"
 #include "SharedLib/Rollback/Rollback.h"
 
-class ENGINE_API Engine
+class Engine
 {
 public:
 	Engine(Ref<ProjectSettigns> projectSettings);

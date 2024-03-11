@@ -13,13 +13,15 @@
 
 namespace AVulkan
 {
-    TextureVulkan::TextureVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData, 
+    TextureVulkan::TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData,
         VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, VkSampler& textureSampler,
-        VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& filePath) 
-        : Texture(filePath), physicalDevice(physicalDevice), logicalDevice(logicalDevice), 
+        VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId)
+        : Texture(textureId), physicalDevice(physicalDevice), logicalDevice(logicalDevice), 
                              graphicsQueue(graphicsQueue), commandPool(commandPool)
     {
-        CreateImage(filePath);
+        this->projectSettings = projectSettings;
+
+        CreateImage();
         CreateImageView();
 
         ADescriptorSet().Allocate(logicalDevice, swapChainData, descriptorPool, descriptorSetLayout, imageView, textureSampler);
@@ -33,7 +35,7 @@ namespace AVulkan
     }
 
     //todo: make async
-    void TextureVulkan::CreateImage(const std::string& filePath)
+    void TextureVulkan::CreateImage()
     {
         int width;
         int height;
@@ -41,6 +43,7 @@ namespace AVulkan
         uint64_t bitesPerPixel = 4;
         VkDeviceSize imageSize;
 
+        auto filePath = projectSettings->projectPath + textures[static_cast<size_t>(TextureId::formula1_Diffuse)];
         auto pixels = stbi_load(filePath.c_str(), &width, &height, &texChannels, STBI_rgb_alpha);
         imageSize = width * height * bitesPerPixel;
 

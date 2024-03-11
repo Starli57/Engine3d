@@ -35,6 +35,7 @@
 
 #include "Buffers/ACommandBuffer.h"
 
+#include "ProjectSettings.h"
 #include "SharedLib/Rollback/Rollback.h"
 
 #include "Components/Transform.h"
@@ -46,7 +47,7 @@ namespace AVulkan
 	class VulkanGraphicsApi : public IGraphicsApi
 	{
 	public:
-		VulkanGraphicsApi(Ref<entt::registry> ecs, GLFWwindow* window, Rollback* vulkanRollback);
+		VulkanGraphicsApi(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* window, Rollback* vulkanRollback);
 		virtual ~VulkanGraphicsApi() override;
 
 		void Init() override;
@@ -54,12 +55,13 @@ namespace AVulkan
 		void FinanilizeRenderOperations() override;
 
 		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
-		Ref<Texture> CreateTexture(const std::string& filePath) override;
+		Ref<Texture> CreateTexture(TextureId textureIdh) override;
 
 		void OnFramebufferResized() override;
 
 	private:
 		Ref<entt::registry> ecs;
+		Ref<ProjectSettigns> projectSettings;
 
 		GLFWwindow* window;
 

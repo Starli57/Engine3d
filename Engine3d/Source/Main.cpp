@@ -1,20 +1,19 @@
+#include "Pch.h"
 
-#include <Engine.h>
-#include <iostream>
+#include "Engine.h"
 
-#include <SharedLib/Ref.h>
+#include "SharedLib/Ref.h"
+#include "Test.h"
 
-int main() 
+int main()
 {
 	Ref<ProjectSettigns> projectSettings = CreateRef<ProjectSettigns>(
-		"Resources/",
-		"Shaders/"
+		"../ExampleProject/"
 	);
 
 	try
 	{
 		URef<Engine> engine = CreateUniqueRef<Engine>(projectSettings);
-		//todo: start the project objects
 		engine->Run();
 	}
 	catch (const std::exception& e)

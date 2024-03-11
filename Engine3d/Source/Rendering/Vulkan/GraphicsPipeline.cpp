@@ -9,11 +9,12 @@
 
 namespace AVulkan
 {
-	GraphicsPipeline::GraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass, Rollback* vulkanRollback)
+	GraphicsPipeline::GraphicsPipeline(Ref<ProjectSettigns> projectSettings, VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass, Rollback* vulkanRollback)
 	{
 		rollback = new Rollback("GraphicsPipeline", *vulkanRollback);
 		initializationRollback = new Rollback("GraphicsPipelineInit", *rollback);
 
+		this->projectSettings = projectSettings;
 		this->logicalDevice = logicalDevice;
 		this->swapChainExtent = swapChainExtent;
 		this->renderPass = renderPass;
@@ -108,8 +109,8 @@ namespace AVulkan
 	std::array<VkPipelineShaderStageCreateInfo, 2> GraphicsPipeline::CreateShadersModules()
 	{
 		AShaderModule shaderModule;
-		vertShaderModule = shaderModule.CreateModule("vert.spv", logicalDevice);
-		fragShaderModule = shaderModule.CreateModule("frag.spv", logicalDevice);
+		vertShaderModule = shaderModule.CreateModule(projectSettings->projectPath + "Shaders/vert.spv", logicalDevice);
+		fragShaderModule = shaderModule.CreateModule(projectSettings->projectPath + "Shaders/frag.spv", logicalDevice);
 
 		std::array< VkPipelineShaderStageCreateInfo, 2> shaderStages;
 		shaderStages[0] = shaderModule.SetupStageInfo(vertShaderModule, VK_SHADER_STAGE_VERTEX_BIT);
