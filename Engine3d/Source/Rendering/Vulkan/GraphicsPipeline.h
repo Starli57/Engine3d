@@ -4,7 +4,9 @@
 
 #include <array>
 
-#include "Architecture/Rollback/Rollback.h"
+#include "SharedLib/ProjectSettings.h"
+#include "SharedLib/Ref.h"
+#include "SharedLib/Rollback/Rollback.h"
 #include "Rendering/Model/Vertex.h"
 #include "Rendering/Model/UboModel.h"
 
@@ -16,7 +18,7 @@ namespace AVulkan
 		VkPipeline GetPipeline();
 		VkPipelineLayout GetLayout();
 
-		GraphicsPipeline(VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass, Rollback* vulkanRollback);
+		GraphicsPipeline(Ref<ProjectSettigns> projectSettings, VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass, Rollback* vulkanRollback);
 		~GraphicsPipeline();
 
 		void Create(VkDescriptorSetLayout& descriptorSetLayout);
@@ -24,6 +26,8 @@ namespace AVulkan
 
 
 	private:
+		Ref<ProjectSettigns> projectSettings;
+
 		Rollback* rollback;
 		Rollback* initializationRollback;
 

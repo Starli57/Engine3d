@@ -3,8 +3,8 @@
 #include "AssetsDatabase.h"
 #include "Entities/Mesh.h"
 #include "Entities/Texture.h"
-#include "Architecture/Ref.h"
-#include "Architecture/EventHandler.h"
+#include "SharedLib/Ref.h"
+#include "SharedLib/EventHandler.h"
 
 class IGraphicsApi
 {
@@ -16,7 +16,7 @@ public:
     virtual void FinanilizeRenderOperations() = 0;
 
     virtual Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) = 0;
-    virtual Ref<Texture> CreateTexture(const std::string& filePath) = 0;
+    virtual Ref<Texture> CreateTexture(TextureId textureId) = 0;
 
     virtual void OnFramebufferResized() = 0;
 

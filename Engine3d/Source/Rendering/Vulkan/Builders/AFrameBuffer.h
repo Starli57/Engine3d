@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Models/DepthBufferModel.h"
-#include "Architecture/Ref.h"
+#include "SharedLib/Ref.h"
 
 namespace AVulkan
 {

@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <entt.hpp>
 
-#include "Architecture/Ref.h"
+#include "SharedLib/Ref.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Entities/MeshVulkan.h"
 #include "Rendering/Vulkan/GraphicsPipeline.h"

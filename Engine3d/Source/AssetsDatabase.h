@@ -4,7 +4,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "Architecture/Ref.h"
+#include "SharedLib/Ref.h"
 #include "Entities/Texture.h"
 
 class AssetsDatabase
@@ -13,12 +13,11 @@ public:
 	AssetsDatabase();
 	~AssetsDatabase();
 
-	bool HasTexture(const std::string& path);
-	Ref<Texture> GetTexture(const std::string& path);
+	bool HasTexture(TextureId textureId);
+	Ref<Texture> GetTexture(TextureId textureId);
 	void AddTexture(Ref<Texture> texture);
-	void RemoveTexture(Ref<Texture> texture);
-	void RemoveTexture(const std::string& path);
+	void RemoveTexture(TextureId textureId);
 
 private:
-	std::unordered_map<std::string, Ref<Texture>> textures;
+	std::unordered_map<TextureId, Ref<Texture>> textures;
 };

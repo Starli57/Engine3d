@@ -1,10 +1,11 @@
 #pragma once
 
+#include "IComponent.h"
 #include "Entities/Mesh.h"
 #include "Entities/Material.h"
-#include "Architecture/Ref.h"
+#include "SharedLib/Ref.h"
 
-class MeshContainer
+class MeshContainer : public IComponent
 {
 public:
 
@@ -13,7 +14,7 @@ public:
 
 	MeshContainer();
 	MeshContainer(Ref<Mesh> mesh, Ref<Material> material);
-	~MeshContainer();
+	virtual ~MeshContainer() override;
 
 	void UseMesh(Ref<Mesh> mesh);
 	void UseMaterial(Ref<Material> mateial);

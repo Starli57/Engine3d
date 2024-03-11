@@ -11,8 +11,4 @@ enum class MeshId
     Count //always the last, represents the number of meshes in the list
 };
 
-std::array<std::string, static_cast<size_t>(MeshId::Count)> meshes =
-{
-    "Meshes/viking_room.obj",
-    "Meshes/Formula_1_mesh.obj"
-};
+extern std::array<std::string, static_cast<size_t>(MeshId::Count)> meshes;

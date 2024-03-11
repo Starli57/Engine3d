@@ -13,10 +13,4 @@ enum class TextureId
     Count //always the last, represents the number of textures in the list
 };
 
-std::array<std::string, static_cast<size_t>(TextureId::Count)> textures =
-{
-    "Textures/GroundDirtWeedsPatchy004_COL_2K.jpg",
-    "Textures/GroundGrassGreen002_COL_1K.jpg",
-    "Textures/viking_room.png",
-    "Textures/formula1_DefaultMaterial_Diffuse.png"
-};
+extern std::array<std::string, static_cast<size_t>(TextureId::Count)> textures;

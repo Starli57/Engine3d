@@ -16,6 +16,10 @@ Externals["TinyObjLoader"] = "Externals/TinyObjLoader"
 Externals["DearImgui"] = "Externals/DearImgui"
 
 Includes = {}
+Includes["Engine"] = "Engine3d/Source"
+Includes["Shared"] = "Shared/Source"
+Includes["ExampleProject"] = "ExampleProject/Source"
+
 Includes["Glfw"] = "%{Externals.Glfw}/include"
 Includes["Glm"] = "%{Externals.Glm}"
 Includes["Vulkan"] = "%{VulkanSdk}/Include"
@@ -31,66 +35,7 @@ LibFolders["Vulkan"] = "%{VulkanSdk}/Lib"
 Libs = {}
 Libs["Vulkan"] = "%{LibFolders.Vulkan}/vulkan-1.lib"
 
-startproject "ExampleProject"
-
-project "ExampleProject"
-	location "ExampleProject"
-	kind "ConsoleApp"
-	language "C++"
-	cppdialect "C++20"
-	staticruntime "On"
-	systemversion "latest"
-
-	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
-	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp"
-	}
-
-	includedirs
-	{
-		"%{Includes.Glfw}",
-		"%{Includes.Glm}",
-		"%{Includes.Vulkan}",
-		"%{Includes.SpdLog}",
-		"%{Includes.Entt}",
-		"%{Includes.Stb}",
-		"%{Includes.TinyObjLoader}",
-		"Engine3d/Source"
-	}
-	
-	links
-	{
-		"Engine3d"
-	}
-	
-	defines
-	{
-		"GLFW_INCLUDE_VULKAN",
-		"GLM_FORCE_RADIANS",
-		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
-		"STB_IMAGE_IMPLEMENTATION",
-		"TINYOBJLOADER_IMPLEMENTATION"
-	}
-
-	filter "system:windows"
-		defines
-		{
-			"ENGINE_WIN"
-		}
-
-	filter "configurations:Debug"
-		defines
-		{
-			"DEBUG"
-		}
-
-	filter "configurations:Release"
-		optimize "On"
-
+startproject "Editor"
 		
 project "Editor"
 	location "Editor"
@@ -112,7 +57,9 @@ project "Editor"
 	includedirs
 	{
 		"%{prj.name}/Source",
-		"Engine3d/Source",
+		"%{Includes.Engine}",
+		"%{Includes.ExampleProject}",
+		"%{Includes.Shared}",
 		
 		"%{Includes.DearImgui}",
 		"%{Includes.Glfw}",
@@ -127,6 +74,9 @@ project "Editor"
 	links
 	{
 		"Engine3d",
+		"Shared",
+		"ExampleProject",
+
 		"DearImgui"
 	}
 	
@@ -142,7 +92,7 @@ project "Editor"
 	filter "system:windows"
 		defines
 		{
-			"ENGINE_WIN"
+			"PROJECT_WIN"
 		}
 
 	filter "configurations:Debug"
@@ -156,7 +106,7 @@ project "Editor"
 
 project "Engine3d"
 	location "Engine3d"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "On"
@@ -178,6 +128,9 @@ project "Engine3d"
 	includedirs
 	{
 		"%{prj.name}/Source",
+		"%{Includes.Shared}",
+		"%{Includes.ExampleProject}",
+
 		"%{Includes.Glfw}",
 		"%{Includes.Glm}",
 		"%{Includes.Vulkan}",
@@ -189,6 +142,9 @@ project "Engine3d"
 
 	links
 	{
+		"Shared",
+		"ExampleProject",
+
 		"Glfw",
 		"Glm",
 		"%{Libs.Vulkan}"
@@ -212,48 +168,30 @@ project "Engine3d"
 	filter "system:windows"
 		defines
 		{
-			"ENGINE_WIN",
-			"ENGINE_DLL_BUILD"
+			"PROJECT_WIN"
 		}
-		
 		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject" }
 		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
-		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Meshes" }
-		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Textures" }
-		postbuildcommands { "copy $(SolutionDir)Output\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.dll $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject" }
-		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Shaders $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
-		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Meshes $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Meshes" }
-		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Textures $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Textures" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Meshes" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Textures" }
 
-		
-		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\Editor" }
-		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\Editor\\Shaders" }
-		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\Editor\\Meshes" }
-		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\Editor\\Textures" }
-		postbuildcommands { "copy $(SolutionDir)Output\\" .. outputdir .. "\\%{prj.name}\\%{prj.name}.dll $(SolutionDir)Output\\" .. outputdir .. "\\Editor" }
-		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Shaders $(SolutionDir)Output\\" .. outputdir .. "\\Editor\\Shaders" }
-		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Meshes $(SolutionDir)Output\\" .. outputdir .. "\\Editor\\Meshes" }
-		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Textures $(SolutionDir)Output\\" .. outputdir .. "\\Editor\\Textures" }
+		postbuildcommands { "copy $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\ExampleProject.dll $(SolutionDir)Output\\" .. outputdir .. "\\Engine3d" }
+
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Shaders $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Resources\\Meshes $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Meshes" }
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Resources\\Textures $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Textures" }
 		
 	filter { "not system:windows" }
 		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject" }
 		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
-		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Meshes" }
-		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Textures" }
-		postbuildcommands { "copy $(SolutionDir)Output/" .. outputdir .. "/%{prj.name}/%{prj.name}.dll $(SolutionDir)Output/" .. outputdir .. "/ExampleProject" }
-		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Shaders $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
-		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Meshes $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Meshes" }
-		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Textures $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Textures" }
+		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Meshes" }
+		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Textures" }
 
-		
-		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/Editor" }
-		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/Editor/Shaders" }
-		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/Editor/Meshes" }
-		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/Editor/Textures" }
-		postbuildcommands { "copy $(SolutionDir)Output/" .. outputdir .. "/%{prj.name}/%{prj.name}.dll $(SolutionDir)Output/" .. outputdir .. "/Editor" }
-		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Shaders $(SolutionDir)Output/" .. outputdir .. "/Editor/Shaders" }
-		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Meshes $(SolutionDir)Output/" .. outputdir .. "/Editor/Meshes" }
-		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Textures $(SolutionDir)Output/" .. outputdir .. "/Editor/Textures" }
+		postbuildcommands { "copy $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/ExampleProject.dll $(SolutionDir)Output/" .. outputdir .. "/Engine3d" }
+
+		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Shaders $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
+		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Resources/Meshes $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Meshes" }
+		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Resources/Textures $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Textures" }
 
 	filter "configurations:Debug"
 		defines
@@ -263,6 +201,85 @@ project "Engine3d"
 
 	filter "configurations:Release"
 		optimize "On"
+		
+project "ExampleProject"
+	location "ExampleProject"
+	kind "SharedLib"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "On"
+	systemversion "latest"
+
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/Source/**.h",
+		"%{prj.name}/Source/**.cpp"
+	}
+
+	includedirs
+	{
+		"%{Includes.Shared}",
+
+		"%{Includes.Glm}",
+		"%{Includes.SpdLog}"
+	}
+	
+	links
+	{
+		"Shared"
+	}
+	
+	defines
+	{
+		"GLFW_INCLUDE_VULKAN",
+		"GLM_FORCE_RADIANS",
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"STB_IMAGE_IMPLEMENTATION",
+		"TINYOBJLOADER_IMPLEMENTATION"
+	}
+
+	filter "system:windows"
+		defines
+		{
+			"PROJECT_WIN",
+			"PROJECT_DLL_BUILD"
+		}
+
+	filter "configurations:Debug"
+		defines
+		{
+			"DEBUG"
+		}
+
+	filter "configurations:Release"
+		optimize "On"
+		
+project "Shared"
+	location "Shared"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "On"
+	systemversion "latest"
+
+
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/Source/**.h",
+		"%{prj.name}/Source/**.cpp",
+	}
+	
+	includedirs
+	{
+		"%{prj.name}/Source",
+		"%{Includes.SpdLog}"
+	}
 
 project "Glfw"
 	kind "StaticLib"

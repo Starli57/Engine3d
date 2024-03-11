@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Texture.h"
-#include "Architecture/Ref.h"
+#include "SharedLib/Ref.h"
 
 class Material
 {

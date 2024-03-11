@@ -6,17 +6,19 @@
 #include <entt.hpp>
 
 #include "Entity.h"
-#include "Architecture/Rollback/Rollback.h"
-#include "Rendering/Model/Vertex.h"
 #include "Entities/Mesh.h"
-#include "Components/Camera.h"
-#include "Rendering/IGraphicsApi.h"
 #include "AssetsDatabase.h"
+#include "SharedLib/ProjectSettings.h"
+#include "Components/Camera.h"
+#include "Components/Rotator.h"
+#include "Rendering/IGraphicsApi.h"
+#include "Rendering/Model/Vertex.h"
+#include "SharedLib/Rollback/Rollback.h"
 
 class Level
 {
 public:
-	Level(Ref<entt::registry> ecs, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback);
+	Level(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback);
 	~Level();
 
 	void LoadLevel();
@@ -25,6 +27,7 @@ public:
 private:
 	Ref<entt::registry> ecs;
 	Ref<AssetsDatabase> assetDatabase;
+	Ref<ProjectSettigns> projectSettings;
 
 	IGraphicsApi* graphicsApi;
 	Rollback* rollback;

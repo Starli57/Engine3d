@@ -4,29 +4,41 @@
 #include "Defines/DllDecDefines.h"
 
 #include "AssetsDatabase.h"
-#include "Architecture/Ref.h"
-#include "Rendering/Renderer.h"
+#include "Rendering/Vulkan/VulkanGraphicsApi.h"
 #include "Entities/Level.h"
 
-#include "Architecture/Rollback/Rollback.h"
+#include "SharedLib/ProjectSettings.h"
+#include "SharedLib/Ref.h"
+#include "SharedLib/Rollback/Rollback.h"
 
-class ENGINE_API Engine
+class Engine
 {
 public:
-	Engine();
+	Engine(Ref<ProjectSettigns> projectSettings);
 	virtual ~Engine();
 
 	void Run();
 
 private:
-	Renderer* renderer;
-	Level* level;
+	const Ref<ProjectSettigns> projectSettings;
 
-	Rollback* engineRollback;
+	GLFWwindow* window;
+	IGraphicsApi* graphicsApi;
+	Level* level;
 
 	Ref<entt::registry> ecs;
 	Ref<AssetsDatabase> assetsDatabase;
 
+	Rollback* engineRollback;
+
+
 	void InitLogger();
+	void InitGlfw();
+	void SetupGlfwHints();
+	void CreateAppWindow();
+	void InitGraphicsApi();
+	void SubscribeGraphicsApiEvents();
+
+	static void OnFramebufferResized(GLFWwindow* window, int width, int height);
 };
 

@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Resources/TexturesList.h"
+
 class Texture
 {
 public:
-	const std::string& path;
+	const TextureId textureId;
 
-	Texture(const std::string& path);
+	Texture(TextureId textureId);
 	virtual ~Texture();
 };
 

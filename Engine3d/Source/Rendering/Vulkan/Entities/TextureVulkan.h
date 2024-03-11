@@ -3,18 +3,20 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
+#include "Resources/TexturesList.h"
 #include "Entities/Texture.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
-#include "Utilities/IOUtility.h"
+#include "SharedLib/ProjectSettings.h"
+#include "SharedLib/IOUtility.h"
 
 namespace AVulkan
 {
 	class TextureVulkan : public Texture
 	{
 	public:
-		TextureVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData,
+		TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData,
 			VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, VkSampler& textureSampler,
-			VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& filePath);
+			VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId);
 		virtual ~TextureVulkan() override;
 
 		//todo: make public getters and private setters
@@ -23,8 +25,10 @@ namespace AVulkan
 		VkDeviceMemory imageMemory;
 
 	private:
-		void CreateImage(const std::string& filePath);
+		void CreateImage();
 		void CreateImageView();
+
+		Ref<ProjectSettigns> projectSettings;
 
 		VkPhysicalDevice& physicalDevice;
 		VkDevice& logicalDevice;

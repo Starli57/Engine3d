@@ -1,11 +1,9 @@
+#include "Pch.h"
 
-#include <Engine.h>
-#include <iostream>
+#include "Engine.h"
 
-#include "imgui.h"
-#include "backends/imgui_impl_vulkan.h"
-
-#include "SharedLib/ProjectSettings.h"
+#include "SharedLib/Ref.h"
+#include "Test.h"
 
 int main()
 {
@@ -15,13 +13,13 @@ int main()
 
 	try
 	{
-		Engine* engine = new Engine(projectSettings);
+		URef<Engine> engine = CreateUniqueRef<Engine>(projectSettings);
 		engine->Run();
-		delete engine;
 	}
 	catch (const std::exception& e)
 	{
 		std::cout << "Critical error: " << e.what();
-	};
+	}
+
 	return 0;
 }
