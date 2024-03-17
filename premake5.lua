@@ -153,7 +153,13 @@ project "Shared"
 	includedirs
 	{
 		"%{prj.name}/Source",
+		"%{Includes.Glm}",
 		"%{Includes.SpdLog}"
+	}
+
+	links
+	{
+		"Glm"
 	}
 	
 project "ExampleProject"

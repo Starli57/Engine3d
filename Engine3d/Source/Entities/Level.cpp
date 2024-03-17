@@ -5,9 +5,8 @@
 
 #include "Level.h"
 #include "SharedLib/Ref.h"
-#include "Components/Camera.h"
-#include "Components/Transform.h"
-#include "Components/MeshContainer.h"
+#include "Systems/Camera.h"
+#include "Systems/MeshContainer.h"
 #include "Resources/MeshesList.h"
 
 Level::Level(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
@@ -75,14 +74,20 @@ void Level::LoadLevel()
 
 	auto carMesh = graphicsApi->CreateMesh(vertices, indices);
 	auto car = CreateRef<Entity>(ecs);
-	car->AddComponent<Transform>(glm::vec3(-0.5f, 0, -1), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
-	car->AddComponent<Rotator>(car);
+	car->AddComponent<PositionComponent>(glm::vec3(-0.5f, 0, -1));
+	car->AddComponent<RotationComponent>(glm::vec3(0, 0, 0));
+	car->AddComponent<ScaleComponent>(glm::vec3(1, 1, 1));
+	car->AddComponent<UboModelComponent>();
 	car->AddComponent<MeshContainer>(carMesh, material);
 
 	//camera1
 	auto cameraEntity = CreateRef<Entity>(ecs);
-	auto cameraTransform = CreateRef<Transform>(glm::vec3(0, 1, 500), glm::vec4(0, 0, 0, 0), glm::vec3(1, 1, 1));
-	cameraEntity->AddComponent<Camera>(cameraTransform, 60, 1);//todo: set real screen aspect ration
+	cameraEntity->AddComponent<PositionComponent>(glm::vec3(0, 1, 500));
+	cameraEntity->AddComponent<RotationComponent>(glm::vec3(0, 0, 0));
+	cameraEntity->AddComponent<ScaleComponent>(glm::vec3(1, 1, 1));
+	cameraEntity->AddComponent<UboModelComponent>();
+	cameraEntity->AddComponent<UboViewProjectionComponent>();
+	cameraEntity->AddComponent<Camera>(cameraEntity, 60, 1);//todo: set real screen aspect ration
 
 	rollback->Add([this]() { UnloadLevel(); });
 }

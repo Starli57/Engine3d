@@ -98,12 +98,13 @@ void Engine::SubscribeGraphicsApiEvents()
 {
 	auto cameraScreenRationHandler = [this](float aspectRation)
 	{
+		//todo: replace the logic to cameraSystem
 		auto cameraEntities = ecs->view<Camera>();
 		for (auto entity : cameraEntities)
 		{
 			auto camera = cameraEntities.get<Camera>(entity);
 			camera.UpdateScreenAspectRatio(aspectRation);
-			camera.UpdateUbo();
+			camera.Update();
 		}
 	};
 
@@ -115,14 +116,13 @@ void Engine::SubscribeGraphicsApiEvents()
 
 void Engine::Run()
 {
+	Ref<TransformSystem> transformSystem = CreateRef<TransformSystem>(ecs);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
-		ecs->view<IComponent>().each([](IComponent& component) 
-		{
-			component.Update();
-		});
+		transformSystem->Update();
 
 		//todo: handle exceptions and errors
 		graphicsApi->Render();

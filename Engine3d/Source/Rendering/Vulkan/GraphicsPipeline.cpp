@@ -240,7 +240,7 @@ namespace AVulkan
 	{
 		pushContantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 		pushContantRange.offset = 0;
-		pushContantRange.size = sizeof(UboModel);
+		pushContantRange.size = sizeof(UboModelComponent);
 
 		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;

@@ -147,11 +147,10 @@ namespace AVulkan
 	void VulkanGraphicsApi::UpdateUniformBuffer(uint32_t imageIndex)
 	{
 		//todo: find most relevant camera
-		auto cameraEntities = ecs->view<Camera>();
-		auto [mainCamera] = cameraEntities.get(cameraEntities.front());
-		auto ubo = mainCamera.GetUbo();
+		auto entries = ecs->view<UboViewProjectionComponent>();
+		auto [uboComponent] = entries.get(entries.front());
 
-		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &ubo, sizeof(UboViewProjection));
+		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &uboComponent, sizeof(UboViewProjectionComponent));
 	}
 
 	void VulkanGraphicsApi::FinanilizeRenderOperations()

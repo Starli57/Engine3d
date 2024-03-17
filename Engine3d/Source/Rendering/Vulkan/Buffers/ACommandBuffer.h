@@ -7,8 +7,8 @@
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Entities/MeshVulkan.h"
 #include "Rendering/Vulkan/GraphicsPipeline.h"
-#include "Components/MeshContainer.h"
-#include "Components/Transform.h"
+#include "Systems/MeshContainer.h"
+#include "SharedLib/Components/UboModelComponent.h"
 
 namespace AVulkan
 {
