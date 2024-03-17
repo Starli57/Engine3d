@@ -62,6 +62,7 @@ project "Editor"
 		"%{Includes.Shared}",
 		
 		"%{Includes.DearImgui}",
+		"%{Includes.DearImgui}/backends",
 		"%{Includes.Glfw}",
 		"%{Includes.Glm}",
 		"%{Includes.Vulkan}",
@@ -353,18 +354,24 @@ project "DearImgui"
 		"%{Includes.DearImgui}/*.h",
 		"%{Includes.DearImgui}/*.cpp",
 		"%{Includes.DearImgui}/backends/imgui_impl_vulkan.cpp",
-		"%{Includes.DearImgui}/backends/imgui_impl_vulkan.h"
+		"%{Includes.DearImgui}/backends/imgui_impl_vulkan.h",
+		"%{Includes.DearImgui}/backends/imgui_impl_glfw.cpp",
+		"%{Includes.DearImgui}/backends/imgui_impl_glfw.h",
+		"%{Includes.DearImgui}/examples/example_glfw_vulkan/main.cpp"
 
 	}
 
 	includedirs
 	{
+		"%{Includes.Glfw}",
 		"%{Includes.DearImgui}",
+		"%{Includes.DearImgui}/backends",
 		"%{Includes.Vulkan}"
 	}
 	
 	links
 	{
+		"Glfw",
 		"%{Libs.Vulkan}"
 	}
 	
