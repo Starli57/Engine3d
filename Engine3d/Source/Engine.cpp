@@ -117,12 +117,14 @@ void Engine::SubscribeGraphicsApiEvents()
 void Engine::Run()
 {
 	Ref<TransformSystem> transformSystem = CreateRef<TransformSystem>(ecs);
+	Ref<Camera> cameraSystem = CreateRef<Camera>(ecs, 60, 1);
 
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
 		transformSystem->Update();
+		cameraSystem->Update();
 
 		//todo: handle exceptions and errors
 		graphicsApi->Render();

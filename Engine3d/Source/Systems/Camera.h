@@ -13,7 +13,8 @@
 class Camera : public ISystem
 {
 public:
-	Camera(Ref<Entity> entity, float pov, float screenAspectRatio);
+	//todo: replace pov and screen aspect to components
+	Camera(Ref<entt::registry> ecs, float pov, float screenAspectRatio);
 	virtual ~Camera() override;
 
 	void UpdateScreenAspectRatio(float screenAspectRatio);
@@ -21,7 +22,7 @@ public:
 
 
 private:
-	Ref<Entity> entity;
+	Ref<entt::registry> ecs;
 
 	float pov = 60;
 	float screenAspectRatio = 1;

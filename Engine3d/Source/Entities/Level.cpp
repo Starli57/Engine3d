@@ -80,14 +80,12 @@ void Level::LoadLevel()
 	car->AddComponent<UboModelComponent>();
 	car->AddComponent<MeshContainer>(carMesh, material);
 
-	//camera1
 	auto cameraEntity = CreateRef<Entity>(ecs);
 	cameraEntity->AddComponent<PositionComponent>(glm::vec3(0, 1, 500));
 	cameraEntity->AddComponent<RotationComponent>(glm::vec3(0, 0, 0));
 	cameraEntity->AddComponent<ScaleComponent>(glm::vec3(1, 1, 1));
 	cameraEntity->AddComponent<UboModelComponent>();
 	cameraEntity->AddComponent<UboViewProjectionComponent>();
-	cameraEntity->AddComponent<Camera>(cameraEntity, 60, 1);//todo: set real screen aspect ration
 
 	rollback->Add([this]() { UnloadLevel(); });
 }
