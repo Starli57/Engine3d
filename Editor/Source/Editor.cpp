@@ -2,7 +2,7 @@
 
 Editor::Editor()
 {
-    RunImgui([this]() {Run(); });
+    RunImgui([this]() { Run(); });
 }
 
 Editor::~Editor()

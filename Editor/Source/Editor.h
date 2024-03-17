@@ -8,6 +8,7 @@ public:
 	Editor();
 	~Editor();
 
+private:
 	void Run();
 };
 

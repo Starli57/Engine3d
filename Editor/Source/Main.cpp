@@ -14,8 +14,6 @@ int main()
 	);
 
 	Ref<Editor> editor = CreateRef<Editor>();
-	editor->Run();
-	editor.reset();
 
     return 0;
 
