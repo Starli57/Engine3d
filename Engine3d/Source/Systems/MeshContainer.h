@@ -1,11 +1,11 @@
 #pragma once
 
-#include "IComponent.h"
+#include "ISystem.h"
 #include "Entities/Mesh.h"
 #include "Entities/Material.h"
 #include "SharedLib/Ref.h"
 
-class MeshContainer : public IComponent
+class MeshContainer : public ISystem
 {
 public:
 

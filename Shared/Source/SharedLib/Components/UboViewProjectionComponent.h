@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-struct UboViewProjection 
+struct UboViewProjectionComponent
 {
     glm::mat4 view;
     glm::mat4 proj;
