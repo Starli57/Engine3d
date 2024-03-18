@@ -15,7 +15,7 @@ void Rotator::Update()
 	auto rotationComponents = ecs->view<RotationComponent>();
 	for (auto entity : rotationComponents)
 	{
-		auto rotationComponent = rotationComponents.get<RotationComponent>(entity);
+		auto& rotationComponent = rotationComponents.get<RotationComponent>(entity);
 		rotationComponent.rotation = glm::vec3(0.0f, 0.0f, 1.0f) * time * glm::radians(30.0f);
 	}
 }
