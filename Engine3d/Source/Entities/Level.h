@@ -5,15 +5,20 @@
 #include <glm/glm.hpp>
 #include <entt.hpp>
 
-#include "Entity.h"
+#include "Systems/Camera.h"
+#include "Systems/MeshContainer.h"
+
 #include "Entities/Mesh.h"
 #include "AssetsDatabase.h"
-#include "SharedLib/ProjectSettings.h"
-#include "Components/Camera.h"
-#include "Components/Rotator.h"
 #include "Rendering/IGraphicsApi.h"
 #include "Rendering/Model/Vertex.h"
 #include "SharedLib/Rollback/Rollback.h"
+#include "SharedLib/Entity.h"
+#include "SharedLib/ProjectSettings.h"
+#include "SharedLib/Components/PositionComponent.h"
+#include "SharedLib/Components/RotationComponent.h"
+#include "SharedLib/Components/ScaleComponent.h"
+#include "SharedLib/Components/UboModelComponent.h"
 
 class Level
 {

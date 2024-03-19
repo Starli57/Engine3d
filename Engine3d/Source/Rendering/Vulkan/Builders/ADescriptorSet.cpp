@@ -28,7 +28,7 @@ namespace AVulkan
 			VkDescriptorBufferInfo bufferInfo{};
 			bufferInfo.buffer = swapChainData.uniformBuffers->at(i)->buffer;
 			bufferInfo.offset = 0;
-			bufferInfo.range = sizeof(UboViewProjection);
+			bufferInfo.range = sizeof(UboViewProjectionComponent);
 
 			VkDescriptorImageInfo imageInfo{};
 			imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;

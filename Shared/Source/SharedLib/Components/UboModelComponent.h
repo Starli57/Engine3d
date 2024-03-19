@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-struct UboModel
+struct UboModelComponent
 {
 	glm::mat4 model;
 };

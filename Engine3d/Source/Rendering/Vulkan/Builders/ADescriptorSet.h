@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Rendering/Model/UboViewProjection.h"
+#include "SharedLib/Components/UboViewProjectionComponent.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 
 namespace AVulkan

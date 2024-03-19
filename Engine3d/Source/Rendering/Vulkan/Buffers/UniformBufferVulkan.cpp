@@ -7,7 +7,7 @@ namespace AVulkan
 	{
 		this->logicalDevice = &logicalDevice;
 
-		VkDeviceSize bufferSize = sizeof(UboViewProjection);
+		VkDeviceSize bufferSize = sizeof(UboViewProjectionComponent);
 
 		VkBufferUsageFlags stagingUsageFlags = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 		VkMemoryPropertyFlags stagingMemoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;

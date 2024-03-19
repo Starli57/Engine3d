@@ -1,8 +1,8 @@
 #pragma once
 
-class IComponent
+class ISystem
 {
 public:
-	virtual ~IComponent() {};
+	virtual ~ISystem() {};
 	virtual void Update() {};
 };
