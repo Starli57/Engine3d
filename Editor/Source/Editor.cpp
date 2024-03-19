@@ -11,10 +11,8 @@ Editor::Editor()
 
 	engine = CreateRef<Engine>(projectSettings);
 	std::thread engineThread([this]() {engine->Run(); });
-	std::thread editorUiThread([this]() {RunImgui([this]() { UpdateEditor(); }); });
 
-	engineThread.join();
-	editorUiThread.join();
+	RunImgui([this]() { UpdateEditor(); });
 }
 
 Editor::~Editor()
