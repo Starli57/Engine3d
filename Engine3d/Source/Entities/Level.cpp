@@ -26,20 +26,33 @@ void Level::LoadLevel()
 {
 	spdlog::info("Load level");
 
-	auto texture = graphicsApi->CreateTexture(TextureId::formula1_Diffuse);
-	assetDatabase->AddTexture(texture);
+	auto vikingTexture = graphicsApi->CreateTexture(TextureId::viking_room);
+	assetDatabase->AddTexture(vikingTexture);
+	rollback->Add([this]() { assetDatabase->RemoveTexture(TextureId::viking_room); });
 
+	auto formulaDefuseTexture = graphicsApi->CreateTexture(TextureId::formula1_Diffuse);
+	assetDatabase->AddTexture(formulaDefuseTexture);
 	//todo: make dispose for textures better
 	rollback->Add([this]() { assetDatabase->RemoveTexture(TextureId::formula1_Diffuse); });
 
-	auto material = CreateRef<Material>(texture);
-	auto carMesh = graphicsApi->CreateMesh(projectSettings->projectPath + meshes[1]);
+	auto vikingMaterial = CreateRef<Material>(vikingTexture);
+	auto formulaMaterial = CreateRef<Material>(formulaDefuseTexture);
+
+	auto formulaMesh = graphicsApi->CreateMesh(projectSettings->projectPath + meshes[1]);
 	auto car = CreateRef<Entity>(ecs);
 	car->AddComponent<PositionComponent>(glm::vec3(-0.5f, 0, -1));
 	car->AddComponent<RotationComponent>(glm::vec3(0, 0, 0));
 	car->AddComponent<ScaleComponent>(glm::vec3(1, 1, 1));
 	car->AddComponent<UboModelComponent>();
-	car->AddComponent<MeshContainer>(carMesh, material);
+	car->AddComponent<MeshComponent>(formulaMesh, formulaMaterial);
+
+	auto car2 = CreateRef<Entity>(ecs);
+	car2->AddComponent<PositionComponent>(glm::vec3(-0.5f, -100, -10));
+	car2->AddComponent<RotationComponent>(glm::vec3(0, 0, 180));
+	car2->AddComponent<ScaleComponent>(glm::vec3(1, 1, 1));
+	car2->AddComponent<UboModelComponent>();
+	car2->AddComponent<MeshComponent>(formulaMesh, vikingMaterial);
+	car2->AddComponent<Rotator>(ecs);
 
 	auto cameraEntity = CreateRef<Entity>(ecs);
 	cameraEntity->AddComponent<PositionComponent>(glm::vec3(0, 1, 500));

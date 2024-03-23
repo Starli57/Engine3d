@@ -16,6 +16,6 @@ void Rotator::Update()
 	for (auto entity : rotationComponents)
 	{
 		auto& rotationComponent = rotationComponents.get<RotationComponent>(entity);
-		rotationComponent.rotation = glm::vec3(0.0f, 0.0f, 1.0f) * time * glm::radians(30.0f);
+		rotationComponent.rotation = glm::vec3(0.0f, 0.0f, 1.0f) * time * glm::radians(1800.0f);
 	}
 }

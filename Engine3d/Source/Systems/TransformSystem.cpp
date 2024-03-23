@@ -18,7 +18,7 @@ void TransformSystem::Update()
 
 		uboModel = glm::mat4(1.0f);
 		uboModel = glm::translate(uboModel, position);
-		uboModel = glm::rotate(uboModel, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+		uboModel = glm::rotate(uboModel, glm::radians(rotation.z), glm::vec3(0.0f, 1.0f, 0.0f));
 		uboModel = glm::scale(uboModel, scale);
 
 		uboComponent.model = uboModel;

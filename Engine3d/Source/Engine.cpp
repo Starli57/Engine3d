@@ -115,6 +115,7 @@ void Engine::SubscribeGraphicsApiEvents()
 
 void Engine::Run()
 {
+	Ref<Rotator> rotatorSystem = CreateRef<Rotator>(ecs);
 	Ref<TransformSystem> transformSystem = CreateRef<TransformSystem>(ecs);
 	Ref<Camera> cameraSystem = CreateRef<Camera>(ecs, 60, 1);
 
@@ -122,6 +123,7 @@ void Engine::Run()
 	{
 		glfwPollEvents();
 
+		rotatorSystem->Update();
 		transformSystem->Update();
 		cameraSystem->Update();
 
