@@ -5,19 +5,14 @@
 #include "Entities/Material.h"
 #include "SharedLib/Ref.h"
 
-class MeshContainer : public ISystem
+class MeshComponent
 {
 public:
-
 	Ref<Mesh> GetMesh();
 	Ref<Material> GetMaterial();
 
-	MeshContainer();
-	MeshContainer(Ref<Mesh> mesh, Ref<Material> material);
-	virtual ~MeshContainer() override;
-
-	void UseMesh(Ref<Mesh> mesh);
-	void UseMaterial(Ref<Material> mateial);
+	MeshComponent(Ref<Mesh> mesh, Ref<Material> material);
+	~MeshComponent();
 
 	void DestroyMesh();
 	void DestroyMaterial();

@@ -49,10 +49,10 @@ namespace AVulkan
 		{
 			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipeline());
 
-			auto meshContainers = ecs->view<UboModelComponent, MeshContainer>();
+			auto meshContainers = ecs->view<UboModelComponent, MeshComponent>();
 			for (auto entity : meshContainers)
 			{
-				auto [uboModelComponent, meshConatiner] = meshContainers.get<UboModelComponent, MeshContainer>(entity);
+				auto [uboModelComponent, meshConatiner] = meshContainers.get<UboModelComponent, MeshComponent>(entity);
 				auto meshVulkan = static_pointer_cast<MeshVulkan>(meshConatiner.GetMesh());
 
 				VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };
