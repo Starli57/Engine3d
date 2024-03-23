@@ -80,7 +80,6 @@ void Engine::CreateAppWindow()
 	});
 
 	glfwSetWindowUserPointer(window, this);
-	glfwSetFramebufferSizeCallback(window, OnFramebufferResized);
 }
 
 void Engine::InitGraphicsApi()
@@ -132,11 +131,4 @@ void Engine::Run()
 
 	graphicsApi->FinanilizeRenderOperations();
 	spdlog::info("Window closed");
-}
-
-void Engine::OnFramebufferResized(GLFWwindow* window, int width, int height)
-{
-	spdlog::debug("FramebufferResized");
-	auto render = reinterpret_cast<IGraphicsApi*>(glfwGetWindowUserPointer(window));
-	render->OnFramebufferResized();
 }

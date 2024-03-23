@@ -10,7 +10,19 @@ namespace AVulkan
 	VkBuffer MeshVulkan::GetVertexBuffer() { return vertexBuffer; }
 	VkBuffer MeshVulkan::GetIndexBuffer()  { return indexBuffer; }
 
-	MeshVulkan::MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData, 
+	//todo: reduce duplications in constructors
+	MeshVulkan::MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData,
+		VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& path) : Mesh(path)
+	{
+		this->logicalDevice = &logicalDevice;
+
+		AVertexBuffer().Create(physicalDevice, logicalDevice, vertices, vertexBuffer, vertexBufferMemory,
+			graphicsQueue, commandPool);
+		AIndexBuffer().Create(physicalDevice, logicalDevice, indices, indexBuffer, indexBufferMemory,
+			graphicsQueue, commandPool);
+	}
+
+	MeshVulkan::MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData,
 		VkQueue& graphicsQueue, VkCommandPool& commandPool, 
 		Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) : Mesh(vertices, indices)
 	{

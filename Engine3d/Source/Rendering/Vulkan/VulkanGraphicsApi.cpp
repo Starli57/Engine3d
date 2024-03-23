@@ -158,6 +158,11 @@ namespace AVulkan
 		vkDeviceWaitIdle(logicalDevice);
 	}
 
+	Ref<Mesh> VulkanGraphicsApi::CreateMesh(const std::string& meshPath)
+	{
+		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, swapChainData, graphicsQueue, commandPool, meshPath);
+	}
+
 	Ref<Mesh> VulkanGraphicsApi::CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices)
 	{
 		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, swapChainData, graphicsQueue, commandPool, vertices, indices);

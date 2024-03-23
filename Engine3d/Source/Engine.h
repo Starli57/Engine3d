@@ -31,14 +31,11 @@ private:
 
 	Rollback* engineRollback;
 
-
 	void InitLogger();
 	void InitGlfw();
 	void SetupGlfwHints();
 	void CreateAppWindow();
 	void InitGraphicsApi();
 	void SubscribeGraphicsApiEvents();
-
-	static void OnFramebufferResized(GLFWwindow* window, int width, int height);
 };
 

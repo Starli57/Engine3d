@@ -18,10 +18,13 @@ namespace AVulkan
 		VkBuffer GetVertexBuffer();
 		VkBuffer GetIndexBuffer();
 
+		MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData,
+			VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& path);
+
 		MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData, 
 			VkQueue& graphicsQueue, VkCommandPool& commandPool, Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices);
-		virtual ~MeshVulkan() override;
 
+		virtual ~MeshVulkan() override;
 
 	private:
 		VkDevice* logicalDevice;

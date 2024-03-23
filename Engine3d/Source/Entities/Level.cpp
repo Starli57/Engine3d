@@ -1,7 +1,6 @@
 #include "Pch.h"
 
 #include <spdlog/spdlog.h>
-#include <tiny_obj_loader.h>
 
 #include "Level.h"
 #include "SharedLib/Ref.h"
@@ -34,45 +33,7 @@ void Level::LoadLevel()
 	rollback->Add([this]() { assetDatabase->RemoveTexture(TextureId::formula1_Diffuse); });
 
 	auto material = CreateRef<Material>(texture);
-	
-	tinyobj::attrib_t attrib;
-	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> materials;
-	std::string warn, err;
-
-	auto isLoaded = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, (projectSettings->projectPath + meshes[1]).c_str());
-	CAssert::Check(isLoaded, warn + err);
-
-	auto vertices = CreateRef<std::vector<Vertex>>();
-	auto indices = CreateRef<std::vector<uint32_t>>();
-	for (const auto& shape : shapes) 
-	{
-		for (const auto& index : shape.mesh.indices)
-		{
-			Vertex vertex;
-			
-			vertex.position = 
-			{
-				attrib.vertices[3 * index.vertex_index + 0],
-				attrib.vertices[3 * index.vertex_index + 1],
-				attrib.vertices[3 * index.vertex_index + 2]
-			};
-
-			vertex.uv = 
-			{
-				attrib.texcoords[2 * index.texcoord_index + 0],
-				1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
-			};
-
-			vertex.color = { 1.0f, 1.0f, 1.0f };
-
-			vertices->push_back(vertex);
-			indices->push_back(indices->size());
-		}
-	}
-
-
-	auto carMesh = graphicsApi->CreateMesh(vertices, indices);
+	auto carMesh = graphicsApi->CreateMesh(projectSettings->projectPath + meshes[1]);
 	auto car = CreateRef<Entity>(ecs);
 	car->AddComponent<PositionComponent>(glm::vec3(-0.5f, 0, -1));
 	car->AddComponent<RotationComponent>(glm::vec3(0, 0, 0));
