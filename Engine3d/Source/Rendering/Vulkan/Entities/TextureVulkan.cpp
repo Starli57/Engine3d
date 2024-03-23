@@ -21,7 +21,7 @@ namespace AVulkan
     {
         this->projectSettings = projectSettings;
 
-        CreateImage();
+        CreateImage(textureId);
         CreateImageView();
 
         ADescriptorSet().Allocate(logicalDevice, swapChainData, descriptorPool, descriptorSetLayout, imageView, textureSampler);
@@ -35,7 +35,7 @@ namespace AVulkan
     }
 
     //todo: make async
-    void TextureVulkan::CreateImage()
+    void TextureVulkan::CreateImage(TextureId textureId)
     {
         int width;
         int height;
@@ -43,7 +43,7 @@ namespace AVulkan
         uint64_t bitesPerPixel = 4;
         VkDeviceSize imageSize;
 
-        auto filePath = projectSettings->projectPath + textures[static_cast<size_t>(TextureId::formula1_Diffuse)];
+        auto filePath = projectSettings->projectPath + textures[static_cast<size_t>(textureId)];
         auto pixels = stbi_load(filePath.c_str(), &width, &height, &texChannels, STBI_rgb_alpha);
         imageSize = width * height * bitesPerPixel;
 

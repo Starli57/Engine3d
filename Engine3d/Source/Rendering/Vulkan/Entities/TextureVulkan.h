@@ -25,7 +25,7 @@ namespace AVulkan
 		VkDeviceMemory imageMemory;
 
 	private:
-		void CreateImage();
+		void CreateImage(TextureId textureId);
 		void CreateImageView();
 
 		Ref<ProjectSettigns> projectSettings;
