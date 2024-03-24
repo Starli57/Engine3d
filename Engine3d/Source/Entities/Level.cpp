@@ -46,13 +46,14 @@ void Level::LoadLevel()
 	car->AddComponent<UboModelComponent>();
 	car->AddComponent<MeshComponent>(formulaMesh, formulaMaterial);
 
-	auto car2 = CreateRef<Entity>(ecs);
-	car2->AddComponent<PositionComponent>(glm::vec3(-0.5f, -100, -10));
-	car2->AddComponent<RotationComponent>(glm::vec3(0, 0, 180));
-	car2->AddComponent<ScaleComponent>(glm::vec3(1, 1, 1));
-	car2->AddComponent<RotationVelocityComponent>(glm::vec3(0, 0, 100));
-	car2->AddComponent<UboModelComponent>();
-	car2->AddComponent<MeshComponent>(formulaMesh, vikingMaterial);
+	auto vikingsRoomMesh = graphicsApi->CreateMesh(projectSettings->projectPath + meshes[0]);
+	auto vikigsRoom = CreateRef<Entity>(ecs);
+	vikigsRoom->AddComponent<PositionComponent>(glm::vec3(-0.5f, -100, -10));
+	vikigsRoom->AddComponent<RotationComponent>(glm::vec3(0, 0, 90));
+	vikigsRoom->AddComponent<ScaleComponent>(glm::vec3(140, 140, 140));
+	vikigsRoom->AddComponent<RotationVelocityComponent>(glm::vec3(0, 0, 100));
+	vikigsRoom->AddComponent<UboModelComponent>();
+	vikigsRoom->AddComponent<MeshComponent>(vikingsRoomMesh, vikingMaterial);
 
 	auto cameraEntity = CreateRef<Entity>(ecs);
 	cameraEntity->AddComponent<PositionComponent>(glm::vec3(0, 1, 500));

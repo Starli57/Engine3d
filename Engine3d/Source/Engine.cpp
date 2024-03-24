@@ -22,7 +22,6 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 		SetupGlfwHints();
 		CreateAppWindow();
 		InitGraphicsApi();
-		SubscribeGraphicsApiEvents();
 	}
 	catch (const std::exception& e)
 	{
@@ -94,31 +93,11 @@ void Engine::InitGraphicsApi()
 #endif
 }
 
-void Engine::SubscribeGraphicsApiEvents()
-{
-	auto cameraScreenRationHandler = [this](float aspectRation)
-	{
-		//todo: replace the logic to cameraSystem
-		auto cameraEntities = ecs->view<Camera>();
-		for (auto entity : cameraEntities)
-		{
-			auto camera = cameraEntities.get<Camera>(entity);
-			camera.UpdateScreenAspectRatio(aspectRation);
-			camera.Update(0);
-		}
-	};
-
-	graphicsApi->OnFrameBufferAspectRatioChanged.AddHandler(cameraScreenRationHandler);
-
-	//todo: fix subscription dispose
-//	engineRollback->Add([this, handler] { graphicsApi->OnFrameBufferAspectRatioChanged.RemoveHandler(cameraScreenRationHandler); });
-}
-
 void Engine::Run()
 {
 	Ref<RotatorSystem> rotatorSystem = CreateRef<RotatorSystem>(ecs);
 	Ref<TransformSystem> transformSystem = CreateRef<TransformSystem>(ecs);
-	Ref<Camera> cameraSystem = CreateRef<Camera>(ecs, 60, 1);
+	Ref<Camera> cameraSystem = CreateRef<Camera>(ecs, window, 60);
 
 	while (!glfwWindowShouldClose(window))
 	{

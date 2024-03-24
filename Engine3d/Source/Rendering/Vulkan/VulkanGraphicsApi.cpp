@@ -77,8 +77,6 @@ namespace AVulkan
 		CreateSwapChainImageViews();
 		CreateDepthBuffer();
 		CreateFrameBuffers();
-
-		OnFrameBufferAspectRatioChanged.Invoke(swapChainData.extent.width / (float)swapChainData.extent.height);
 	}
 
 	//todo: make refactoring of the function

@@ -38,6 +38,5 @@ private:
 	void SetupGlfwHints();
 	void CreateAppWindow();
 	void InitGraphicsApi();
-	void SubscribeGraphicsApiEvents();
 };
 

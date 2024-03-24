@@ -20,7 +20,5 @@ public:
     virtual Ref<Texture> CreateTexture(TextureId textureId) = 0;
 
     virtual void OnFramebufferResized() = 0;
-
-    EventHandler<float> OnFrameBufferAspectRatioChanged;
 };
 
