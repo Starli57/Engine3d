@@ -16,6 +16,8 @@ void Camera::Update(float deltaTime = 0)
 {
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
+	if (width == 0 || height == 0) return;
+
 	auto screenAspectRatio = width / (float)height;
 
 	auto entities = ecs->view<PositionComponent, UboViewProjectionComponent>();
@@ -28,4 +30,4 @@ void Camera::Update(float deltaTime = 0)
 		uboComponent.proj = glm::perspective(glm::radians(pov), screenAspectRatio, zNear, zFar);
 		uboComponent.proj[1][1] *= -1;
 	}
-}
+} 
