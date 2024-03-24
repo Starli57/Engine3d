@@ -50,9 +50,9 @@ void Level::LoadLevel()
 	car2->AddComponent<PositionComponent>(glm::vec3(-0.5f, -100, -10));
 	car2->AddComponent<RotationComponent>(glm::vec3(0, 0, 180));
 	car2->AddComponent<ScaleComponent>(glm::vec3(1, 1, 1));
+	car2->AddComponent<RotationVelocityComponent>(glm::vec3(0, 0, 100));
 	car2->AddComponent<UboModelComponent>();
 	car2->AddComponent<MeshComponent>(formulaMesh, vikingMaterial);
-	car2->AddComponent<Rotator>(ecs);
 
 	auto cameraEntity = CreateRef<Entity>(ecs);
 	cameraEntity->AddComponent<PositionComponent>(glm::vec3(0, 1, 500));

@@ -18,7 +18,7 @@ void Camera::UpdateScreenAspectRatio(float screenAspectRatio)
 	this->screenAspectRatio = screenAspectRatio;
 }
 
-void Camera::Update()
+void Camera::Update(float deltaTime = 0)
 {
 	auto entities = ecs->view<PositionComponent, UboViewProjectionComponent>();
 	for (auto entity : entities)

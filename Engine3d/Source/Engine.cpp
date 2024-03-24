@@ -8,6 +8,7 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 {
 	InitLogger();
 
+	cachedTime = std::chrono::high_resolution_clock::now();
 	engineRollback = new Rollback("Engine");
 
 	ecs = CreateRef<entt::registry>();
@@ -103,7 +104,7 @@ void Engine::SubscribeGraphicsApiEvents()
 		{
 			auto camera = cameraEntities.get<Camera>(entity);
 			camera.UpdateScreenAspectRatio(aspectRation);
-			camera.Update();
+			camera.Update(0);
 		}
 	};
 
@@ -115,7 +116,7 @@ void Engine::SubscribeGraphicsApiEvents()
 
 void Engine::Run()
 {
-	Ref<Rotator> rotatorSystem = CreateRef<Rotator>(ecs);
+	Ref<RotatorSystem> rotatorSystem = CreateRef<RotatorSystem>(ecs);
 	Ref<TransformSystem> transformSystem = CreateRef<TransformSystem>(ecs);
 	Ref<Camera> cameraSystem = CreateRef<Camera>(ecs, 60, 1);
 
@@ -123,12 +124,17 @@ void Engine::Run()
 	{
 		glfwPollEvents();
 
-		rotatorSystem->Update();
-		transformSystem->Update();
-		cameraSystem->Update();
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - cachedTime).count();
+
+		rotatorSystem->Update(deltaTime);
+		transformSystem->Update(deltaTime);
+		cameraSystem->Update(deltaTime);
 
 		//todo: handle exceptions and errors
 		graphicsApi->Render();
+
+		cachedTime = currentTime;
 	}
 
 	graphicsApi->FinanilizeRenderOperations();

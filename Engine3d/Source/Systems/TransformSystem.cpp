@@ -5,7 +5,7 @@ TransformSystem::TransformSystem(Ref<entt::registry> ecs) : ecs(ecs)
 {
 }
 
-void TransformSystem::Update()
+void TransformSystem::Update(float deltaTime)
 {
 	auto transformComponents = ecs->view<UboModelComponent, PositionComponent, RotationComponent, ScaleComponent>();
 	for (auto entity : transformComponents)

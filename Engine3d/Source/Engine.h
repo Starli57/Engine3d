@@ -31,6 +31,8 @@ private:
 
 	Rollback* engineRollback;
 
+	std::chrono::steady_clock::time_point cachedTime;
+
 	void InitLogger();
 	void InitGlfw();
 	void SetupGlfwHints();

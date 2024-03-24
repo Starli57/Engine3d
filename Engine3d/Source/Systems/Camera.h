@@ -18,7 +18,7 @@ public:
 	virtual ~Camera() override;
 
 	void UpdateScreenAspectRatio(float screenAspectRatio);
-	virtual void Update() override;
+	virtual void Update(float deltaTime) override;
 
 
 private:
