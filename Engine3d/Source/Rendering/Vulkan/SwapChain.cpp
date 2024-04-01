@@ -1,24 +1,43 @@
 #include "Pch.h"
-#include "ASwapChain.h"
+#include "SwapChain.h"
 
 namespace AVulkan
 {
-	//todo: div to smaller functions
-	void ASwapChain::Create(GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
-		VkSurfaceKHR& surface, QueueFamilyIndices& physicalDeviceQueueIndices, SwapChainData& swapChainData) const
+	SwapChain::SwapChain(Ref<Rollback> rollback, GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkSurfaceKHR& surface,
+		QueueFamilyIndices& physicalDeviceQueueIndices, VkQueue& graphicsQueue, Ref<SwapChainData> swapChainData) :
+		window(window), physicalDevice(physicalDevice), logicalDevice(logicalDevice), surface(surface),
+		physicalDeviceQueueIndices(physicalDeviceQueueIndices), graphicsQueue(graphicsQueue), swapChainData(swapChainData)
+	{
+		this->rollback = CreateRef<Rollback>("SwapChain", rollback);
+	}
+
+	SwapChain::~SwapChain()
+	{
+		rollback->Dispose();
+	}
+
+	void SwapChain::Recreate()
+	{
+		rollback->Dispose();
+
+		CreateSwapchain();
+		CreateSwapChainImageViews();
+		CreateDepthBuffer(commandPool);
+		CreateFrameBuffers(renderPass);
+	}
+
+	void SwapChain::CreateSwapchain()
 	{
 		spdlog::info("Create swap chain");
 		
-		auto details = GetSwapChainDetails(physicalDevice, surface);
-		CAssert::Check(DoSupportSwapChain(details), "Swap chains are not supported");
+		auto details = SwapChainUtility().GetSwapChainDetails(physicalDevice, surface);
+		CAssert::Check(SwapChainUtility().DoSupportSwapChain(details), "Swap chains are not supported");
 
 		VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(details.formats);
 		VkPresentModeKHR presentMode = ChoosePresentMode(details.presentModes);
 		VkExtent2D extent = ChooseSwapExtent(window, details.capabilities);
 
-		//todo: setup how much exactly images do we need
 		uint32_t imageCount = details.capabilities.minImageCount + 1;
-
 		if (details.capabilities.maxImageCount > 0 && imageCount > details.capabilities.maxImageCount)
 		{
 			imageCount = details.capabilities.maxImageCount;
@@ -30,24 +49,61 @@ namespace AVulkan
 		VkSwapchainCreateInfoKHR createInfo{};
 		SetupSwapChainInfo(createInfo, surface, extent, presentMode, surfaceFormat, details.capabilities, physicalDeviceQueueIndices, imageCount);
 
-		auto createStatus = vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &swapChainData.swapChain);
+		auto createStatus = vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &swapChainData->swapChain);
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create swap chain, status: " + createStatus);
 
-		vkGetSwapchainImagesKHR(logicalDevice, swapChainData.swapChain, &imageCount, nullptr);
-		swapChainData.images.resize(imageCount);
-		vkGetSwapchainImagesKHR(logicalDevice, swapChainData.swapChain, &imageCount, swapChainData.images.data());
+		vkGetSwapchainImagesKHR(logicalDevice, swapChainData->swapChain, &imageCount, nullptr);
+		swapChainData->images.resize(imageCount);
+		vkGetSwapchainImagesKHR(logicalDevice, swapChainData->swapChain, &imageCount, swapChainData->images.data());
 
-		swapChainData.imageFormat = surfaceFormat.format;
-		swapChainData.extent = extent;
+		swapChainData->imageFormat = surfaceFormat.format;
+		swapChainData->extent = extent;
+
+
+		rollback->Add([this]() { vkDestroySwapchainKHR(logicalDevice, swapChainData->swapChain, nullptr); });
 	}
 
-	void ASwapChain::Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const
+	void SwapChain::CreateSwapChainImageViews()
 	{
-		spdlog::info("Dispose swap chain");
-		vkDestroySwapchainKHR(logicalDevice, swapChainData.swapChain, nullptr);
+		AImageView().Create(logicalDevice, *swapChainData.get());
+		rollback->Add([this]() { AImageView().Dispose(logicalDevice, *swapChainData.get()); });
+	}
+
+	void SwapChain::CreateDepthBuffer(VkCommandPool& commandPool)
+	{
+		spdlog::info("Create depth buffer");
+		this->commandPool = commandPool;
+
+		VkFormat depthFormat = VkFormatUtility::FindDepthBufferFormat(physicalDevice);
+		depthBufferModel = CreateRef<DepthBufferModel>();
+
+		depthBufferModel->image = AImage(physicalDevice, logicalDevice, graphicsQueue, commandPool).Create(
+			swapChainData->extent.width, swapChainData->extent.height, depthFormat,
+			VK_IMAGE_TILING_OPTIMAL,
+			VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+			depthBufferModel->imageMemory);
+
+		VkImageViewUtility::Create(logicalDevice, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
+			depthBufferModel->image, depthBufferModel->imageView);
+
+		rollback->Add([this]()
+			{
+				VkImageViewUtility::Destroy(logicalDevice, depthBufferModel->imageView);
+				AImage(physicalDevice, logicalDevice, graphicsQueue, this->commandPool).Destroy(depthBufferModel->image);
+				VkMemoryUtility::FreeDeviceMemory(logicalDevice, depthBufferModel->imageMemory);
+				depthBufferModel.reset();
+			});
+	}
+
+	void SwapChain::CreateFrameBuffers(VkRenderPass& renderPass)
+	{
+		this->renderPass = renderPass;
+		AFrameBuffer().Create(logicalDevice, renderPass, *swapChainData.get(), depthBufferModel);
+		rollback->Add([this]() { AFrameBuffer().Dispose(logicalDevice, swapChainData->frameBuffers); });
 	}
 	
-	void ASwapChain::SetupSwapChainInfo(VkSwapchainCreateInfoKHR& createInfo, VkSurfaceKHR& surface, VkExtent2D& extent,
+	void SwapChain::SetupSwapChainInfo(VkSwapchainCreateInfoKHR& createInfo, VkSurfaceKHR& surface, VkExtent2D& extent,
 		VkPresentModeKHR& presentMode, VkSurfaceFormatKHR& surfaceFormat, VkSurfaceCapabilitiesKHR& capabilities, 
 		QueueFamilyIndices& physicalDeviceQueueIndices, uint32_t imageCount) const
 	{
@@ -83,37 +139,7 @@ namespace AVulkan
 		}
 	}
 
-	SwapChainSurfaceSettings ASwapChain::GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const
-	{
-		SwapChainSurfaceSettings surfaceSettigns;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceSettigns.capabilities);
-
-		GetSwapChainColorFormats(physicalDevice, surface, surfaceSettigns.formats);
-		GetSwapChainPresentModes(physicalDevice, surface, surfaceSettigns.presentModes);
-
-		return surfaceSettigns;
-	}
-
-	void ASwapChain::GetSwapChainColorFormats(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkSurfaceFormatKHR>& formats) const
-	{
-		uint32_t formatCount;
-		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, nullptr);
-
-		formats.resize(formatCount);
-		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, formats.data());
-	}
-
-	void ASwapChain::GetSwapChainPresentModes(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkPresentModeKHR>& presentModes) const
-	{
-		uint32_t presentModeCount;
-		vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, nullptr);
-
-		presentModes.resize(presentModeCount);
-		vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, presentModes.data());
-
-	}
-
-	VkSurfaceFormatKHR ASwapChain::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) const
+	VkSurfaceFormatKHR SwapChain::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) const
 	{
 		//todo: chose format by player settings or most often used
 
@@ -130,7 +156,7 @@ namespace AVulkan
 		return availableFormats[0];
 	}
 
-	VkExtent2D ASwapChain::ChooseSwapExtent(GLFWwindow& window, const VkSurfaceCapabilitiesKHR& capabilities) const
+	VkExtent2D SwapChain::ChooseSwapExtent(GLFWwindow& window, const VkSurfaceCapabilitiesKHR& capabilities) const
 	{
 		if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
 			return capabilities.currentExtent;
@@ -150,7 +176,7 @@ namespace AVulkan
 		return actualExtent;
 	}
 
-	VkPresentModeKHR ASwapChain::ChoosePresentMode(const std::vector<VkPresentModeKHR>& availableModes) const
+	VkPresentModeKHR SwapChain::ChoosePresentMode(const std::vector<VkPresentModeKHR>& availableModes) const
 	{
 		VkPresentModeKHR highQualityMode = VK_PRESENT_MODE_MAILBOX_KHR;
 		VkPresentModeKHR defaultMode = VK_PRESENT_MODE_FIFO_KHR;
@@ -167,14 +193,4 @@ namespace AVulkan
 		return defaultMode;
 	}
 
-	bool ASwapChain::DoSupportSwapChain(SwapChainSurfaceSettings& details) const
-	{
-		return !details.formats.empty() && !details.presentModes.empty();
-	}
-
-	bool ASwapChain::DoSupportSwapChain(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const
-	{
-		SwapChainSurfaceSettings details = GetSwapChainDetails(physicalDevice, surface);
-		return DoSupportSwapChain(details);
-	}
 }

@@ -1,6 +1,7 @@
 #include "Pch.h"
 #include "APhysicalDevice.h"
 #include "Rendering/Vulkan/Models/PhysicalDeviceExtensions.h"
+#include "Rendering/Vulkan/Utilities/SwapChainUtility.h"
 
 namespace AVulkan
 {
@@ -134,7 +135,7 @@ namespace AVulkan
 
     bool APhysicalDevice::DoSupportSwapChain(VkPhysicalDevice& device, VkSurfaceKHR& surface) const
     {
-        return ASwapChain().DoSupportSwapChain(device, surface);
+        return SwapChainUtility().DoSupportSwapChain(device, surface);
     }
 
     void APhysicalDevice::PrintDebugInformation(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface) const
@@ -143,11 +144,11 @@ namespace AVulkan
         vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
         spdlog::info("Rendering GPU: {0}", deviceProperties.deviceName);
 
-        ASwapChain ASwapChain;
+        SwapChainUtility swapChainUtility;
         SwapChainSurfaceSettings surfaceSettings;
 
-        ASwapChain.GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
-        ASwapChain.GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
+        swapChainUtility.GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
+        swapChainUtility.GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
 
         for (auto colorFormat : surfaceSettings.formats)
         {

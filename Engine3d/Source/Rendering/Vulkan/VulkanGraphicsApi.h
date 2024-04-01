@@ -67,7 +67,6 @@ namespace AVulkan
 		GLFWwindow* window;
 
 		Ref<Rollback> rollback;
-		Ref<Rollback> swapchainRollback;
 
 		VkInstance instance;
 		VkPhysicalDevice physicalDevice;
@@ -80,8 +79,8 @@ namespace AVulkan
 		VkDescriptorSetLayout descriptorSetLayout;
 		VkDescriptorPool descriptorPool;
 
-		SwapChainData swapChainData;
-		Ref<DepthBufferModel> depthBufferModel;
+		Ref<SwapChain> swapChain;
+		Ref<SwapChainData> swapChainData;
 
 		GraphicsPipeline* graphicsPipeline;
 
@@ -110,6 +109,7 @@ namespace AVulkan
 		void CreateSwapChainImageViews();
 		void CreateRenderPass();
 		void CreateGraphicsPipeline();
+		void CreateDepthBuffer();
 		void CreateFrameBuffers();
 		void CreateCommandPool();
 		void CreateCommandBuffer();
@@ -117,7 +117,6 @@ namespace AVulkan
 		void CreateDescriptorSetLayout();
 		void CreateDescriptorPool();
 		void CreateDescriptorSets();
-		void CreateDepthBuffer();
 		void CreateTextureSampler();
 
 		void RecreateSwapChain();

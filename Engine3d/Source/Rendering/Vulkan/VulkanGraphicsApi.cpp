@@ -14,7 +14,6 @@ namespace AVulkan
 		this->ecs = ecs;
 		this->projectSettings = projectSettings;
 		this->rollback = CreateRef<Rollback>("VulkanGraphicsApi", *vulkanRollback);
-		this->swapchainRollback = CreateRef<Rollback>("SwapchainRollback");
 		this->window = glfwWindow;
 	}
 
@@ -45,8 +44,6 @@ namespace AVulkan
 			CreateDescriptorPool();
 			CreateDescriptorSets();
 			CreateSyncObjects();
-
-			rollback->Add([this]() { swapchainRollback->Dispose(); });
 		}
 		catch (const std::exception& e)
 		{
@@ -71,12 +68,7 @@ namespace AVulkan
 		needResizeWindow = false;
 		FinanilizeRenderOperations();
 
-		swapchainRollback->Dispose();
-
-		CreateSwapChain();
-		CreateSwapChainImageViews();
-		CreateDepthBuffer();
-		CreateFrameBuffers();
+		swapChain->Recreate();
 	}
 
 	//todo: make refactoring of the function
@@ -85,7 +77,7 @@ namespace AVulkan
 		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, frameSyncTimeout);
 
 		uint32_t imageIndex = 0;
-		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData.swapChain, frameSyncTimeout,
+		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData->swapChain, frameSyncTimeout,
 			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 		
 		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR) 
@@ -100,8 +92,8 @@ namespace AVulkan
 
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(commandBuffers[frame], 0);
-		ACommandBuffer().Record(ecs, frame, swapChainData.frameBuffers[imageIndex],
-			renderPass, commandBuffers, descriptorSets, *graphicsPipeline, swapChainData.extent);
+		ACommandBuffer().Record(ecs, frame, swapChainData->frameBuffers[imageIndex],
+			renderPass, commandBuffers, descriptorSets, *graphicsPipeline, swapChainData->extent);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
@@ -125,7 +117,7 @@ namespace AVulkan
 		presentInfo.waitSemaphoreCount = 1;
 		presentInfo.pWaitSemaphores = &renderFinishedSemaphores[frame];
 		presentInfo.swapchainCount = 1;
-		presentInfo.pSwapchains = &swapChainData.swapChain;
+		presentInfo.pSwapchains = &swapChainData->swapChain;
 		presentInfo.pImageIndices = &imageIndex;
 
 		auto presentStatus = vkQueuePresentKHR(presentationQueue, &presentInfo);
@@ -158,12 +150,12 @@ namespace AVulkan
 
 	Ref<Mesh> VulkanGraphicsApi::CreateMesh(const std::string& meshPath)
 	{
-		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, swapChainData, graphicsQueue, commandPool, meshPath);
+		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, meshPath);
 	}
 
 	Ref<Mesh> VulkanGraphicsApi::CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices)
 	{
-		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, swapChainData, graphicsQueue, commandPool, vertices, indices);
+		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, vertices, indices);
 	}
 
 	Ref<Texture> VulkanGraphicsApi::CreateTexture(TextureId textureId)
@@ -200,25 +192,28 @@ namespace AVulkan
 	void VulkanGraphicsApi::CreateSwapChain()
 	{
 		auto queueIndices = APhysicalDevice().GetQueueFamilies(physicalDevice, windowSurface);
-		ASwapChain().Create(*window, physicalDevice, logicalDevice, windowSurface, queueIndices, swapChainData);
-		swapchainRollback->Add([this]() { ASwapChain().Dispose(logicalDevice, swapChainData); });
+
+		swapChainData = CreateRef<SwapChainData>();
+		swapChain = CreateRef<SwapChain>(rollback, *window, physicalDevice, logicalDevice, windowSurface,
+			queueIndices, graphicsQueue, swapChainData);
+
+		swapChain->CreateSwapchain();
 	}
 
 	void VulkanGraphicsApi::CreateSwapChainImageViews()
 	{
-		AImageView().Create(logicalDevice, swapChainData);
-		swapchainRollback->Add([this]() { AImageView().Dispose(logicalDevice, swapChainData); });
+		swapChain->CreateSwapChainImageViews();
 	}
 
 	void VulkanGraphicsApi::CreateRenderPass()
 	{
-		renderPass = ARenderPass().Create(physicalDevice, logicalDevice, swapChainData.imageFormat);
+		renderPass = ARenderPass().Create(physicalDevice, logicalDevice, swapChainData->imageFormat);
 		rollback->Add([this]() { ARenderPass().Dispose(logicalDevice, renderPass);; });
 	}
 
 	void VulkanGraphicsApi::CreateGraphicsPipeline()
 	{
-		graphicsPipeline = new GraphicsPipeline(projectSettings, logicalDevice, swapChainData.extent, renderPass, rollback);
+		graphicsPipeline = new GraphicsPipeline(projectSettings, logicalDevice, swapChainData->extent, renderPass, rollback);
 		graphicsPipeline->Create(descriptorSetLayout);
 
 		rollback->Add([this]() { delete graphicsPipeline; });
@@ -226,8 +221,7 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateFrameBuffers()
 	{
-		AFrameBuffer().Create(logicalDevice, renderPass, swapChainData, depthBufferModel);
-		swapchainRollback->Add([this]() { AFrameBuffer().Dispose(logicalDevice, swapChainData.frameBuffers); });
+		swapChain->CreateFrameBuffers(renderPass);
 	}
 
 	void VulkanGraphicsApi::CreateCommandPool()
@@ -249,7 +243,7 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateDescriptorPool()
 	{
-		ADescriptorPool().Create(logicalDevice, swapChainData, descriptorPool);
+		ADescriptorPool().Create(logicalDevice, *swapChainData.get(), descriptorPool);
 		rollback->Add([this]() { ADescriptorPool().Dispose(logicalDevice, descriptorPool); });
 	}
 
@@ -260,27 +254,7 @@ namespace AVulkan
 	void VulkanGraphicsApi::CreateDepthBuffer()
 	{
 		spdlog::info("Create depth buffer");
-
-		VkFormat depthFormat = VkFormatUtility::FindDepthBufferFormat(physicalDevice);
-		depthBufferModel = CreateRef<DepthBufferModel>();
-		
-		depthBufferModel->image = AImage(physicalDevice, logicalDevice, graphicsQueue, commandPool).Create(
-			swapChainData.extent.width, swapChainData.extent.height, depthFormat, 
-			VK_IMAGE_TILING_OPTIMAL, 
-			VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
-			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 
-			depthBufferModel->imageMemory);
-
-		VkImageViewUtility::Create(logicalDevice, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
-			depthBufferModel->image, depthBufferModel->imageView);
-
-		swapchainRollback->Add([this]()
-		{
-			VkImageViewUtility::Destroy(logicalDevice, depthBufferModel->imageView);
-			AImage(physicalDevice, logicalDevice, graphicsQueue, commandPool).Destroy(depthBufferModel->image);
-			VkMemoryUtility::FreeDeviceMemory(logicalDevice, depthBufferModel->imageMemory);
-			depthBufferModel.reset();
-		});
+		swapChain->CreateDepthBuffer(commandPool);
 	}
 
 	void VulkanGraphicsApi::CreateTextureSampler()
@@ -315,7 +289,7 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateUniformBuffers()
 	{
-		auto buffersCount = swapChainData.images.size();
+		auto buffersCount = swapChainData->images.size();
 		uniformBuffers.reserve(buffersCount);
 		for (int i = 0; i < buffersCount; i++)
 		{
