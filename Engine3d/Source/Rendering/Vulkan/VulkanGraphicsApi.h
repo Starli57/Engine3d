@@ -85,8 +85,10 @@ namespace AVulkan
 
 		GraphicsPipeline* graphicsPipeline;
 
-		std::vector<VkDescriptorSet> descriptorSets;
 		std::vector<VkCommandBuffer> commandBuffers;
+		std::vector<VkDescriptorSet> descriptorSets;
+
+		std::vector<UniformBufferVulkan*> uniformBuffers;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;

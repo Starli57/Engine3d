@@ -4,10 +4,10 @@
 namespace AVulkan
 {
 	//todo make one descriptor per material
-	void ADescriptorSet::Allocate(VkDevice& logicalDevice, std::vector<VkDescriptorSet>& descriptorSets, SwapChainData& swapChainData, VkDescriptorPool& descriptorPool,
-		VkDescriptorSetLayout& descriptorSetLayout, VkImageView& textureImageView, VkSampler& textureSampler) const
+	void ADescriptorSet::Allocate(VkDevice& logicalDevice, std::vector<VkDescriptorSet>& descriptorSets, std::vector<UniformBufferVulkan*>& uniformBuffers, 
+		VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, VkImageView& textureImageView, VkSampler& textureSampler) const
 	{
-		auto setsCount = swapChainData.uniformBuffers->size();
+		auto setsCount = uniformBuffers.size();
 
 		std::vector<VkDescriptorSetLayout> layouts(setsCount, descriptorSetLayout);
 
@@ -26,7 +26,7 @@ namespace AVulkan
 			auto descriptorSet = descriptorSets.at(i);
 
 			VkDescriptorBufferInfo bufferInfo{};
-			bufferInfo.buffer = swapChainData.uniformBuffers->at(i)->buffer;
+			bufferInfo.buffer = uniformBuffers.at(i)->buffer;
 			bufferInfo.offset = 0;
 			bufferInfo.range = sizeof(UboViewProjectionComponent);
 

@@ -18,7 +18,5 @@ namespace AVulkan
 		std::vector<VkImage> images;
 		std::vector<VkImageView> imageViews;
 		std::vector<VkFramebuffer> frameBuffers;
-
-		std::vector<UniformBufferVulkan*>* uniformBuffers;
 	};
 }

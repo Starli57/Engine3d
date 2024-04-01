@@ -148,7 +148,7 @@ namespace AVulkan
 		auto entries = ecs->view<UboViewProjectionComponent>();
 		auto [uboComponent] = entries.get(entries.front());
 
-		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &uboComponent, sizeof(UboViewProjectionComponent));
+		memcpy(uniformBuffers.at(imageIndex)->bufferMapped, &uboComponent, sizeof(UboViewProjectionComponent));
 	}
 
 	void VulkanGraphicsApi::FinanilizeRenderOperations()
@@ -168,7 +168,7 @@ namespace AVulkan
 
 	Ref<Texture> VulkanGraphicsApi::CreateTexture(TextureId textureId)
 	{
-		return CreateRef<TextureVulkan>(projectSettings, physicalDevice, logicalDevice, swapChainData,
+		return CreateRef<TextureVulkan>(projectSettings, physicalDevice, logicalDevice, uniformBuffers,
 			descriptorSets, descriptorPool, descriptorSetLayout, textureSampler, graphicsQueue, commandPool, textureId);
 	}
 
@@ -316,11 +316,10 @@ namespace AVulkan
 	void VulkanGraphicsApi::CreateUniformBuffers()
 	{
 		auto buffersCount = swapChainData.images.size();
-		swapChainData.uniformBuffers = new std::vector<UniformBufferVulkan*>();
-		swapChainData.uniformBuffers->reserve(buffersCount);
+		uniformBuffers.reserve(buffersCount);
 		for (int i = 0; i < buffersCount; i++)
 		{
-			swapChainData.uniformBuffers->push_back(new UniformBufferVulkan(physicalDevice, logicalDevice));
+			uniformBuffers.push_back(new UniformBufferVulkan(physicalDevice, logicalDevice));
 		}
 
 		rollback->Add([this]() { DisposeUniformBuffers(); });
@@ -328,11 +327,11 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::DisposeUniformBuffers()
 	{
-		for (int i = 0; i < swapChainData.uniformBuffers->size(); i++)
+		for (int i = 0; i < uniformBuffers.size(); i++)
 		{
-			delete swapChainData.uniformBuffers->at(i);
+			delete uniformBuffers.at(i);
 		}
-		delete swapChainData.uniformBuffers;
+		uniformBuffers.resize(0);
 	}
 
 	//todo: replace 

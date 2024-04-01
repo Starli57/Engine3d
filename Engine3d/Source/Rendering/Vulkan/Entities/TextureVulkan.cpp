@@ -13,7 +13,8 @@
 
 namespace AVulkan
 {
-    TextureVulkan::TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData,
+    TextureVulkan::TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
+        std::vector<UniformBufferVulkan*>& uniformBuffers,
         std::vector<VkDescriptorSet>& descriptorSets, VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, 
         VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId)
         : Texture(textureId), physicalDevice(physicalDevice), logicalDevice(logicalDevice), 
@@ -24,7 +25,7 @@ namespace AVulkan
         CreateImage(textureId);
         CreateImageView();
 
-        ADescriptorSet().Allocate(logicalDevice, descriptorSets, swapChainData, descriptorPool, descriptorSetLayout, imageView, textureSampler);
+        ADescriptorSet().Allocate(logicalDevice, descriptorSets, uniformBuffers, descriptorPool, descriptorSetLayout, imageView, textureSampler);
     }
 
     TextureVulkan::~TextureVulkan()

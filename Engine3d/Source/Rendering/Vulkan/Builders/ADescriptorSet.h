@@ -10,7 +10,7 @@ namespace AVulkan
 	class ADescriptorSet
 	{
 	public:
-		void Allocate(VkDevice& logicalDevice, std::vector<VkDescriptorSet>& descriptorSets, SwapChainData& swapChainData, VkDescriptorPool& descriptorPool,
-			VkDescriptorSetLayout& descriptorSetLayout, VkImageView& textureImageView, VkSampler& textureSampler) const;
+		void Allocate(VkDevice& logicalDevice, std::vector<VkDescriptorSet>& descriptorSets, std::vector<UniformBufferVulkan*>& uniformBuffers, 
+			VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, VkImageView& textureImageView, VkSampler& textureSampler) const;
 	};
 }

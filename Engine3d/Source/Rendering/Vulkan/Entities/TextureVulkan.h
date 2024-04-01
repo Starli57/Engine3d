@@ -15,7 +15,7 @@ namespace AVulkan
 	{
 	public:
 		TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
-			SwapChainData& swapChainData, std::vector<VkDescriptorSet>& descriptorSets, VkDescriptorPool& descriptorPool, 
+			std::vector<UniformBufferVulkan*>& uniformBuffers, std::vector<VkDescriptorSet>& descriptorSets, VkDescriptorPool& descriptorPool,
 			VkDescriptorSetLayout& descriptorSetLayout, VkSampler& textureSampler,
 			VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId);
 		virtual ~TextureVulkan() override;
