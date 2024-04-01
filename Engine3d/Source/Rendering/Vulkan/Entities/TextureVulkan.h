@@ -14,8 +14,9 @@ namespace AVulkan
 	class TextureVulkan : public Texture
 	{
 	public:
-		TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData,
-			VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, VkSampler& textureSampler,
+		TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
+			SwapChainData& swapChainData, std::vector<VkDescriptorSet>& descriptorSets, VkDescriptorPool& descriptorPool, 
+			VkDescriptorSetLayout& descriptorSetLayout, VkSampler& textureSampler,
 			VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId);
 		virtual ~TextureVulkan() override;
 

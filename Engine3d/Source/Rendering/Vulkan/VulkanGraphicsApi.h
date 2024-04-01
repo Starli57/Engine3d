@@ -82,19 +82,20 @@ namespace AVulkan
 
 		SwapChainData swapChainData;
 		Ref<DepthBufferModel> depthBufferModel;
+
 		GraphicsPipeline* graphicsPipeline;
 
-		//todo: replace
+		std::vector<VkDescriptorSet> descriptorSets;
+		std::vector<VkCommandBuffer> commandBuffers;
+
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;
 		std::vector<VkFence> drawFences;
 
-		//todo: replace
 		uint16_t frame = 0;
 		uint16_t const maxFramesDraws = 2;
 		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
 
-		//todo: replace
 		VkSampler textureSampler;
 
 		bool needResizeWindow = false;

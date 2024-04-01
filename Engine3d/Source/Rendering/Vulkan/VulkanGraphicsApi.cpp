@@ -99,9 +99,9 @@ namespace AVulkan
 		UpdateUniformBuffer(frame);
 
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
-		vkResetCommandBuffer(swapChainData.commandBuffers[frame], 0);
+		vkResetCommandBuffer(commandBuffers[frame], 0);
 		ACommandBuffer().Record(ecs, frame, swapChainData.frameBuffers[imageIndex],
-			renderPass, swapChainData, *graphicsPipeline);
+			renderPass, commandBuffers, descriptorSets, *graphicsPipeline, swapChainData.extent);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
@@ -115,7 +115,7 @@ namespace AVulkan
 		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[frame];
 
 		submitInfo.pWaitDstStageMask = waitStages;
-		submitInfo.pCommandBuffers = &swapChainData.commandBuffers[frame];
+		submitInfo.pCommandBuffers = &commandBuffers[frame];
 
 		auto submitStatus = vkQueueSubmit(graphicsQueue, 1, &submitInfo, drawFences[frame]);
 		CAssert::Check(submitStatus == VK_SUCCESS, "Failed to submit draw command buffer, status: " + submitStatus);
@@ -169,7 +169,7 @@ namespace AVulkan
 	Ref<Texture> VulkanGraphicsApi::CreateTexture(TextureId textureId)
 	{
 		return CreateRef<TextureVulkan>(projectSettings, physicalDevice, logicalDevice, swapChainData,
-			descriptorPool, descriptorSetLayout, textureSampler, graphicsQueue, commandPool, textureId);
+			descriptorSets, descriptorPool, descriptorSetLayout, textureSampler, graphicsQueue, commandPool, textureId);
 	}
 
 	void VulkanGraphicsApi::CreateInstance()
@@ -238,7 +238,7 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateCommandBuffer()
 	{
-		ACommandBuffer().Setup(logicalDevice, commandPool, swapChainData, maxFramesDraws);
+		ACommandBuffer().Setup(logicalDevice, commandPool, commandBuffers, maxFramesDraws);
 	}
 
 	void VulkanGraphicsApi::CreateDescriptorSetLayout()

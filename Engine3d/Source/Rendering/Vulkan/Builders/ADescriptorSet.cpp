@@ -4,7 +4,7 @@
 namespace AVulkan
 {
 	//todo make one descriptor per material
-	void ADescriptorSet::Allocate(VkDevice& logicalDevice, SwapChainData& swapChainData, VkDescriptorPool& descriptorPool,
+	void ADescriptorSet::Allocate(VkDevice& logicalDevice, std::vector<VkDescriptorSet>& descriptorSets, SwapChainData& swapChainData, VkDescriptorPool& descriptorPool,
 		VkDescriptorSetLayout& descriptorSetLayout, VkImageView& textureImageView, VkSampler& textureSampler) const
 	{
 		auto setsCount = swapChainData.uniformBuffers->size();
@@ -17,13 +17,13 @@ namespace AVulkan
 		allocInfo.descriptorSetCount = static_cast<uint32_t>(setsCount);
 		allocInfo.pSetLayouts = layouts.data();
 
-		swapChainData.descriptorSets.resize(setsCount);
-		auto allocateStatus = vkAllocateDescriptorSets(logicalDevice, &allocInfo, swapChainData.descriptorSets.data());
+		descriptorSets.resize(setsCount);
+		auto allocateStatus = vkAllocateDescriptorSets(logicalDevice, &allocInfo, descriptorSets.data());
 		CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate descriptor sets, status: " + allocateStatus);
 
 		for (size_t i = 0; i < setsCount; i++)
 		{
-			auto descriptorSet = swapChainData.descriptorSets.at(i);
+			auto descriptorSet = descriptorSets.at(i);
 
 			VkDescriptorBufferInfo bufferInfo{};
 			bufferInfo.buffer = swapChainData.uniformBuffers->at(i)->buffer;

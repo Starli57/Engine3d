@@ -15,8 +15,9 @@ namespace AVulkan
 	class ACommandBuffer
 	{
 	public:
-		void Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, SwapChainData& swapChainData, int buffersCount) const;
+		void Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers, int buffersCount) const;
 		void Record(Ref<entt::registry> ecs, uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
-			SwapChainData& swapChainData, GraphicsPipeline& pipeline) const;
+			std::vector<VkCommandBuffer>& commandBuffers, std::vector<VkDescriptorSet>& descriptorSets, 
+			GraphicsPipeline& pipeline, VkExtent2D& vkExtent) const;
 	};
 }
