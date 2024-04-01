@@ -18,7 +18,7 @@ namespace AVulkan
 		VkPipeline GetPipeline();
 		VkPipelineLayout GetLayout();
 
-		GraphicsPipeline(Ref<ProjectSettigns> projectSettings, VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass, Rollback* vulkanRollback);
+		GraphicsPipeline(Ref<ProjectSettigns> projectSettings, VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass, Ref<Rollback> vulkanRollback);
 		~GraphicsPipeline();
 
 		void Create(VkDescriptorSetLayout& descriptorSetLayout);
@@ -28,8 +28,8 @@ namespace AVulkan
 	private:
 		Ref<ProjectSettigns> projectSettings;
 
-		Rollback* rollback;
-		Rollback* initializationRollback;
+		URef<Rollback> rollback;
+		URef<Rollback> initializationRollback;
 
 		VkDevice logicalDevice;
 		VkExtent2D swapChainExtent;

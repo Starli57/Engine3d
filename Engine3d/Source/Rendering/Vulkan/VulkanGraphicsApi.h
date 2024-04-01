@@ -66,7 +66,7 @@ namespace AVulkan
 
 		GLFWwindow* window;
 
-		Rollback* rollback;
+		Ref<Rollback> rollback;
 		Ref<Rollback> swapchainRollback;
 
 		VkInstance instance;
@@ -95,7 +95,7 @@ namespace AVulkan
 		std::vector<VkFence> drawFences;
 
 		uint16_t frame = 0;
-		uint16_t const maxFramesDraws = 2;
+		uint16_t const maxFramesInFlight = 2;
 		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
 
 		VkSampler textureSampler;

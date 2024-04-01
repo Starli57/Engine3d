@@ -13,14 +13,14 @@ namespace AVulkan
 	{
 		this->ecs = ecs;
 		this->projectSettings = projectSettings;
-		this->rollback = new Rollback("VulkanGraphicsApi", *vulkanRollback);
+		this->rollback = CreateRef<Rollback>("VulkanGraphicsApi", *vulkanRollback);
 		this->swapchainRollback = CreateRef<Rollback>("SwapchainRollback");
 		this->window = glfwWindow;
 	}
 
 	VulkanGraphicsApi::~VulkanGraphicsApi()
 	{
-		delete rollback;
+		rollback.reset();
 	}
 
 	void VulkanGraphicsApi::Init()
@@ -138,7 +138,7 @@ namespace AVulkan
 		
 		CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
 		
-		frame = (frame + 1) % maxFramesDraws;
+		frame = (frame + 1) % maxFramesInFlight;
 	}
 
 	//todo: replace
@@ -227,7 +227,7 @@ namespace AVulkan
 	void VulkanGraphicsApi::CreateFrameBuffers()
 	{
 		AFrameBuffer().Create(logicalDevice, renderPass, swapChainData, depthBufferModel);
-		swapchainRollback->Add([this]() { AFrameBuffer().Dispose(logicalDevice, swapChainData); });
+		swapchainRollback->Add([this]() { AFrameBuffer().Dispose(logicalDevice, swapChainData.frameBuffers); });
 	}
 
 	void VulkanGraphicsApi::CreateCommandPool()
@@ -238,7 +238,7 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateCommandBuffer()
 	{
-		ACommandBuffer().Setup(logicalDevice, commandPool, commandBuffers, maxFramesDraws);
+		ACommandBuffer().Setup(logicalDevice, commandPool, commandBuffers, maxFramesInFlight);
 	}
 
 	void VulkanGraphicsApi::CreateDescriptorSetLayout()
@@ -337,9 +337,9 @@ namespace AVulkan
 	//todo: replace 
 	void VulkanGraphicsApi::CreateSyncObjects()
 	{
-		imageAvailableSemaphores.resize(maxFramesDraws);
-		renderFinishedSemaphores.resize(maxFramesDraws);
-		drawFences.resize(maxFramesDraws);
+		imageAvailableSemaphores.resize(maxFramesInFlight);
+		renderFinishedSemaphores.resize(maxFramesInFlight);
+		drawFences.resize(maxFramesInFlight);
 
 		VkSemaphoreCreateInfo semaphoreInfo{};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -348,7 +348,7 @@ namespace AVulkan
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-		for (int i = 0; i < maxFramesDraws; i++) 
+		for (int i = 0; i < maxFramesInFlight; i++) 
 		{
 			vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]);
 			rollback->Add([i, this]() { vkDestroySemaphore(logicalDevice, imageAvailableSemaphores[i], nullptr); });

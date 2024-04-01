@@ -31,13 +31,13 @@ namespace AVulkan
         }
     }
 
-    void AFrameBuffer::Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const
+    void AFrameBuffer::Dispose(VkDevice& logicalDevice, std::vector<VkFramebuffer>& frameBuffers) const
     {
         spdlog::info("Dispose frame buffers");
-        for (auto framebuffer : swapChainData.frameBuffers)
+        for (auto framebuffer : frameBuffers)
         {
             vkDestroyFramebuffer(logicalDevice, framebuffer, nullptr);
         }
-        swapChainData.frameBuffers.clear();
+        frameBuffers.clear();
     }
 }

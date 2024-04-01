@@ -11,12 +11,16 @@ namespace AVulkan
 	struct SwapChainData
 	{
 	public:
+
 		VkSwapchainKHR swapChain;
+		VkSwapchainKHR oldSwapChain;//todo: add usage to reuse resources
+
 		VkFormat imageFormat;
 		VkExtent2D extent;
 
 		std::vector<VkImage> images;
 		std::vector<VkImageView> imageViews;
 		std::vector<VkFramebuffer> frameBuffers;
+
 	};
 }

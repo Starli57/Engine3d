@@ -11,6 +11,6 @@ namespace AVulkan
 	{
 	public:
 		void Create(VkDevice& logicalDevice, VkRenderPass& renderPass, SwapChainData& swapChainData, Ref<DepthBufferModel> depthBufferModel) const;
-		void Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
+		void Dispose(VkDevice& logicalDevice, std::vector<VkFramebuffer>& frameBuffers) const;
 	};
 }

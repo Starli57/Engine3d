@@ -9,10 +9,11 @@
 
 namespace AVulkan
 {
-	GraphicsPipeline::GraphicsPipeline(Ref<ProjectSettigns> projectSettings, VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass, Rollback* vulkanRollback)
+	GraphicsPipeline::GraphicsPipeline(Ref<ProjectSettigns> projectSettings, VkDevice& logicalDevice, 
+		VkExtent2D& swapChainExtent, VkRenderPass& renderPass, Ref<Rollback> vulkanRollback)
 	{
-		rollback = new Rollback("GraphicsPipeline", *vulkanRollback);
-		initializationRollback = new Rollback("GraphicsPipelineInit", *rollback);
+		rollback = CreateUniqueRef<Rollback>("GraphicsPipeline", *vulkanRollback.get());
+		initializationRollback = CreateUniqueRef<Rollback>("GraphicsPipelineInit", *rollback);
 
 		this->projectSettings = projectSettings;
 		this->logicalDevice = logicalDevice;
@@ -22,8 +23,8 @@ namespace AVulkan
 
 	GraphicsPipeline::~GraphicsPipeline()
 	{
-		delete initializationRollback;
-		delete rollback;
+		initializationRollback.reset();
+		rollback.reset();
 	}
 
 	void GraphicsPipeline::Create(VkDescriptorSetLayout& descriptorSetLayout)

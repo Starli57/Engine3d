@@ -16,9 +16,12 @@ namespace AVulkan
 	{
 		this->logicalDevice = &logicalDevice;
 
-		AVertexBuffer().Create(physicalDevice, logicalDevice, vertices, vertexBuffer, vertexBufferMemory,
+		AVertexBuffer().Create(physicalDevice, logicalDevice, 
+			vertices, vertexBuffer, vertexBufferMemory,
 			graphicsQueue, commandPool);
-		AIndexBuffer().Create(physicalDevice, logicalDevice, indices, indexBuffer, indexBufferMemory,
+		
+		AIndexBuffer().Create(physicalDevice, logicalDevice, 
+			indices, indexBuffer, indexBufferMemory,
 			graphicsQueue, commandPool);
 	}
 
@@ -28,9 +31,12 @@ namespace AVulkan
 	{
 		this->logicalDevice = &logicalDevice;
 
-		AVertexBuffer().Create(physicalDevice, logicalDevice, vertices, vertexBuffer, vertexBufferMemory, 
+		AVertexBuffer().Create(physicalDevice, logicalDevice, 
+			vertices, vertexBuffer, vertexBufferMemory, 
 			graphicsQueue, commandPool);
-		AIndexBuffer().Create(physicalDevice, logicalDevice, indices, indexBuffer, indexBufferMemory,
+
+		AIndexBuffer().Create(physicalDevice, logicalDevice, 
+			indices, indexBuffer, indexBufferMemory,
 			graphicsQueue, commandPool);
 
 	}
