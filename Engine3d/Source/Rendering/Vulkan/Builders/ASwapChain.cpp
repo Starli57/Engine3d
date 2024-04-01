@@ -152,19 +152,19 @@ namespace AVulkan
 
 	VkPresentModeKHR ASwapChain::ChoosePresentMode(const std::vector<VkPresentModeKHR>& availableModes) const
 	{
-		VkPresentModeKHR bestMode = VK_PRESENT_MODE_MAILBOX_KHR;
-		VkPresentModeKHR fallback = VK_PRESENT_MODE_FIFO_KHR;
+		VkPresentModeKHR highQualityMode = VK_PRESENT_MODE_MAILBOX_KHR;
+		VkPresentModeKHR defaultMode = VK_PRESENT_MODE_FIFO_KHR;
 
 		for (const auto& mode : availableModes)
 		{
-			if (mode == bestMode)
+			if (mode == highQualityMode)
 			{
 				return mode;
 			}
 		}
 
-		spdlog::warn("Present mode is not available: {0} Fallback mode will be used {1}", bestMode, fallback);
-		return fallback;
+		spdlog::warn("Present mode is not available: {0} Default mode will be used {1}", highQualityMode, defaultMode);
+		return defaultMode;
 	}
 
 	bool ASwapChain::DoSupportSwapChain(SwapChainSurfaceSettings& details) const
