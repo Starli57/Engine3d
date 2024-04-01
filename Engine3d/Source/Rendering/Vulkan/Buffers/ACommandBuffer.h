@@ -4,6 +4,7 @@
 #include <entt.hpp>
 
 #include "SharedLib/Ref.h"
+#include "Rendering/Vulkan/VulkanModel.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Entities/MeshVulkan.h"
 #include "Rendering/Vulkan/GraphicsPipeline.h"
@@ -15,8 +16,7 @@ namespace AVulkan
 	class ACommandBuffer
 	{
 	public:
-		void Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, SwapChainData& swapChainData, int buffersCount) const;
-		void Record(Ref<entt::registry> ecs, uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
-			SwapChainData& swapChainData, GraphicsPipeline& pipeline) const;
+		void Setup(Ref<VulkanModel> model, int buffersCount) const;
+		void Record(Ref<VulkanModel> model, Ref<entt::registry> ecs, VkFramebuffer& frameBuffer) const;
 	};
 }

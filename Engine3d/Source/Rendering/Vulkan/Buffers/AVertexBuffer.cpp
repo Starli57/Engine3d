@@ -5,8 +5,7 @@
 
 namespace AVulkan
 {
-	void AVertexBuffer::Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<std::vector<Vertex>> vertices, 
-		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool) const
+	void AVertexBuffer::Create(Ref<VulkanModel> vulkanModel, Ref<std::vector<Vertex>> vertices, VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory) const
 	{
 		spdlog::info("Create Vertex Buffer");
 
@@ -22,19 +21,17 @@ namespace AVulkan
 		VkDeviceMemory stagingMemory;
 
 		ABuffer bufferInterface;
-		bufferInterface.Create(physicalDevice, logicalDevice, bufferSize,
+		bufferInterface.Create(vulkanModel, bufferSize,
 			stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingMemory);
 
 		void* data;
-		vkMapMemory(logicalDevice, stagingMemory, 0, bufferSize, 0, &data);
+		vkMapMemory(vulkanModel->logicalDevice, stagingMemory, 0, bufferSize, 0, &data);
 		memcpy(data, vertices->data(), (size_t)bufferSize);
-		vkUnmapMemory(logicalDevice, stagingMemory);
+		vkUnmapMemory(vulkanModel->logicalDevice, stagingMemory);
 
-		bufferInterface.Create(physicalDevice, logicalDevice, bufferSize,
-			distUsageFlags, distMemoryFlags, vertexBuffer, bufferMemory);
-
-		bufferInterface.Copy(logicalDevice, graphicsQueue, stagingBuffer, vertexBuffer, bufferSize, commandPool);
-		bufferInterface.Dispose(logicalDevice, stagingBuffer, stagingMemory);
+		bufferInterface.Create(vulkanModel, bufferSize, distUsageFlags, distMemoryFlags, vertexBuffer, bufferMemory);
+		bufferInterface.Copy(vulkanModel, stagingBuffer, vertexBuffer, bufferSize, vulkanModel->commandPool);
+		bufferInterface.Dispose(vulkanModel->logicalDevice, stagingBuffer, stagingMemory);
 	}
 
 	void AVertexBuffer::Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const

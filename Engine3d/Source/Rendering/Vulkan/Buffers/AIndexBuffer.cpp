@@ -8,8 +8,8 @@
 
 namespace AVulkan
 {
-	void AIndexBuffer::Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<std::vector<uint32_t>> indices,
-        VkBuffer& indexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool) const
+	void AIndexBuffer::Create(Ref<VulkanModel> vulkanModel, Ref<std::vector<uint32_t>> indices,
+        VkBuffer& indexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool) const
 	{
         spdlog::info("Create Index buffer");
 
@@ -25,17 +25,17 @@ namespace AVulkan
         VkMemoryPropertyFlags distMemoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
         ABuffer bufferInterface;
-        bufferInterface.Create(physicalDevice, logicalDevice, bufferSize, stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingBufferMemory);
+        bufferInterface.Create(vulkanModel, bufferSize, stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingBufferMemory);
 
         void* data;
-        vkMapMemory(logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
+        vkMapMemory(vulkanModel->logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
         memcpy(data, indices->data(), (size_t)bufferSize);
-        vkUnmapMemory(logicalDevice, stagingBufferMemory);
+        vkUnmapMemory(vulkanModel->logicalDevice, stagingBufferMemory);
 
-        bufferInterface.Create(physicalDevice, logicalDevice, bufferSize, distUsageFlags, distMemoryFlags, indexBuffer, bufferMemory);
+        bufferInterface.Create(vulkanModel, bufferSize, distUsageFlags, distMemoryFlags, indexBuffer, bufferMemory);
 
-        bufferInterface.Copy(logicalDevice, graphicsQueue, stagingBuffer, indexBuffer, bufferSize, commandPool);
-        bufferInterface.Dispose(logicalDevice, stagingBuffer, stagingBufferMemory);
+        bufferInterface.Copy(vulkanModel, stagingBuffer, indexBuffer, bufferSize, commandPool);
+        bufferInterface.Dispose(vulkanModel->logicalDevice, stagingBuffer, stagingBufferMemory);
 	}
 
 

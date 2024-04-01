@@ -5,6 +5,7 @@
 
 #include "Resources/TexturesList.h"
 #include "Entities/Texture.h"
+#include "Rendering/Vulkan/VulkanModel.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "ProjectSettings.h"
 #include "SharedLib/IOUtility.h"
@@ -14,9 +15,9 @@ namespace AVulkan
 	class TextureVulkan : public Texture
 	{
 	public:
-		TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData,
-			VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, VkSampler& textureSampler,
-			VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId);
+		TextureVulkan(Ref<ProjectSettigns> projectSettings, Ref<VulkanModel> vulkanModel,
+			VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, 
+			VkSampler& textureSampler, VkCommandPool& commandPool, TextureId textureId);
 		virtual ~TextureVulkan() override;
 
 		//todo: make public getters and private setters
@@ -29,10 +30,7 @@ namespace AVulkan
 		void CreateImageView();
 
 		Ref<ProjectSettigns> projectSettings;
-
-		VkPhysicalDevice& physicalDevice;
-		VkDevice& logicalDevice;
-		VkQueue& graphicsQueue;
-		VkCommandPool& commandPool;
+		Ref<VulkanModel> vulkanModel;
+		
 	};
 }

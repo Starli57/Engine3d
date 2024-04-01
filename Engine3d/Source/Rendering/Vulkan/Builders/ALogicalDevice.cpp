@@ -6,15 +6,14 @@
 
 namespace AVulkan
 {
-	VkDevice ALogicalDevice::Create(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface,
-		VkQueue& graphicsQueue, VkQueue& presentationQueue) const
+	void ALogicalDevice::Create(Ref<VulkanModel> vulkanModel) const
 	{
 		spdlog::info("Create logical device");
 
 		APhysicalDevice APhysicalDevice;
 		AValidationLayers validationLayers;
 
-		auto queueFamilies = APhysicalDevice.GetQueueFamilies(physicalDevice, windowSurface);
+		auto queueFamilies = APhysicalDevice.GetQueueFamilies(vulkanModel->physicalDevice, vulkanModel->windowSurface);
 
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		std::set<uint32_t> uniqueQueueFamilies =
@@ -43,19 +42,19 @@ namespace AVulkan
 		createInfo.ppEnabledExtensionNames = physicalDeviceExtensions.data();
 
 		VkPhysicalDeviceFeatures deviceFeatures;
-		vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
+		vkGetPhysicalDeviceFeatures(vulkanModel->physicalDevice, &deviceFeatures);
 		createInfo.pEnabledFeatures = &deviceFeatures;
 
 		validationLayers.Setup(createInfo);
 
 		VkDevice logicalDevice;
-		auto createStatus = vkCreateDevice(physicalDevice, &createInfo, nullptr, &logicalDevice);
+		auto createStatus = vkCreateDevice(vulkanModel->physicalDevice, &createInfo, nullptr, &logicalDevice);
 		CAssert::Check(createStatus == VK_SUCCESS, "failed to create logical device, status: " + createStatus);
 
-		vkGetDeviceQueue(logicalDevice, queueFamilies.graphicsFamily.value(), 0, &graphicsQueue);
-		vkGetDeviceQueue(logicalDevice, queueFamilies.presentationFamily.value(), 0, &presentationQueue);
+		vkGetDeviceQueue(logicalDevice, queueFamilies.graphicsFamily.value(), 0, &vulkanModel->graphicsQueue);
+		vkGetDeviceQueue(logicalDevice, queueFamilies.presentationFamily.value(), 0, &vulkanModel->presentationQueue);
 
-		return logicalDevice;
+		vulkanModel->logicalDevice = logicalDevice;
 	}
 
 	void ALogicalDevice::Dispose(VkDevice& logicalDevice) const

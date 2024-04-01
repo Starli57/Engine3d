@@ -5,10 +5,10 @@
 
 namespace AVulkan
 {
-	VkCommandPool ACommandPool::Create(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface) const
+	VkCommandPool ACommandPool::Create(Ref<VulkanModel> vulkanModel) const
 	{
 		spdlog::info("Create command pool");
-		QueueFamilyIndices queueFamilyIndices = APhysicalDevice().GetQueueFamilies(physicalDevice, windowSurface);
+		QueueFamilyIndices queueFamilyIndices = APhysicalDevice().GetQueueFamilies(vulkanModel->physicalDevice, vulkanModel->windowSurface);
 
 		VkCommandPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -16,7 +16,7 @@ namespace AVulkan
 		poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 
 		VkCommandPool commandPool;
-		auto createStatus = vkCreateCommandPool(logicalDevice, &poolInfo, nullptr, &commandPool);
+		auto createStatus = vkCreateCommandPool(vulkanModel->logicalDevice, &poolInfo, nullptr, &commandPool);
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create command pool, status = " + createStatus);
 
 		return commandPool;

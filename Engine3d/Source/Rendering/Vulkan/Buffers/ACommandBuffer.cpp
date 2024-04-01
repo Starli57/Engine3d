@@ -4,26 +4,25 @@
 
 namespace AVulkan
 {
-	void ACommandBuffer::Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, SwapChainData& swapChainData, int buffersCount) const
+	void ACommandBuffer::Setup(Ref<VulkanModel> model, int buffersCount) const
 	{
 		spdlog::info("Create command buffer");
 
-		swapChainData.commandBuffers.resize(buffersCount);
+		model->swapChainData->commandBuffers.resize(buffersCount);
 
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		allocInfo.commandPool = commandPool;
+		allocInfo.commandPool = model->commandPool;
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandBufferCount = static_cast<uint32_t>(swapChainData.commandBuffers.size());
+		allocInfo.commandBufferCount = static_cast<uint32_t>(model->swapChainData->commandBuffers.size());
 
-		auto createStatus = vkAllocateCommandBuffers(logicalDevice, &allocInfo, swapChainData.commandBuffers.data());
+		auto createStatus = vkAllocateCommandBuffers(model->logicalDevice, &allocInfo, model->swapChainData->commandBuffers.data());
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to allocate command buffers, status: " + createStatus);
 	}
 
-	void ACommandBuffer::Record(Ref<entt::registry> ecs, uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
-		SwapChainData& swapChainData, GraphicsPipeline& pipeline) const
+	void ACommandBuffer::Record(Ref<VulkanModel> model, Ref<entt::registry> ecs, VkFramebuffer& frameBuffer) const
 	{
-		auto commandBuffer = swapChainData.commandBuffers.at(frame);
+		auto commandBuffer = model->swapChainData->commandBuffers.at(model->frame);
 
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -38,16 +37,16 @@ namespace AVulkan
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = renderPass;
+		renderPassInfo.renderPass = model->renderPass;
 		renderPassInfo.framebuffer = frameBuffer;
 		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = swapChainData.extent;
+		renderPassInfo.renderArea.extent = model->swapChainData->extent;
 		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearColors.size());
 		renderPassInfo.pClearValues = clearColors.data();
 
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 		{
-			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipeline());
+			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, model->graphicsPipeline->GetPipeline());
 
 			auto meshContainers = ecs->view<UboModelComponent, MeshComponent>();
 			for (auto entity : meshContainers)
@@ -61,11 +60,11 @@ namespace AVulkan
 				vkCmdBindIndexBuffer(commandBuffer, meshVulkan->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 				
 				auto uboModel = uboModelComponent.model;
-				vkCmdPushConstants(commandBuffer, pipeline.GetLayout(), VK_SHADER_STAGE_VERTEX_BIT,
+				vkCmdPushConstants(commandBuffer, model->graphicsPipeline->GetLayout(), VK_SHADER_STAGE_VERTEX_BIT,
 					0, sizeof(UboModelComponent), &uboModel);
 
-				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetLayout(), 
-					0, 1, &swapChainData.descriptorSets[frame], 0, nullptr);
+				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, model->graphicsPipeline->GetLayout(),
+					0, 1, &model->swapChainData->descriptorSets[model->frame], 0, nullptr);
 
 				uint32_t instanceCount = 1;
 				uint32_t firstVertexIndex = 0;

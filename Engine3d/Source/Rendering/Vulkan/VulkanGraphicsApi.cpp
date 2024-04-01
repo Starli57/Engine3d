@@ -13,14 +13,16 @@ namespace AVulkan
 	{
 		this->ecs = ecs;
 		this->projectSettings = projectSettings;
-		this->rollback = new Rollback("VulkanGraphicsApi", *vulkanRollback);
+		this->rollback = CreateRef<Rollback>("VulkanGraphicsApi", *vulkanRollback);
 		this->swapchainRollback = CreateRef<Rollback>("SwapchainRollback");
-		this->window = glfwWindow;
+
+		this->model = CreateRef<VulkanModel>();
+		model->window = glfwWindow;
 	}
 
 	VulkanGraphicsApi::~VulkanGraphicsApi()
 	{
-		delete rollback;
+		rollback.reset();
 	}
 
 	void VulkanGraphicsApi::Init()
@@ -59,16 +61,16 @@ namespace AVulkan
 	void VulkanGraphicsApi::RecreateSwapChain()
 	{
 		int width = 0, height = 0;
-		glfwGetFramebufferSize(window, &width, &height);
+		glfwGetFramebufferSize(model->window, &width, &height);
 
 		while (width == 0 || height == 0)
 		{
-			glfwGetFramebufferSize(window, &width, &height);
+			glfwGetFramebufferSize(model->window, &width, &height);
 			glfwWaitEvents();
 		}
 
 		spdlog::info("Recreate swapchain");
-		needResizeWindow = false;
+		model->needResizeWindow = false;
 		FinanilizeRenderOperations();
 
 		swapchainRollback->Dispose();
@@ -82,11 +84,11 @@ namespace AVulkan
 	//todo: make refactoring of the function
 	void VulkanGraphicsApi::Render()
 	{
-		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, frameSyncTimeout);
+		vkWaitForFences(model->logicalDevice, 1, &model->drawFences[model->frame], VK_TRUE, model->frameSyncTimeout);
 
 		uint32_t imageIndex = 0;
-		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData.swapChain, frameSyncTimeout,
-			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
+		auto acquireStatus = vkAcquireNextImageKHR(model->logicalDevice, model->swapChainData->swapChain, model->frameSyncTimeout,
+			model->imageAvailableSemaphores[model->frame], VK_NULL_HANDLE, &imageIndex);
 		
 		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR) 
 		{
@@ -96,12 +98,11 @@ namespace AVulkan
 		
 		CAssert::Check(acquireStatus == VK_SUCCESS || acquireStatus == VK_SUBOPTIMAL_KHR, "Failed to acquire swap chain image!");
 
-		UpdateUniformBuffer(frame);
+		UpdateUniformBuffer(model->frame);
 
-		vkResetFences(logicalDevice, 1, &drawFences[frame]);
-		vkResetCommandBuffer(swapChainData.commandBuffers[frame], 0);
-		ACommandBuffer().Record(ecs, frame, swapChainData.frameBuffers[imageIndex],
-			renderPass, swapChainData, *graphicsPipeline);
+		vkResetFences(model->logicalDevice, 1, &model->drawFences[model->frame]);
+		vkResetCommandBuffer(model->swapChainData->commandBuffers[model->frame], 0);
+		ACommandBuffer().Record(model, ecs, model->swapChainData->frameBuffers[imageIndex]);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
@@ -111,26 +112,26 @@ namespace AVulkan
 		submitInfo.commandBufferCount = 1;
 		submitInfo.signalSemaphoreCount = 1;
 		
-		submitInfo.pWaitSemaphores = &imageAvailableSemaphores[frame];
-		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[frame];
+		submitInfo.pWaitSemaphores = &model->imageAvailableSemaphores[model->frame];
+		submitInfo.pSignalSemaphores = &model->renderFinishedSemaphores[model->frame];
 
 		submitInfo.pWaitDstStageMask = waitStages;
-		submitInfo.pCommandBuffers = &swapChainData.commandBuffers[frame];
+		submitInfo.pCommandBuffers = &model->swapChainData->commandBuffers[model->frame];
 
-		auto submitStatus = vkQueueSubmit(graphicsQueue, 1, &submitInfo, drawFences[frame]);
+		auto submitStatus = vkQueueSubmit(model->graphicsQueue, 1, &submitInfo, model->drawFences[model->frame]);
 		CAssert::Check(submitStatus == VK_SUCCESS, "Failed to submit draw command buffer, status: " + submitStatus);
 
 		VkPresentInfoKHR presentInfo{};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 		presentInfo.waitSemaphoreCount = 1;
-		presentInfo.pWaitSemaphores = &renderFinishedSemaphores[frame];
+		presentInfo.pWaitSemaphores = &model->renderFinishedSemaphores[model->frame];
 		presentInfo.swapchainCount = 1;
-		presentInfo.pSwapchains = &swapChainData.swapChain;
+		presentInfo.pSwapchains = &model->swapChainData->swapChain;
 		presentInfo.pImageIndices = &imageIndex;
 
-		auto presentStatus = vkQueuePresentKHR(presentationQueue, &presentInfo);
+		auto presentStatus = vkQueuePresentKHR(model->presentationQueue, &presentInfo);
 
-		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR || needResizeWindow)
+		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR || model->needResizeWindow)
 		{
 			RecreateSwapChain();
 			return;
@@ -138,7 +139,7 @@ namespace AVulkan
 		
 		CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
 		
-		frame = (frame + 1) % maxFramesDraws;
+		model->frame = (model->frame + 1) % model->maxFramesInFlight;
 	}
 
 	//todo: replace
@@ -148,109 +149,112 @@ namespace AVulkan
 		auto entries = ecs->view<UboViewProjectionComponent>();
 		auto [uboComponent] = entries.get(entries.front());
 
-		memcpy(swapChainData.uniformBuffers->at(imageIndex)->bufferMapped, &uboComponent, sizeof(UboViewProjectionComponent));
+		memcpy(model->swapChainData->uniformBuffers->at(imageIndex)->bufferMapped, &uboComponent, sizeof(UboViewProjectionComponent));
 	}
 
 	void VulkanGraphicsApi::FinanilizeRenderOperations()
 	{
-		vkDeviceWaitIdle(logicalDevice);
+		vkDeviceWaitIdle(model->logicalDevice);
 	}
 
 	Ref<Mesh> VulkanGraphicsApi::CreateMesh(const std::string& meshPath)
 	{
-		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, swapChainData, graphicsQueue, commandPool, meshPath);
+		return CreateRef<MeshVulkan>(model, meshPath);
 	}
 
 	Ref<Mesh> VulkanGraphicsApi::CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices)
 	{
-		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, swapChainData, graphicsQueue, commandPool, vertices, indices);
+		return CreateRef<MeshVulkan>(model, vertices, indices);
 	}
 
 	Ref<Texture> VulkanGraphicsApi::CreateTexture(TextureId textureId)
 	{
-		return CreateRef<TextureVulkan>(projectSettings, physicalDevice, logicalDevice, swapChainData,
-			descriptorPool, descriptorSetLayout, textureSampler, graphicsQueue, commandPool, textureId);
+		return CreateRef<TextureVulkan>(
+			projectSettings, model, 
+			model->descriptorPool, model->descriptorSetLayout,
+			model->textureSampler, model->commandPool, textureId);
 	}
 
 	void VulkanGraphicsApi::CreateInstance()
 	{
-		AInstance().Create(instance);
-		rollback->Add([this]() { AInstance().Dispose(instance); });
+		AInstance().Create(model->instance);
+		rollback->Add([this]() { AInstance().Dispose(model->instance); });
 	}
 
 	void VulkanGraphicsApi::CreateWindowSurface()
 	{
-		windowSurface = AWindowsSurface().Create(instance, *window);
-		rollback->Add([this]() { AWindowsSurface().Dispose(instance, windowSurface); });
+		model->windowSurface = AWindowsSurface().Create(model);
+		rollback->Add([this]() { AWindowsSurface().Dispose(model); });
 	}
 
 	void VulkanGraphicsApi::SelectPhysicalRenderingDevice()
 	{
 		APhysicalDevice pdInterface;
-		physicalDevice = pdInterface.GetBestRenderingDevice(instance, windowSurface);
-		pdInterface.PrintDebugInformation(physicalDevice, windowSurface);
+		model->physicalDevice = pdInterface.GetBestRenderingDevice(model->instance, model->windowSurface);
+		pdInterface.PrintDebugInformation(model->physicalDevice, model->windowSurface);
 	}
 
 	void VulkanGraphicsApi::CreateLogicalDevice()
 	{
-		logicalDevice = ALogicalDevice().Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
-		rollback->Add([this]() { ALogicalDevice().Dispose(logicalDevice); });
+		ALogicalDevice().Create(model);
+		rollback->Add([this]() { ALogicalDevice().Dispose(model->logicalDevice); });
 	}
 
 	void VulkanGraphicsApi::CreateSwapChain()
 	{
-		auto queueIndices = APhysicalDevice().GetQueueFamilies(physicalDevice, windowSurface);
-		ASwapChain().Create(*window, physicalDevice, logicalDevice, windowSurface, queueIndices, swapChainData);
-		swapchainRollback->Add([this]() { ASwapChain().Dispose(logicalDevice, swapChainData); });
+		auto queueIndices = APhysicalDevice().GetQueueFamilies(model->physicalDevice, model->windowSurface);
+		ASwapChain().Create(model, queueIndices);
+		swapchainRollback->Add([this]() { ASwapChain().Dispose(model->logicalDevice, model->swapChainData); });
 	}
 
 	void VulkanGraphicsApi::CreateSwapChainImageViews()
 	{
-		AImageView().Create(logicalDevice, swapChainData);
-		swapchainRollback->Add([this]() { AImageView().Dispose(logicalDevice, swapChainData); });
+		AImageView().Create(model->logicalDevice, model->swapChainData);
+		swapchainRollback->Add([this]() { AImageView().Dispose(model->logicalDevice, model->swapChainData); });
 	}
 
 	void VulkanGraphicsApi::CreateRenderPass()
 	{
-		renderPass = ARenderPass().Create(physicalDevice, logicalDevice, swapChainData.imageFormat);
-		rollback->Add([this]() { ARenderPass().Dispose(logicalDevice, renderPass);; });
+		ARenderPass().Create(model);
+		rollback->Add([this]() { ARenderPass().Dispose(model->logicalDevice, model->renderPass);; });
 	}
 
 	void VulkanGraphicsApi::CreateGraphicsPipeline()
 	{
-		graphicsPipeline = new GraphicsPipeline(projectSettings, logicalDevice, swapChainData.extent, renderPass, rollback);
-		graphicsPipeline->Create(descriptorSetLayout);
+		model->graphicsPipeline = CreateRef<GraphicsPipeline>(projectSettings, model->logicalDevice, 
+			model->swapChainData->extent, model->renderPass, rollback);
+		model->graphicsPipeline->Create(model->descriptorSetLayout);
 
-		rollback->Add([this]() { delete graphicsPipeline; });
+		rollback->Add([this]() { model->graphicsPipeline.reset(); });
 	}
 
 	void VulkanGraphicsApi::CreateFrameBuffers()
 	{
-		AFrameBuffer().Create(logicalDevice, renderPass, swapChainData, depthBufferModel);
-		swapchainRollback->Add([this]() { AFrameBuffer().Dispose(logicalDevice, swapChainData); });
+		AFrameBuffer().Create(model);
+		swapchainRollback->Add([this]() { AFrameBuffer().Dispose(model); });
 	}
 
 	void VulkanGraphicsApi::CreateCommandPool()
 	{
-		commandPool = ACommandPool().Create(logicalDevice, physicalDevice, windowSurface);
-		rollback->Add([this]() { ACommandPool().Dispose(logicalDevice, commandPool); });
+		model->commandPool = ACommandPool().Create(model);
+		rollback->Add([this]() { ACommandPool().Dispose(model->logicalDevice, model->commandPool); });
 	}
 
 	void VulkanGraphicsApi::CreateCommandBuffer()
 	{
-		ACommandBuffer().Setup(logicalDevice, commandPool, swapChainData, maxFramesDraws);
+		ACommandBuffer().Setup(model, model->maxFramesInFlight);
 	}
 
 	void VulkanGraphicsApi::CreateDescriptorSetLayout()
 	{
-		ADescriptorLayout().Create(logicalDevice, descriptorSetLayout);
-		rollback->Add([this]() { ADescriptorLayout().Dispose(logicalDevice, descriptorSetLayout); });
+		ADescriptorLayout().Create(model->logicalDevice, model->descriptorSetLayout);
+		rollback->Add([this]() { ADescriptorLayout().Dispose(model->logicalDevice, model->descriptorSetLayout); });
 	}
 
 	void VulkanGraphicsApi::CreateDescriptorPool()
 	{
-		ADescriptorPool().Create(logicalDevice, swapChainData, descriptorPool);
-		rollback->Add([this]() { ADescriptorPool().Dispose(logicalDevice, descriptorPool); });
+		ADescriptorPool().Create(model->logicalDevice, model->swapChainData, model->descriptorPool);
+		rollback->Add([this]() { ADescriptorPool().Dispose(model->logicalDevice, model->descriptorPool); });
 	}
 
 	void VulkanGraphicsApi::CreateDescriptorSets()
@@ -261,25 +265,25 @@ namespace AVulkan
 	{
 		spdlog::info("Create depth buffer");
 
-		VkFormat depthFormat = VkFormatUtility::FindDepthBufferFormat(physicalDevice);
-		depthBufferModel = CreateRef<DepthBufferModel>();
+		VkFormat depthFormat = VkFormatUtility::FindDepthBufferFormat(model->physicalDevice);
+		model->swapChainData->depthBufferModel = CreateRef<DepthBufferModel>();
 		
-		depthBufferModel->image = AImage(physicalDevice, logicalDevice, graphicsQueue, commandPool).Create(
-			swapChainData.extent.width, swapChainData.extent.height, depthFormat, 
+		model->swapChainData->depthBufferModel->image = AImage(model, model->commandPool).Create(
+			model->swapChainData->extent.width, model->swapChainData->extent.height, depthFormat,
 			VK_IMAGE_TILING_OPTIMAL, 
 			VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, 
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, 
-			depthBufferModel->imageMemory);
+			model->swapChainData->depthBufferModel->imageMemory);
 
-		VkImageViewUtility::Create(logicalDevice, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
-			depthBufferModel->image, depthBufferModel->imageView);
+		VkImageViewUtility::Create(model->logicalDevice, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
+			model->swapChainData->depthBufferModel->image, model->swapChainData->depthBufferModel->imageView);
 
 		swapchainRollback->Add([this]()
 		{
-			VkImageViewUtility::Destroy(logicalDevice, depthBufferModel->imageView);
-			AImage(physicalDevice, logicalDevice, graphicsQueue, commandPool).Destroy(depthBufferModel->image);
-			VkMemoryUtility::FreeDeviceMemory(logicalDevice, depthBufferModel->imageMemory);
-			depthBufferModel.reset();
+			VkImageViewUtility::Destroy(model->logicalDevice, model->swapChainData->depthBufferModel->imageView);
+			AImage(model, model->commandPool).Destroy(model->swapChainData->depthBufferModel->image);
+			VkMemoryUtility::FreeDeviceMemory(model->logicalDevice, model->swapChainData->depthBufferModel->imageMemory);
+			model->swapChainData->depthBufferModel.reset();
 		});
 	}
 
@@ -287,7 +291,7 @@ namespace AVulkan
 	{
 		//todo: replace logic to helper class
 		VkPhysicalDeviceProperties properties{};
-		vkGetPhysicalDeviceProperties(physicalDevice, &properties);
+		vkGetPhysicalDeviceProperties(model->physicalDevice, &properties);
 
 		VkSamplerCreateInfo samplerInfo{};
 		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -307,20 +311,20 @@ namespace AVulkan
 		samplerInfo.minLod = 0.0f;
 		samplerInfo.maxLod = 0.0f;
 
-		auto createStatus = vkCreateSampler(logicalDevice, &samplerInfo, nullptr, &textureSampler);
+		auto createStatus = vkCreateSampler(model->logicalDevice, &samplerInfo, nullptr, &model->textureSampler);
 		CAssert::Check(createStatus == VK_SUCCESS, "Textures sampler can't be created");
 
-		rollback->Add([this]() { vkDestroySampler(logicalDevice, textureSampler, nullptr); });
+		rollback->Add([this]() { vkDestroySampler(model->logicalDevice, model->textureSampler, nullptr); });
 	}
 
 	void VulkanGraphicsApi::CreateUniformBuffers()
 	{
-		auto buffersCount = swapChainData.images.size();
-		swapChainData.uniformBuffers = new std::vector<UniformBufferVulkan*>();
-		swapChainData.uniformBuffers->reserve(buffersCount);
+		auto buffersCount = model->swapChainData->images.size();
+		model->swapChainData->uniformBuffers = new std::vector<UniformBufferVulkan*>();
+		model->swapChainData->uniformBuffers->reserve(buffersCount);
 		for (int i = 0; i < buffersCount; i++)
 		{
-			swapChainData.uniformBuffers->push_back(new UniformBufferVulkan(physicalDevice, logicalDevice));
+			model->swapChainData->uniformBuffers->push_back(new UniformBufferVulkan(model->physicalDevice, model->logicalDevice));
 		}
 
 		rollback->Add([this]() { DisposeUniformBuffers(); });
@@ -328,19 +332,19 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::DisposeUniformBuffers()
 	{
-		for (int i = 0; i < swapChainData.uniformBuffers->size(); i++)
+		for (int i = 0; i < model->swapChainData->uniformBuffers->size(); i++)
 		{
-			delete swapChainData.uniformBuffers->at(i);
+			delete model->swapChainData->uniformBuffers->at(i);
 		}
-		delete swapChainData.uniformBuffers;
+		delete model->swapChainData->uniformBuffers;
 	}
 
 	//todo: replace 
 	void VulkanGraphicsApi::CreateSyncObjects()
 	{
-		imageAvailableSemaphores.resize(maxFramesDraws);
-		renderFinishedSemaphores.resize(maxFramesDraws);
-		drawFences.resize(maxFramesDraws);
+		model->imageAvailableSemaphores.resize(model->maxFramesInFlight);
+		model->renderFinishedSemaphores.resize(model->maxFramesInFlight);
+		model->drawFences.resize(model->maxFramesInFlight);
 
 		VkSemaphoreCreateInfo semaphoreInfo{};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -349,22 +353,22 @@ namespace AVulkan
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-		for (int i = 0; i < maxFramesDraws; i++) 
+		for (int i = 0; i < model->maxFramesInFlight; i++) 
 		{
-			vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]);
-			rollback->Add([i, this]() { vkDestroySemaphore(logicalDevice, imageAvailableSemaphores[i], nullptr); });
+			vkCreateSemaphore(model->logicalDevice, &semaphoreInfo, nullptr, &model->imageAvailableSemaphores[i]);
+			rollback->Add([i, this]() { vkDestroySemaphore(model->logicalDevice, model->imageAvailableSemaphores[i], nullptr); });
 
-			vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]);
-			rollback->Add([i, this]() { vkDestroySemaphore(logicalDevice, renderFinishedSemaphores[i], nullptr); });
+			vkCreateSemaphore(model->logicalDevice, &semaphoreInfo, nullptr, &model->renderFinishedSemaphores[i]);
+			rollback->Add([i, this]() { vkDestroySemaphore(model->logicalDevice, model->renderFinishedSemaphores[i], nullptr); });
 
-			vkCreateFence(logicalDevice, &fenceInfo, nullptr, &drawFences[i]);
-			rollback->Add([i, this]() { vkDestroyFence(logicalDevice, drawFences[i], nullptr); });
+			vkCreateFence(model->logicalDevice, &fenceInfo, nullptr, &model->drawFences[i]);
+			rollback->Add([i, this]() { vkDestroyFence(model->logicalDevice, model->drawFences[i], nullptr); });
 		}
 	}
 
 	void VulkanGraphicsApi::OnFramebufferResized()
 	{
-		needResizeWindow = true;
+		model->needResizeWindow = true;
 	}
 
 }

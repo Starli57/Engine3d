@@ -3,20 +3,20 @@
 
 namespace AVulkan
 {
-	VkSurfaceKHR AWindowsSurface::Create(VkInstance& instance, GLFWwindow& window) const
+	VkSurfaceKHR AWindowsSurface::Create(Ref<VulkanModel> vulkanModel) const
 	{
 		spdlog::info("Create Window Surface");
 
 		VkSurfaceKHR surface;
-		auto createResult = glfwCreateWindowSurface(instance, &window, nullptr, &surface);
+		auto createResult = glfwCreateWindowSurface(vulkanModel->instance, vulkanModel->window, nullptr, &surface);
 		CAssert::Check(createResult == VK_SUCCESS, "Cant't create vulkan window surface, status: " + createResult);
 
 		return surface;
 	}
 
-	void AWindowsSurface::Dispose(VkInstance& instance, VkSurfaceKHR& surface) const
+	void AWindowsSurface::Dispose(Ref<VulkanModel> vulkanModel) const
 	{
 		spdlog::info("Dispose surface");
-		vkDestroySurfaceKHR(instance, surface, nullptr);
+		vkDestroySurfaceKHR(vulkanModel->instance, vulkanModel->windowSurface, nullptr);
 	}
 }

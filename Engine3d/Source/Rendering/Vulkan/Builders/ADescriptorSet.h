@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "SharedLib/Components/UboViewProjectionComponent.h"
+#include "Rendering/Vulkan/VulkanModel.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 
 namespace AVulkan
@@ -10,7 +11,8 @@ namespace AVulkan
 	class ADescriptorSet
 	{
 	public:
-		void Allocate(VkDevice& logicalDevice, SwapChainData& swapChainData, VkDescriptorPool& descriptorPool,
-			VkDescriptorSetLayout& descriptorSetLayout, VkImageView& textureImageView, VkSampler& textureSampler) const;
+		void Allocate(Ref<VulkanModel> vulkanModel, 
+			VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout,
+			VkImageView& textureImageView, VkSampler& textureSampler) const;
 	};
 }

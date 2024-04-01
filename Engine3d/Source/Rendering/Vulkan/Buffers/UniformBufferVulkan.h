@@ -3,7 +3,9 @@
 #include <GLFW/glfw3.h>
 
 #include "ABuffer.h"
+#include "SharedLib/Ref.h"
 #include "SharedLib/Components/UboViewProjectionComponent.h"
+#include "Rendering/Vulkan/VulkanModel.h"
 
 namespace AVulkan
 {
@@ -14,7 +16,7 @@ namespace AVulkan
 		VkDeviceMemory bufferMemory;
 		void* bufferMapped;
 
-		UniformBufferVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice);
+		UniformBufferVulkan(Ref<VulkanModel> vulkanModel);
 		~UniformBufferVulkan();
 
 

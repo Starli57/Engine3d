@@ -4,10 +4,11 @@
 namespace AVulkan
 {
 	//todo make one descriptor per material
-	void ADescriptorSet::Allocate(VkDevice& logicalDevice, SwapChainData& swapChainData, VkDescriptorPool& descriptorPool,
-		VkDescriptorSetLayout& descriptorSetLayout, VkImageView& textureImageView, VkSampler& textureSampler) const
+	void ADescriptorSet::Allocate(Ref<VulkanModel> vulkanModel, 
+		VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, 
+		VkImageView& textureImageView, VkSampler& textureSampler) const
 	{
-		auto setsCount = swapChainData.uniformBuffers->size();
+		auto setsCount = vulkanModel->swapChainData->uniformBuffers->size();
 
 		std::vector<VkDescriptorSetLayout> layouts(setsCount, descriptorSetLayout);
 
@@ -17,16 +18,16 @@ namespace AVulkan
 		allocInfo.descriptorSetCount = static_cast<uint32_t>(setsCount);
 		allocInfo.pSetLayouts = layouts.data();
 
-		swapChainData.descriptorSets.resize(setsCount);
-		auto allocateStatus = vkAllocateDescriptorSets(logicalDevice, &allocInfo, swapChainData.descriptorSets.data());
+		vulkanModel->swapChainData->descriptorSets.resize(setsCount);
+		auto allocateStatus = vkAllocateDescriptorSets(vulkanModel->logicalDevice, &allocInfo, vulkanModel->swapChainData->descriptorSets.data());
 		CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate descriptor sets, status: " + allocateStatus);
 
 		for (size_t i = 0; i < setsCount; i++)
 		{
-			auto descriptorSet = swapChainData.descriptorSets.at(i);
+			auto descriptorSet = vulkanModel->swapChainData->descriptorSets.at(i);
 
 			VkDescriptorBufferInfo bufferInfo{};
-			bufferInfo.buffer = swapChainData.uniformBuffers->at(i)->buffer;
+			bufferInfo.buffer = vulkanModel->swapChainData->uniformBuffers->at(i)->buffer;
 			bufferInfo.offset = 0;
 			bufferInfo.range = sizeof(UboViewProjectionComponent);
 
@@ -53,7 +54,7 @@ namespace AVulkan
 			descriptorWrites[1].descriptorCount = 1;
 			descriptorWrites[1].pImageInfo = &imageInfo;
 
-			vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+			vkUpdateDescriptorSets(vulkanModel->logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 		}
 	}
 }

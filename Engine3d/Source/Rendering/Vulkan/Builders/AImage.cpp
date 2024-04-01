@@ -6,8 +6,8 @@
 
 namespace AVulkan
 {
-    AImage::AImage(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool)
-        : physicalDevice(physicalDevice), logicalDevice(logicalDevice), graphicsQueue(graphicsQueue), commandPool(commandPool)
+    AImage::AImage(Ref<VulkanModel> vulkanModel, VkCommandPool& commandPool)
+        : vulkanModel(vulkanModel), commandPool(commandPool)
     {
     }
 
@@ -30,28 +30,28 @@ namespace AVulkan
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         VkImage image = nullptr;
-        auto createStatus = vkCreateImage(logicalDevice, &imageInfo, nullptr, &image);
+        auto createStatus = vkCreateImage(vulkanModel->logicalDevice, &imageInfo, nullptr, &image);
         CAssert::Check(createStatus == VK_SUCCESS, "Failed to create vk image");
 
         VkMemoryRequirements memRequirements;
-        vkGetImageMemoryRequirements(logicalDevice, image, &memRequirements);
+        vkGetImageMemoryRequirements(vulkanModel->logicalDevice, image, &memRequirements);
 
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
-        allocInfo.memoryTypeIndex = VkMemoryUtility::FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, properties);
+        allocInfo.memoryTypeIndex = VkMemoryUtility::FindMemoryType(vulkanModel->physicalDevice, memRequirements.memoryTypeBits, properties);
 
-        auto allocateStatus = vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &imageMemory);
+        auto allocateStatus = vkAllocateMemory(vulkanModel->logicalDevice, &allocInfo, nullptr, &imageMemory);
         CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate vk image memory");
 
-        vkBindImageMemory(logicalDevice, image, imageMemory, 0);
+        vkBindImageMemory(vulkanModel->logicalDevice, image, imageMemory, 0);
         return image;
     }
 
     void AImage::CopyBufferToImage(VkBuffer& buffer, VkImage& image, uint32_t width, uint32_t height) const
     {
         ABuffer bufferUtility;
-        auto commandBuffer = bufferUtility.BeginCommandBuffer(logicalDevice, commandPool);
+        auto commandBuffer = bufferUtility.BeginCommandBuffer(vulkanModel->logicalDevice, commandPool);
 
         VkBufferImageCopy imageRegion{};
         imageRegion.bufferOffset = 0;
@@ -69,14 +69,14 @@ namespace AVulkan
         vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageRegion);
 
         vkEndCommandBuffer(commandBuffer);
-        bufferUtility.SubmitCommandBuffer(graphicsQueue, commandBuffer);
-        vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
+        bufferUtility.SubmitCommandBuffer(vulkanModel->graphicsQueue, commandBuffer);
+        vkFreeCommandBuffers(vulkanModel->logicalDevice, commandPool, 1, &commandBuffer);
     }
 
     void AImage::TransitionImageLayout(VkImage& image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) const
     {
         ABuffer bufferUtility;
-        auto commandBuffer = bufferUtility.BeginCommandBuffer(logicalDevice, commandPool);
+        auto commandBuffer = bufferUtility.BeginCommandBuffer(vulkanModel->logicalDevice, commandPool);
 
         VkImageMemoryBarrier barrier{};
         barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -118,12 +118,12 @@ namespace AVulkan
         vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
 
         vkEndCommandBuffer(commandBuffer);
-        bufferUtility.SubmitCommandBuffer(graphicsQueue, commandBuffer);
-        vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
+        bufferUtility.SubmitCommandBuffer(vulkanModel->graphicsQueue, commandBuffer);
+        vkFreeCommandBuffers(vulkanModel->logicalDevice, commandPool, 1, &commandBuffer);
     }
 
     void AImage::Destroy(VkImage& image) const
     {
-        vkDestroyImage(logicalDevice, image, nullptr);
+        vkDestroyImage(vulkanModel->logicalDevice, image, nullptr);
     }
 }

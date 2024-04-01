@@ -2,12 +2,15 @@
 
 #include <GLFW/glfw3.h>
 
+#include "SharedLib/Ref.h"
+#include "Rendering/Vulkan/VulkanModel.h"
+
 namespace AVulkan
 {
 	class ARenderPass
 	{
 	public:
-		VkRenderPass Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkFormat& scImageFormat) const;
+		void Create(Ref<VulkanModel> vulkanModel) const;
 		void Dispose(VkDevice& logicalDevice, VkRenderPass& renderPass) const;
 	};
 }

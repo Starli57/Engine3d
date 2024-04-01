@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
+#include "SharedLib/Ref.h"
+#include "Rendering/Vulkan/VulkanModel.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Models/SwapChainSurfaceSettings.h"
 #include "Rendering/Vulkan/Models/QueueFamilyIndices.h"
@@ -12,9 +14,8 @@ namespace AVulkan
 	class ASwapChain
 	{
 	public:
-		void Create(GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
-			VkSurfaceKHR& surface, QueueFamilyIndices& physicalDeviceQueueIndices, SwapChainData& swapChainData) const;
-		void Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
+		void Create(Ref<VulkanModel> vulkanModel, QueueFamilyIndices& physicalDeviceQueueIndices) const;
+		void Dispose(VkDevice& logicalDevice, Ref<SwapChainData> swapChainData) const;
 
 		SwapChainSurfaceSettings GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const;
 		void GetSwapChainColorFormats(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkSurfaceFormatKHR>& formats) const;

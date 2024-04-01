@@ -1,14 +1,16 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
+
 #include "SharedLib/Ref.h"
+#include "Rendering/Vulkan/VulkanModel.h"
 
 namespace AVulkan
 {
     class AImage
     {
     public:
-        AImage(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool);
+        AImage(Ref<VulkanModel> vulkanModel, VkCommandPool& commandPool);
 
         VkImage Create(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
             VkMemoryPropertyFlags properties, VkDeviceMemory& imageMemory) const;
@@ -20,9 +22,7 @@ namespace AVulkan
         void Destroy(VkImage& image) const;
 
     private:
-        VkPhysicalDevice& physicalDevice;
-        VkDevice& logicalDevice;
-        VkQueue& graphicsQueue;
+        Ref<VulkanModel> vulkanModel;
         VkCommandPool& commandPool;
     };
 }

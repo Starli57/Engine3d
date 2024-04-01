@@ -9,7 +9,7 @@ namespace AVulkan
 	class AImageView
 	{
 	public:
-		void Create(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
-		void Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const;
+		void Create(VkDevice& logicalDevice, Ref<SwapChainData> swapChainData) const;
+		void Dispose(VkDevice& logicalDevice, Ref<SwapChainData> swapChainData) const;
 	};
 }

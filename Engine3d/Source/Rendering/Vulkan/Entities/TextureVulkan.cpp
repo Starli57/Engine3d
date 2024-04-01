@@ -13,25 +13,22 @@
 
 namespace AVulkan
 {
-    TextureVulkan::TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData,
-        VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, VkSampler& textureSampler,
-        VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId)
-        : Texture(textureId), physicalDevice(physicalDevice), logicalDevice(logicalDevice), 
-                             graphicsQueue(graphicsQueue), commandPool(commandPool)
+    TextureVulkan::TextureVulkan(Ref<ProjectSettigns> projectSettings, Ref<VulkanModel> vulkanModel,
+        VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, 
+        VkSampler& textureSampler, VkCommandPool& commandPool, TextureId textureId)
+        : Texture(textureId), projectSettings(projectSettings), vulkanModel(vulkanModel)
     {
-        this->projectSettings = projectSettings;
-
         CreateImage(textureId);
         CreateImageView();
 
-        ADescriptorSet().Allocate(logicalDevice, swapChainData, descriptorPool, descriptorSetLayout, imageView, textureSampler);
+        ADescriptorSet().Allocate(vulkanModel, descriptorPool, descriptorSetLayout, imageView, textureSampler);
     }
 
     TextureVulkan::~TextureVulkan()
     {
-        VkImageViewUtility::Destroy(logicalDevice, imageView);
-        vkDestroyImage(logicalDevice, image, nullptr);
-        vkFreeMemory(logicalDevice, imageMemory, nullptr);
+        VkImageViewUtility::Destroy(vulkanModel->logicalDevice, imageView);
+        vkDestroyImage(vulkanModel->logicalDevice, image, nullptr);
+        vkFreeMemory(vulkanModel->logicalDevice, imageMemory, nullptr);
     }
 
     //todo: make async
@@ -63,13 +60,14 @@ namespace AVulkan
         VkBufferUsageFlags usageFlagsStaging = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
         VkMemoryPropertyFlags memoryFlagsStaging = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 
-        ABuffer().Create(physicalDevice, logicalDevice, imageSize,
-            usageFlagsStaging, memoryFlagsStaging, stagingBuffer, stagingMemory);
+        ABuffer().Create(vulkanModel, imageSize,
+            usageFlagsStaging, memoryFlagsStaging, 
+            stagingBuffer, stagingMemory);
 
         void* data;
-        vkMapMemory(logicalDevice, stagingMemory, 0, imageSize, 0, &data);
+        vkMapMemory(vulkanModel->logicalDevice, stagingMemory, 0, imageSize, 0, &data);
         memcpy(data, pixels, static_cast<size_t>(imageSize));
-        vkUnmapMemory(logicalDevice, stagingMemory);
+        vkUnmapMemory(vulkanModel->logicalDevice, stagingMemory);
 
         stbi_image_free(pixels);
 

@@ -4,17 +4,16 @@
 namespace AVulkan
 {
 	//todo: div to smaller functions
-	void ASwapChain::Create(GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
-		VkSurfaceKHR& surface, QueueFamilyIndices& physicalDeviceQueueIndices, SwapChainData& swapChainData) const
+	void ASwapChain::Create(Ref<VulkanModel> vulkanModel, QueueFamilyIndices& physicalDeviceQueueIndices) const
 	{
 		spdlog::info("Create swap chain");
 		
-		auto details = GetSwapChainDetails(physicalDevice, surface);
+		auto details = GetSwapChainDetails(vulkanModel->physicalDevice, vulkanModel->windowSurface);
 		CAssert::Check(DoSupportSwapChain(details), "Swap chains are not supported");
 
 		VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(details.formats);
 		VkPresentModeKHR presentMode = ChoosePresentMode(details.presentModes);
-		VkExtent2D extent = ChooseSwapExtent(window, details.capabilities);
+		VkExtent2D extent = ChooseSwapExtent(*vulkanModel->window, details.capabilities);
 
 		//todo: setup how much exactly images do we need
 		uint32_t imageCount = details.capabilities.minImageCount + 1;
@@ -28,23 +27,23 @@ namespace AVulkan
 
 
 		VkSwapchainCreateInfoKHR createInfo{};
-		SetupSwapChainInfo(createInfo, surface, extent, presentMode, surfaceFormat, details.capabilities, physicalDeviceQueueIndices, imageCount);
+		SetupSwapChainInfo(createInfo, vulkanModel->windowSurface, extent, presentMode, surfaceFormat, details.capabilities, physicalDeviceQueueIndices, imageCount);
 
-		auto createStatus = vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &swapChainData.swapChain);
+		auto createStatus = vkCreateSwapchainKHR(vulkanModel->logicalDevice, &createInfo, nullptr, &vulkanModel->swapChainData->swapChain);
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create swap chain, status: " + createStatus);
 
-		vkGetSwapchainImagesKHR(logicalDevice, swapChainData.swapChain, &imageCount, nullptr);
-		swapChainData.images.resize(imageCount);
-		vkGetSwapchainImagesKHR(logicalDevice, swapChainData.swapChain, &imageCount, swapChainData.images.data());
+		vkGetSwapchainImagesKHR(vulkanModel->logicalDevice, vulkanModel->swapChainData->swapChain, &imageCount, nullptr);
+		vulkanModel->swapChainData->images.resize(imageCount);
+		vkGetSwapchainImagesKHR(vulkanModel->logicalDevice, vulkanModel->swapChainData->swapChain, &imageCount, vulkanModel->swapChainData->images.data());
 
-		swapChainData.imageFormat = surfaceFormat.format;
-		swapChainData.extent = extent;
+		vulkanModel->swapChainData->imageFormat = surfaceFormat.format;
+		vulkanModel->swapChainData->extent = extent;
 	}
 
-	void ASwapChain::Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const
+	void ASwapChain::Dispose(VkDevice& logicalDevice, Ref<SwapChainData> swapChainData) const
 	{
 		spdlog::info("Dispose swap chain");
-		vkDestroySwapchainKHR(logicalDevice, swapChainData.swapChain, nullptr);
+		vkDestroySwapchainKHR(logicalDevice, swapChainData->swapChain, nullptr);
 	}
 	
 	void ASwapChain::SetupSwapChainInfo(VkSwapchainCreateInfoKHR& createInfo, VkSurfaceKHR& surface, VkExtent2D& extent,
