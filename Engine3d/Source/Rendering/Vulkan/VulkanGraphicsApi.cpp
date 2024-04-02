@@ -334,10 +334,4 @@ namespace AVulkan
 			rollback->Add([i, this]() { vkDestroyFence(logicalDevice, drawFences[i], nullptr); });
 		}
 	}
-
-	void VulkanGraphicsApi::OnFramebufferResized()
-	{
-		needResizeWindow = true;
-	}
-
 }

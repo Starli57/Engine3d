@@ -58,8 +58,6 @@ namespace AVulkan
 		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
 		Ref<Texture> CreateTexture(TextureId textureIdh) override;
 
-		void OnFramebufferResized() override;
-
 	private:
 		Ref<entt::registry> ecs;
 		Ref<ProjectSettigns> projectSettings;
