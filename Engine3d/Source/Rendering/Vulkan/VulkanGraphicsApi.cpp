@@ -289,7 +289,7 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateUniformBuffers()
 	{
-		auto buffersCount = swapChainData->images.size();
+		auto buffersCount = swapChainData->imagesCount;
 		uniformBuffers.reserve(buffersCount);
 		for (int i = 0; i < buffersCount; i++)
 		{
@@ -305,7 +305,7 @@ namespace AVulkan
 		{
 			delete uniformBuffers.at(i);
 		}
-		uniformBuffers.resize(0);
+		uniformBuffers.clear();
 	}
 
 	//todo: replace 

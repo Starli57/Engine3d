@@ -73,16 +73,17 @@ namespace AVulkan
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;
 		VkRenderPass renderPass;
-		VkCommandPool commandPool;
-		VkDescriptorSetLayout descriptorSetLayout;
-		VkDescriptorPool descriptorPool;
 
 		Ref<SwapChain> swapChain;
 		Ref<SwapChainData> swapChainData;
 
 		GraphicsPipeline* graphicsPipeline;
 
+		VkCommandPool commandPool;
 		std::vector<VkCommandBuffer> commandBuffers;
+
+		VkDescriptorSetLayout descriptorSetLayout;
+		VkDescriptorPool descriptorPool;
 		std::vector<VkDescriptorSet> descriptorSets;
 
 		std::vector<UniformBufferVulkan*> uniformBuffers;

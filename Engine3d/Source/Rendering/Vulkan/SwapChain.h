@@ -37,6 +37,7 @@ namespace AVulkan
 	private:
 
 		Ref<Rollback> rollback;
+		Ref<SwapChainData> swapChainData;
 
 		GLFWwindow& window;
 		VkPhysicalDevice& physicalDevice;
@@ -44,8 +45,6 @@ namespace AVulkan
 		VkSurfaceKHR& surface;
 		QueueFamilyIndices& physicalDeviceQueueIndices;
 		VkQueue& graphicsQueue;
-
-		Ref<SwapChainData> swapChainData;
 
 		VkCommandPool commandPool;
 		VkRenderPass renderPass;

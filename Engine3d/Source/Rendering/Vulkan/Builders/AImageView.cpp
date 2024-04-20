@@ -9,9 +9,9 @@ namespace AVulkan
 	{
 		spdlog::info("Create swap chain image view");
 
-		swapChainData.imageViews.resize(swapChainData.images.size());
+		swapChainData.imageViews.resize(swapChainData.imagesCount);
 
-		for (size_t i = 0; i < swapChainData.images.size(); i++)
+		for (size_t i = 0; i < swapChainData.imagesCount; i++)
 		{
 			VkImageViewUtility::Create(logicalDevice, swapChainData.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 
 				swapChainData.images.at(i), swapChainData.imageViews.at(i));

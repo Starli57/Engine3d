@@ -37,24 +37,24 @@ namespace AVulkan
 		VkPresentModeKHR presentMode = ChoosePresentMode(details.presentModes);
 		VkExtent2D extent = ChooseSwapExtent(window, details.capabilities);
 
-		uint32_t imageCount = details.capabilities.minImageCount + 1;
-		if (details.capabilities.maxImageCount > 0 && imageCount > details.capabilities.maxImageCount)
+		swapChainData->imagesCount = details.capabilities.minImageCount + 1;
+		if (details.capabilities.maxImageCount > 0 && swapChainData->imagesCount > details.capabilities.maxImageCount)
 		{
-			imageCount = details.capabilities.maxImageCount;
+			swapChainData->imagesCount = details.capabilities.maxImageCount;
 		}
 
-		spdlog::info("Swap chain images count: {0}", imageCount);
+		spdlog::info("Swap chain images count: {0}", swapChainData->imagesCount);
 
 
 		VkSwapchainCreateInfoKHR createInfo{};
-		SetupSwapChainInfo(createInfo, surface, extent, presentMode, surfaceFormat, details.capabilities, physicalDeviceQueueIndices, imageCount);
+		SetupSwapChainInfo(createInfo, surface, extent, presentMode, surfaceFormat, details.capabilities, physicalDeviceQueueIndices, swapChainData->imagesCount);
 
 		auto createStatus = vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &swapChainData->swapChain);
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create swap chain, status: " + createStatus);
 
-		vkGetSwapchainImagesKHR(logicalDevice, swapChainData->swapChain, &imageCount, nullptr);
-		swapChainData->images.resize(imageCount);
-		vkGetSwapchainImagesKHR(logicalDevice, swapChainData->swapChain, &imageCount, swapChainData->images.data());
+		vkGetSwapchainImagesKHR(logicalDevice, swapChainData->swapChain, &swapChainData->imagesCount, nullptr);
+		swapChainData->images.resize(swapChainData->imagesCount);
+		vkGetSwapchainImagesKHR(logicalDevice, swapChainData->swapChain, &swapChainData->imagesCount, swapChainData->images.data());
 
 		swapChainData->imageFormat = surfaceFormat.format;
 		swapChainData->extent = extent;
