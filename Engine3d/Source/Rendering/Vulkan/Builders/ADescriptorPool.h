@@ -10,6 +10,7 @@ namespace AVulkan
 	{
 	public:
 		void Create(VkDevice& logicalDevice, SwapChainData& swapChainData, VkDescriptorPool& descriptorPool) const;
+		void Reset(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const;
 		void Dispose(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const;
 	};
 

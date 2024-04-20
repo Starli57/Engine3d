@@ -12,5 +12,7 @@ namespace AVulkan
 	public:
 		void Allocate(VkDevice& logicalDevice, std::vector<VkDescriptorSet>& descriptorSets, std::vector<UniformBufferVulkan*>& uniformBuffers, 
 			VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, VkImageView& textureImageView, VkSampler& textureSampler) const;
+		void Update(VkDevice& logicalDevice, VkDescriptorSet& descriptorSet, VkBuffer& descriptorBuffer,
+			VkImageView& textureImageView, VkSampler& textureSampler) const;
 	};
 }

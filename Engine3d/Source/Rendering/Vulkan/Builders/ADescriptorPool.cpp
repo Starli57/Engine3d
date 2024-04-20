@@ -23,6 +23,11 @@ namespace AVulkan
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create descriptor pool, status: " + createStatus);
 	}
 
+	void ADescriptorPool::Reset(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const
+	{
+		vkResetDescriptorPool(logicalDevice, descriptorPool, 0);
+	}
+
 	void ADescriptorPool::Dispose(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const
 	{
 		vkDestroyDescriptorPool(logicalDevice, descriptorPool, nullptr);
