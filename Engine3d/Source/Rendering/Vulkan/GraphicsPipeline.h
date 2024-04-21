@@ -17,6 +17,8 @@ namespace AVulkan
 	public:
 		VkPipeline GetPipeline();
 		VkPipelineLayout GetLayout();
+		VkViewport* GetViewport();
+		VkRect2D* GetScissor();
 
 		GraphicsPipeline(Ref<ProjectSettigns> projectSettings, VkDevice& logicalDevice, VkExtent2D& swapChainExtent, VkRenderPass& renderPass, Ref<Rollback> vulkanRollback);
 		~GraphicsPipeline();

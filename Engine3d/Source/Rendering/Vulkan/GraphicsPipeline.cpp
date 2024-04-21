@@ -60,6 +60,11 @@ namespace AVulkan
 			depthStencil.depthBoundsTestEnable = VK_FALSE;
 			depthStencil.stencilTestEnable = VK_FALSE;
 
+			VkDynamicState state[] = { VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR };
+			VkPipelineDynamicStateCreateInfo dynamicInfo = { .sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO };
+			dynamicInfo.pDynamicStates = &state[0];
+			dynamicInfo.dynamicStateCount = 2;
+
 			VkGraphicsPipelineCreateInfo pipelineInfo{};
 			pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 			pipelineInfo.stageCount = 2;
@@ -70,7 +75,7 @@ namespace AVulkan
 			pipelineInfo.pRasterizationState = &rasterizer;
 			pipelineInfo.pMultisampleState = &multisample;
 			pipelineInfo.pColorBlendState = &colorBlend;
-			pipelineInfo.pDynamicState = nullptr;
+			pipelineInfo.pDynamicState = &dynamicInfo;
 			pipelineInfo.layout = pipelineLayout;
 			pipelineInfo.renderPass = renderPass;
 			pipelineInfo.subpass = 0;
@@ -105,6 +110,16 @@ namespace AVulkan
 	VkPipelineLayout GraphicsPipeline::GetLayout()
 	{
 		return pipelineLayout;
+	}
+
+	VkViewport* GraphicsPipeline::GetViewport()
+	{
+		return viewport;
+	}
+
+	VkRect2D* GraphicsPipeline::GetScissor()
+	{
+		return scissor;
 	}
 
 	std::array<VkPipelineShaderStageCreateInfo, 2> GraphicsPipeline::CreateShadersModules()
@@ -147,7 +162,7 @@ namespace AVulkan
 		viewport->minDepth = 0.0f;
 		viewport->maxDepth = 1.0f;
 
-		initializationRollback->Add([this] { delete viewport; });
+		rollback->Add([this] { delete viewport; });
 	}
 
 	void GraphicsPipeline::CreateScissor(VkExtent2D& swapChainExtent)
@@ -156,7 +171,7 @@ namespace AVulkan
 		scissor->offset = { 0, 0 };
 		scissor->extent = swapChainExtent;
 
-		initializationRollback->Add([this] { delete scissor; });
+		rollback->Add([this] { delete scissor; });
 	}
 
 	VkPipelineViewportStateCreateInfo GraphicsPipeline::SetupViewportAndScissor(VkExtent2D& swapChainExtent)

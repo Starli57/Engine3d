@@ -60,6 +60,8 @@ namespace AVulkan
 				VkDeviceSize offsets[] = { 0 };
 				vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 				vkCmdBindIndexBuffer(commandBuffer, meshVulkan->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+				vkCmdSetViewport(commandBuffer, 0, 1, pipeline.GetViewport());
+				vkCmdSetScissor(commandBuffer, 0, 1, pipeline.GetScissor());
 				
 				auto uboModel = uboModelComponent.model;
 				vkCmdPushConstants(commandBuffer, pipeline.GetLayout(), VK_SHADER_STAGE_VERTEX_BIT,

@@ -80,11 +80,11 @@ namespace AVulkan
 		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData->swapChain, frameSyncTimeout,
 			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 		
-		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR) 
-		{
-			RecreateSwapChain();
-			return;
-		}
+	//	if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR) 
+	//	{
+	//		RecreateSwapChain();
+	//		return;
+	//	}
 		
 		CAssert::Check(acquireStatus == VK_SUCCESS || acquireStatus == VK_SUBOPTIMAL_KHR, "Failed to acquire swap chain image!");
 
@@ -122,11 +122,11 @@ namespace AVulkan
 
 		auto presentStatus = vkQueuePresentKHR(presentationQueue, &presentInfo);
 
-		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR || needResizeWindow)
-		{
-			RecreateSwapChain();
-			return;
-		}
+	//	if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR || needResizeWindow)
+	//	{
+	//		RecreateSwapChain();
+	//		return;
+	//	}
 		
 		CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
 		
