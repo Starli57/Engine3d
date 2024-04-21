@@ -65,6 +65,7 @@ namespace AVulkan
 				vkCmdPushConstants(commandBuffer, pipeline.GetLayout(), VK_SHADER_STAGE_VERTEX_BIT,
 					0, sizeof(UboModelComponent), &uboModel);
 
+				//todo: which descriptors need to bind here? why not all?
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetLayout(), 
 					0, 1, &descriptorSets[frame], 0, nullptr);
 

@@ -29,9 +29,7 @@
 #include "Builders/ARenderPass.h"
 #include "Builders/AFrameBuffer.h"
 #include "Builders/ACommandPool.h"
-#include "Builders/ADescriptorLayout.h"
-#include "Builders/ADescriptorPool.h"
-#include "Builders/ADescriptorSet.h"
+#include "Descriptors.h"
 
 #include "Buffers/ACommandBuffer.h"
 
@@ -76,15 +74,12 @@ namespace AVulkan
 
 		Ref<SwapChain> swapChain;
 		Ref<SwapChainData> swapChainData;
+		Ref<Descriptors> descriptors;
 
 		GraphicsPipeline* graphicsPipeline;
 
 		VkCommandPool commandPool;
 		std::vector<VkCommandBuffer> commandBuffers;
-
-		VkDescriptorSetLayout descriptorSetLayout;
-		VkDescriptorPool descriptorPool;
-		std::vector<VkDescriptorSet> descriptorSets;
 
 		std::vector<UniformBufferVulkan*> uniformBuffers;
 

@@ -13,8 +13,9 @@ namespace AVulkan
 	{
 		this->ecs = ecs;
 		this->projectSettings = projectSettings;
-		this->rollback = CreateRef<Rollback>("VulkanGraphicsApi", *vulkanRollback);
 		this->window = glfwWindow;
+		this->rollback = CreateRef<Rollback>("VulkanGraphicsApi", *vulkanRollback);
+		this->descriptors = CreateRef<Descriptors>();
 	}
 
 	VulkanGraphicsApi::~VulkanGraphicsApi()
@@ -214,7 +215,7 @@ namespace AVulkan
 	void VulkanGraphicsApi::CreateGraphicsPipeline()
 	{
 		graphicsPipeline = new GraphicsPipeline(projectSettings, logicalDevice, swapChainData->extent, renderPass, rollback);
-		graphicsPipeline->Create(descriptorSetLayout);
+		graphicsPipeline->Create(descriptors->GetDescriptorSetLayout());
 
 		rollback->Add([this]() { delete graphicsPipeline; });
 	}
@@ -237,14 +238,14 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateDescriptorSetLayout()
 	{
-		ADescriptorLayout().Create(logicalDevice, descriptorSetLayout);
-		rollback->Add([this]() { ADescriptorLayout().Dispose(logicalDevice, descriptorSetLayout); });
+		descriptors->CreateLayout(logicalDevice);
+		rollback->Add([this]() { descriptors->DisposeLayout(logicalDevice); });
 	}
 
 	void VulkanGraphicsApi::CreateDescriptorPool()
 	{
-		ADescriptorPool().Create(logicalDevice, *swapChainData.get(), descriptorPool);
-		rollback->Add([this]() { ADescriptorPool().Dispose(logicalDevice, descriptorPool); });
+	//	ADescriptorPool().Create(logicalDevice, *swapChainData.get(), descriptorPool);
+	//	rollback->Add([this]() { ADescriptorPool().Dispose(logicalDevice, descriptorPool); });
 	}
 
 	void VulkanGraphicsApi::CreateDescriptorSets()
