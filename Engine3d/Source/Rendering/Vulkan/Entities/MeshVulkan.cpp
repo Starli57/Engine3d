@@ -1,8 +1,8 @@
 #include "Pch.h"
 
 #include "MeshVulkan.h"
-#include "Rendering/Vulkan/Buffers/AVertexBuffer.h"
-#include "Rendering/Vulkan/Buffers/AIndexBuffer.h"
+#include "Rendering/Vulkan/Builders/AVertexBuffer.h"
+#include "Rendering/Vulkan/Builders/AIndexBuffer.h"
 #include "spdlog/spdlog.h"
 
 namespace AVulkan

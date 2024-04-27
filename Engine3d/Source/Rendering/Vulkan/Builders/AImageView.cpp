@@ -1,30 +1,37 @@
 #include "Pch.h"
 #include "AImageView.h"
-#include "Rendering/Vulkan/Utilities/VkImageViewUtility.h"
 
 namespace AVulkan
 {
-	//todo: no reason to have this class specific only for swap chain, need to replace it inside VkImageViewUtility
-	void AImageView::Create(VkDevice& logicalDevice, SwapChainData& swapChainData) const
+	void AImageView::Create(VkDevice& logicalDevice, VkFormat& imageFormat, VkImageAspectFlags imageAspectFlags,
+		VkImage& image, VkImageView& imageView)
 	{
-		spdlog::info("Create swap chain image view");
+		spdlog::info("Create image view");
 
-		swapChainData.imageViews.resize(swapChainData.imagesCount);
+		VkImageViewCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+		createInfo.image = image;
+		createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+		createInfo.format = imageFormat;
 
-		for (size_t i = 0; i < swapChainData.imagesCount; i++)
-		{
-			VkImageViewUtility::Create(logicalDevice, swapChainData.imageFormat, VK_IMAGE_ASPECT_COLOR_BIT, 
-				swapChainData.images.at(i), swapChainData.imageViews.at(i));
-		}
+		createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+		createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+		createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+		createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+		createInfo.subresourceRange.aspectMask = imageAspectFlags;
+
+		createInfo.subresourceRange.baseMipLevel = 0;
+		createInfo.subresourceRange.levelCount = 1;
+		createInfo.subresourceRange.baseArrayLayer = 0;
+		createInfo.subresourceRange.layerCount = 1;
+
+		auto createStatus = vkCreateImageView(logicalDevice, &createInfo, nullptr, &imageView);
+		CAssert::Check(createStatus == VK_SUCCESS, "Image view can't be created, status: " + createStatus);
 	}
 
-	void AImageView::Dispose(VkDevice& logicalDevice, SwapChainData& swapChainData) const
+	void AImageView::Destroy(VkDevice& logicalDevice, VkImageView& imageView)
 	{
-		spdlog::info("Dispose swap chain image viewes");
-		for (auto imageView : swapChainData.imageViews)
-		{
-			vkDestroyImageView(logicalDevice, imageView, nullptr);
-		}
-		swapChainData.imageViews.clear();
+		spdlog::info("Dispose image viewes");
+		vkDestroyImageView(logicalDevice, imageView, nullptr);
 	}
 }

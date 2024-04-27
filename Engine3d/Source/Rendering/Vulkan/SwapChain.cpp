@@ -65,8 +65,20 @@ namespace AVulkan
 
 	void SwapChain::CreateSwapChainImageViews()
 	{
-		AImageView().Create(logicalDevice, *swapChainData.get());
-		rollback->Add([this]() { AImageView().Dispose(logicalDevice, *swapChainData.get()); });
+		swapChainData->imageViews.reserve(swapChainData->images.size());
+		for (int i = 0; i < swapChainData->images.size(); i++)
+		{
+			AImageView().Create(logicalDevice, swapChainData->imageFormat, VK_IMAGE_ASPECT_COLOR_BIT,
+				swapChainData->images[i], swapChainData->imageViews[i]);
+		}
+
+		rollback->Add([this]() 
+		{
+			for (int i = 0; i < swapChainData->imageViews.size(); i++)
+			{
+				AImageView().Destroy(logicalDevice, swapChainData->imageViews[i]);
+			}
+		});
 	}
 
 	void SwapChain::CreateDepthBuffer(VkCommandPool& commandPool)
@@ -84,12 +96,12 @@ namespace AVulkan
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 			depthBufferModel->imageMemory);
 
-		VkImageViewUtility::Create(logicalDevice, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
+		AImageView().Create(logicalDevice, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
 			depthBufferModel->image, depthBufferModel->imageView);
 
 		rollback->Add([this]()
 			{
-				VkImageViewUtility::Destroy(logicalDevice, depthBufferModel->imageView);
+				AImageView().Destroy(logicalDevice, depthBufferModel->imageView);
 				AImage(physicalDevice, logicalDevice, graphicsQueue, this->commandPool).Destroy(depthBufferModel->image);
 				VkMemoryUtility::FreeDeviceMemory(logicalDevice, depthBufferModel->imageMemory);
 				depthBufferModel.reset();

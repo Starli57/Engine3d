@@ -11,8 +11,8 @@
 #include "Rendering/Vulkan/Builders/AImage.h"
 #include "Rendering/Vulkan/Builders/AImageView.h"
 #include "Rendering/Vulkan/Builders/AFrameBuffer.h"
+#include "Rendering/Vulkan/Builders/AImageView.h"
 #include "Rendering/Vulkan/Utilities/VkFormatUtility.h"
-#include "Rendering/Vulkan/Utilities/VkImageViewUtility.h"
 #include "Rendering/Vulkan/Utilities/VkMemoryUtility.h"
 #include "Rendering/Vulkan/Utilities/SwapChainUtility.h"
 

@@ -3,10 +3,10 @@
 
 #include "SharedLib/CustomAssert.h"
 #include "Rendering/Vulkan/VulkanGraphicsApi.h"
-#include "Rendering/Vulkan/Buffers/ABuffer.h"
-#include "Rendering/Vulkan/Buffers/AUniformBufferVulkan.h"
+#include "Rendering/Vulkan/Builders/ABuffer.h"
+#include "Rendering/Vulkan/Builders/AUniformBufferVulkan.h"
 #include "Rendering/Vulkan/Builders/AImage.h"
-#include "Rendering/Vulkan/Utilities/VkImageViewUtility.h"
+#include "Rendering/Vulkan/Builders/AImageView.h"
 
 #include <stb_image.h>
 #include <filesystem>
@@ -51,7 +51,7 @@ namespace AVulkan
         uniformBuffers.clear();
         descriptorSets.clear();
 
-        VkImageViewUtility::Destroy(logicalDevice, imageModel->imageView);
+        AImageView().Destroy(logicalDevice, imageModel->imageView);
         vkDestroyImage(logicalDevice, imageModel->image, nullptr);
         vkFreeMemory(logicalDevice, imageModel->imageMemory, nullptr);
     }
@@ -123,7 +123,7 @@ namespace AVulkan
         //todo: find suitable format firstly
         VkFormat imgFormat = VK_FORMAT_R8G8B8A8_SRGB;
         VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
-        VkImageViewUtility::Create(logicalDevice, imgFormat, aspectFlags, imageModel->image, imageModel->imageView);
+        AImageView().Create(logicalDevice, imgFormat, aspectFlags, imageModel->image, imageModel->imageView);
 
     }
 }
