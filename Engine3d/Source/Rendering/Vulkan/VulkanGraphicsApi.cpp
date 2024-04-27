@@ -134,16 +134,6 @@ namespace AVulkan
 		frame = (frame + 1) % maxFramesInFlight;
 	}
 
-	//todo: replace
-	void VulkanGraphicsApi::UpdateUniformBuffer(uint32_t imageIndex)
-	{
-		//todo: find most relevant camera
-		auto entries = ecs->view<UboViewProjectionComponent>();
-		auto [uboComponent] = entries.get(entries.front());
-
-		memcpy(uniformBuffers.at(imageIndex)->bufferMapped, &uboComponent, sizeof(UboViewProjectionComponent));
-	}
-
 	void VulkanGraphicsApi::FinanilizeRenderOperations()
 	{
 		vkDeviceWaitIdle(logicalDevice);
@@ -298,6 +288,16 @@ namespace AVulkan
 		}
 
 		rollback->Add([this]() { DisposeUniformBuffers(); });
+	}
+
+	//todo: replace
+	void VulkanGraphicsApi::UpdateUniformBuffer(uint32_t imageIndex)
+	{
+		//todo: find most relevant camera
+		auto entries = ecs->view<UboViewProjectionComponent>();
+		auto [uboComponent] = entries.get(entries.front());
+
+		memcpy(uniformBuffers.at(imageIndex)->bufferMapped, &uboComponent, sizeof(UboViewProjectionComponent));
 	}
 
 	void VulkanGraphicsApi::DisposeUniformBuffers()

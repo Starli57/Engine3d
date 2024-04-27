@@ -14,11 +14,11 @@ namespace AVulkan
 		void CreateLayout(VkDevice& logicalDevice) const;
 		void DisposeLayout(VkDevice& logicalDevice) const;
 
-		void CreateDescriptorPool(VkDevice& logicalDevice, SwapChainData& swapChainData, VkDescriptorPool& descriptorPool) const;
+		void CreateDescriptorPool(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const;
 		void ResetDescriptorPool(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const;
 		void DisposeDescriptorPool(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const;
-		void AllocateDescriptorSet(VkDevice& logicalDevice, SwapChainData& swapChainData, 
-			VkDescriptorSetLayout& descriptorSetLayout, VkImageView& textureImageView, VkSampler& textureSampler);
+
+		VkDescriptorSet AllocateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSetLayout& descriptorSetLayout);
 		void UpdateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSet& descriptorSet, 
 			VkBuffer& descriptorBuffer, VkImageView& textureImageView, VkSampler& textureSampler) const;
 
@@ -30,8 +30,7 @@ namespace AVulkan
 
 		VkDescriptorSetLayout& descriptorSetLayout;
 		std::vector<VkDescriptorPool> descriptorPools;
-		std::vector<VkDescriptorSet> descriptorSets;
 
-		VkDescriptorPool& GetFreePool(VkDevice& logicalDevice, SwapChainData& swapChainData);
+		VkDescriptorPool& GetFreePool(VkDevice& logicalDevice);
 	};
 }

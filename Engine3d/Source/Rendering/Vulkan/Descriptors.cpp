@@ -39,7 +39,7 @@ namespace AVulkan
 		vkDestroyDescriptorSetLayout(logicalDevice, descriptorSetLayout, nullptr);
 	}
 
-	void Descriptors::CreateDescriptorPool(VkDevice& logicalDevice, SwapChainData& swapChainData, VkDescriptorPool& descriptorPool) const
+	void Descriptors::CreateDescriptorPool(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const
 	{
 		std::array<VkDescriptorPoolSize, 2> poolSizes{};
 		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -67,10 +67,9 @@ namespace AVulkan
 		vkDestroyDescriptorPool(logicalDevice, descriptorPool, nullptr);
 	}
 
-	void Descriptors::AllocateDescriptorSet(VkDevice& logicalDevice, SwapChainData& swapChainData, VkDescriptorSetLayout& descriptorSetLayout,
-		VkImageView& textureImageView, VkSampler& textureSampler)
+	VkDescriptorSet Descriptors::AllocateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSetLayout& descriptorSetLayout)
 	{
-		auto pool = GetFreePool(logicalDevice, swapChainData);
+		auto pool = GetFreePool(logicalDevice);
 
 		VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
 		VkDescriptorSetAllocateInfo allocInfo{};
@@ -82,8 +81,9 @@ namespace AVulkan
 		auto allocateStatus = vkAllocateDescriptorSets(logicalDevice, &allocInfo, &descriptorSet);
 		CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate descriptor sets, status: " + allocateStatus);
 		
-		descriptorSets.at(currentSetIndex) = descriptorSet;
 		currentSetIndex++;
+
+		return descriptorSet;
 	}
 
 	void Descriptors::UpdateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSet& descriptorSet, VkBuffer& descriptorBuffer,
@@ -120,9 +120,9 @@ namespace AVulkan
 		vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 	}
 
-	VkDescriptorPool& Descriptors::GetFreePool(VkDevice& logicalDevice, SwapChainData& swapChainData)
+	VkDescriptorPool& Descriptors::GetFreePool(VkDevice& logicalDevice)
 	{
-		if (currentSetIndex >= maxDescriptorSets)
+		if ((currentSetIndex + 1) >= maxDescriptorSets)
 		{
 			currentPoolIndex++;
 			currentSetIndex = 0;
@@ -130,7 +130,7 @@ namespace AVulkan
 			if (currentPoolIndex >= descriptorPools.size())
 			{
 				VkDescriptorPool pool = VK_NULL_HANDLE;
-				CreateDescriptorPool(logicalDevice, swapChainData, pool);
+				CreateDescriptorPool(logicalDevice, pool);
 				descriptorPools.push_back(pool);
 				return pool;
 			}

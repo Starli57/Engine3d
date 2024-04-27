@@ -4,7 +4,7 @@
 
 namespace AVulkan
 {
-	struct DepthBufferModel 
+	struct ImageModel
 	{
 		VkImage image;
 		VkImageView imageView;

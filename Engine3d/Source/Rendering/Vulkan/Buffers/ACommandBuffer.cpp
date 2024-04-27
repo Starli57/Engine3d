@@ -20,9 +20,8 @@ namespace AVulkan
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to allocate command buffers, status: " + createStatus);
 	}
 
-	void ACommandBuffer::Record(Ref<entt::registry> ecs, uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
-		std::vector<VkCommandBuffer>& commandBuffers, std::vector<VkDescriptorSet>& descriptorSets,
-		GraphicsPipeline& pipeline, VkExtent2D& vkExtent) const
+	void ACommandBuffer::Record(Ref<entt::registry> ecs, Ref<Descriptors> descriptors, uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
+		std::vector<VkCommandBuffer>& commandBuffers, GraphicsPipeline& pipeline, VkExtent2D& vkExtent) const
 	{
 		auto commandBuffer = commandBuffers.at(frame);
 
@@ -65,9 +64,7 @@ namespace AVulkan
 				vkCmdPushConstants(commandBuffer, pipeline.GetLayout(), VK_SHADER_STAGE_VERTEX_BIT,
 					0, sizeof(UboModelComponent), &uboModel);
 
-				//todo: which descriptors need to bind here? why not all?
-				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetLayout(), 
-					0, 1, &descriptorSets[frame], 0, nullptr);
+				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetLayout(), 0, 1, &descriptorSet, 0, nullptr);
 
 				uint32_t instanceCount = 1;
 				uint32_t firstVertexIndex = 0;
