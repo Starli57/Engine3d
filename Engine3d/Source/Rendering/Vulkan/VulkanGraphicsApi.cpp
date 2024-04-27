@@ -3,7 +3,8 @@
 #include <functional>
 
 #include "VulkanGraphicsApi.h"
-#include "Systems/MaterialComponent.h"
+#include "Components/MeshComponent.h"
+#include "Components/MaterialComponent.h"
 #include "Rendering/Vulkan/Utilities/VkFormatUtility.h"
 #include "Rendering/Vulkan/Entities/TextureVulkan.h"
 #include "Utilities/VkImageViewUtility.h"

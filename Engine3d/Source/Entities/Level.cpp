@@ -3,11 +3,11 @@
 #include <spdlog/spdlog.h>
 
 #include "Level.h"
-#include "SharedLib/Ref.h"
 #include "Systems/Camera.h"
-#include "Systems/MeshComponent.h"
-#include "Systems/MaterialComponent.h"
 #include "Resources/MeshesList.h"
+#include "SharedLib/Ref.h"
+#include "Components/MeshComponent.h"
+#include "Components/MaterialComponent.h"
 
 Level::Level(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
 {

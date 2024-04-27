@@ -37,7 +37,6 @@
 #include "SharedLib/Rollback/Rollback.h"
 #include "SharedLib/Components/UboViewProjectionComponent.h"
 #include "Systems/TransformSystem.h"
-#include "Systems/MeshComponent.h"
 #include "Systems/Camera.h"
 
 namespace AVulkan
