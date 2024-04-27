@@ -4,8 +4,6 @@
 
 #include <vector>
 
-#include "Rendering/Vulkan/Buffers/UniformBufferVulkan.h"
-
 namespace AVulkan
 {
 	struct SwapChainData

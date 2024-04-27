@@ -3,7 +3,9 @@
 #include <functional>
 
 #include "VulkanGraphicsApi.h"
+#include "Systems/MaterialComponent.h"
 #include "Rendering/Vulkan/Utilities/VkFormatUtility.h"
+#include "Rendering/Vulkan/Entities/TextureVulkan.h"
 #include "Utilities/VkImageViewUtility.h"
 #include "Utilities/VkMemoryUtility.h"
 
@@ -41,7 +43,6 @@ namespace AVulkan
 			CreateCommandPool();
 			CreateCommandBuffer();
 			CreateTextureSampler();
-			CreateUniformBuffers();
 			CreateDescriptorPool();
 			CreateDescriptorSets();
 			CreateSyncObjects();
@@ -93,8 +94,8 @@ namespace AVulkan
 
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(commandBuffers[frame], 0);
-		ACommandBuffer().Record(ecs, frame, swapChainData->frameBuffers[imageIndex],
-			renderPass, commandBuffers, descriptorSets, *graphicsPipeline, swapChainData->extent);
+		ACommandBuffer().Record(ecs, descriptors, frame, swapChainData->frameBuffers[imageIndex],
+			renderPass, commandBuffers, *graphicsPipeline, swapChainData->extent);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
@@ -151,8 +152,8 @@ namespace AVulkan
 
 	Ref<Texture> VulkanGraphicsApi::CreateTexture(TextureId textureId)
 	{
-		return CreateRef<TextureVulkan>(projectSettings, physicalDevice, logicalDevice, uniformBuffers,
-			descriptorSets, descriptorPool, descriptorSetLayout, textureSampler, graphicsQueue, commandPool, textureId);
+		return CreateRef<TextureVulkan>(projectSettings, physicalDevice, logicalDevice, descriptors,
+			descriptors->GetDescriptorSetLayout(), textureSampler, graphicsQueue, commandPool, textureId);
 	}
 
 	void VulkanGraphicsApi::CreateInstance()
@@ -278,35 +279,20 @@ namespace AVulkan
 		rollback->Add([this]() { vkDestroySampler(logicalDevice, textureSampler, nullptr); });
 	}
 
-	void VulkanGraphicsApi::CreateUniformBuffers()
-	{
-		auto buffersCount = swapChainData->imagesCount;
-		uniformBuffers.reserve(buffersCount);
-		for (int i = 0; i < buffersCount; i++)
-		{
-			uniformBuffers.push_back(new UniformBufferVulkan(physicalDevice, logicalDevice));
-		}
-
-		rollback->Add([this]() { DisposeUniformBuffers(); });
-	}
-
-	//todo: replace
-	void VulkanGraphicsApi::UpdateUniformBuffer(uint32_t imageIndex)
+	void VulkanGraphicsApi::UpdateUniformBuffer(uint32_t frame)
 	{
 		//todo: find most relevant camera
-		auto entries = ecs->view<UboViewProjectionComponent>();
-		auto [uboComponent] = entries.get(entries.front());
+		auto uboEntries = ecs->view<UboViewProjectionComponent>();
+		auto [uboComponent] = uboEntries.get(uboEntries.front());
 
-		memcpy(uniformBuffers.at(imageIndex)->bufferMapped, &uboComponent, sizeof(UboViewProjectionComponent));
-	}
-
-	void VulkanGraphicsApi::DisposeUniformBuffers()
-	{
-		for (int i = 0; i < uniformBuffers.size(); i++)
+		auto materialEntries = ecs->view<MaterialComponent>();
+		for (auto materialEntry : materialEntries)
 		{
-			delete uniformBuffers.at(i);
+			auto materialComponent = materialEntries.get<MaterialComponent>(materialEntry);
+			auto textureVulkan = static_pointer_cast<TextureVulkan>(materialComponent.GetMaterial()->mainTexture);
+
+			memcpy(textureVulkan->uniformBuffers.at(frame)->bufferMapped, &uboComponent, sizeof(UboViewProjectionComponent));
 		}
-		uniformBuffers.clear();
 	}
 
 	//todo: replace 

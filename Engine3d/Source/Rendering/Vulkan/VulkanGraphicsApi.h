@@ -12,7 +12,7 @@
 #include "Entities/Mesh.h"
 
 #include "Models/SwapChainData.h"
-#include "Models/DepthBufferModel.h"
+#include "Models/ImageModel.h"
 
 #include "Rendering/IGraphicsApi.h"
 #include "Rendering/Vulkan/Entities/MeshVulkan.h"
@@ -56,6 +56,8 @@ namespace AVulkan
 		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
 		Ref<Texture> CreateTexture(TextureId textureIdh) override;
 
+		static constexpr uint16_t maxFramesInFlight = 2;
+
 	private:
 		Ref<entt::registry> ecs;
 		Ref<ProjectSettigns> projectSettings;
@@ -81,14 +83,11 @@ namespace AVulkan
 		VkCommandPool commandPool;
 		std::vector<VkCommandBuffer> commandBuffers;
 
-		std::vector<UniformBufferVulkan*> uniformBuffers;
-
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;
 		std::vector<VkFence> drawFences;
 
 		uint16_t frame = 0;
-		uint16_t const maxFramesInFlight = 2;
 		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
 
 		VkSampler textureSampler;
@@ -115,9 +114,6 @@ namespace AVulkan
 
 		void RecreateSwapChain();
 
-		//todo: replace
-		void CreateUniformBuffers();
-		void DisposeUniformBuffers();
-		void UpdateUniformBuffer(uint32_t imageIndex);
+		void UpdateUniformBuffer(uint32_t frame);
 	};
 }
