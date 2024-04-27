@@ -49,11 +49,12 @@ namespace AVulkan
 		{
 			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipeline());
 
-			auto meshContainers = ecs->view<UboModelComponent, MeshComponent>();
-			for (auto entity : meshContainers)
+			auto entities = ecs->view<UboModelComponent, MeshComponent, MaterialComponent>();
+			for (auto entity : entities)
 			{
-				auto [uboModelComponent, meshConatiner] = meshContainers.get<UboModelComponent, MeshComponent>(entity);
+				auto [uboModelComponent, meshConatiner, materialComponent] = entities.get<UboModelComponent, MeshComponent, MaterialComponent>(entity);
 				auto meshVulkan = static_pointer_cast<MeshVulkan>(meshConatiner.GetMesh());
+				auto textureVulkan = static_pointer_cast<TextureVulkan>(materialComponent.GetMaterial()->mainTexture);
 
 				VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };
 				VkDeviceSize offsets[] = { 0 };
@@ -64,6 +65,7 @@ namespace AVulkan
 				vkCmdPushConstants(commandBuffer, pipeline.GetLayout(), VK_SHADER_STAGE_VERTEX_BIT,
 					0, sizeof(UboModelComponent), &uboModel);
 
+				auto descriptorSet = textureVulkan->descriptorSets.at(frame);
 				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetLayout(), 0, 1, &descriptorSet, 0, nullptr);
 
 				uint32_t instanceCount = 1;

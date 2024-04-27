@@ -6,9 +6,11 @@
 #include "SharedLib/Ref.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Entities/MeshVulkan.h"
+#include "Rendering/Vulkan/Entities/TextureVulkan.h"
 #include "Rendering/Vulkan/GraphicsPipeline.h"
 #include "Rendering/Vulkan/Descriptors.h"
 #include "Systems/MeshComponent.h"
+#include "Systems/MaterialComponent.h"
 #include "SharedLib/Components/UboModelComponent.h"
 
 namespace AVulkan

@@ -75,7 +75,7 @@ namespace AVulkan
 		this->commandPool = commandPool;
 
 		VkFormat depthFormat = VkFormatUtility::FindDepthBufferFormat(physicalDevice);
-		depthBufferModel = CreateRef<DepthBufferModel>();
+		depthBufferModel = CreateRef<ImageModel>();
 
 		depthBufferModel->image = AImage(physicalDevice, logicalDevice, graphicsQueue, commandPool).Create(
 			swapChainData->extent.width, swapChainData->extent.height, depthFormat,

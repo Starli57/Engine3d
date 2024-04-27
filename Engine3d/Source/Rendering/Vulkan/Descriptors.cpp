@@ -1,6 +1,8 @@
 #include "Pch.h"
 #include "Descriptors.h"
 #include "SharedLib/CustomAssert.h"
+#include "SharedLib/Components/UboViewProjectionComponent.h"
+#include "spdlog/spdlog.h"
 
 namespace AVulkan
 {
@@ -9,7 +11,7 @@ namespace AVulkan
 		return descriptorSetLayout;
 	}
 
-	void Descriptors::CreateLayout(VkDevice& logicalDevice) const
+	void Descriptors::CreateLayout(VkDevice& logicalDevice)
 	{
 		VkDescriptorSetLayoutBinding uboLayoutBinding{};
 		uboLayoutBinding.binding = 0;
@@ -39,8 +41,10 @@ namespace AVulkan
 		vkDestroyDescriptorSetLayout(logicalDevice, descriptorSetLayout, nullptr);
 	}
 
-	void Descriptors::CreateDescriptorPool(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const
+	VkDescriptorPool& Descriptors::CreateDescriptorPool(VkDevice& logicalDevice)
 	{
+		VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
+
 		std::array<VkDescriptorPoolSize, 2> poolSizes{};
 		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		poolSizes[0].descriptorCount = maxDescriptorSets;
@@ -55,6 +59,10 @@ namespace AVulkan
 
 		auto createStatus = vkCreateDescriptorPool(logicalDevice, &poolInfo, nullptr, &descriptorPool);
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create descriptor pool, status: " + createStatus);
+		spdlog::info("Descriptor pool allocated");
+
+		descriptorPools.push_back(descriptorPool);
+		return descriptorPool;
 	}
 
 	void Descriptors::ResetDescriptorPool(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const
@@ -65,6 +73,13 @@ namespace AVulkan
 	void Descriptors::DisposeDescriptorPool(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const
 	{
 		vkDestroyDescriptorPool(logicalDevice, descriptorPool, nullptr);
+		spdlog::info("Descriptor pool disposed");
+	}
+
+	void Descriptors::DisposeAllDescriptorPools(VkDevice& logicalDevice)
+	{
+		for (auto pool : descriptorPools) DisposeDescriptorPool(logicalDevice, pool);
+		descriptorPools.clear();
 	}
 
 	VkDescriptorSet Descriptors::AllocateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSetLayout& descriptorSetLayout)
@@ -83,6 +98,7 @@ namespace AVulkan
 		
 		currentSetIndex++;
 
+		spdlog::info("Descriptor set allocated: {0}", currentSetIndex);
 		return descriptorSet;
 	}
 
@@ -129,11 +145,13 @@ namespace AVulkan
 
 			if (currentPoolIndex >= descriptorPools.size())
 			{
-				VkDescriptorPool pool = VK_NULL_HANDLE;
-				CreateDescriptorPool(logicalDevice, pool);
-				descriptorPools.push_back(pool);
-				return pool;
+				return CreateDescriptorPool(logicalDevice);
 			}
+		}
+
+		if (currentPoolIndex >= descriptorPools.size()) 
+		{
+			return CreateDescriptorPool(logicalDevice);
 		}
 
 		return descriptorPools.at(currentPoolIndex);

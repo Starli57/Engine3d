@@ -108,8 +108,6 @@ namespace AVulkan
 		void CreateCommandBuffer();
 		void CreateSyncObjects();
 		void CreateDescriptorSetLayout();
-		void CreateDescriptorPool();
-		void CreateDescriptorSets();
 		void CreateTextureSampler();
 
 		void RecreateSwapChain();

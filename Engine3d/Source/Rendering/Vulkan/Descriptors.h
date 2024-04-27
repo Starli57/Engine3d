@@ -11,12 +11,13 @@ namespace AVulkan
 	public:
 		VkDescriptorSetLayout& GetDescriptorSetLayout();
 
-		void CreateLayout(VkDevice& logicalDevice) const;
+		void CreateLayout(VkDevice& logicalDevice);
 		void DisposeLayout(VkDevice& logicalDevice) const;
 
-		void CreateDescriptorPool(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const;
+		VkDescriptorPool& CreateDescriptorPool(VkDevice& logicalDevice);
 		void ResetDescriptorPool(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const;
 		void DisposeDescriptorPool(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const;
+		void DisposeAllDescriptorPools(VkDevice& logicalDevice);
 
 		VkDescriptorSet AllocateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSetLayout& descriptorSetLayout);
 		void UpdateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSet& descriptorSet, 
@@ -28,7 +29,7 @@ namespace AVulkan
 		uint32_t currentSetIndex = 0;
 		uint32_t currentPoolIndex = 0;
 
-		VkDescriptorSetLayout& descriptorSetLayout;
+		VkDescriptorSetLayout descriptorSetLayout;
 		std::vector<VkDescriptorPool> descriptorPools;
 
 		VkDescriptorPool& GetFreePool(VkDevice& logicalDevice);

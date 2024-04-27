@@ -22,7 +22,7 @@ namespace AVulkan
 	{
 	public:
 
-		Ref<DepthBufferModel> depthBufferModel;
+		Ref<ImageModel> depthBufferModel;
 
 		SwapChain(Ref<Rollback> rollback, GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkSurfaceKHR& surface,
 			QueueFamilyIndices& physicalDeviceQueueIndices, VkQueue& graphicsQueue, Ref<SwapChainData> swapChainData);

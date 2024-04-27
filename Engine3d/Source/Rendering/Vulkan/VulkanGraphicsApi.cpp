@@ -43,8 +43,6 @@ namespace AVulkan
 			CreateCommandPool();
 			CreateCommandBuffer();
 			CreateTextureSampler();
-			CreateDescriptorPool();
-			CreateDescriptorSets();
 			CreateSyncObjects();
 		}
 		catch (const std::exception& e)
@@ -178,7 +176,11 @@ namespace AVulkan
 	void VulkanGraphicsApi::CreateLogicalDevice()
 	{
 		logicalDevice = ALogicalDevice().Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
-		rollback->Add([this]() { ALogicalDevice().Dispose(logicalDevice); });
+		rollback->Add([this]() 
+		{
+			descriptors->DisposeAllDescriptorPools(logicalDevice);
+			ALogicalDevice().Dispose(logicalDevice); 
+		});
 	}
 
 	void VulkanGraphicsApi::CreateSwapChain()
@@ -231,16 +233,6 @@ namespace AVulkan
 	{
 		descriptors->CreateLayout(logicalDevice);
 		rollback->Add([this]() { descriptors->DisposeLayout(logicalDevice); });
-	}
-
-	void VulkanGraphicsApi::CreateDescriptorPool()
-	{
-	//	ADescriptorPool().Create(logicalDevice, *swapChainData.get(), descriptorPool);
-	//	rollback->Add([this]() { ADescriptorPool().Dispose(logicalDevice, descriptorPool); });
-	}
-
-	void VulkanGraphicsApi::CreateDescriptorSets()
-	{
 	}
 
 	void VulkanGraphicsApi::CreateDepthBuffer()
