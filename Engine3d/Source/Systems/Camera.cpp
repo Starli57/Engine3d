@@ -1,33 +1,33 @@
 #include "Pch.h"
 #include "Camera.h"
 
-Camera::Camera(Ref<entt::registry> ecs, float pov, float screenAspectRatio)
+Camera::Camera(Ref<entt::registry> ecs, GLFWwindow* window, float pov)
 {
 	this->ecs = ecs;
 	this->pov = pov;
-
-	UpdateScreenAspectRatio(screenAspectRatio);
+	this->window = window;
 }
 
 Camera::~Camera()
 {
 }
 
-void Camera::UpdateScreenAspectRatio(float screenAspectRatio)
+void Camera::Update(float deltaTime = 0)
 {
-	this->screenAspectRatio = screenAspectRatio;
-}
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+	if (width == 0 || height == 0) return;
 
-void Camera::Update()
-{
+	auto screenAspectRatio = width / (float)height;
+
 	auto entities = ecs->view<PositionComponent, UboViewProjectionComponent>();
 	for (auto entity : entities)
 	{
 		auto& position = entities.get<PositionComponent>(entity).position;
 		auto& uboComponent = entities.get<UboViewProjectionComponent>(entity);
 
-		uboComponent.view = glm::lookAt(position, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		uboComponent.view = glm::lookAt(position, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		uboComponent.proj = glm::perspective(glm::radians(pov), screenAspectRatio, zNear, zFar);
 		uboComponent.proj[1][1] *= -1;
 	}
-}
+} 

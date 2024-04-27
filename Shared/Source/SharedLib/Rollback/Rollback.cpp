@@ -15,6 +15,12 @@ Rollback::Rollback(const std::string& name, Rollback& parentRollback) : name(nam
     parentRollback.Add([this]() { RollbackExtension().Dispose(disposeStack); });
 }
 
+Rollback::Rollback(const std::string& name, Ref<Rollback> parentRollback) : name(name)
+{
+    disposeStack = new std::stack<std::function<void()>>();
+    parentRollback->Add([this]() { RollbackExtension().Dispose(disposeStack); });
+}
+
 Rollback::~Rollback()
 {
     Dispose();

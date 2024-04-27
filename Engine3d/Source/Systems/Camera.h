@@ -1,5 +1,6 @@
 #pragma once
 
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -14,18 +15,17 @@ class Camera : public ISystem
 {
 public:
 	//todo: replace pov and screen aspect to components
-	Camera(Ref<entt::registry> ecs, float pov, float screenAspectRatio);
+	Camera(Ref<entt::registry> ecs, GLFWwindow* window, float pov);
 	virtual ~Camera() override;
 
-	void UpdateScreenAspectRatio(float screenAspectRatio);
-	virtual void Update() override;
+	virtual void Update(float deltaTime) override;
 
 
 private:
 	Ref<entt::registry> ecs;
+	GLFWwindow* window;
 
 	float pov = 60;
-	float screenAspectRatio = 1;
 
 	float zNear = 0.1f;
 	float zFar = 1000;

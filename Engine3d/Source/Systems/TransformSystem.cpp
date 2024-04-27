@@ -5,7 +5,7 @@ TransformSystem::TransformSystem(Ref<entt::registry> ecs) : ecs(ecs)
 {
 }
 
-void TransformSystem::Update()
+void TransformSystem::Update(float deltaTime)
 {
 	auto transformComponents = ecs->view<UboModelComponent, PositionComponent, RotationComponent, ScaleComponent>();
 	for (auto entity : transformComponents)
@@ -18,6 +18,8 @@ void TransformSystem::Update()
 
 		uboModel = glm::mat4(1.0f);
 		uboModel = glm::translate(uboModel, position);
+		uboModel = glm::rotate(uboModel, glm::radians(rotation.x), glm::vec3(0.0f, 1.0f, 0.0f));
+		uboModel = glm::rotate(uboModel, glm::radians(rotation.y), glm::vec3(1.0f, 0.0f, 0.0f));
 		uboModel = glm::rotate(uboModel, glm::radians(rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 		uboModel = glm::scale(uboModel, scale);
 

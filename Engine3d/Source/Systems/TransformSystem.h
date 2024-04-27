@@ -17,7 +17,7 @@ class TransformSystem : public ISystem
 {
 public:
 	TransformSystem(Ref<entt::registry> ecs);
-	virtual void Update() override;
+	virtual void Update(float deltaTime) override;
 
 private:
 	Ref<entt::registry> ecs;

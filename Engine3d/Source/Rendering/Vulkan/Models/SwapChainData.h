@@ -4,22 +4,21 @@
 
 #include <vector>
 
-#include "Rendering/Vulkan/Buffers/UniformBufferVulkan.h"
-
 namespace AVulkan
 {
 	struct SwapChainData
 	{
 	public:
+
 		VkSwapchainKHR swapChain;
+		VkSwapchainKHR oldSwapChain;//todo: add usage to reuse resources
+
 		VkFormat imageFormat;
 		VkExtent2D extent;
 
+		uint32_t imagesCount;
 		std::vector<VkImage> images;
 		std::vector<VkImageView> imageViews;
 		std::vector<VkFramebuffer> frameBuffers;
-		std::vector<VkCommandBuffer> commandBuffers;
-		std::vector<VkDescriptorSet> descriptorSets;
-		std::vector<UniformBufferVulkan*>* uniformBuffers;
 	};
 }

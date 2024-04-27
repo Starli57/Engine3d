@@ -6,8 +6,6 @@
 #include "Entities/Mesh.h"
 #include "SharedLib/Components/UboViewProjectionComponent.h"
 #include "Rendering/Model/Vertex.h"
-#include "Rendering/Vulkan/Models/SwapChainData.h"
-#include "Rendering/Vulkan/Buffers/UniformBufferVulkan.h"
 #include "SharedLib/Ref.h"
 
 namespace AVulkan
@@ -18,10 +16,13 @@ namespace AVulkan
 		VkBuffer GetVertexBuffer();
 		VkBuffer GetIndexBuffer();
 
-		MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, SwapChainData& swapChainData, 
-			VkQueue& graphicsQueue, VkCommandPool& commandPool, Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices);
-		virtual ~MeshVulkan() override;
+		MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
+			VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& path);
 
+		MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
+			VkQueue& graphicsQueue, VkCommandPool& commandPool, Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices);
+
+		virtual ~MeshVulkan() override;
 
 	private:
 		VkDevice* logicalDevice;

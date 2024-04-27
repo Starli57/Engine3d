@@ -8,6 +8,7 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 {
 	InitLogger();
 
+	cachedTime = std::chrono::high_resolution_clock::now();
 	engineRollback = new Rollback("Engine");
 
 	ecs = CreateRef<entt::registry>();
@@ -21,7 +22,6 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 		SetupGlfwHints();
 		CreateAppWindow();
 		InitGraphicsApi();
-		SubscribeGraphicsApiEvents();
 	}
 	catch (const std::exception& e)
 	{
@@ -80,7 +80,6 @@ void Engine::CreateAppWindow()
 	});
 
 	glfwSetWindowUserPointer(window, this);
-	glfwSetFramebufferSizeCallback(window, OnFramebufferResized);
 }
 
 void Engine::InitGraphicsApi()
@@ -94,49 +93,29 @@ void Engine::InitGraphicsApi()
 #endif
 }
 
-void Engine::SubscribeGraphicsApiEvents()
-{
-	auto cameraScreenRationHandler = [this](float aspectRation)
-	{
-		//todo: replace the logic to cameraSystem
-		auto cameraEntities = ecs->view<Camera>();
-		for (auto entity : cameraEntities)
-		{
-			auto camera = cameraEntities.get<Camera>(entity);
-			camera.UpdateScreenAspectRatio(aspectRation);
-			camera.Update();
-		}
-	};
-
-	graphicsApi->OnFrameBufferAspectRatioChanged.AddHandler(cameraScreenRationHandler);
-
-	//todo: fix subscription dispose
-//	engineRollback->Add([this, handler] { graphicsApi->OnFrameBufferAspectRatioChanged.RemoveHandler(cameraScreenRationHandler); });
-}
-
 void Engine::Run()
 {
+	Ref<RotatorSystem> rotatorSystem = CreateRef<RotatorSystem>(ecs);
 	Ref<TransformSystem> transformSystem = CreateRef<TransformSystem>(ecs);
-	Ref<Camera> cameraSystem = CreateRef<Camera>(ecs, 60, 1);
+	Ref<Camera> cameraSystem = CreateRef<Camera>(ecs, window, 60);
 
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
 
-		transformSystem->Update();
-		cameraSystem->Update();
+		auto currentTime = std::chrono::high_resolution_clock::now();
+		float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - cachedTime).count();
+
+		rotatorSystem->Update(deltaTime);
+		transformSystem->Update(deltaTime);
+		cameraSystem->Update(deltaTime);
 
 		//todo: handle exceptions and errors
 		graphicsApi->Render();
+
+		cachedTime = currentTime;
 	}
 
 	graphicsApi->FinanilizeRenderOperations();
 	spdlog::info("Window closed");
-}
-
-void Engine::OnFramebufferResized(GLFWwindow* window, int width, int height)
-{
-	spdlog::debug("FramebufferResized");
-	auto render = reinterpret_cast<IGraphicsApi*>(glfwGetWindowUserPointer(window));
-	render->OnFramebufferResized();
 }

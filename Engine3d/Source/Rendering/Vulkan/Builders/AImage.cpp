@@ -2,7 +2,7 @@
 #include "AImage.h"
 #include "SharedLib/CustomAssert.h"
 #include "Rendering/Vulkan/Utilities/VkMemoryUtility.h"
-#include "Rendering/Vulkan/Buffers/ABuffer.h"
+#include "Rendering/Vulkan/Builders/ABuffer.h"
 
 namespace AVulkan
 {

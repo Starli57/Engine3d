@@ -12,7 +12,7 @@
 #include "Entities/Mesh.h"
 
 #include "Models/SwapChainData.h"
-#include "Models/DepthBufferModel.h"
+#include "Models/ImageModel.h"
 
 #include "Rendering/IGraphicsApi.h"
 #include "Rendering/Vulkan/Entities/MeshVulkan.h"
@@ -29,17 +29,14 @@
 #include "Builders/ARenderPass.h"
 #include "Builders/AFrameBuffer.h"
 #include "Builders/ACommandPool.h"
-#include "Builders/ADescriptorLayout.h"
-#include "Builders/ADescriptorPool.h"
-#include "Builders/ADescriptorSet.h"
+#include "Descriptors.h"
 
-#include "Buffers/ACommandBuffer.h"
+#include "Builders/ACommandBuffer.h"
 
 #include "SharedLib/ProjectSettings.h"
 #include "SharedLib/Rollback/Rollback.h"
 #include "SharedLib/Components/UboViewProjectionComponent.h"
 #include "Systems/TransformSystem.h"
-#include "Systems/MeshContainer.h"
 #include "Systems/Camera.h"
 
 namespace AVulkan
@@ -54,19 +51,18 @@ namespace AVulkan
 		void Render() override;
 		void FinanilizeRenderOperations() override;
 
+		Ref<Mesh> CreateMesh(const std::string& meshPath) override;
 		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
 		Ref<Texture> CreateTexture(TextureId textureIdh) override;
 
-		void OnFramebufferResized() override;
+		static constexpr uint16_t maxFramesInFlight = 2;
 
 	private:
 		Ref<entt::registry> ecs;
 		Ref<ProjectSettigns> projectSettings;
+		Ref<Rollback> rollback;
 
 		GLFWwindow* window;
-
-		Rollback* rollback;
-		Ref<Rollback> swapchainRollback;
 
 		VkInstance instance;
 		VkPhysicalDevice physicalDevice;
@@ -75,25 +71,23 @@ namespace AVulkan
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;
 		VkRenderPass renderPass;
-		VkCommandPool commandPool;
-		VkDescriptorSetLayout descriptorSetLayout;
-		VkDescriptorPool descriptorPool;
 
-		SwapChainData swapChainData;
-		Ref<DepthBufferModel> depthBufferModel;
+		Ref<SwapChain> swapChain;
+		Ref<SwapChainData> swapChainData;
+		Ref<Descriptors> descriptors;
+
 		GraphicsPipeline* graphicsPipeline;
 
-		//todo: replace
+		VkCommandPool commandPool;
+		std::vector<VkCommandBuffer> commandBuffers;
+
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;
 		std::vector<VkFence> drawFences;
 
-		//todo: replace
 		uint16_t frame = 0;
-		uint16_t const maxFramesDraws = 2;
 		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
 
-		//todo: replace
 		VkSampler textureSampler;
 
 		bool needResizeWindow = false;
@@ -106,21 +100,16 @@ namespace AVulkan
 		void CreateSwapChainImageViews();
 		void CreateRenderPass();
 		void CreateGraphicsPipeline();
+		void CreateDepthBuffer();
 		void CreateFrameBuffers();
 		void CreateCommandPool();
 		void CreateCommandBuffer();
 		void CreateSyncObjects();
 		void CreateDescriptorSetLayout();
-		void CreateDescriptorPool();
-		void CreateDescriptorSets();
-		void CreateDepthBuffer();
 		void CreateTextureSampler();
 
 		void RecreateSwapChain();
 
-		//todo: replace
-		void CreateUniformBuffers();
-		void DisposeUniformBuffers();
-		void UpdateUniformBuffer(uint32_t imageIndex);
+		void UpdateUniformBuffer(uint32_t frame);
 	};
 }

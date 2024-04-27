@@ -4,26 +4,26 @@
 
 namespace AVulkan
 {
-	void ACommandBuffer::Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, SwapChainData& swapChainData, int buffersCount) const
+	void ACommandBuffer::Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers, int buffersCount) const
 	{
 		spdlog::info("Create command buffer");
 
-		swapChainData.commandBuffers.resize(buffersCount);
+		commandBuffers.resize(buffersCount);
 
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 		allocInfo.commandPool = commandPool;
 		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandBufferCount = static_cast<uint32_t>(swapChainData.commandBuffers.size());
+		allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
 
-		auto createStatus = vkAllocateCommandBuffers(logicalDevice, &allocInfo, swapChainData.commandBuffers.data());
+		auto createStatus = vkAllocateCommandBuffers(logicalDevice, &allocInfo, commandBuffers.data());
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to allocate command buffers, status: " + createStatus);
 	}
 
-	void ACommandBuffer::Record(Ref<entt::registry> ecs, uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
-		SwapChainData& swapChainData, GraphicsPipeline& pipeline) const
+	void ACommandBuffer::Record(Ref<entt::registry> ecs, Ref<Descriptors> descriptors, uint16_t frame, VkFramebuffer& frameBuffer, VkRenderPass& renderPass,
+		std::vector<VkCommandBuffer>& commandBuffers, GraphicsPipeline& pipeline, VkExtent2D& vkExtent) const
 	{
-		auto commandBuffer = swapChainData.commandBuffers.at(frame);
+		auto commandBuffer = commandBuffers.at(frame);
 
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -41,7 +41,7 @@ namespace AVulkan
 		renderPassInfo.renderPass = renderPass;
 		renderPassInfo.framebuffer = frameBuffer;
 		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = swapChainData.extent;
+		renderPassInfo.renderArea.extent = vkExtent;
 		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearColors.size());
 		renderPassInfo.pClearValues = clearColors.data();
 
@@ -49,11 +49,12 @@ namespace AVulkan
 		{
 			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipeline());
 
-			auto meshContainers = ecs->view<UboModelComponent, MeshContainer>();
-			for (auto entity : meshContainers)
+			auto entities = ecs->view<UboModelComponent, MeshComponent, MaterialComponent>();
+			for (auto entity : entities)
 			{
-				auto [uboModelComponent, meshConatiner] = meshContainers.get<UboModelComponent, MeshContainer>(entity);
+				auto [uboModelComponent, meshConatiner, materialComponent] = entities.get<UboModelComponent, MeshComponent, MaterialComponent>(entity);
 				auto meshVulkan = static_pointer_cast<MeshVulkan>(meshConatiner.GetMesh());
+				auto textureVulkan = static_pointer_cast<TextureVulkan>(materialComponent.GetMaterial()->mainTexture);
 
 				VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };
 				VkDeviceSize offsets[] = { 0 };
@@ -64,8 +65,8 @@ namespace AVulkan
 				vkCmdPushConstants(commandBuffer, pipeline.GetLayout(), VK_SHADER_STAGE_VERTEX_BIT,
 					0, sizeof(UboModelComponent), &uboModel);
 
-				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetLayout(), 
-					0, 1, &swapChainData.descriptorSets[frame], 0, nullptr);
+				auto descriptorSet = textureVulkan->descriptorSets.at(frame);
+				vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetLayout(), 0, 1, &descriptorSet, 0, nullptr);
 
 				uint32_t instanceCount = 1;
 				uint32_t firstVertexIndex = 0;
