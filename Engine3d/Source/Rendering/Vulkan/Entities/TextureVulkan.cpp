@@ -2,9 +2,10 @@
 #include "TextureVulkan.h"
 
 #include "SharedLib/CustomAssert.h"
+#include "Rendering/Vulkan/VulkanGraphicsApi.h"
 #include "Rendering/Vulkan/Buffers/ABuffer.h"
+#include "Rendering/Vulkan/Buffers/AUniformBufferVulkan.h"
 #include "Rendering/Vulkan/Builders/AImage.h"
-#include "Rendering/Vulkan/Builders/ADescriptorSet.h"
 #include "Rendering/Vulkan/Utilities/VkImageViewUtility.h"
 
 #include <stb_image.h>
@@ -14,25 +15,45 @@
 namespace AVulkan
 {
     TextureVulkan::TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
-        std::vector<UniformBufferVulkan*>& uniformBuffers,
-        std::vector<VkDescriptorSet>& descriptorSets, VkDescriptorPool& descriptorPool, VkDescriptorSetLayout& descriptorSetLayout, 
+        Ref<Descriptors> descriptors, VkDescriptorSetLayout& descriptorSetLayout,
         VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId)
         : Texture(textureId), physicalDevice(physicalDevice), logicalDevice(logicalDevice), 
                              graphicsQueue(graphicsQueue), commandPool(commandPool)
     {
         this->projectSettings = projectSettings;
+        auto uniformBufferBuilder = AUniformBufferVulkan();
+
+        descriptorSets = std::vector<VkDescriptorSet>();
+        uniformBuffers = std::vector<Ref<BufferModel>>();
+        imageModel = CreateRef<ImageModel>();
 
         CreateImage(textureId);
         CreateImageView();
 
-        ADescriptorSet().Allocate(logicalDevice, descriptorSets, uniformBuffers, descriptorPool, descriptorSetLayout, imageView, textureSampler);
+        for (uint16_t i = 0; i < VulkanGraphicsApi::maxFramesInFlight; i++)
+        {
+            auto descriptorSet = descriptors->AllocateDescriptorSet(logicalDevice, descriptorSetLayout);
+            auto uniformBuffer = uniformBufferBuilder.Create(logicalDevice, physicalDevice);
+            descriptors->UpdateDescriptorSet(logicalDevice, descriptorSet, uniformBuffer->buffer, imageModel->imageView, textureSampler);
+
+            descriptorSets.push_back(descriptorSet);
+            uniformBuffers.push_back(uniformBuffer);
+        }
     }
 
     TextureVulkan::~TextureVulkan()
     {
-        VkImageViewUtility::Destroy(logicalDevice, imageView);
-        vkDestroyImage(logicalDevice, image, nullptr);
-        vkFreeMemory(logicalDevice, imageMemory, nullptr);
+        auto uniformBufferBuilder = AUniformBufferVulkan();
+        for (auto uniform : uniformBuffers)
+        {
+            uniformBufferBuilder.Dispose(logicalDevice, uniform);
+        }
+        uniformBuffers.clear();
+        descriptorSets.clear();
+
+        VkImageViewUtility::Destroy(logicalDevice, imageModel->imageView);
+        vkDestroyImage(logicalDevice, imageModel->image, nullptr);
+        vkFreeMemory(logicalDevice, imageModel->imageMemory, nullptr);
     }
 
     //todo: make async
@@ -82,15 +103,15 @@ namespace AVulkan
         
         AImage imageUtility(physicalDevice, logicalDevice, graphicsQueue, commandPool);
         
-        image = imageUtility.Create(width, height, imgFormat, 
-            tiling, usageFlags, memoryFlags, imageMemory);
+        imageModel->image = imageUtility.Create(width, height, imgFormat,
+            tiling, usageFlags, memoryFlags, imageModel->imageMemory);
 
-        imageUtility.TransitionImageLayout(image, imgFormat, 
+        imageUtility.TransitionImageLayout(imageModel->image, imgFormat,
             VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
-        imageUtility.CopyBufferToImage(stagingBuffer, image, width, height);
+        imageUtility.CopyBufferToImage(stagingBuffer, imageModel->image, width, height);
 
-        imageUtility.TransitionImageLayout(image, imgFormat,
+        imageUtility.TransitionImageLayout(imageModel->image, imgFormat,
             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
         vkDestroyBuffer(logicalDevice, stagingBuffer, nullptr);
@@ -102,7 +123,7 @@ namespace AVulkan
         //todo: find suitable format firstly
         VkFormat imgFormat = VK_FORMAT_R8G8B8A8_SRGB;
         VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
-        VkImageViewUtility::Create(logicalDevice, imgFormat, aspectFlags, image, imageView);
+        VkImageViewUtility::Create(logicalDevice, imgFormat, aspectFlags, imageModel->image, imageModel->imageView);
 
     }
 }

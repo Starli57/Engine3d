@@ -4,7 +4,7 @@
 
 namespace AVulkan
 {
-    void AFrameBuffer::Create(VkDevice& logicalDevice, VkRenderPass& renderPass, SwapChainData& swapChainData, Ref<DepthBufferModel> depthBufferModel) const
+    void AFrameBuffer::Create(VkDevice& logicalDevice, VkRenderPass& renderPass, SwapChainData& swapChainData, Ref<ImageModel> depthBufferModel) const
     {
         spdlog::info("Create frame buffers");
         swapChainData.frameBuffers.resize(swapChainData.imagesCount);

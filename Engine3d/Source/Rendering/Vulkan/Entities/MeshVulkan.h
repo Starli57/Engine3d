@@ -6,7 +6,6 @@
 #include "Entities/Mesh.h"
 #include "SharedLib/Components/UboViewProjectionComponent.h"
 #include "Rendering/Model/Vertex.h"
-#include "Rendering/Vulkan/Buffers/UniformBufferVulkan.h"
 #include "SharedLib/Ref.h"
 
 namespace AVulkan

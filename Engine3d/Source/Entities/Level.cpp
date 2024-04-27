@@ -6,6 +6,7 @@
 #include "SharedLib/Ref.h"
 #include "Systems/Camera.h"
 #include "Systems/MeshComponent.h"
+#include "Systems/MaterialComponent.h"
 #include "Resources/MeshesList.h"
 
 Level::Level(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
@@ -44,16 +45,18 @@ void Level::LoadLevel()
 	car->AddComponent<RotationComponent>(glm::vec3(0, 0, 0));
 	car->AddComponent<ScaleComponent>(glm::vec3(1, 1, 1));
 	car->AddComponent<UboModelComponent>();
-	car->AddComponent<MeshComponent>(formulaMesh, formulaMaterial);
+	car->AddComponent<MeshComponent>(formulaMesh);
+	car->AddComponent<MaterialComponent>(formulaMaterial);
 
 	auto vikingsRoomMesh = graphicsApi->CreateMesh(projectSettings->projectPath + meshes[0]);
-	auto vikigsRoom = CreateRef<Entity>(ecs);
-	vikigsRoom->AddComponent<PositionComponent>(glm::vec3(-0.5f, -100, -10));
-	vikigsRoom->AddComponent<RotationComponent>(glm::vec3(0, 0, 90));
-	vikigsRoom->AddComponent<ScaleComponent>(glm::vec3(140, 140, 140));
-	vikigsRoom->AddComponent<RotationVelocityComponent>(glm::vec3(0, 0, 100));
-	vikigsRoom->AddComponent<UboModelComponent>();
-	vikigsRoom->AddComponent<MeshComponent>(vikingsRoomMesh, vikingMaterial);
+	auto vikingsRoom = CreateRef<Entity>(ecs);
+	vikingsRoom->AddComponent<PositionComponent>(glm::vec3(-0.5f, -100, -10));
+	vikingsRoom->AddComponent<RotationComponent>(glm::vec3(0, 0, 90));
+	vikingsRoom->AddComponent<ScaleComponent>(glm::vec3(140, 140, 140));
+	vikingsRoom->AddComponent<RotationVelocityComponent>(glm::vec3(0, 0, 100));
+	vikingsRoom->AddComponent<UboModelComponent>();
+	vikingsRoom->AddComponent<MeshComponent>(vikingsRoomMesh);
+	vikingsRoom->AddComponent<MaterialComponent>(vikingMaterial);
 
 	auto cameraEntity = CreateRef<Entity>(ecs);
 	cameraEntity->AddComponent<PositionComponent>(glm::vec3(0, 1, 500));

@@ -12,7 +12,7 @@
 #include "Entities/Mesh.h"
 
 #include "Models/SwapChainData.h"
-#include "Models/DepthBufferModel.h"
+#include "Models/ImageModel.h"
 
 #include "Rendering/IGraphicsApi.h"
 #include "Rendering/Vulkan/Entities/MeshVulkan.h"
@@ -29,9 +29,7 @@
 #include "Builders/ARenderPass.h"
 #include "Builders/AFrameBuffer.h"
 #include "Builders/ACommandPool.h"
-#include "Builders/ADescriptorLayout.h"
-#include "Builders/ADescriptorPool.h"
-#include "Builders/ADescriptorSet.h"
+#include "Descriptors.h"
 
 #include "Buffers/ACommandBuffer.h"
 
@@ -58,6 +56,8 @@ namespace AVulkan
 		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
 		Ref<Texture> CreateTexture(TextureId textureIdh) override;
 
+		static constexpr uint16_t maxFramesInFlight = 2;
+
 	private:
 		Ref<entt::registry> ecs;
 		Ref<ProjectSettigns> projectSettings;
@@ -76,24 +76,18 @@ namespace AVulkan
 
 		Ref<SwapChain> swapChain;
 		Ref<SwapChainData> swapChainData;
+		Ref<Descriptors> descriptors;
 
 		GraphicsPipeline* graphicsPipeline;
 
 		VkCommandPool commandPool;
 		std::vector<VkCommandBuffer> commandBuffers;
 
-		VkDescriptorSetLayout descriptorSetLayout;
-		VkDescriptorPool descriptorPool;
-		std::vector<VkDescriptorSet> descriptorSets;
-
-		std::vector<UniformBufferVulkan*> uniformBuffers;
-
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;
 		std::vector<VkFence> drawFences;
 
 		uint16_t frame = 0;
-		uint16_t const maxFramesInFlight = 2;
 		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
 
 		VkSampler textureSampler;
@@ -114,15 +108,10 @@ namespace AVulkan
 		void CreateCommandBuffer();
 		void CreateSyncObjects();
 		void CreateDescriptorSetLayout();
-		void CreateDescriptorPool();
-		void CreateDescriptorSets();
 		void CreateTextureSampler();
 
 		void RecreateSwapChain();
 
-		//todo: replace
-		void CreateUniformBuffers();
-		void DisposeUniformBuffers();
-		void UpdateUniformBuffer(uint32_t imageIndex);
+		void UpdateUniformBuffer(uint32_t frame);
 	};
 }

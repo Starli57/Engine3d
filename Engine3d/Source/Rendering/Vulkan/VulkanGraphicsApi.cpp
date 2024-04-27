@@ -3,7 +3,9 @@
 #include <functional>
 
 #include "VulkanGraphicsApi.h"
+#include "Systems/MaterialComponent.h"
 #include "Rendering/Vulkan/Utilities/VkFormatUtility.h"
+#include "Rendering/Vulkan/Entities/TextureVulkan.h"
 #include "Utilities/VkImageViewUtility.h"
 #include "Utilities/VkMemoryUtility.h"
 
@@ -13,8 +15,9 @@ namespace AVulkan
 	{
 		this->ecs = ecs;
 		this->projectSettings = projectSettings;
-		this->rollback = CreateRef<Rollback>("VulkanGraphicsApi", *vulkanRollback);
 		this->window = glfwWindow;
+		this->rollback = CreateRef<Rollback>("VulkanGraphicsApi", *vulkanRollback);
+		this->descriptors = CreateRef<Descriptors>();
 	}
 
 	VulkanGraphicsApi::~VulkanGraphicsApi()
@@ -40,9 +43,6 @@ namespace AVulkan
 			CreateCommandPool();
 			CreateCommandBuffer();
 			CreateTextureSampler();
-			CreateUniformBuffers();
-			CreateDescriptorPool();
-			CreateDescriptorSets();
 			CreateSyncObjects();
 		}
 		catch (const std::exception& e)
@@ -92,8 +92,8 @@ namespace AVulkan
 
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(commandBuffers[frame], 0);
-		ACommandBuffer().Record(ecs, frame, swapChainData->frameBuffers[imageIndex],
-			renderPass, commandBuffers, descriptorSets, *graphicsPipeline, swapChainData->extent);
+		ACommandBuffer().Record(ecs, descriptors, frame, swapChainData->frameBuffers[imageIndex],
+			renderPass, commandBuffers, *graphicsPipeline, swapChainData->extent);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
@@ -133,16 +133,6 @@ namespace AVulkan
 		frame = (frame + 1) % maxFramesInFlight;
 	}
 
-	//todo: replace
-	void VulkanGraphicsApi::UpdateUniformBuffer(uint32_t imageIndex)
-	{
-		//todo: find most relevant camera
-		auto entries = ecs->view<UboViewProjectionComponent>();
-		auto [uboComponent] = entries.get(entries.front());
-
-		memcpy(uniformBuffers.at(imageIndex)->bufferMapped, &uboComponent, sizeof(UboViewProjectionComponent));
-	}
-
 	void VulkanGraphicsApi::FinanilizeRenderOperations()
 	{
 		vkDeviceWaitIdle(logicalDevice);
@@ -160,8 +150,8 @@ namespace AVulkan
 
 	Ref<Texture> VulkanGraphicsApi::CreateTexture(TextureId textureId)
 	{
-		return CreateRef<TextureVulkan>(projectSettings, physicalDevice, logicalDevice, uniformBuffers,
-			descriptorSets, descriptorPool, descriptorSetLayout, textureSampler, graphicsQueue, commandPool, textureId);
+		return CreateRef<TextureVulkan>(projectSettings, physicalDevice, logicalDevice, descriptors,
+			descriptors->GetDescriptorSetLayout(), textureSampler, graphicsQueue, commandPool, textureId);
 	}
 
 	void VulkanGraphicsApi::CreateInstance()
@@ -186,7 +176,11 @@ namespace AVulkan
 	void VulkanGraphicsApi::CreateLogicalDevice()
 	{
 		logicalDevice = ALogicalDevice().Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
-		rollback->Add([this]() { ALogicalDevice().Dispose(logicalDevice); });
+		rollback->Add([this]() 
+		{
+			descriptors->DisposeAllDescriptorPools(logicalDevice);
+			ALogicalDevice().Dispose(logicalDevice); 
+		});
 	}
 
 	void VulkanGraphicsApi::CreateSwapChain()
@@ -214,7 +208,7 @@ namespace AVulkan
 	void VulkanGraphicsApi::CreateGraphicsPipeline()
 	{
 		graphicsPipeline = new GraphicsPipeline(projectSettings, logicalDevice, swapChainData->extent, renderPass, rollback);
-		graphicsPipeline->Create(descriptorSetLayout);
+		graphicsPipeline->Create(descriptors->GetDescriptorSetLayout());
 
 		rollback->Add([this]() { delete graphicsPipeline; });
 	}
@@ -237,18 +231,8 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateDescriptorSetLayout()
 	{
-		ADescriptorLayout().Create(logicalDevice, descriptorSetLayout);
-		rollback->Add([this]() { ADescriptorLayout().Dispose(logicalDevice, descriptorSetLayout); });
-	}
-
-	void VulkanGraphicsApi::CreateDescriptorPool()
-	{
-		ADescriptorPool().Create(logicalDevice, *swapChainData.get(), descriptorPool);
-		rollback->Add([this]() { ADescriptorPool().Dispose(logicalDevice, descriptorPool); });
-	}
-
-	void VulkanGraphicsApi::CreateDescriptorSets()
-	{
+		descriptors->CreateLayout(logicalDevice);
+		rollback->Add([this]() { descriptors->DisposeLayout(logicalDevice); });
 	}
 
 	void VulkanGraphicsApi::CreateDepthBuffer()
@@ -287,25 +271,20 @@ namespace AVulkan
 		rollback->Add([this]() { vkDestroySampler(logicalDevice, textureSampler, nullptr); });
 	}
 
-	void VulkanGraphicsApi::CreateUniformBuffers()
+	void VulkanGraphicsApi::UpdateUniformBuffer(uint32_t frame)
 	{
-		auto buffersCount = swapChainData->imagesCount;
-		uniformBuffers.reserve(buffersCount);
-		for (int i = 0; i < buffersCount; i++)
-		{
-			uniformBuffers.push_back(new UniformBufferVulkan(physicalDevice, logicalDevice));
-		}
+		//todo: find most relevant camera
+		auto uboEntries = ecs->view<UboViewProjectionComponent>();
+		auto [uboComponent] = uboEntries.get(uboEntries.front());
 
-		rollback->Add([this]() { DisposeUniformBuffers(); });
-	}
-
-	void VulkanGraphicsApi::DisposeUniformBuffers()
-	{
-		for (int i = 0; i < uniformBuffers.size(); i++)
+		auto materialEntries = ecs->view<MaterialComponent>();
+		for (auto materialEntry : materialEntries)
 		{
-			delete uniformBuffers.at(i);
+			auto materialComponent = materialEntries.get<MaterialComponent>(materialEntry);
+			auto textureVulkan = static_pointer_cast<TextureVulkan>(materialComponent.GetMaterial()->mainTexture);
+
+			memcpy(textureVulkan->uniformBuffers.at(frame)->bufferMapped, &uboComponent, sizeof(UboViewProjectionComponent));
 		}
-		uniformBuffers.clear();
 	}
 
 	//todo: replace 
