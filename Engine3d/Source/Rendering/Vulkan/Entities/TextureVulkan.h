@@ -23,9 +23,6 @@ namespace AVulkan
 			VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId);
 		virtual ~TextureVulkan() override;
 
-		//todo: make public getters and private setters
-		Ref<ImageModel> imageModel;
-		
 		std::vector<VkDescriptorSet> descriptorSets;
 		std::vector<Ref<BufferModel>> uniformBuffers;
 
@@ -34,6 +31,7 @@ namespace AVulkan
 		void CreateImageView();
 
 		Ref<ProjectSettigns> projectSettings;
+		Ref<ImageModel> imageModel;
 
 		VkPhysicalDevice& physicalDevice;
 		VkDevice& logicalDevice;

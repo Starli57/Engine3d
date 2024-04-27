@@ -60,10 +60,9 @@ namespace AVulkan
 	private:
 		Ref<entt::registry> ecs;
 		Ref<ProjectSettigns> projectSettings;
+		Ref<Rollback> rollback;
 
 		GLFWwindow* window;
-
-		Ref<Rollback> rollback;
 
 		VkInstance instance;
 		VkPhysicalDevice physicalDevice;
