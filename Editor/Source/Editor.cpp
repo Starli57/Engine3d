@@ -12,7 +12,8 @@ Editor::Editor()
 	engine = CreateRef<Engine>(projectSettings);
 	std::thread engineThread([this]() {engine->Run(); });
 
-	RunImgui([this]() { UpdateEditor(); });
+	imgui = CreateRef<ImguiVulkan>();
+	imgui->RunImgui([this]() { UpdateEditor(); });
 }
 
 Editor::~Editor()

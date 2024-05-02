@@ -13,6 +13,7 @@ public:
 
 private:
 	Ref<Engine> engine;
+	Ref<ImguiVulkan> imgui;
 	Ref<ProjectSettigns> projectSettings;
 
 	void Update();

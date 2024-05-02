@@ -7,12 +7,12 @@
 
 #include "Entities/Mesh.h"
 #include "AssetsDatabase.h"
-#include "ProjectSettings.h"
 #include "Systems/Camera.h"
 #include "Systems/RotatorSystem.h"
 #include "Rendering/IGraphicsApi.h"
 #include "Rendering/Model/Vertex.h"
 #include "SharedLib/Entity.h"
+#include "SharedLib/ProjectSettings.h"
 #include "SharedLib/Components/PositionComponent.h"
 #include "SharedLib/Components/RotationComponent.h"
 #include "SharedLib/Components/ScaleComponent.h"
