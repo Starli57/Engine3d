@@ -19,6 +19,8 @@ public:
 
 	void Run();
 
+	IGraphicsApi* GetGraphicsApi() { return graphicsApi; }
+
 private:
 	const Ref<ProjectSettigns> projectSettings;
 

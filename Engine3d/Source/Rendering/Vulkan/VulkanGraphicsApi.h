@@ -57,6 +57,23 @@ namespace AVulkan
 
 		static constexpr uint16_t maxFramesInFlight = 2;
 
+		GLFWwindow* GetWindow() { return window; };
+
+		VkInstance& GetInstance() { return instance; };
+		VkSurfaceKHR& GetWindowSurface() { return windowSurface; };
+
+		VkPhysicalDevice& GetPhysicalDevice() { return physicalDevice; };
+		VkDevice& GetLogicalDevice() { return logicalDevice; };
+
+		VkQueue& GetGraphicsQueue() { return graphicsQueue; };
+		VkQueue& GetPresentationQueue() { return presentationQueue; };
+		VkRenderPass& GetRenderPass() { return renderPass; };
+
+		Ref<SwapChainData> GetSwapChainData() { return swapChainData; };
+		Ref<Descriptors> GetDescriptors() { return descriptors; }
+
+		GraphicsPipeline* GetGraphicsPipeline() { return graphicsPipeline; };
+
 	private:
 		Ref<entt::registry> ecs;
 		Ref<ProjectSettigns> projectSettings;
@@ -65,9 +82,11 @@ namespace AVulkan
 		GLFWwindow* window;
 
 		VkInstance instance;
+		VkSurfaceKHR windowSurface;
+
 		VkPhysicalDevice physicalDevice;
 		VkDevice logicalDevice;
-		VkSurfaceKHR windowSurface;
+
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;
 		VkRenderPass renderPass;

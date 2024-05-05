@@ -1,7 +1,10 @@
 #include <iostream>
 #include <thread>
+#include <memory>
 
 #include "Editor.h"
+
+#include "Rendering/Vulkan/VulkanGraphicsApi.h"
 
 Editor::Editor()
 {
@@ -12,8 +15,11 @@ Editor::Editor()
 	engine = CreateRef<Engine>(projectSettings);
 	std::thread engineThread([this]() {engine->Run(); });
 
+	auto graphicsApi = engine->GetGraphicsApi();
+	auto vulkanApi = static_cast<AVulkan::VulkanGraphicsApi*>(graphicsApi);
+
 	imgui = CreateRef<ImguiVulkan>();
-	imgui->RunImgui([this]() { UpdateEditor(); });
+	imgui->RunImgui(vulkanApi);//[this]() { UpdateEditor(); });
 }
 
 Editor::~Editor()

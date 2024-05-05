@@ -4,7 +4,7 @@
 
 namespace AVulkan
 {
-	void ACommandBuffer::Setup(VkDevice& logicalDevice, VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers, int buffersCount) const
+	void ACommandBuffer::Allocate(VkDevice& logicalDevice, VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers, int buffersCount) const
 	{
 		spdlog::info("Create command buffer");
 

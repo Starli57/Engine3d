@@ -227,7 +227,7 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateCommandBuffer()
 	{
-		ACommandBuffer().Setup(logicalDevice, commandPool, commandBuffers, maxFramesInFlight);
+		ACommandBuffer().Allocate(logicalDevice, commandPool, commandBuffers, maxFramesInFlight);
 	}
 
 	void VulkanGraphicsApi::CreateDescriptorSetLayout()
