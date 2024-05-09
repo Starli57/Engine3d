@@ -29,12 +29,12 @@ namespace AVulkan
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 		beginInfo.pInheritanceInfo = nullptr;
 
-		std::array<VkClearValue, 2> clearColors {};
-		clearColors[0].color = { 0.015f, 0.015f, 0.04f, 1.0f };
-		clearColors[1].depthStencil.depth = 1.0f;
-
 		auto beginStatus = vkBeginCommandBuffer(commandBuffer, &beginInfo);
 		CAssert::Check(beginStatus == VK_SUCCESS, "Failed to begin recording a command buffer, status: " + beginStatus);
+
+		std::array<VkClearValue, 2> clearColors{};
+		clearColors[0].color = { 0.015f, 0.015f, 0.04f, 1.0f };
+		clearColors[1].depthStencil.depth = 1.0f;
 
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;

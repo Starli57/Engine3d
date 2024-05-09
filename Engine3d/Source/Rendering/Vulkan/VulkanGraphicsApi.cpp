@@ -66,7 +66,6 @@ namespace AVulkan
 		}
 
 		spdlog::info("Recreate swapchain");
-		needResizeWindow = false;
 		FinanilizeRenderOperations();
 
 		swapChain->Recreate();
@@ -77,7 +76,6 @@ namespace AVulkan
 	{
 		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, frameSyncTimeout);
 
-		uint32_t imageIndex = 0;
 		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData->swapChain, frameSyncTimeout,
 			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 		
@@ -123,7 +121,7 @@ namespace AVulkan
 
 		auto presentStatus = vkQueuePresentKHR(presentationQueue, &presentInfo);
 
-		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR || needResizeWindow)
+		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR)
 		{
 			RecreateSwapChain();
 			return;

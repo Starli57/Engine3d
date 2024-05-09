@@ -1,6 +1,7 @@
 #pragma once
 
-#include <Engine.h>
+#include "Engine.h"
+#include "IEngineEditor.h"
 
 #include "Imgui/ImguiVulkan.h"
 #include "SharedLib/Ref.h"
@@ -15,9 +16,5 @@ private:
 	Ref<Engine> engine;
 	Ref<ImguiVulkan> imgui;
 	Ref<ProjectSettigns> projectSettings;
-
-	void Update();
-	void UpdateEditor();
-	void UpdateEngine();
 };
 

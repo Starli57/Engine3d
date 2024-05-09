@@ -3,6 +3,7 @@
 #include <entt.hpp>
 #include "Defines/DllDecDefines.h"
 
+#include "IEngineEditor.h"
 #include "AssetsDatabase.h"
 #include "Rendering/Vulkan/VulkanGraphicsApi.h"
 #include "Entities/Level.h"
@@ -19,6 +20,8 @@ public:
 
 	void Run();
 
+	void BindEditor(Ref<IEngineEditor> editor);
+
 	IGraphicsApi* GetGraphicsApi() { return graphicsApi; }
 
 private:
@@ -27,7 +30,8 @@ private:
 	GLFWwindow* window;
 	IGraphicsApi* graphicsApi;
 	Level* level;
-
+	
+	Ref<IEngineEditor> editor;
 	Ref<entt::registry> ecs;
 	Ref<AssetsDatabase> assetsDatabase;
 
