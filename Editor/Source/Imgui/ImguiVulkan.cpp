@@ -1,15 +1,18 @@
 
+#include <spdlog/spdlog.h>
 #include "ImguiVulkan.h"
 
 ImguiVulkan::ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi) : vulkanApi(vulkanApi)
 {
-    rollback = CreateRef<Rollback>();
+    spdlog::info("Start editor imgui initialization");
+
+    rollback = CreateRef<Rollback>("Editor");
 
     descriptorPool = vulkanApi.descriptors->CreateDescriptorPool(vulkanApi.logicalDevice);
     queueFamilies = AVulkan::APhysicalDevice().GetQueueFamilies(vulkanApi.physicalDevice, vulkanApi.windowSurface);
     graphicsQueueFamily = queueFamilies.graphicsFamily.value();
 
-    CreateRenderPass(vulkanApi.logicalDevice, vulkanApi.swapChainData, &renderPass);
+    //CreateRenderPass(vulkanApi.logicalDevice, vulkanApi.swapChainData, &renderPass);
 
     // Create Framebuffer
     // todo: not sure if I need specific framebuffers for imgui or ok to use engine buffers?
@@ -67,7 +70,7 @@ ImguiVulkan::ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi) : vulkanApi(vulk
     initInfo.Queue = vulkanApi.graphicsQueue;
     initInfo.PipelineCache = VK_NULL_HANDLE;
     initInfo.DescriptorPool = descriptorPool;
-    initInfo.RenderPass = renderPass;
+    initInfo.RenderPass = vulkanApi.renderPass;
     initInfo.Subpass = 0;
     initInfo.MinImageCount = 2;
     initInfo.ImageCount = vulkanApi.swapChainData->imagesCount;
@@ -90,6 +93,7 @@ ImguiVulkan::ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi) : vulkanApi(vulk
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, nullptr, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != nullptr);
 
+    spdlog::info("Editor imgui initialization completed");
 }
 
 ImguiVulkan::~ImguiVulkan()
@@ -151,11 +155,11 @@ void ImguiVulkan::FrameRender(ImDrawData* draw_data)
 
         VkRenderPassBeginInfo info = {};
         info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        info.renderPass = renderPass;
+        info.renderPass = vulkanApi.renderPass;
         info.framebuffer = vulkanApi.swapChainData->frameBuffers[imageIndex];
         info.renderArea.extent.width = vulkanApi.swapChainData->extent.width;
         info.renderArea.extent.height = vulkanApi.swapChainData->extent.height;
-        info.clearValueCount = 1;
+        info.clearValueCount = static_cast<uint32_t>(clearColors.size());
         info.pClearValues = clearColors.data();
         vkCmdBeginRenderPass(commandBuffers[imageIndex], &info, VK_SUBPASS_CONTENTS_INLINE);
     }
@@ -208,7 +212,7 @@ void ImguiVulkan::FramePresent()
 
 void ImguiVulkan::CreateRenderPass(VkDevice& logicalDevice, Ref<AVulkan::SwapChainData> swapChainData, VkRenderPass* renderPass)
 {
-    VkAttachmentDescription attachment = {};
+    /*VkAttachmentDescription attachment = {};
     attachment.format = swapChainData->imageFormat;
     attachment.samples = VK_SAMPLE_COUNT_1_BIT;
     attachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
@@ -245,5 +249,5 @@ void ImguiVulkan::CreateRenderPass(VkDevice& logicalDevice, Ref<AVulkan::SwapCha
     info.pDependencies = &dependency;
 
     auto createStatus = vkCreateRenderPass(logicalDevice, &info, nullptr, renderPass);
-    CAssert::Check(createStatus == VK_SUCCESS, "Failed to create render pass, status: " + createStatus);
+    CAssert::Check(createStatus == VK_SUCCESS, "Failed to create render pass, status: " + createStatus);*/
 }

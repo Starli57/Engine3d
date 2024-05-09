@@ -7,6 +7,7 @@
 #include <GLFW/glfw3.h>
 #include <vulkan/vulkan.h>
 
+#include "IEngineEditor.h"
 #include "Rendering/Vulkan/VulkanGraphicsApi.h"
 #include "Rendering/Vulkan/Descriptors.h"
 #include "Rendering/Vulkan/SwapChain.h"
@@ -36,7 +37,7 @@ private:
 	std::vector<VkCommandBuffer> commandBuffers;
 
 	VkDescriptorPool descriptorPool;
-	VkRenderPass renderPass;
+//	VkRenderPass renderPass;
 
 	AVulkan::QueueFamilyIndices queueFamilies;
 	uint32_t graphicsQueueFamily;

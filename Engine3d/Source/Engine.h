@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <entt.hpp>
 #include "Defines/DllDecDefines.h"
 

@@ -14,7 +14,7 @@ Editor::Editor()
 
 	auto graphicsApi = engine->GetGraphicsApi();
 	auto vulkanApi = static_cast<AVulkan::VulkanGraphicsApi*>(graphicsApi);
-	imgui = CreateRef<ImguiVulkan>(vulkanApi);
+	imgui = CreateRef<ImguiVulkan>(*vulkanApi);
 	engine->BindEditor(imgui);
 
 	engine->Run();
