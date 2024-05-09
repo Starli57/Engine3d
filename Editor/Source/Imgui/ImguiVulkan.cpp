@@ -122,6 +122,8 @@ void ImguiVulkan::Update()
 
     auto drawData = ImGui::GetDrawData();
     FrameRender(drawData);
+    ImGui::UpdatePlatformWindows();
+    ImGui::RenderPlatformWindowsDefault();
     FramePresent();
 }
 
