@@ -74,6 +74,15 @@ namespace AVulkan
 	//todo: make refactoring of the function
 	void VulkanGraphicsApi::Render()
 	{
+		if (editor.get() != nullptr)
+		{
+			editor->StartFrame();
+			editor->Update();
+		}
+
+		auto commandBuffer = commandBuffers[frame];
+		auto uiCommandBuffer = uiCommandBuffers[frame];
+
 		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, frameSyncTimeout);
 
 		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData->swapChain, frameSyncTimeout,
@@ -90,23 +99,40 @@ namespace AVulkan
 		UpdateUniformBuffer(frame);
 
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
-		vkResetCommandBuffer(commandBuffers[frame], 0);
-		ACommandBuffer().Record(ecs, descriptors, frame, swapChainData->frameBuffers[imageIndex],
-			renderPass, commandBuffers, *graphicsPipeline, swapChainData->extent);
+		vkResetCommandBuffer(commandBuffer, 0);
+
+		ACommandBuffer().Begin(commandBuffer);
+		ACommandBuffer().BeginRenderPass(swapChainData->frameBuffers[imageIndex], renderPass, commandBuffer, swapChainData->extent);
+		ACommandBuffer().Record(ecs, descriptors, frame, commandBuffer, *graphicsPipeline);
+		ACommandBuffer().EndRenderPass(commandBuffer);
+		ACommandBuffer().End(commandBuffer);
+
+		if (editor.get() != nullptr)
+		{
+			ACommandBuffer().Begin(uiCommandBuffer);
+			ACommandBuffer().BeginRenderPass(swapChainData->frameBuffers[imageIndex], renderPass, uiCommandBuffer, swapChainData->extent);
+			editor->Render();
+			ACommandBuffer().EndRenderPass(uiCommandBuffer);
+			ACommandBuffer().End(uiCommandBuffer);
+		}
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
+		std::array<VkCommandBuffer, 2> submitCommandBuffers =
+		{
+			commandBuffer,
+			uiCommandBuffers[frame]
+		};
 
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		submitInfo.waitSemaphoreCount = 1;
-		submitInfo.commandBufferCount = 1;
 		submitInfo.signalSemaphoreCount = 1;
-		
 		submitInfo.pWaitSemaphores = &imageAvailableSemaphores[frame];
 		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[frame];
-
 		submitInfo.pWaitDstStageMask = waitStages;
-		submitInfo.pCommandBuffers = &commandBuffers[frame];
+		submitInfo.commandBufferCount = static_cast<uint32_t>(submitCommandBuffers.size());;
+		submitInfo.pCommandBuffers = submitCommandBuffers.data();
 
 		auto submitStatus = vkQueueSubmit(graphicsQueue, 1, &submitInfo, drawFences[frame]);
 		CAssert::Check(submitStatus == VK_SUCCESS, "Failed to submit draw command buffer, status: " + submitStatus);
@@ -135,6 +161,11 @@ namespace AVulkan
 	void VulkanGraphicsApi::FinanilizeRenderOperations()
 	{
 		vkDeviceWaitIdle(logicalDevice);
+	}
+
+	void VulkanGraphicsApi::BindEditor(Ref<IEngineEditor> editor)
+	{
+		this->editor = editor;
 	}
 
 	Ref<Mesh> VulkanGraphicsApi::CreateMesh(const std::string& meshPath)

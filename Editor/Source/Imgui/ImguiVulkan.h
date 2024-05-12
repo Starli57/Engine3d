@@ -26,24 +26,18 @@ public:
     ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi);
     ~ImguiVulkan();
 
+	void StartFrame() override;
     void Update() override;
+	void Render() override;
 
 private:
 
 	AVulkan::VulkanGraphicsApi& vulkanApi;
     Ref<Rollback> rollback;
 
-	VkCommandPool commandPool;
-	std::vector<VkCommandBuffer> commandBuffers;
-
 	VkDescriptorPool descriptorPool;
 //	VkRenderPass renderPass;
 
 	AVulkan::QueueFamilyIndices queueFamilies;
 	uint32_t graphicsQueueFamily;
-
-    void FrameRender(ImDrawData* draw_data);
-    void FramePresent();
-
-    void CreateRenderPass(VkDevice& logicalDevice, Ref<AVulkan::SwapChainData> swapChainData, VkRenderPass* renderPass);
 };

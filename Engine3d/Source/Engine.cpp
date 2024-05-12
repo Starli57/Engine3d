@@ -113,7 +113,6 @@ void Engine::Run()
 		//todo: handle exceptions and errors
 		graphicsApi->Render();
 
-		if (editor.get() != nullptr) editor->Update();
 
 		cachedTime = currentTime;
 	}
@@ -125,4 +124,5 @@ void Engine::Run()
 void Engine::BindEditor(Ref<IEngineEditor> editor)
 {
 	this->editor = editor;
+	graphicsApi->BindEditor(editor);
 }
