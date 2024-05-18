@@ -23,4 +23,6 @@ Editor::Editor()
 
 Editor::~Editor()
 {
+	imgui.reset();
+	engine.reset();
 }

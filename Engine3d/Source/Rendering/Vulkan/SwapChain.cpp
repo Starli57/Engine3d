@@ -47,7 +47,8 @@ namespace AVulkan
 
 
 		VkSwapchainCreateInfoKHR createInfo{};
-		SetupSwapChainInfo(createInfo, surface, extent, presentMode, swapChainData->surfaceFormat, details.capabilities, physicalDeviceQueueIndices, swapChainData->imagesCount);
+		SetupSwapChainInfo(createInfo, surface, extent, presentMode, swapChainData->surfaceFormat, 
+			details.capabilities, physicalDeviceQueueIndices, swapChainData->imagesCount);
 
 		auto createStatus = vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &swapChainData->swapChain);
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create swap chain, status: " + createStatus);

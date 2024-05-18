@@ -125,5 +125,5 @@ void Engine::Run()
 void Engine::BindEditor(Ref<IEngineEditor> editor)
 {
 	this->editor = editor;
-	graphicsApi->BindEditor(editor);
+	engineRollback->Add([this] {this->editor.reset(); });
 }

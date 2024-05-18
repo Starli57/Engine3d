@@ -119,7 +119,7 @@ ImguiVulkan::~ImguiVulkan()
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    vkDestroyDescriptorPool(vulkanApi.logicalDevice, descriptorPool, nullptr);
+ //   vkDestroyDescriptorPool(vulkanApi.logicalDevice, descriptorPool, nullptr);
 }
 
 void ImguiVulkan::Update()

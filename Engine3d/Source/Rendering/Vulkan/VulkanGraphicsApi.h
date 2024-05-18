@@ -84,7 +84,6 @@ namespace AVulkan
 		void Init() override;
 		void Render() override;
 		void FinanilizeRenderOperations() override;
-		void BindEditor(Ref<IEngineEditor> editor) override;
 
 		Ref<Mesh> CreateMesh(const std::string& meshPath) override;
 		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;

@@ -101,7 +101,6 @@ namespace AVulkan
 		ACommandBuffer().EndRenderPass(commandBuffer);
 		ACommandBuffer().End(commandBuffer);
 
-
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
 		std::array<VkCommandBuffer, 1> submitCommandBuffers =
@@ -146,11 +145,6 @@ namespace AVulkan
 	void VulkanGraphicsApi::FinanilizeRenderOperations()
 	{
 		vkDeviceWaitIdle(logicalDevice);
-	}
-
-	void VulkanGraphicsApi::BindEditor(Ref<IEngineEditor> editor)
-	{
-		this->editor = editor;
 	}
 
 	Ref<Mesh> VulkanGraphicsApi::CreateMesh(const std::string& meshPath)
