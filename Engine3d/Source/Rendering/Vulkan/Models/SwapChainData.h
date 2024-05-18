@@ -13,6 +13,7 @@ namespace AVulkan
 		VkSwapchainKHR swapChain;
 		VkSwapchainKHR oldSwapChain;//todo: add usage to reuse resources
 
+		VkSurfaceFormatKHR surfaceFormat;
 		VkFormat imageFormat;
 		VkExtent2D extent;
 

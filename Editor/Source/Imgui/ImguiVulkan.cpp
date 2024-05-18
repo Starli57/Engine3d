@@ -88,6 +88,8 @@ ImguiVulkan::ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi) : vulkanApi(vulk
     initInfo.MinImageCount = 2;
     initInfo.ImageCount = vulkanApi.swapChainData->imagesCount;
     initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+    initInfo.SurfaceFormat = vulkanApi.swapChainData->surfaceFormat;
+
     ImGui_ImplVulkan_Init(&initInfo);
     ImGui_ImplVulkan_CreateFontsTexture();
     // Load Fonts
