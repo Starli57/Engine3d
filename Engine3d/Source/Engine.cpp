@@ -113,6 +113,7 @@ void Engine::Run()
 		//todo: handle exceptions and errors
 		graphicsApi->Render();
 
+		if (editor.get() != nullptr) editor->Update();
 
 		cachedTime = currentTime;
 	}

@@ -74,14 +74,8 @@ namespace AVulkan
 	//todo: make refactoring of the function
 	void VulkanGraphicsApi::Render()
 	{
-		if (editor.get() != nullptr)
-		{
-			editor->StartFrame();
-			editor->Update();
-		}
 
 		auto commandBuffer = commandBuffers[frame];
-		auto uiCommandBuffer = uiCommandBuffers[frame];
 
 		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, frameSyncTimeout);
 
@@ -107,21 +101,12 @@ namespace AVulkan
 		ACommandBuffer().EndRenderPass(commandBuffer);
 		ACommandBuffer().End(commandBuffer);
 
-		if (editor.get() != nullptr)
-		{
-			ACommandBuffer().Begin(uiCommandBuffer);
-			ACommandBuffer().BeginRenderPass(swapChainData->frameBuffers[imageIndex], renderPass, uiCommandBuffer, swapChainData->extent);
-			editor->Render();
-			ACommandBuffer().EndRenderPass(uiCommandBuffer);
-			ACommandBuffer().End(uiCommandBuffer);
-		}
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
-		std::array<VkCommandBuffer, 2> submitCommandBuffers =
+		std::array<VkCommandBuffer, 1> submitCommandBuffers =
 		{
-			commandBuffer,
-			uiCommandBuffers[frame]
+			commandBuffer
 		};
 
 		VkSubmitInfo submitInfo{};

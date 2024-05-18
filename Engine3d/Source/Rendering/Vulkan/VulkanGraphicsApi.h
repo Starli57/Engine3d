@@ -57,6 +57,7 @@ namespace AVulkan
 
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;
+
 		VkRenderPass renderPass;
 
 		Ref<SwapChain> swapChain;
@@ -67,7 +68,6 @@ namespace AVulkan
 
 		VkCommandPool commandPool;
 		std::vector<VkCommandBuffer> commandBuffers;
-		std::vector<VkCommandBuffer> uiCommandBuffers;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;

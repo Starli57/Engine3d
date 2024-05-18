@@ -13,9 +13,43 @@ ImguiVulkan::ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi) : vulkanApi(vulk
     graphicsQueueFamily = queueFamilies.graphicsFamily.value();
 
     auto commandPool = vulkanApi.commandPool;
-    auto commandBuffers = &vulkanApi.uiCommandBuffers;
-    AVulkan::ACommandBuffer().Allocate(vulkanApi.logicalDevice, commandPool, *commandBuffers, vulkanApi.swapChainData->imagesCount);
 
+    //create render pass 
+    VkRenderPass renderPass;
+    VkAttachmentDescription renderPassAttachment = {};
+    renderPassAttachment.format = vulkanApi.swapChainData->imageFormat;
+    renderPassAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+    renderPassAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    renderPassAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    renderPassAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+    renderPassAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    renderPassAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    renderPassAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+    VkAttachmentReference color_attachment = {};
+    color_attachment.attachment = 0;
+    color_attachment.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    VkSubpassDescription subpass = {};
+    subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+    subpass.colorAttachmentCount = 1;
+    subpass.pColorAttachments = &color_attachment;
+    VkSubpassDependency dependency = {};
+    dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+    dependency.dstSubpass = 0;
+    dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+    dependency.srcAccessMask = 0;
+    dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+    VkRenderPassCreateInfo renderPassInfo = {};
+    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+    renderPassInfo.attachmentCount = 1;
+    renderPassInfo.pAttachments = &renderPassAttachment;
+    renderPassInfo.subpassCount = 1;
+    renderPassInfo.pSubpasses = &subpass;
+    renderPassInfo.dependencyCount = 1;
+    renderPassInfo.pDependencies = &dependency;
+    auto renderPassStatus = vkCreateRenderPass(vulkanApi.logicalDevice, &renderPassInfo, nullptr, &renderPass);
+    CAssert::Check(renderPassStatus == VK_SUCCESS, "Failed to create imgui render pass");
+    
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -49,7 +83,7 @@ ImguiVulkan::ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi) : vulkanApi(vulk
     initInfo.Queue = vulkanApi.graphicsQueue;
     initInfo.PipelineCache = VK_NULL_HANDLE;
     initInfo.DescriptorPool = descriptorPool;
-    initInfo.RenderPass = vulkanApi.renderPass;
+    initInfo.RenderPass = renderPass;
     initInfo.Subpass = 0;
     initInfo.MinImageCount = 2;
     initInfo.ImageCount = vulkanApi.swapChainData->imagesCount;
@@ -86,27 +120,15 @@ ImguiVulkan::~ImguiVulkan()
     vkDestroyDescriptorPool(vulkanApi.logicalDevice, descriptorPool, nullptr);
 }
 
-void ImguiVulkan::StartFrame()
+void ImguiVulkan::Update()
 {
     ImGui_ImplVulkan_NewFrame();
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
-}
 
-void ImguiVulkan::Update()
-{
-    bool show = true;
-    ImGui::Begin("Another Window", &show);
-    ImGui::Text("Hello from another window!");
-    ImGui::End();
-}
+    ImGui::ShowDemoWindow();
 
-void ImguiVulkan::Render()
-{
     ImGui::Render();
-
-    auto drawData = ImGui::GetDrawData();
-    ImGui_ImplVulkan_RenderDrawData(drawData, vulkanApi.uiCommandBuffers[vulkanApi.GetImageIndex()]);
     ImGui::UpdatePlatformWindows();
     ImGui::RenderPlatformWindowsDefault();
 }

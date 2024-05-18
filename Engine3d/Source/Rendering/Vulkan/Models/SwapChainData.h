@@ -19,6 +19,7 @@ namespace AVulkan
 		uint32_t imagesCount;
 		std::vector<VkImage> images;
 		std::vector<VkImageView> imageViews;
+
 		std::vector<VkFramebuffer> frameBuffers;
 	};
 }

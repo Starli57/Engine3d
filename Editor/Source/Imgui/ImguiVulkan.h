@@ -26,9 +26,7 @@ public:
     ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi);
     ~ImguiVulkan();
 
-	void StartFrame() override;
     void Update() override;
-	void Render() override;
 
 private:
 
@@ -36,7 +34,6 @@ private:
     Ref<Rollback> rollback;
 
 	VkDescriptorPool descriptorPool;
-//	VkRenderPass renderPass;
 
 	AVulkan::QueueFamilyIndices queueFamilies;
 	uint32_t graphicsQueueFamily;
