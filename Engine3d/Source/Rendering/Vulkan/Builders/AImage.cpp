@@ -1,8 +1,8 @@
 #include "Pch.h"
 #include "AImage.h"
 #include "SharedLib/CustomAssert.h"
-#include "Rendering/Vulkan/Utilities/VkMemoryUtility.h"
-#include "Rendering/Vulkan/Builders/ABuffer.h"
+#include "Rendering/Vulkan/Extensions/VkMemoryExtension.h"
+#include "Rendering/Vulkan/Extensions/BufferExtension.h"
 
 namespace AVulkan
 {
@@ -39,7 +39,7 @@ namespace AVulkan
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
-        allocInfo.memoryTypeIndex = VkMemoryUtility::FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, properties);
+        allocInfo.memoryTypeIndex = VkMemoryExtension::FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, properties);
 
         auto allocateStatus = vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &imageMemory);
         CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate vk image memory");
@@ -50,8 +50,7 @@ namespace AVulkan
 
     void AImage::CopyBufferToImage(VkBuffer& buffer, VkImage& image, uint32_t width, uint32_t height) const
     {
-        ABuffer bufferUtility;
-        auto commandBuffer = bufferUtility.BeginCommandBuffer(logicalDevice, commandPool);
+        auto commandBuffer = BufferExtension::BeginCommandBuffer(logicalDevice, commandPool);
 
         VkBufferImageCopy imageRegion{};
         imageRegion.bufferOffset = 0;
@@ -69,14 +68,13 @@ namespace AVulkan
         vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageRegion);
 
         vkEndCommandBuffer(commandBuffer);
-        bufferUtility.SubmitCommandBuffer(graphicsQueue, commandBuffer);
+        BufferExtension::SubmitCommandBuffer(graphicsQueue, commandBuffer);
         vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
     }
 
     void AImage::TransitionImageLayout(VkImage& image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) const
     {
-        ABuffer bufferUtility;
-        auto commandBuffer = bufferUtility.BeginCommandBuffer(logicalDevice, commandPool);
+        auto commandBuffer = BufferExtension::BeginCommandBuffer(logicalDevice, commandPool);
 
         VkImageMemoryBarrier barrier{};
         barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -118,7 +116,7 @@ namespace AVulkan
         vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
 
         vkEndCommandBuffer(commandBuffer);
-        bufferUtility.SubmitCommandBuffer(graphicsQueue, commandBuffer);
+        BufferExtension::SubmitCommandBuffer(graphicsQueue, commandBuffer);
         vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
     }
 

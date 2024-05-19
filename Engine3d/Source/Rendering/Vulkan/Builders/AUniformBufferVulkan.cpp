@@ -12,7 +12,7 @@ namespace AVulkan
 		VkBufferUsageFlags stagingUsageFlags = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 		VkMemoryPropertyFlags stagingMemoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 
-		ABuffer().Create(physicalDevice, logicalDevice, bufferSize,
+		BufferExtension::Create(physicalDevice, logicalDevice, bufferSize,
 			stagingUsageFlags, stagingMemoryFlags, bufferModel->buffer, bufferModel->bufferMemory);
 
 		auto mapStatus = vkMapMemory(logicalDevice, bufferModel->bufferMemory, 0, bufferSize, 0, &bufferModel->bufferMapped);
@@ -23,6 +23,6 @@ namespace AVulkan
 
 	void AUniformBufferVulkan::Dispose(VkDevice& logicalDevice, Ref<BufferModel> bufferModel)
 	{
-		ABuffer().Dispose(logicalDevice, bufferModel->buffer, bufferModel->bufferMemory);
+		BufferExtension::Dispose(logicalDevice, bufferModel->buffer, bufferModel->bufferMemory);
 	}
 }

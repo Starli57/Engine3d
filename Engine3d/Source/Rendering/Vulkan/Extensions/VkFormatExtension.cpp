@@ -1,9 +1,9 @@
 #include "Pch.h"
-#include "VkFormatUtility.h"
+#include "VkFormatExtension.h"
 
-namespace AVulkan
+namespace VkFormatExtension
 {
-    VkFormat VkFormatUtility::FindSupportedFormat(VkPhysicalDevice& physicalDevice, std::vector<VkFormat>& formats,
+    VkFormat FindSupportedFormat(VkPhysicalDevice& physicalDevice, std::vector<VkFormat>& formats,
         VkImageTiling tiling, VkFormatFeatureFlags features)
     {
         for (VkFormat format : formats) 
@@ -24,7 +24,7 @@ namespace AVulkan
         throw std::runtime_error("Failed to find supported format!");
     }
 
-    VkFormat VkFormatUtility::FindDepthBufferFormat(VkPhysicalDevice& physicalDevice)
+    VkFormat FindDepthBufferFormat(VkPhysicalDevice& physicalDevice)
     {
         std::vector<VkFormat> formats =
         {

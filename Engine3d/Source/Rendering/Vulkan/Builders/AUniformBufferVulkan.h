@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-#include "ABuffer.h"
+#include "Rendering/Vulkan/Extensions/BufferExtension.h"
 #include "Rendering/Vulkan/Models/BufferModel.h"
 #include "SharedLib/Ref.h"
 #include "SharedLib/Components/UboViewProjectionComponent.h"

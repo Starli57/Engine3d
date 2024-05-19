@@ -29,6 +29,8 @@ public:
 
     void Update() override;
 
+	void CreateRenderPass(VkRenderPass& renderPass);
+
 private:
 
 	AVulkan::VulkanGraphicsApi& vulkanApi;

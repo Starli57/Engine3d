@@ -1,11 +1,11 @@
 #include "Pch.h"
-#include "ABuffer.h"
+#include "BufferExtension.h"
 #include "Rendering/Vulkan/Utilities/VkMemoryUtility.h"
 
-namespace AVulkan
+namespace BufferExtension
 {
-	void ABuffer::Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, uint64_t bufferSize, 
-		VkBufferUsageFlags& usageFlags, VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const
+	void Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, uint64_t bufferSize, 
+		VkBufferUsageFlags& usageFlags, VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{
 		VkBufferCreateInfo bufferInfo{};
 		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -19,7 +19,7 @@ namespace AVulkan
 		BindMemory(physicalDevice, logicalDevice, memoryFlags, buffer, bufferMemory);
 	}
 
-	VkCommandBuffer ABuffer::BeginCommandBuffer(VkDevice& logicalDevice, VkCommandPool& commandPool) const
+	VkCommandBuffer BeginCommandBuffer(VkDevice& logicalDevice, VkCommandPool& commandPool)
 	{
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -38,7 +38,7 @@ namespace AVulkan
 		return commandBuffer;
 	}
 
-	void ABuffer::SubmitCommandBuffer(VkQueue& graphicsQueue, VkCommandBuffer& commandBuffer) const
+	void SubmitCommandBuffer(VkQueue& graphicsQueue, VkCommandBuffer& commandBuffer)
 	{
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -48,8 +48,8 @@ namespace AVulkan
 		vkQueueWaitIdle(graphicsQueue);
 	}
 
-	void ABuffer::Copy(VkDevice& logicalDevice, VkQueue& graphicsQueue, VkBuffer& srcBuffer, VkBuffer& dstBuffer, 
-		VkDeviceSize& size, VkCommandPool& commandPool) const
+	void Copy(VkDevice& logicalDevice, VkQueue& graphicsQueue, VkBuffer& srcBuffer, VkBuffer& dstBuffer, 
+		VkDeviceSize& size, VkCommandPool& commandPool)
 	{
 		auto commandBuffer = BeginCommandBuffer(logicalDevice, commandPool);
 
@@ -66,15 +66,15 @@ namespace AVulkan
 		vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
 	}
 
-	void ABuffer::Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const
+	void Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{
 		vkDestroyBuffer(logicalDevice, buffer, nullptr);
 		vkFreeMemory(logicalDevice, bufferMemory, nullptr);
 	}
 
 
-	void ABuffer::BindMemory(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkMemoryPropertyFlags& memoryFlags, 
-		VkBuffer& buffer, VkDeviceMemory& bufferMemory) const
+	void BindMemory(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkMemoryPropertyFlags& memoryFlags, 
+		VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{
 		VkMemoryRequirements memRequirements;
 		vkGetBufferMemoryRequirements(logicalDevice, buffer, &memRequirements);
@@ -82,7 +82,7 @@ namespace AVulkan
 		VkMemoryAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 		allocInfo.allocationSize = memRequirements.size;
-		allocInfo.memoryTypeIndex = VkMemoryUtility::FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, memoryFlags);
+		allocInfo.memoryTypeIndex = VkMemoryExtension::FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, memoryFlags);
 
 		auto allocateStatus = vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &bufferMemory);
 		CAssert::Check(allocateStatus == VK_SUCCESS, "Can't allocate memory for vertex buffer, status: " + allocateStatus);

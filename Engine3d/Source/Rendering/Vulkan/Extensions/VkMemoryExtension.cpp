@@ -1,9 +1,9 @@
 #include "Pch.h"
-#include "VkMemoryUtility.h"
+#include "VkMemoryExtension.h"
 
-namespace AVulkan
+namespace VkMemoryExtension
 {
-	uint32_t VkMemoryUtility::FindMemoryType(VkPhysicalDevice& physicalDevice, uint32_t& typeFilter, VkMemoryPropertyFlags& properties)
+	uint32_t FindMemoryType(VkPhysicalDevice& physicalDevice, uint32_t& typeFilter, VkMemoryPropertyFlags& properties)
 	{
 		VkPhysicalDeviceMemoryProperties memProperties;
 		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
@@ -19,7 +19,7 @@ namespace AVulkan
 		throw std::runtime_error("Failed to find suitable memory type!");
 	}
 
-	void VkMemoryUtility::FreeDeviceMemory(VkDevice& logicalDevice, VkDeviceMemory& memory)
+	void FreeDeviceMemory(VkDevice& logicalDevice, VkDeviceMemory& memory)
 	{
 		vkFreeMemory(logicalDevice, memory, nullptr);
 	}

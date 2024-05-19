@@ -1,12 +1,11 @@
 #include "Pch.h"
-#include "SwapChainUtility.h"
+#include "SwapchainExtension.h"
 
-
-namespace AVulkan
+namespace SwapchainExtension
 {
-	SwapChainSurfaceSettings SwapChainUtility::GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const
+	AVulkan::SwapChainSurfaceSettings GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface)
 	{
-		SwapChainSurfaceSettings surfaceSettigns;
+		AVulkan::SwapChainSurfaceSettings surfaceSettigns;
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceSettigns.capabilities);
 
 		GetSwapChainColorFormats(physicalDevice, surface, surfaceSettigns.formats);
@@ -15,18 +14,18 @@ namespace AVulkan
 		return surfaceSettigns;
 	}
 
-	bool SwapChainUtility::DoSupportSwapChain(SwapChainSurfaceSettings& details) const
+	bool DoSupportSwapChain(AVulkan::SwapChainSurfaceSettings& details)
 	{
 		return !details.formats.empty() && !details.presentModes.empty();
 	}
 
-	bool SwapChainUtility::DoSupportSwapChain(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface) const
+	bool DoSupportSwapChain(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface)
 	{
-		SwapChainSurfaceSettings details = GetSwapChainDetails(physicalDevice, surface);
+		AVulkan::SwapChainSurfaceSettings details = GetSwapChainDetails(physicalDevice, surface);
 		return DoSupportSwapChain(details);
 	}
 
-	void SwapChainUtility::GetSwapChainColorFormats(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkSurfaceFormatKHR>& formats) const
+	void GetSwapChainColorFormats(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkSurfaceFormatKHR>& formats)
 	{
 		uint32_t formatCount;
 		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, nullptr);
@@ -35,7 +34,7 @@ namespace AVulkan
 		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, formats.data());
 	}
 
-	void SwapChainUtility::GetSwapChainPresentModes(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkPresentModeKHR>& presentModes) const
+	void GetSwapChainPresentModes(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkPresentModeKHR>& presentModes)
 	{
 		uint32_t presentModeCount;
 		vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, nullptr);

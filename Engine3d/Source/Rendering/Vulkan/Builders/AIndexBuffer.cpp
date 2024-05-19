@@ -3,7 +3,7 @@
 #include "spdlog/spdlog.h"
 
 #include "AIndexBuffer.h"
-#include "ABuffer.h"
+#include "Rendering/Vulkan/Extensions/BufferExtension.h"
 
 
 namespace AVulkan
@@ -24,24 +24,23 @@ namespace AVulkan
         VkMemoryPropertyFlags stagingMemoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
         VkMemoryPropertyFlags distMemoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
-        ABuffer bufferInterface;
-        bufferInterface.Create(physicalDevice, logicalDevice, bufferSize, stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingBufferMemory);
+        BufferExtension::Create(physicalDevice, logicalDevice, bufferSize, stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingBufferMemory);
 
         void* data;
         vkMapMemory(logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
         memcpy(data, indices->data(), (size_t)bufferSize);
         vkUnmapMemory(logicalDevice, stagingBufferMemory);
 
-        bufferInterface.Create(physicalDevice, logicalDevice, bufferSize, distUsageFlags, distMemoryFlags, indexBuffer, bufferMemory);
+        BufferExtension::Create(physicalDevice, logicalDevice, bufferSize, distUsageFlags, distMemoryFlags, indexBuffer, bufferMemory);
 
-        bufferInterface.Copy(logicalDevice, graphicsQueue, stagingBuffer, indexBuffer, bufferSize, commandPool);
-        bufferInterface.Dispose(logicalDevice, stagingBuffer, stagingBufferMemory);
+        BufferExtension::Copy(logicalDevice, graphicsQueue, stagingBuffer, indexBuffer, bufferSize, commandPool);
+        BufferExtension::Dispose(logicalDevice, stagingBuffer, stagingBufferMemory);
 	}
 
 
     void AIndexBuffer::Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const
     {
         spdlog::info("Dispose Index Buffer");
-        ABuffer().Dispose(logicalDevice, buffer, bufferMemory);
+        BufferExtension::Dispose(logicalDevice, buffer, bufferMemory);
     }
 }
