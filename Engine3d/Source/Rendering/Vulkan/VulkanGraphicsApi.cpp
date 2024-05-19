@@ -5,10 +5,10 @@
 #include "VulkanGraphicsApi.h"
 #include "Components/MeshComponent.h"
 #include "Components/MaterialComponent.h"
-#include "Rendering/Vulkan/Extensions/VkFormatExtension.h"
 #include "Rendering/Vulkan/Entities/TextureVulkan.h"
 #include "Builders/AImageView.h"
-#include "Extensions/VkMemoryExtension.h"
+#include "Utilities/VkMemoryUtility.h"
+#include "Utilities/VkFormatUtility.h"
 
 namespace AVulkan
 {

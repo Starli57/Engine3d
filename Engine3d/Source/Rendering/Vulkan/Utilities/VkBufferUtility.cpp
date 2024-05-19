@@ -1,8 +1,8 @@
 #include "Pch.h"
-#include "VkBufferExtension.h"
-#include "Rendering/Vulkan/Extensions/VkMemoryExtension.h"
+#include "VkBufferUtility.h"
+#include "Rendering/Vulkan/Utilities/VkMemoryUtility.h"
 
-namespace VkExtensions
+namespace VkUtilities
 {
 	void CreateBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, uint64_t bufferSize, 
 		VkBufferUsageFlags& usageFlags, VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
@@ -82,7 +82,7 @@ namespace VkExtensions
 		VkMemoryAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 		allocInfo.allocationSize = memRequirements.size;
-		allocInfo.memoryTypeIndex = VkExtensions::FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, memoryFlags);
+		allocInfo.memoryTypeIndex = FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, memoryFlags);
 
 		auto allocateStatus = vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &bufferMemory);
 		CAssert::Check(allocateStatus == VK_SUCCESS, "Can't allocate memory for vertex buffer, status: " + allocateStatus);

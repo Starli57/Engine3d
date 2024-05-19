@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace VkExtensions
+namespace VkUtilities
 {
 	void CreateBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, uint64_t bufferSize,
 		VkBufferUsageFlags& usageFlags, VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory);

@@ -3,7 +3,7 @@
 #include "spdlog/spdlog.h"
 
 #include "AIndexBuffer.h"
-#include "Rendering/Vulkan/Extensions/VkBufferExtension.h"
+#include "Rendering/Vulkan/Utilities/VkBufferUtility.h"
 
 
 namespace AVulkan
@@ -24,22 +24,22 @@ namespace AVulkan
         VkMemoryPropertyFlags stagingMemoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
         VkMemoryPropertyFlags distMemoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
-        VkExtensions::CreateBuffer(physicalDevice, logicalDevice, bufferSize, stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingBufferMemory);
+        VkUtilities::CreateBuffer(physicalDevice, logicalDevice, bufferSize, stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingBufferMemory);
 
         void* data;
         vkMapMemory(logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
         memcpy(data, indices->data(), (size_t)bufferSize);
         vkUnmapMemory(logicalDevice, stagingBufferMemory);
 
-        VkExtensions::CreateBuffer(physicalDevice, logicalDevice, bufferSize, distUsageFlags, distMemoryFlags, indexBuffer, bufferMemory);
-        VkExtensions::CopyBuffer(logicalDevice, graphicsQueue, stagingBuffer, indexBuffer, bufferSize, commandPool);
-        VkExtensions::DisposeBuffer(logicalDevice, stagingBuffer, stagingBufferMemory);
+        VkUtilities::CreateBuffer(physicalDevice, logicalDevice, bufferSize, distUsageFlags, distMemoryFlags, indexBuffer, bufferMemory);
+        VkUtilities::CopyBuffer(logicalDevice, graphicsQueue, stagingBuffer, indexBuffer, bufferSize, commandPool);
+        VkUtilities::DisposeBuffer(logicalDevice, stagingBuffer, stagingBufferMemory);
 	}
 
 
     void AIndexBuffer::Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const
     {
         spdlog::info("Dispose Index Buffer");
-        VkExtensions::DisposeBuffer(logicalDevice, buffer, bufferMemory);
+        VkUtilities::DisposeBuffer(logicalDevice, buffer, bufferMemory);
     }
 }

@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "Rendering/Vulkan/Models/SwapChainSurfaceSettings.h"
 
-namespace VkExtensions
+namespace VkUtilities
 {
 	AVulkan::SwapChainSurfaceSettings GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface);
 

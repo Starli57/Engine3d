@@ -3,7 +3,7 @@
 
 #include "SharedLib/CustomAssert.h"
 #include "Rendering/Vulkan/VulkanGraphicsApi.h"
-#include "Rendering/Vulkan/Extensions/VkBufferExtension.h"
+#include "Rendering/Vulkan/Utilities/VkBufferUtility.h"
 #include "Rendering/Vulkan/Builders/AUniformBufferVulkan.h"
 #include "Rendering/Vulkan/Builders/AImage.h"
 #include "Rendering/Vulkan/Builders/AImageView.h"
@@ -84,7 +84,7 @@ namespace AVulkan
         VkBufferUsageFlags usageFlagsStaging = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
         VkMemoryPropertyFlags memoryFlagsStaging = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 
-        VkExtensions::CreateBuffer(physicalDevice, logicalDevice, imageSize,
+        VkUtilities::CreateBuffer(physicalDevice, logicalDevice, imageSize,
             usageFlagsStaging, memoryFlagsStaging, stagingBuffer, stagingMemory);
 
         void* data;

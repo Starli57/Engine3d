@@ -12,9 +12,9 @@
 #include "Rendering/Vulkan/Builders/AImageView.h"
 #include "Rendering/Vulkan/Builders/AFrameBuffer.h"
 #include "Rendering/Vulkan/Builders/AImageView.h"
-#include "Rendering/Vulkan/Extensions/VkFormatExtension.h"
-#include "Rendering/Vulkan/Extensions/VkMemoryExtension.h"
-#include "Rendering/Vulkan/Extensions/VkSwapchainExtension.h"
+#include "Rendering/Vulkan/Utilities/VkFormatUtility.h"
+#include "Rendering/Vulkan/Utilities/VkMemoryUtility.h"
+#include "Rendering/Vulkan/Utilities/VkSwapchainUtility.h"
 
 namespace AVulkan
 {

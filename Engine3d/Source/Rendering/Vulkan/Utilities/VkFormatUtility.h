@@ -1,7 +1,7 @@
 #pragma once
 #include <GLFW/glfw3.h>
 
-namespace VkExtensions
+namespace VkUtilities
 {
 	VkFormat FindSupportedFormat(VkPhysicalDevice& physicalDevice, std::vector<VkFormat>& formats,
 			VkImageTiling tiling, VkFormatFeatureFlags features);

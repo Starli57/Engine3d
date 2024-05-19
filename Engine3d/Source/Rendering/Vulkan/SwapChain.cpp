@@ -30,8 +30,8 @@ namespace AVulkan
 	{
 		spdlog::info("Create swap chain");
 		
-		auto details = VkExtensions::GetSwapChainDetails(physicalDevice, surface);
-		CAssert::Check(VkExtensions::DoSupportSwapChain(details), "Swap chains are not supported");
+		auto details = VkUtilities::GetSwapChainDetails(physicalDevice, surface);
+		CAssert::Check(VkUtilities::DoSupportSwapChain(details), "Swap chains are not supported");
 
 		swapChainData->surfaceFormat = ChooseSwapSurfaceFormat(details.formats);
 		VkPresentModeKHR presentMode = ChoosePresentMode(details.presentModes);
@@ -79,7 +79,7 @@ namespace AVulkan
 		spdlog::info("Create depth buffer");
 		this->commandPool = commandPool;
 
-		VkFormat depthFormat = VkExtensions::FindDepthBufferFormat(physicalDevice);
+		VkFormat depthFormat = VkUtilities::FindDepthBufferFormat(physicalDevice);
 		depthBufferModel = CreateRef<ImageModel>();
 
 		depthBufferModel->image = AImage(physicalDevice, logicalDevice, graphicsQueue, commandPool).Create(
@@ -95,7 +95,7 @@ namespace AVulkan
 		rollback->Add([this]()
 		{
 			AImage(physicalDevice, logicalDevice, graphicsQueue, this->commandPool).Destroy(depthBufferModel->image);
-			VkExtensions::FreeDeviceMemory(logicalDevice, depthBufferModel->imageMemory);
+			VkUtilities::FreeDeviceMemory(logicalDevice, depthBufferModel->imageMemory);
 			depthBufferModel.reset();
 		});
 	}

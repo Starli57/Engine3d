@@ -1,7 +1,7 @@
 #include "Pch.h"
 #include "APhysicalDevice.h"
 #include "Rendering/Vulkan/Models/PhysicalDeviceExtensions.h"
-#include "Rendering/Vulkan/Extensions/VkSwapchainExtension.h"
+#include "Rendering/Vulkan/Utilities/VkSwapchainUtility.h"
 
 namespace AVulkan
 {
@@ -135,7 +135,7 @@ namespace AVulkan
 
     bool APhysicalDevice::DoSupportSwapChain(VkPhysicalDevice& device, VkSurfaceKHR& surface) const
     {
-        return VkExtensions::DoSupportSwapChain(device, surface);
+        return VkUtilities::DoSupportSwapChain(device, surface);
     }
 
     void APhysicalDevice::PrintDebugInformation(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface) const
@@ -146,8 +146,8 @@ namespace AVulkan
 
         SwapChainSurfaceSettings surfaceSettings;
 
-        VkExtensions::GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
-        VkExtensions::GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
+        VkUtilities::GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
+        VkUtilities::GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
 
         for (auto colorFormat : surfaceSettings.formats)
         {

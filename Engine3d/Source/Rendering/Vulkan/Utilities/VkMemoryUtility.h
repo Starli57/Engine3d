@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace VkExtensions
+namespace VkUtilities
 {
 	uint32_t FindMemoryType(VkPhysicalDevice& physicalDevice, uint32_t& typeFilter, VkMemoryPropertyFlags& properties);
 	void FreeDeviceMemory(VkDevice& logicalDevice, VkDeviceMemory& memory);

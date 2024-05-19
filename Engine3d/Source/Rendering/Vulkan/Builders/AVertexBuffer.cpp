@@ -1,5 +1,5 @@
 #include "Pch.h"
-#include "Rendering/Vulkan/Extensions/VkBufferExtension.h"
+#include "Rendering/Vulkan/Utilities/VkBufferUtility.h"
 #include "AVertexBuffer.h"
 #include "spdlog/spdlog.h"
 
@@ -21,7 +21,7 @@ namespace AVulkan
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingMemory;
 
-		VkExtensions::CreateBuffer(physicalDevice, logicalDevice, bufferSize,
+		VkUtilities::CreateBuffer(physicalDevice, logicalDevice, bufferSize,
 			stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingMemory);
 
 		void* data;
@@ -29,17 +29,17 @@ namespace AVulkan
 		memcpy(data, vertices->data(), (size_t)bufferSize);
 		vkUnmapMemory(logicalDevice, stagingMemory);
 
-		VkExtensions::CreateBuffer(physicalDevice, logicalDevice, bufferSize,
+		VkUtilities::CreateBuffer(physicalDevice, logicalDevice, bufferSize,
 			distUsageFlags, distMemoryFlags, vertexBuffer, bufferMemory);
 
-		VkExtensions::CopyBuffer(logicalDevice, graphicsQueue, stagingBuffer, vertexBuffer, bufferSize, commandPool);
-		VkExtensions::DisposeBuffer(logicalDevice, stagingBuffer, stagingMemory);
+		VkUtilities::CopyBuffer(logicalDevice, graphicsQueue, stagingBuffer, vertexBuffer, bufferSize, commandPool);
+		VkUtilities::DisposeBuffer(logicalDevice, stagingBuffer, stagingMemory);
 	}
 
 	void AVertexBuffer::Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const
 	{
 		spdlog::info("Dispose Vertex Buffer");
-		VkExtensions::DisposeBuffer(logicalDevice, buffer, bufferMemory);
+		VkUtilities::DisposeBuffer(logicalDevice, buffer, bufferMemory);
 	}
 
 	VkVertexInputBindingDescription AVertexBuffer::GetBindingDescription()

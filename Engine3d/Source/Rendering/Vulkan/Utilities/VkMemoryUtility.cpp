@@ -1,7 +1,7 @@
 #include "Pch.h"
-#include "VkMemoryExtension.h"
+#include "VkMemoryUtility.h"
 
-namespace VkExtensions
+namespace VkUtilities
 {
 	uint32_t FindMemoryType(VkPhysicalDevice& physicalDevice, uint32_t& typeFilter, VkMemoryPropertyFlags& properties)
 	{
