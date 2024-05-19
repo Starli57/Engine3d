@@ -24,7 +24,7 @@ namespace AVulkan
 		Ref<ImageModel> depthBufferModel;
 
 		SwapChain(Ref<Rollback> rollback, GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkSurfaceKHR& surface,
-			QueueFamilyIndices& physicalDeviceQueueIndices, VkQueue& graphicsQueue, Ref<SwapChainData> swapChainData);
+			VkQueue& graphicsQueue, Ref<SwapChainData> swapChainData);
 		~SwapChain();
 
 		void Recreate();
@@ -43,9 +43,9 @@ namespace AVulkan
 		VkPhysicalDevice& physicalDevice;
 		VkDevice& logicalDevice;
 		VkSurfaceKHR& surface;
-		QueueFamilyIndices& physicalDeviceQueueIndices;
 		VkQueue& graphicsQueue;
 
+		QueueFamilyIndices physicalDeviceQueueIndices;
 		VkCommandPool commandPool;
 		VkRenderPass renderPass;
 

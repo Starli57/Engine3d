@@ -177,28 +177,24 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::SelectPhysicalRenderingDevice()
 	{
-		APhysicalDevice pdInterface;
-		physicalDevice = pdInterface.GetBestRenderingDevice(instance, windowSurface);
-		pdInterface.PrintDebugInformation(physicalDevice, windowSurface);
+		physicalDevice = VkUtils::GetBestRenderingDevice(instance, windowSurface);
+		VkUtils::PrintPhysicalDeviceDebugInformation(physicalDevice, windowSurface);
 	}
 
 	void VulkanGraphicsApi::CreateLogicalDevice()
 	{
-		logicalDevice = ALogicalDevice().Create(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
+		logicalDevice = VkUtils::CreateLogicalDevice(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
 		rollback->Add([this]() 
 		{
 			descriptors->DisposeAllDescriptorPools(logicalDevice);
-			ALogicalDevice().Dispose(logicalDevice); 
+			VkUtils::DisposeLogicalDevice(logicalDevice);
 		});
 	}
 
 	void VulkanGraphicsApi::CreateSwapChain()
 	{
-		auto queueIndices = APhysicalDevice().GetQueueFamilies(physicalDevice, windowSurface);
-
 		swapChainData = CreateRef<SwapChainData>();
-		swapChain = CreateRef<SwapChain>(rollback, *window, physicalDevice, logicalDevice, windowSurface,
-			queueIndices, graphicsQueue, swapChainData);
+		swapChain = CreateRef<SwapChain>(rollback, *window, physicalDevice, logicalDevice, windowSurface, graphicsQueue, swapChainData);
 
 		swapChain->CreateSwapchain();
 

@@ -9,7 +9,7 @@ ImguiVulkan::ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi) : vulkanApi(vulk
     rollback = CreateRef<Rollback>("Editor");
 
     descriptorPool = vulkanApi.descriptors->CreateDescriptorPool(vulkanApi.logicalDevice);
-    queueFamilies = AVulkan::APhysicalDevice().GetQueueFamilies(vulkanApi.physicalDevice, vulkanApi.windowSurface);
+    queueFamilies = VkUtils::GetQueueFamilies(vulkanApi.physicalDevice, vulkanApi.windowSurface);
     graphicsQueueFamily = queueFamilies.graphicsFamily.value();
 
     auto commandPool = vulkanApi.commandPool;

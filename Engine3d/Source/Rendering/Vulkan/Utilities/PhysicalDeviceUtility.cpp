@@ -1,11 +1,11 @@
 #include "Pch.h"
-#include "APhysicalDevice.h"
+#include "PhysicalDeviceUtility.h"
 #include "Rendering/Vulkan/Models/PhysicalDeviceExtensions.h"
 #include "Rendering/Vulkan/Utilities/SwapchainUtility.h"
 
-namespace AVulkan
+namespace VkUtils
 {
-    VkPhysicalDevice APhysicalDevice::GetBestRenderingDevice(VkInstance& instance, VkSurfaceKHR& surface) const
+    VkPhysicalDevice GetBestRenderingDevice(VkInstance& instance, VkSurfaceKHR& surface)
     {
         spdlog::info("Select physical rendering device");
 
@@ -30,7 +30,7 @@ namespace AVulkan
         return bestDevice;
     }
 
-    std::vector<VkPhysicalDevice> APhysicalDevice::GetDevicesList(VkInstance& instance) const
+    std::vector<VkPhysicalDevice> GetDevicesList(VkInstance& instance)
     {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -41,7 +41,7 @@ namespace AVulkan
         return devices;
     }
 
-    std::vector<VkPhysicalDevice> APhysicalDevice::GetRenderingDevicesList(VkInstance& instance, VkSurfaceKHR& surface) const
+    std::vector<VkPhysicalDevice> GetRenderingDevicesList(VkInstance& instance, VkSurfaceKHR& surface)
     {
         auto allDevices = GetDevicesList(instance);
 
@@ -59,9 +59,9 @@ namespace AVulkan
     }
 
 
-    QueueFamilyIndices APhysicalDevice::GetQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface) const
+    AVulkan::QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface)
     {
-        QueueFamilyIndices indices;
+        AVulkan::QueueFamilyIndices indices;
 
         uint32_t queueFamilyCount = 0;
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
@@ -84,7 +84,7 @@ namespace AVulkan
         return indices;
     }
 
-    uint64_t APhysicalDevice::CalculateRenderingScore(VkPhysicalDevice& device) const
+    uint64_t CalculateRenderingScore(VkPhysicalDevice& device)
     {
         //todo: make better score calculation
 
@@ -111,12 +111,12 @@ namespace AVulkan
         return discreteMult * totalMemory;
     }
 
-    bool APhysicalDevice::DoSupportQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface) const
+    bool DoSupportQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface)
     {
         return GetQueueFamilies(device, surface).isComplete();
     }
 
-    bool APhysicalDevice::DoSupportPhysicalDeviceExtensions(VkPhysicalDevice& device) const
+    bool DoSupportPhysicalDeviceExtensions(VkPhysicalDevice& device)
     {
         uint32_t extensionCount;
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
@@ -124,7 +124,7 @@ namespace AVulkan
         std::vector<VkExtensionProperties> availableExtensions(extensionCount);
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
 
-        std::set<std::string> requiredExtensions(physicalDeviceExtensions.begin(), physicalDeviceExtensions.end());
+        std::set<std::string> requiredExtensions(AVulkan::physicalDeviceExtensions.begin(), AVulkan::physicalDeviceExtensions.end());
 
         for (const auto& extension : availableExtensions) {
             requiredExtensions.erase(extension.extensionName);
@@ -133,18 +133,13 @@ namespace AVulkan
         return requiredExtensions.empty();
     }
 
-    bool APhysicalDevice::DoSupportSwapChain(VkPhysicalDevice& device, VkSurfaceKHR& surface) const
-    {
-        return VkUtils::DoSupportSwapChain(device, surface);
-    }
-
-    void APhysicalDevice::PrintDebugInformation(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface) const
+    void PrintPhysicalDeviceDebugInformation(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface)
     {
         VkPhysicalDeviceProperties deviceProperties;
         vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
         spdlog::info("Rendering GPU: {0}", deviceProperties.deviceName);
 
-        SwapChainSurfaceSettings surfaceSettings;
+        AVulkan::SwapChainSurfaceSettings surfaceSettings;
 
         VkUtils::GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
         VkUtils::GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);

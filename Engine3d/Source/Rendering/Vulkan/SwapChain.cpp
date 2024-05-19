@@ -1,14 +1,16 @@
 #include "Pch.h"
 #include "SwapChain.h"
+#include "Rendering/Vulkan/Utilities/PhysicalDeviceUtility.h"
 
 namespace AVulkan
 {
 	SwapChain::SwapChain(Ref<Rollback> rollback, GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkSurfaceKHR& surface,
-		QueueFamilyIndices& physicalDeviceQueueIndices, VkQueue& graphicsQueue, Ref<SwapChainData> swapChainData) :
+		VkQueue& graphicsQueue, Ref<SwapChainData> swapChainData) :
 		window(window), physicalDevice(physicalDevice), logicalDevice(logicalDevice), surface(surface),
-		physicalDeviceQueueIndices(physicalDeviceQueueIndices), graphicsQueue(graphicsQueue), swapChainData(swapChainData)
+		graphicsQueue(graphicsQueue), swapChainData(swapChainData)
 	{
 		this->rollback = CreateRef<Rollback>("SwapChain", rollback);
+		physicalDeviceQueueIndices = VkUtils::GetQueueFamilies(physicalDevice, surface);
 	}
 
 	SwapChain::~SwapChain()

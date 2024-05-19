@@ -20,13 +20,13 @@
 #include "Rendering/Vulkan/Entities/TextureVulkan.h"
 
 #include "Builders/AValidationLayers.h"
-#include "Builders/APhysicalDevice.h"
-#include "Builders/ALogicalDevice.h"
 #include "Builders/AImage.h"
 #include "Builders/AImageView.h"
 #include "Builders/AShaderModule.h"
 #include "Descriptors.h"
 
+#include "Utilities/PhysicalDeviceUtility.h"
+#include "Utilities/LogicalDeviceUtility.h"
 #include "Utilities/RenderPassUtility.h"
 #include "Utilities/WindowSurfaceUtility.h"
 #include "Utilities/InstanceUtility.h"

@@ -1,20 +1,18 @@
 #include "Pch.h"
-#include "ALogicalDevice.h"
-#include "APhysicalDevice.h"
-#include "AValidationLayers.h"
+#include "LogicalDeviceUtility.h"
+#include "PhysicalDeviceUtility.h"
+#include "Rendering/Vulkan/Builders/AValidationLayers.h"
 #include "Rendering/Vulkan/Models/PhysicalDeviceExtensions.h"
 
-namespace AVulkan
+namespace VkUtils
 {
-	VkDevice ALogicalDevice::Create(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface,
-		VkQueue& graphicsQueue, VkQueue& presentationQueue) const
+	VkDevice CreateLogicalDevice(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface, VkQueue& graphicsQueue, VkQueue& presentationQueue)
 	{
 		spdlog::info("Create logical device");
 
-		APhysicalDevice APhysicalDevice;
-		AValidationLayers validationLayers;
+		AVulkan::AValidationLayers validationLayers;
 
-		auto queueFamilies = APhysicalDevice.GetQueueFamilies(physicalDevice, windowSurface);
+		auto queueFamilies = GetQueueFamilies(physicalDevice, windowSurface);
 
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		std::set<uint32_t> uniqueQueueFamilies =
@@ -39,8 +37,8 @@ namespace AVulkan
 		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 		createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 		createInfo.pQueueCreateInfos = queueCreateInfos.data();
-		createInfo.enabledExtensionCount = static_cast<uint32_t>(physicalDeviceExtensions.size());
-		createInfo.ppEnabledExtensionNames = physicalDeviceExtensions.data();
+		createInfo.enabledExtensionCount = static_cast<uint32_t>(AVulkan::physicalDeviceExtensions.size());
+		createInfo.ppEnabledExtensionNames = AVulkan::physicalDeviceExtensions.data();
 
 		VkPhysicalDeviceFeatures deviceFeatures;
 		vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
@@ -58,7 +56,7 @@ namespace AVulkan
 		return logicalDevice;
 	}
 
-	void ALogicalDevice::Dispose(VkDevice& logicalDevice) const
+	void DisposeLogicalDevice(VkDevice& logicalDevice)
 	{
 		spdlog::info("Dispose logical device");
 		vkDestroyDevice(logicalDevice, nullptr);

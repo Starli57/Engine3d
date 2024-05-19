@@ -13,7 +13,7 @@
 #include "Rendering/Vulkan/Descriptors.h"
 #include "Rendering/Vulkan/SwapChain.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
-#include "Rendering/Vulkan/Builders/APhysicalDevice.h"
+#include "Rendering/Vulkan/Utilities/PhysicalDeviceUtility.h"
 #include "Rendering/Vulkan/Utilities/CommandBufferUtility.h"
 
 #include "Rendering/Vulkan/Utilities/CommandPoolUtility.h"
