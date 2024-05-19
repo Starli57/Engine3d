@@ -1179,67 +1179,6 @@ void ImGui_ImplVulkan_DestroyWindowRenderBuffers(VkDevice device, ImGui_ImplVulk
     buffers->Count = 0;
 }
 
-//-------------------------------------------------------------------------
-// Internal / Miscellaneous Vulkan Helpers
-// (Used by example's main.cpp. Used by multi-viewport features. PROBABLY NOT used by your own app.)
-//-------------------------------------------------------------------------
-// You probably do NOT need to use or care about those functions.
-// Those functions only exist because:
-//   1) they facilitate the readability and maintenance of the multiple main.cpp examples files.
-//   2) the upcoming multi-viewport feature will need them internally.
-// Generally we avoid exposing any kind of superfluous high-level helpers in the backends,
-// but it is too much code to duplicate everywhere so we exceptionally expose them.
-//
-// Your engine/app will likely _already_ have code to setup all that stuff (swap chain, render pass, frame buffers, etc.).
-// You may read this code to learn about Vulkan, but it is recommended you use you own custom tailored code to do equivalent work.
-// (The ImGui_ImplVulkanH_XXX functions do not interact with any of the state used by the regular ImGui_ImplVulkan_XXX functions)
-//-------------------------------------------------------------------------
-//
-//VkSurfaceFormatKHR ImGui_ImplVulkanH_SelectSurfaceFormat(VkPhysicalDevice physical_device, VkSurfaceKHR surface, const VkFormat* request_formats, int request_formats_count, VkColorSpaceKHR request_color_space)
-//{
-//    IM_ASSERT(g_FunctionsLoaded && "Need to call ImGui_ImplVulkan_LoadFunctions() if IMGUI_IMPL_VULKAN_NO_PROTOTYPES or VK_NO_PROTOTYPES are set!");
-//    IM_ASSERT(request_formats != nullptr);
-//    IM_ASSERT(request_formats_count > 0);
-//
-//    // Per Spec Format and View Format are expected to be the same unless VK_IMAGE_CREATE_MUTABLE_BIT was set at image creation
-//    // Assuming that the default behavior is without setting this bit, there is no need for separate Swapchain image and image view format
-//    // Additionally several new color spaces were introduced with Vulkan Spec v1.0.40,
-//    // hence we must make sure that a format with the mostly available color space, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR, is found and used.
-//    uint32_t avail_count;
-//    vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface, &avail_count, nullptr);
-//    ImVector<VkSurfaceFormatKHR> avail_format;
-//    avail_format.resize((int)avail_count);
-//    vkGetPhysicalDeviceSurfaceFormatsKHR(physical_device, surface, &avail_count, avail_format.Data);
-//
-//    // First check if only one format, VK_FORMAT_UNDEFINED, is available, which would imply that any format is available
-//    if (avail_count == 1)
-//    {
-//        if (avail_format[0].format == VK_FORMAT_UNDEFINED)
-//        {
-//            VkSurfaceFormatKHR ret;
-//            ret.format = request_formats[0];
-//            ret.colorSpace = request_color_space;
-//            return ret;
-//        }
-//        else
-//        {
-//            // No point in searching another format
-//            return avail_format[0];
-//        }
-//    }
-//    else
-//    {
-//        // Request several formats, the first found will be used
-//        for (int request_i = 0; request_i < request_formats_count; request_i++)
-//            for (uint32_t avail_i = 0; avail_i < avail_count; avail_i++)
-//                if (avail_format[avail_i].format == request_formats[request_i] && avail_format[avail_i].colorSpace == request_color_space)
-//                    return avail_format[avail_i];
-//
-//        // If none of the requested image formats could be found, use the first available
-//        return avail_format[0];
-//    }
-//}
-
 VkPresentModeKHR ImGui_ImplVulkanH_SelectPresentMode(VkPhysicalDevice physical_device, VkSurfaceKHR surface, const VkPresentModeKHR* request_modes, int request_modes_count)
 {
     IM_ASSERT(g_FunctionsLoaded && "Need to call ImGui_ImplVulkan_LoadFunctions() if IMGUI_IMPL_VULKAN_NO_PROTOTYPES or VK_NO_PROTOTYPES are set!");
