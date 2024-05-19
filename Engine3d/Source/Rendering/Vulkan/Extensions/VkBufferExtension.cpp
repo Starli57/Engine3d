@@ -1,10 +1,10 @@
 #include "Pch.h"
-#include "BufferExtension.h"
-#include "Rendering/Vulkan/Utilities/VkMemoryUtility.h"
+#include "VkBufferExtension.h"
+#include "Rendering/Vulkan/Extensions/VkMemoryExtension.h"
 
-namespace BufferExtension
+namespace VkExtensions
 {
-	void Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, uint64_t bufferSize, 
+	void CreateBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, uint64_t bufferSize, 
 		VkBufferUsageFlags& usageFlags, VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{
 		VkBufferCreateInfo bufferInfo{};
@@ -17,6 +17,30 @@ namespace BufferExtension
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create buffer, status: " + createStatus);
 	
 		BindMemory(physicalDevice, logicalDevice, memoryFlags, buffer, bufferMemory);
+	}
+
+	void DisposeBuffer(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+	{
+		vkDestroyBuffer(logicalDevice, buffer, nullptr);
+		vkFreeMemory(logicalDevice, bufferMemory, nullptr);
+	}
+
+	void CopyBuffer(VkDevice& logicalDevice, VkQueue& graphicsQueue, VkBuffer& srcBuffer, VkBuffer& dstBuffer,
+		VkDeviceSize& size, VkCommandPool& commandPool)
+	{
+		auto commandBuffer = BeginCommandBuffer(logicalDevice, commandPool);
+
+		VkBufferCopy copyRegion{};
+		copyRegion.srcOffset = 0;
+		copyRegion.dstOffset = 0;
+		copyRegion.size = size;
+		vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
+
+		vkEndCommandBuffer(commandBuffer);
+
+		SubmitCommandBuffer(graphicsQueue, commandBuffer);
+
+		vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
 	}
 
 	VkCommandBuffer BeginCommandBuffer(VkDevice& logicalDevice, VkCommandPool& commandPool)
@@ -48,30 +72,6 @@ namespace BufferExtension
 		vkQueueWaitIdle(graphicsQueue);
 	}
 
-	void Copy(VkDevice& logicalDevice, VkQueue& graphicsQueue, VkBuffer& srcBuffer, VkBuffer& dstBuffer, 
-		VkDeviceSize& size, VkCommandPool& commandPool)
-	{
-		auto commandBuffer = BeginCommandBuffer(logicalDevice, commandPool);
-
-		VkBufferCopy copyRegion{};
-		copyRegion.srcOffset = 0;
-		copyRegion.dstOffset = 0;
-		copyRegion.size = size;
-		vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
-
-		vkEndCommandBuffer(commandBuffer);
-
-		SubmitCommandBuffer(graphicsQueue, commandBuffer);
-
-		vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
-	}
-
-	void Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
-	{
-		vkDestroyBuffer(logicalDevice, buffer, nullptr);
-		vkFreeMemory(logicalDevice, bufferMemory, nullptr);
-	}
-
 
 	void BindMemory(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkMemoryPropertyFlags& memoryFlags, 
 		VkBuffer& buffer, VkDeviceMemory& bufferMemory)
@@ -82,7 +82,7 @@ namespace BufferExtension
 		VkMemoryAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 		allocInfo.allocationSize = memRequirements.size;
-		allocInfo.memoryTypeIndex = VkMemoryExtension::FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, memoryFlags);
+		allocInfo.memoryTypeIndex = VkExtensions::FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, memoryFlags);
 
 		auto allocateStatus = vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &bufferMemory);
 		CAssert::Check(allocateStatus == VK_SUCCESS, "Can't allocate memory for vertex buffer, status: " + allocateStatus);

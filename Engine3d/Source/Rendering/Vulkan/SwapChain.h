@@ -14,7 +14,7 @@
 #include "Rendering/Vulkan/Builders/AImageView.h"
 #include "Rendering/Vulkan/Extensions/VkFormatExtension.h"
 #include "Rendering/Vulkan/Extensions/VkMemoryExtension.h"
-#include "Rendering/Vulkan/Extensions/SwapChainExtension.h"
+#include "Rendering/Vulkan/Extensions/VkSwapchainExtension.h"
 
 namespace AVulkan
 {
