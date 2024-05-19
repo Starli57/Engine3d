@@ -14,8 +14,9 @@
 #include "Rendering/Vulkan/SwapChain.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Builders/APhysicalDevice.h"
-#include "Rendering/Vulkan/Builders/ACommandPool.h"
-#include "Rendering/Vulkan/Builders/ACommandBuffer.h"
+#include "Rendering/Vulkan/Utilities/CommandBufferUtility.h"
+
+#include "Rendering/Vulkan/Utilities/CommandPoolUtility.h"
 
 #include "SharedLib/Ref.h"
 #include "SharedLib/Rollback/Rollback.h"

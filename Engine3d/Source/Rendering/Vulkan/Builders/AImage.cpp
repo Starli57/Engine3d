@@ -39,7 +39,7 @@ namespace AVulkan
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
-        allocInfo.memoryTypeIndex = VkUtilities::FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, properties);
+        allocInfo.memoryTypeIndex = VkUtils::FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, properties);
 
         auto allocateStatus = vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &imageMemory);
         CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate vk image memory");
@@ -50,7 +50,7 @@ namespace AVulkan
 
     void AImage::CopyBufferToImage(VkBuffer& buffer, VkImage& image, uint32_t width, uint32_t height) const
     {
-        auto commandBuffer = VkUtilities::BeginCommandBuffer(logicalDevice, commandPool);
+        auto commandBuffer = VkUtils::BeginCommandBuffer(logicalDevice, commandPool);
 
         VkBufferImageCopy imageRegion{};
         imageRegion.bufferOffset = 0;
@@ -68,13 +68,13 @@ namespace AVulkan
         vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageRegion);
 
         vkEndCommandBuffer(commandBuffer);
-        VkUtilities::SubmitCommandBuffer(graphicsQueue, commandBuffer);
+        VkUtils::SubmitCommandBuffer(graphicsQueue, commandBuffer);
         vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
     }
 
     void AImage::TransitionImageLayout(VkImage& image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) const
     {
-        auto commandBuffer = VkUtilities::BeginCommandBuffer(logicalDevice, commandPool);
+        auto commandBuffer = VkUtils::BeginCommandBuffer(logicalDevice, commandPool);
 
         VkImageMemoryBarrier barrier{};
         barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -116,7 +116,7 @@ namespace AVulkan
         vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
 
         vkEndCommandBuffer(commandBuffer);
-        VkUtilities::SubmitCommandBuffer(graphicsQueue, commandBuffer);
+        VkUtils::SubmitCommandBuffer(graphicsQueue, commandBuffer);
         vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
     }
 

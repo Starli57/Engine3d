@@ -2,7 +2,7 @@
 #include "VkBufferUtility.h"
 #include "Rendering/Vulkan/Utilities/VkMemoryUtility.h"
 
-namespace VkUtilities
+namespace VkUtils
 {
 	void CreateBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, uint64_t bufferSize, 
 		VkBufferUsageFlags& usageFlags, VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory)

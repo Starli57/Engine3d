@@ -1,10 +1,10 @@
 #include "Pch.h"
-#include "ACommandBuffer.h"
+#include "CommandBufferUtility.h"
 #include "spdlog/spdlog.h"
 
-namespace AVulkan
+namespace VkUtils
 {
-	void ACommandBuffer::Allocate(VkDevice& logicalDevice, VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers, int buffersCount) const
+	void AllocateCommandBuffer(VkDevice& logicalDevice, VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers, int buffersCount)
 	{
 		spdlog::info("Create command buffer");
 
@@ -20,7 +20,7 @@ namespace AVulkan
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to allocate command buffers, status: " + createStatus);
 	}
 
-	void ACommandBuffer::Begin(VkCommandBuffer& commandBuffer) const
+	void BeginCommandBuffer(VkCommandBuffer& commandBuffer) 
 	{
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -30,13 +30,13 @@ namespace AVulkan
 		CAssert::Check(beginStatus == VK_SUCCESS, "Failed to begin recording a command buffer, status: " + beginStatus);
 	}
 
-	void ACommandBuffer::End(VkCommandBuffer& commandBuffer) const
+	void EndCommandBuffer(VkCommandBuffer& commandBuffer)
 	{
 		auto endStatus = vkEndCommandBuffer(commandBuffer);
 		CAssert::Check(endStatus == VK_SUCCESS, "Failed to end recording a command buffer, status: " + endStatus);
 	}
 
-	void ACommandBuffer::BeginRenderPass(VkFramebuffer& frameBuffer, VkRenderPass& renderPass, VkCommandBuffer& commandBuffer, VkExtent2D& vkExtent) const
+	void BeginRenderPass(VkFramebuffer& frameBuffer, VkRenderPass& renderPass, VkCommandBuffer& commandBuffer, VkExtent2D& vkExtent)
 	{
 		std::array<VkClearValue, 2> clearColors{};
 		clearColors[0].color = { 0.015f, 0.015f, 0.04f, 1.0f };
@@ -54,14 +54,14 @@ namespace AVulkan
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 	}
 
-	void ACommandBuffer::EndRenderPass(VkCommandBuffer& commandBuffer) const
+	void EndRenderPass(VkCommandBuffer& commandBuffer)
 	{
 		vkCmdEndRenderPass(commandBuffer);
 	}
 
 
-	void ACommandBuffer::Record(Ref<entt::registry> ecs, Ref<Descriptors> descriptors, uint16_t frame,
-		VkCommandBuffer& commandBuffer, GraphicsPipeline& pipeline) const
+	void RecordCommandBuffer(Ref<entt::registry> ecs, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,
+		VkCommandBuffer& commandBuffer, AVulkan::GraphicsPipeline& pipeline)
 	{
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipeline());
 
@@ -69,8 +69,8 @@ namespace AVulkan
 		for (auto entity : entities)
 		{
 			auto [uboModelComponent, meshConatiner, materialComponent] = entities.get<UboModelComponent, MeshComponent, MaterialComponent>(entity);
-			auto meshVulkan = static_pointer_cast<MeshVulkan>(meshConatiner.GetMesh());
-			auto textureVulkan = static_pointer_cast<TextureVulkan>(materialComponent.GetMaterial()->mainTexture);
+			auto meshVulkan = static_pointer_cast<AVulkan:: MeshVulkan > (meshConatiner.GetMesh());
+			auto textureVulkan = static_pointer_cast<AVulkan::TextureVulkan>(materialComponent.GetMaterial()->mainTexture);
 
 			VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };
 			VkDeviceSize offsets[] = { 0 };

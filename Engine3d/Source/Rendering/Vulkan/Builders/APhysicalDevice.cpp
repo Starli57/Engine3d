@@ -135,7 +135,7 @@ namespace AVulkan
 
     bool APhysicalDevice::DoSupportSwapChain(VkPhysicalDevice& device, VkSurfaceKHR& surface) const
     {
-        return VkUtilities::DoSupportSwapChain(device, surface);
+        return VkUtils::DoSupportSwapChain(device, surface);
     }
 
     void APhysicalDevice::PrintDebugInformation(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface) const
@@ -146,8 +146,8 @@ namespace AVulkan
 
         SwapChainSurfaceSettings surfaceSettings;
 
-        VkUtilities::GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
-        VkUtilities::GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
+        VkUtils::GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
+        VkUtils::GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
 
         for (auto colorFormat : surfaceSettings.formats)
         {

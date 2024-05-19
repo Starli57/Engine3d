@@ -95,11 +95,11 @@ namespace AVulkan
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(commandBuffer, 0);
 
-		ACommandBuffer().Begin(commandBuffer);
-		ACommandBuffer().BeginRenderPass(swapChainData->frameBuffers[imageIndex], renderPass, commandBuffer, swapChainData->extent);
-		ACommandBuffer().Record(ecs, descriptors, frame, commandBuffer, *graphicsPipeline);
-		ACommandBuffer().EndRenderPass(commandBuffer);
-		ACommandBuffer().End(commandBuffer);
+		VkUtils::BeginCommandBuffer(commandBuffer);
+		VkUtils::BeginRenderPass(swapChainData->frameBuffers[imageIndex], renderPass, commandBuffer, swapChainData->extent);
+		VkUtils::RecordCommandBuffer(ecs, descriptors, frame, commandBuffer, *graphicsPipeline);
+		VkUtils::EndRenderPass(commandBuffer);
+		VkUtils::EndCommandBuffer(commandBuffer);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
@@ -165,14 +165,14 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateInstance()
 	{
-		AInstance().Create(instance);
-		rollback->Add([this]() { AInstance().Dispose(instance); });
+		VkUtils::CreateInstance(instance);
+		rollback->Add([this]() { VkUtils::DisposeInstance(instance); });
 	}
 
 	void VulkanGraphicsApi::CreateWindowSurface()
 	{
-		windowSurface = AWindowsSurface().Create(instance, *window);
-		rollback->Add([this]() { AWindowsSurface().Dispose(instance, windowSurface); });
+		windowSurface = VkUtils::CreateSurface(instance, *window);
+		rollback->Add([this]() { VkUtils::DisposeSurface(instance, windowSurface); });
 	}
 
 	void VulkanGraphicsApi::SelectPhysicalRenderingDevice()
@@ -212,8 +212,8 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateRenderPass()
 	{
-		renderPass = ARenderPass().Create(physicalDevice, logicalDevice, swapChainData->imageFormat);
-		rollback->Add([this]() { ARenderPass().Dispose(logicalDevice, renderPass);; });
+		renderPass = VkUtils::CreateRenderPass(physicalDevice, logicalDevice, swapChainData->imageFormat);
+		rollback->Add([this]() { VkUtils::DisposeRenderPass(logicalDevice, renderPass);; });
 	}
 
 	void VulkanGraphicsApi::CreateGraphicsPipeline()
@@ -231,13 +231,13 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateCommandPool()
 	{
-		commandPool = ACommandPool().Create(logicalDevice, physicalDevice, windowSurface);
-		rollback->Add([this]() { ACommandPool().Dispose(logicalDevice, commandPool); });
+		commandPool = VkUtils::CreateCommandPool(logicalDevice, physicalDevice, windowSurface);
+		rollback->Add([this]() { VkUtils::DisposeCommandPool(logicalDevice, commandPool); });
 	}
 
 	void VulkanGraphicsApi::CreateCommandBuffer()
 	{
-		ACommandBuffer().Allocate(logicalDevice, commandPool, commandBuffers, maxFramesInFlight);
+		VkUtils::AllocateCommandBuffer(logicalDevice, commandPool, commandBuffers, maxFramesInFlight);
 	}
 
 	void VulkanGraphicsApi::CreateDescriptorSetLayout()

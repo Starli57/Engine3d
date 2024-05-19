@@ -1,14 +1,14 @@
 #include "Pch.h"
-#include "ACommandPool.h"
-#include "APhysicalDevice.h"
+#include "CommandPoolUtility.h"
+#include "Rendering/Vulkan/Builders/APhysicalDevice.h"
 #include "spdlog/spdlog.h"
 
-namespace AVulkan
+namespace VkUtils
 {
-	VkCommandPool ACommandPool::Create(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface) const
+	VkCommandPool CreateCommandPool(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface)
 	{
 		spdlog::info("Create command pool");
-		QueueFamilyIndices queueFamilyIndices = APhysicalDevice().GetQueueFamilies(physicalDevice, windowSurface);
+		AVulkan::QueueFamilyIndices queueFamilyIndices = AVulkan::APhysicalDevice().GetQueueFamilies(physicalDevice, windowSurface);
 
 		VkCommandPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -22,7 +22,7 @@ namespace AVulkan
 		return commandPool;
 	}
 
-	void ACommandPool::Dispose(VkDevice& logicalDevice, VkCommandPool& commandPool) const
+	void DisposeCommandPool(VkDevice& logicalDevice, VkCommandPool& commandPool)
 	{
 		spdlog::info("Dispose command pool");
 		vkDestroyCommandPool(logicalDevice, commandPool, nullptr);

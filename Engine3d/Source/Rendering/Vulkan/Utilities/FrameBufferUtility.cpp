@@ -1,10 +1,10 @@
 #include "Pch.h"
-#include "AFrameBuffer.h"
+#include "FrameBufferUtility.h"
 #include "spdlog/spdlog.h"
 
-namespace AVulkan
+namespace VkUtils
 {
-    void AFrameBuffer::Create(VkDevice& logicalDevice, VkRenderPass& renderPass, SwapChainData& swapChainData, Ref<ImageModel> depthBufferModel) const
+    void CreateFrameBuffer(VkDevice& logicalDevice, VkRenderPass& renderPass, AVulkan::SwapChainData& swapChainData, Ref<AVulkan::ImageModel> depthBufferModel)
     {
         spdlog::info("Create frame buffers");
         swapChainData.frameBuffers.resize(swapChainData.imagesCount);
@@ -31,7 +31,7 @@ namespace AVulkan
         }
     }
 
-    void AFrameBuffer::Dispose(VkDevice& logicalDevice, std::vector<VkFramebuffer>& frameBuffers) const
+    void DisposeFrameBuffer(VkDevice& logicalDevice, std::vector<VkFramebuffer>& frameBuffers)
     {
         spdlog::info("Dispose frame buffers");
         for (auto framebuffer : frameBuffers)

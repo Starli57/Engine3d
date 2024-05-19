@@ -1,9 +1,9 @@
 #include "Pch.h"
-#include "AInstance.h"
+#include "InstanceUtility.h"
 
-namespace AVulkan
+namespace VkUtils
 {
-	void AInstance::Create(VkInstance& instance) const
+	void CreateInstance(VkInstance& instance)
 	{
 		spdlog::info("Create Instance");
 
@@ -23,20 +23,20 @@ namespace AVulkan
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
 
-		AValidationLayers validation;
+		AVulkan::AValidationLayers validation;
 		validation.Setup(createInfo);
 
 		VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
 		CAssert::Check(result == VK_SUCCESS, "vulkan instance can't be created: " + result);
 	}
 
-	void AInstance::Dispose(VkInstance& instance) const
+	void DisposeInstance(VkInstance& instance) 
 	{
 		spdlog::info("Dispose instance");
 		vkDestroyInstance(instance, nullptr);
 	}
 
-	std::vector<const char*> AInstance::GetGLFWRequiredExtensions() const
+	std::vector<const char*> GetGLFWRequiredExtensions()
 	{
 		uint32_t glfwExtensionCount = 0;
 		const char** glfwExtensions;

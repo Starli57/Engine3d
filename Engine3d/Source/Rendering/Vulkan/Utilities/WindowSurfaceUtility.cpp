@@ -1,9 +1,9 @@
 #include "Pch.h"
-#include "AWindowsSurface.h"
+#include "WindowSurfaceUtility.h"
 
-namespace AVulkan
+namespace VkUtils
 {
-	VkSurfaceKHR AWindowsSurface::Create(VkInstance& instance, GLFWwindow& window) const
+	VkSurfaceKHR CreateSurface(VkInstance& instance, GLFWwindow& window)
 	{
 		spdlog::info("Create Window Surface");
 
@@ -14,7 +14,7 @@ namespace AVulkan
 		return surface;
 	}
 
-	void AWindowsSurface::Dispose(VkInstance& instance, VkSurfaceKHR& surface) const
+	void DisposeSurface(VkInstance& instance, VkSurfaceKHR& surface)
 	{
 		spdlog::info("Dispose surface");
 		vkDestroySurfaceKHR(instance, surface, nullptr);

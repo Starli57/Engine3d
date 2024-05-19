@@ -84,7 +84,7 @@ namespace AVulkan
         VkBufferUsageFlags usageFlagsStaging = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
         VkMemoryPropertyFlags memoryFlagsStaging = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 
-        VkUtilities::CreateBuffer(physicalDevice, logicalDevice, imageSize,
+        VkUtils::CreateBuffer(physicalDevice, logicalDevice, imageSize,
             usageFlagsStaging, memoryFlagsStaging, stagingBuffer, stagingMemory);
 
         void* data;

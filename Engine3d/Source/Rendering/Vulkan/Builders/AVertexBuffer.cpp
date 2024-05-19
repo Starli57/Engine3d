@@ -21,7 +21,7 @@ namespace AVulkan
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingMemory;
 
-		VkUtilities::CreateBuffer(physicalDevice, logicalDevice, bufferSize,
+		VkUtils::CreateBuffer(physicalDevice, logicalDevice, bufferSize,
 			stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingMemory);
 
 		void* data;
@@ -29,17 +29,17 @@ namespace AVulkan
 		memcpy(data, vertices->data(), (size_t)bufferSize);
 		vkUnmapMemory(logicalDevice, stagingMemory);
 
-		VkUtilities::CreateBuffer(physicalDevice, logicalDevice, bufferSize,
+		VkUtils::CreateBuffer(physicalDevice, logicalDevice, bufferSize,
 			distUsageFlags, distMemoryFlags, vertexBuffer, bufferMemory);
 
-		VkUtilities::CopyBuffer(logicalDevice, graphicsQueue, stagingBuffer, vertexBuffer, bufferSize, commandPool);
-		VkUtilities::DisposeBuffer(logicalDevice, stagingBuffer, stagingMemory);
+		VkUtils::CopyBuffer(logicalDevice, graphicsQueue, stagingBuffer, vertexBuffer, bufferSize, commandPool);
+		VkUtils::DisposeBuffer(logicalDevice, stagingBuffer, stagingMemory);
 	}
 
 	void AVertexBuffer::Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const
 	{
 		spdlog::info("Dispose Vertex Buffer");
-		VkUtilities::DisposeBuffer(logicalDevice, buffer, bufferMemory);
+		VkUtils::DisposeBuffer(logicalDevice, buffer, bufferMemory);
 	}
 
 	VkVertexInputBindingDescription AVertexBuffer::GetBindingDescription()

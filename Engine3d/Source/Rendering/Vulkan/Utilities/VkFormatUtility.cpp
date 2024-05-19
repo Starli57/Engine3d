@@ -1,7 +1,7 @@
 #include "Pch.h"
 #include "VkFormatUtility.h"
 
-namespace VkUtilities
+namespace VkUtils
 {
     VkFormat FindSupportedFormat(VkPhysicalDevice& physicalDevice, std::vector<VkFormat>& formats,
         VkImageTiling tiling, VkFormatFeatureFlags features)

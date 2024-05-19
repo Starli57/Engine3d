@@ -1,11 +1,11 @@
 #include "Pch.h"
-#include "ARenderPass.h"
+#include "RenderPassUtility.h"
 #include "spdlog/spdlog.h"
 #include "Rendering/Vulkan/Utilities/VkFormatUtility.h"
 
-namespace AVulkan
+namespace VkUtils
 {
-	VkRenderPass ARenderPass::Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkFormat& scImageFormat) const
+	VkRenderPass CreateRenderPass(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkFormat& scImageFormat)
 	{
 		spdlog::info("Create render pass");
 
@@ -24,7 +24,7 @@ namespace AVulkan
 		colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
 		VkAttachmentDescription depthAttachment = {};
-		depthAttachment.format = VkUtilities::FindDepthBufferFormat(physicalDevice);
+		depthAttachment.format = VkUtils::FindDepthBufferFormat(physicalDevice);
 		depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 		depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
@@ -77,7 +77,7 @@ namespace AVulkan
 		return renderPass;
 	}
 
-	void ARenderPass::Dispose(VkDevice& logicalDevice, VkRenderPass& renderPass) const
+	void DisposeRenderPass(VkDevice& logicalDevice, VkRenderPass& renderPass)
 	{
 		spdlog::info("Dispose render pass");
 		vkDestroyRenderPass(logicalDevice, renderPass, nullptr);
