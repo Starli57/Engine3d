@@ -13,6 +13,7 @@ Externals["SpdLog"] = "Externals/SpdLog"
 Externals["Entt"] = "Externals/Entt"
 Externals["Stb"] = "Externals/Stb"
 Externals["TinyObjLoader"] = "Externals/TinyObjLoader"
+Externals["DearImgui"] = "Externals/DearImgui"
 
 Includes = {}
 Includes["Engine"] = "Engine3d/Source"
@@ -26,6 +27,7 @@ Includes["SpdLog"] = "%{Externals.SpdLog}/include"
 Includes["Entt"] = "%{Externals.Entt}/single_include/entt"
 Includes["Stb"] = "%{Externals.Stb}"
 Includes["TinyObjLoader"] = "%{Externals.TinyObjLoader}"
+Includes["DearImgui"] = "%{Externals.DearImgui}"
 
 LibFolders = {}
 LibFolders["Vulkan"] = "%{VulkanSdk}/Lib"
@@ -33,15 +35,84 @@ LibFolders["Vulkan"] = "%{VulkanSdk}/Lib"
 Libs = {}
 Libs["Vulkan"] = "%{LibFolders.Vulkan}/vulkan-1.lib"
 
-startproject "Engine3d"
-
-project "Engine3d"
-	location "Engine3d"
+startproject "Editor"
+		
+project "Editor"
+	location "Editor"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "On"
 	systemversion "latest"
+
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/Source/**.h",
+		"%{prj.name}/Source/**.cpp"
+	}
+
+	includedirs
+	{
+		"%{prj.name}/Source",
+		"%{Includes.Engine}",
+		"%{Includes.ExampleProject}",
+		"%{Includes.Shared}",
+		
+		"%{Includes.DearImgui}",
+		"%{Includes.DearImgui}/backends",
+		"%{Includes.Glfw}",
+		"%{Includes.Glm}",
+		"%{Includes.Vulkan}",
+		"%{Includes.SpdLog}",
+		"%{Includes.Entt}",
+		"%{Includes.Stb}",
+		"%{Includes.TinyObjLoader}"
+	}
+	
+	links
+	{
+		"Engine3d",
+		"Shared",
+		"ExampleProject",
+
+		"DearImgui"
+	}
+	
+	defines
+	{
+		"GLFW_INCLUDE_VULKAN",
+		"GLM_FORCE_RADIANS",
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"STB_IMAGE_IMPLEMENTATION",
+		"TINYOBJLOADER_IMPLEMENTATION"
+	}
+
+	filter "system:windows"
+		defines
+		{
+			"PROJECT_WIN"
+		}
+
+	filter "configurations:Debug"
+		defines
+		{
+			"DEBUG"
+		}
+
+	filter "configurations:Release"
+		optimize "On"
+
+project "Engine3d"
+	location "Engine3d"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "On"
+	systemversion "latest"
+
 
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -131,37 +202,7 @@ project "Engine3d"
 
 	filter "configurations:Release"
 		optimize "On"
-
-project "Shared"
-	location "Shared"
-	kind "StaticLib"
-	language "C++"
-	cppdialect "C++20"
-	staticruntime "On"
-	systemversion "latest"
-
-
-	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
-	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp",
-	}
-	
-	includedirs
-	{
-		"%{prj.name}/Source",
-		"%{Includes.Glm}",
-		"%{Includes.SpdLog}"
-	}
-
-	links
-	{
-		"Glm"
-	}
-	
+		
 project "ExampleProject"
 	location "ExampleProject"
 	kind "SharedLib"
@@ -216,10 +257,42 @@ project "ExampleProject"
 
 	filter "configurations:Release"
 		optimize "On"
+		
+project "Shared"
+	location "Shared"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "On"
+	systemversion "latest"
+
+
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/Source/**.h",
+		"%{prj.name}/Source/**.cpp",
+	}
+	
+	includedirs
+	{
+		"%{prj.name}/Source",
+		"%{Includes.Glm}",
+		"%{Includes.SpdLog}"
+	}
+
+	links
+	{
+		"Glm"
+	}
 
 project "Glfw"
 	kind "StaticLib"
 	language "C"
+	systemversion "latest"
+	staticruntime "On"
 	
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -229,9 +302,6 @@ project "Glfw"
 		"%{Externals.Glfw}/src/**.h",
 		"%{Externals.Glfw}/src/**.c"
 	}
-		
-	systemversion "latest"
-	staticruntime "On"
 	
 	filter "system:windows"
 		defines 
@@ -258,6 +328,8 @@ project "Glfw"
 project "Glm"
 	kind "StaticLib"
 	language "C++"
+	systemversion "latest"
+	staticruntime "On"
 	
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -273,6 +345,39 @@ project "Glm"
 	{
 		"%{Includes.Glm}"
 	}
-
+		
+project "DearImgui"
+	kind "StaticLib"
+	language "C++"
 	systemversion "latest"
 	staticruntime "On"
+	
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+	
+	files
+	{
+		"%{Includes.DearImgui}/*.h",
+		"%{Includes.DearImgui}/*.cpp",
+		"%{Includes.DearImgui}/backends/imgui_impl_glfw.cpp",
+		"%{Includes.DearImgui}/backends/imgui_impl_glfw.h"
+	}
+
+	includedirs
+	{
+		"%{Includes.Glfw}",
+		"%{Includes.DearImgui}",
+		"%{Includes.DearImgui}/backends",
+		"%{Includes.Vulkan}"
+	}
+	
+	links
+	{
+		"Glfw",
+		"%{Libs.Vulkan}"
+	}
+	
+	defines
+	{
+		"GLFW_INCLUDE_VULKAN"
+	}

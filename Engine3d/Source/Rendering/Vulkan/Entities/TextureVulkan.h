@@ -9,7 +9,7 @@
 #include "Rendering/Vulkan/Descriptors.h"
 #include "Rendering/Vulkan/Models/BufferModel.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
-#include "ProjectSettings.h"
+#include "SharedLib/ProjectSettings.h"
 #include "SharedLib/IOUtility.h"
 #include "SharedLib/Ref.h"
 

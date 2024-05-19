@@ -33,7 +33,7 @@ namespace AVulkan
 		auto details = SwapChainUtility().GetSwapChainDetails(physicalDevice, surface);
 		CAssert::Check(SwapChainUtility().DoSupportSwapChain(details), "Swap chains are not supported");
 
-		VkSurfaceFormatKHR surfaceFormat = ChooseSwapSurfaceFormat(details.formats);
+		swapChainData->surfaceFormat = ChooseSwapSurfaceFormat(details.formats);
 		VkPresentModeKHR presentMode = ChoosePresentMode(details.presentModes);
 		VkExtent2D extent = ChooseSwapExtent(window, details.capabilities);
 
@@ -47,7 +47,8 @@ namespace AVulkan
 
 
 		VkSwapchainCreateInfoKHR createInfo{};
-		SetupSwapChainInfo(createInfo, surface, extent, presentMode, surfaceFormat, details.capabilities, physicalDeviceQueueIndices, swapChainData->imagesCount);
+		SetupSwapChainInfo(createInfo, surface, extent, presentMode, swapChainData->surfaceFormat, 
+			details.capabilities, physicalDeviceQueueIndices, swapChainData->imagesCount);
 
 		auto createStatus = vkCreateSwapchainKHR(logicalDevice, &createInfo, nullptr, &swapChainData->swapChain);
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create swap chain, status: " + createStatus);
@@ -56,7 +57,7 @@ namespace AVulkan
 		swapChainData->images.resize(swapChainData->imagesCount);
 		vkGetSwapchainImagesKHR(logicalDevice, swapChainData->swapChain, &swapChainData->imagesCount, swapChainData->images.data());
 
-		swapChainData->imageFormat = surfaceFormat.format;
+		swapChainData->imageFormat = swapChainData->surfaceFormat.format;
 		swapChainData->extent = extent;
 
 

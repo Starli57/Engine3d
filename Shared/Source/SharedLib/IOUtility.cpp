@@ -10,13 +10,8 @@ std::vector<char> IOUtility::ReadFile(const std::string& filepath) const
 {
     std::ifstream file(filepath, std::ios::ate | std::ios::binary);
 
-    std::filesystem::path fullPath = std::filesystem::absolute(filepath);
-    spdlog::debug("Read file by path: {0}", fullPath.string());
-
-    if (!file.is_open())
-    {
-        throw std::runtime_error("Failed to open file " + filepath);
-    }
+    std::filesystem::path fullPath = std::filesystem::relative(filepath);
+    CAssert::Check(file.is_open(), "Failed to open file " + std::filesystem::absolute(fullPath).string());
 
     size_t fileSize = (size_t)file.tellg();
     std::vector<char> buffer(fileSize);

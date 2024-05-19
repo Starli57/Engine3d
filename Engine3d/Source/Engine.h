@@ -1,13 +1,15 @@
 #pragma once
 
+#include <chrono>
 #include <entt.hpp>
 #include "Defines/DllDecDefines.h"
 
+#include "IEngineEditor.h"
 #include "AssetsDatabase.h"
 #include "Rendering/Vulkan/VulkanGraphicsApi.h"
 #include "Entities/Level.h"
 
-#include "ProjectSettings.h"
+#include "SharedLib/ProjectSettings.h"
 #include "SharedLib/Ref.h"
 #include "SharedLib/Rollback/Rollback.h"
 
@@ -19,13 +21,18 @@ public:
 
 	void Run();
 
+	void BindEditor(Ref<IEngineEditor> editor);
+
+	IGraphicsApi* GetGraphicsApi() { return graphicsApi; }
+
 private:
 	const Ref<ProjectSettigns> projectSettings;
 
 	GLFWwindow* window;
 	IGraphicsApi* graphicsApi;
 	Level* level;
-
+	
+	Ref<IEngineEditor> editor;
 	Ref<entt::registry> ecs;
 	Ref<AssetsDatabase> assetsDatabase;
 

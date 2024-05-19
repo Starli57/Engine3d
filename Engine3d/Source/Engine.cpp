@@ -113,9 +113,17 @@ void Engine::Run()
 		//todo: handle exceptions and errors
 		graphicsApi->Render();
 
+		if (editor.get() != nullptr) editor->Update();
+
 		cachedTime = currentTime;
 	}
 
 	graphicsApi->FinanilizeRenderOperations();
 	spdlog::info("Window closed");
+}
+
+void Engine::BindEditor(Ref<IEngineEditor> editor)
+{
+	this->editor = editor;
+	engineRollback->Add([this] {this->editor.reset(); });
 }

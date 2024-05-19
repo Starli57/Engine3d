@@ -4,7 +4,7 @@
 
 #include <array>
 
-#include "ProjectSettings.h"
+#include "SharedLib/ProjectSettings.h"
 #include "SharedLib/Ref.h"
 #include "SharedLib/Rollback/Rollback.h"
 #include "Rendering/Model/Vertex.h"

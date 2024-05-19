@@ -66,7 +66,6 @@ namespace AVulkan
 		}
 
 		spdlog::info("Recreate swapchain");
-		needResizeWindow = false;
 		FinanilizeRenderOperations();
 
 		swapChain->Recreate();
@@ -75,9 +74,11 @@ namespace AVulkan
 	//todo: make refactoring of the function
 	void VulkanGraphicsApi::Render()
 	{
+
+		auto commandBuffer = commandBuffers[frame];
+
 		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, frameSyncTimeout);
 
-		uint32_t imageIndex = 0;
 		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData->swapChain, frameSyncTimeout,
 			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 		
@@ -92,23 +93,30 @@ namespace AVulkan
 		UpdateUniformBuffer(frame);
 
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
-		vkResetCommandBuffer(commandBuffers[frame], 0);
-		ACommandBuffer().Record(ecs, descriptors, frame, swapChainData->frameBuffers[imageIndex],
-			renderPass, commandBuffers, *graphicsPipeline, swapChainData->extent);
+		vkResetCommandBuffer(commandBuffer, 0);
+
+		ACommandBuffer().Begin(commandBuffer);
+		ACommandBuffer().BeginRenderPass(swapChainData->frameBuffers[imageIndex], renderPass, commandBuffer, swapChainData->extent);
+		ACommandBuffer().Record(ecs, descriptors, frame, commandBuffer, *graphicsPipeline);
+		ACommandBuffer().EndRenderPass(commandBuffer);
+		ACommandBuffer().End(commandBuffer);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+
+		std::array<VkCommandBuffer, 1> submitCommandBuffers =
+		{
+			commandBuffer
+		};
 
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		submitInfo.waitSemaphoreCount = 1;
-		submitInfo.commandBufferCount = 1;
 		submitInfo.signalSemaphoreCount = 1;
-		
 		submitInfo.pWaitSemaphores = &imageAvailableSemaphores[frame];
 		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[frame];
-
 		submitInfo.pWaitDstStageMask = waitStages;
-		submitInfo.pCommandBuffers = &commandBuffers[frame];
+		submitInfo.commandBufferCount = static_cast<uint32_t>(submitCommandBuffers.size());;
+		submitInfo.pCommandBuffers = submitCommandBuffers.data();
 
 		auto submitStatus = vkQueueSubmit(graphicsQueue, 1, &submitInfo, drawFences[frame]);
 		CAssert::Check(submitStatus == VK_SUCCESS, "Failed to submit draw command buffer, status: " + submitStatus);
@@ -123,7 +131,7 @@ namespace AVulkan
 
 		auto presentStatus = vkQueuePresentKHR(presentationQueue, &presentInfo);
 
-		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR || needResizeWindow)
+		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR)
 		{
 			RecreateSwapChain();
 			return;
@@ -227,7 +235,7 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateCommandBuffer()
 	{
-		ACommandBuffer().Setup(logicalDevice, commandPool, commandBuffers, maxFramesInFlight);
+		ACommandBuffer().Allocate(logicalDevice, commandPool, commandBuffers, maxFramesInFlight);
 	}
 
 	void VulkanGraphicsApi::CreateDescriptorSetLayout()

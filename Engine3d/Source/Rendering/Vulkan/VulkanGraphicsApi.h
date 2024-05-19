@@ -5,6 +5,7 @@
 #include <stack>
 #include <vector>
 
+#include <IEngineEditor.h>
 #include "GraphicsPipeline.h"
 #include "SharedLib/Ref.h"
 
@@ -33,7 +34,7 @@
 
 #include "Builders/ACommandBuffer.h"
 
-#include "ProjectSettings.h"
+#include "SharedLib/ProjectSettings.h"
 #include "SharedLib/Rollback/Rollback.h"
 #include "SharedLib/Components/UboViewProjectionComponent.h"
 #include "Systems/TransformSystem.h"
@@ -44,32 +45,19 @@ namespace AVulkan
 	class VulkanGraphicsApi : public IGraphicsApi
 	{
 	public:
-		VulkanGraphicsApi(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* window, Rollback* vulkanRollback);
-		virtual ~VulkanGraphicsApi() override;
-
-		void Init() override;
-		void Render() override;
-		void FinanilizeRenderOperations() override;
-
-		Ref<Mesh> CreateMesh(const std::string& meshPath) override;
-		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
-		Ref<Texture> CreateTexture(TextureId textureIdh) override;
-
 		static constexpr uint16_t maxFramesInFlight = 2;
-
-	private:
-		Ref<entt::registry> ecs;
-		Ref<ProjectSettigns> projectSettings;
-		Ref<Rollback> rollback;
 
 		GLFWwindow* window;
 
 		VkInstance instance;
+		VkSurfaceKHR windowSurface;
+
 		VkPhysicalDevice physicalDevice;
 		VkDevice logicalDevice;
-		VkSurfaceKHR windowSurface;
+
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;
+
 		VkRenderPass renderPass;
 
 		Ref<SwapChain> swapChain;
@@ -85,12 +73,33 @@ namespace AVulkan
 		std::vector<VkSemaphore> renderFinishedSemaphores;
 		std::vector<VkFence> drawFences;
 
-		uint16_t frame = 0;
-		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
-
 		VkSampler textureSampler;
 
-		bool needResizeWindow = false;
+		uint32_t GetImageIndex() { return imageIndex; }
+		uint16_t GetFrame() { return frame; }
+
+		VulkanGraphicsApi(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* window, Rollback* vulkanRollback);
+		virtual ~VulkanGraphicsApi() override;
+
+		void Init() override;
+		void Render() override;
+		void FinanilizeRenderOperations() override;
+
+		Ref<Mesh> CreateMesh(const std::string& meshPath) override;
+		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
+		Ref<Texture> CreateTexture(TextureId textureIdh) override;
+
+
+
+	private:
+		Ref<entt::registry> ecs;
+		Ref<ProjectSettigns> projectSettings;
+		Ref<Rollback> rollback;
+		Ref<IEngineEditor> editor;
+
+		uint32_t imageIndex = 0;
+		uint16_t frame = 0;
+		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
 
 		void CreateInstance();
 		void SelectPhysicalRenderingDevice();
