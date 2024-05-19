@@ -9,6 +9,7 @@ class RollbackExtension
 {
 public:
 	void Dispose(Rollback rollback);
+	void Dispose(Rollback* rollback);
 	void Dispose(std::stack<std::function<void()>>* disposeStack);
 
 	friend class Rollback;

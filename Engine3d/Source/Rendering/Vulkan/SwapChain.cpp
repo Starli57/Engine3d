@@ -13,7 +13,7 @@ namespace AVulkan
 
 	SwapChain::~SwapChain()
 	{
-		rollback->Dispose();
+		Dispose();
 	}
 
 	void SwapChain::Recreate()
@@ -70,16 +70,8 @@ namespace AVulkan
 		for (int i = 0; i < swapChainData->images.size(); i++)
 		{
 			AImageView().Create(logicalDevice, swapChainData->imageFormat, VK_IMAGE_ASPECT_COLOR_BIT,
-				swapChainData->images[i], swapChainData->imageViews[i]);
+				swapChainData->images[i], swapChainData->imageViews[i], rollback);
 		}
-
-		rollback->Add([this]() 
-		{
-			for (int i = 0; i < swapChainData->imageViews.size(); i++)
-			{
-				AImageView().Destroy(logicalDevice, swapChainData->imageViews[i]);
-			}
-		});
 	}
 
 	void SwapChain::CreateDepthBuffer(VkCommandPool& commandPool)
@@ -98,15 +90,14 @@ namespace AVulkan
 			depthBufferModel->imageMemory);
 
 		AImageView().Create(logicalDevice, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
-			depthBufferModel->image, depthBufferModel->imageView);
+			depthBufferModel->image, depthBufferModel->imageView, rollback);
 
 		rollback->Add([this]()
-			{
-				AImageView().Destroy(logicalDevice, depthBufferModel->imageView);
-				AImage(physicalDevice, logicalDevice, graphicsQueue, this->commandPool).Destroy(depthBufferModel->image);
-				VkMemoryUtility::FreeDeviceMemory(logicalDevice, depthBufferModel->imageMemory);
-				depthBufferModel.reset();
-			});
+		{
+			AImage(physicalDevice, logicalDevice, graphicsQueue, this->commandPool).Destroy(depthBufferModel->image);
+			VkMemoryUtility::FreeDeviceMemory(logicalDevice, depthBufferModel->imageMemory);
+			depthBufferModel.reset();
+		});
 	}
 
 	void SwapChain::CreateFrameBuffers(VkRenderPass& renderPass)
@@ -114,6 +105,11 @@ namespace AVulkan
 		this->renderPass = renderPass;
 		AFrameBuffer().Create(logicalDevice, renderPass, *swapChainData.get(), depthBufferModel);
 		rollback->Add([this]() { AFrameBuffer().Dispose(logicalDevice, swapChainData->frameBuffers); });
+	}
+
+	void SwapChain::Dispose()
+	{
+		rollback->Dispose();
 	}
 	
 	void SwapChain::SetupSwapChainInfo(VkSwapchainCreateInfoKHR& createInfo, VkSurfaceKHR& surface, VkExtent2D& extent,

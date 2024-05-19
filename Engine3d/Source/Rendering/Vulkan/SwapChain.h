@@ -33,6 +33,7 @@ namespace AVulkan
 		void CreateSwapChainImageViews();
 		void CreateDepthBuffer(VkCommandPool& commandPool);
 		void CreateFrameBuffers(VkRenderPass& renderPass);
+		void Dispose();
 
 	private:
 

@@ -12,6 +12,7 @@
 #include "SharedLib/ProjectSettings.h"
 #include "SharedLib/IOUtility.h"
 #include "SharedLib/Ref.h"
+#include "SharedLib/Rollback/Rollback.h"
 
 namespace AVulkan
 {
@@ -20,7 +21,7 @@ namespace AVulkan
 	public:
 		TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
 			Ref<Descriptors> descriptors, VkDescriptorSetLayout& descriptorSetLayout, 
-			VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId);
+			VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId, Ref<Rollback> rollback);
 		virtual ~TextureVulkan() override;
 
 		std::vector<VkDescriptorSet> descriptorSets;
@@ -30,6 +31,7 @@ namespace AVulkan
 		void CreateImage(TextureId textureId);
 		void CreateImageView();
 
+		Ref<Rollback> rollback;
 		Ref<ProjectSettigns> projectSettings;
 		Ref<ImageModel> imageModel;
 

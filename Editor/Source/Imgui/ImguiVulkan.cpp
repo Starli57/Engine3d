@@ -49,7 +49,8 @@ ImguiVulkan::ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi) : vulkanApi(vulk
     renderPassInfo.pDependencies = &dependency;
     auto renderPassStatus = vkCreateRenderPass(vulkanApi.logicalDevice, &renderPassInfo, nullptr, &renderPass);
     CAssert::Check(renderPassStatus == VK_SUCCESS, "Failed to create imgui render pass");
-    
+    rollback->Add([this, vulkanApi, renderPass] {vkDestroyRenderPass(vulkanApi.logicalDevice, renderPass, nullptr); });
+
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();

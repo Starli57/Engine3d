@@ -160,7 +160,7 @@ namespace AVulkan
 	Ref<Texture> VulkanGraphicsApi::CreateTexture(TextureId textureId)
 	{
 		return CreateRef<TextureVulkan>(projectSettings, physicalDevice, logicalDevice, descriptors,
-			descriptors->GetDescriptorSetLayout(), textureSampler, graphicsQueue, commandPool, textureId);
+			descriptors->GetDescriptorSetLayout(), textureSampler, graphicsQueue, commandPool, textureId, rollback);
 	}
 
 	void VulkanGraphicsApi::CreateInstance()
@@ -201,6 +201,8 @@ namespace AVulkan
 			queueIndices, graphicsQueue, swapChainData);
 
 		swapChain->CreateSwapchain();
+
+		rollback->Add([this] {swapChain->Dispose(); });
 	}
 
 	void VulkanGraphicsApi::CreateSwapChainImageViews()

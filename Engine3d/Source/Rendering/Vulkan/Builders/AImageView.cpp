@@ -4,7 +4,7 @@
 namespace AVulkan
 {
 	void AImageView::Create(VkDevice& logicalDevice, VkFormat& imageFormat, VkImageAspectFlags imageAspectFlags,
-		VkImage& image, VkImageView& imageView)
+		VkImage& image, VkImageView& imageView, Ref<Rollback> rollback)
 	{
 		spdlog::info("Create image view");
 
@@ -27,11 +27,7 @@ namespace AVulkan
 
 		auto createStatus = vkCreateImageView(logicalDevice, &createInfo, nullptr, &imageView);
 		CAssert::Check(createStatus == VK_SUCCESS, "Image view can't be created, status: " + createStatus);
-	}
 
-	void AImageView::Destroy(VkDevice& logicalDevice, VkImageView& imageView)
-	{
-		spdlog::info("Dispose image viewes");
-		vkDestroyImageView(logicalDevice, imageView, nullptr);
+		rollback->Add([this, logicalDevice, imageView] { vkDestroyImageView(logicalDevice, imageView, nullptr); });
 	}
 }

@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 
 #include "Rendering/Vulkan/Models/SwapChainData.h"
+#include "SharedLib/Ref.h"
+#include "SharedLib/Rollback/Rollback.h"
 
 namespace AVulkan
 {
@@ -10,7 +12,6 @@ namespace AVulkan
 	{
 	public:
 		void Create(VkDevice& logicalDevice, VkFormat& imageFormat, VkImageAspectFlags imageAspectFlags,
-			VkImage& image, VkImageView& imageView);
-		void Destroy(VkDevice& logicalDevice, VkImageView& imageView);
+			VkImage& image, VkImageView& imageView, Ref<Rollback> rollback);
 	};
 }

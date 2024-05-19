@@ -16,9 +16,9 @@ namespace AVulkan
 {
     TextureVulkan::TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
         Ref<Descriptors> descriptors, VkDescriptorSetLayout& descriptorSetLayout,
-        VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId)
+        VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId, Ref<Rollback> rollback)
         : Texture(textureId), physicalDevice(physicalDevice), logicalDevice(logicalDevice), 
-                             graphicsQueue(graphicsQueue), commandPool(commandPool)
+                             graphicsQueue(graphicsQueue), commandPool(commandPool), rollback(rollback)
     {
         this->projectSettings = projectSettings;
         auto uniformBufferBuilder = AUniformBufferVulkan();
@@ -51,7 +51,6 @@ namespace AVulkan
         uniformBuffers.clear();
         descriptorSets.clear();
 
-        AImageView().Destroy(logicalDevice, imageModel->imageView);
         vkDestroyImage(logicalDevice, imageModel->image, nullptr);
         vkFreeMemory(logicalDevice, imageModel->imageMemory, nullptr);
     }
@@ -123,7 +122,7 @@ namespace AVulkan
         //todo: find suitable format firstly
         VkFormat imgFormat = VK_FORMAT_R8G8B8A8_SRGB;
         VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
-        AImageView().Create(logicalDevice, imgFormat, aspectFlags, imageModel->image, imageModel->imageView);
+        AImageView().Create(logicalDevice, imgFormat, aspectFlags, imageModel->image, imageModel->imageView, rollback);
 
     }
 }
