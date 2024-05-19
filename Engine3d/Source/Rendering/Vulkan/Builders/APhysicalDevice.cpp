@@ -1,7 +1,7 @@
 #include "Pch.h"
 #include "APhysicalDevice.h"
 #include "Rendering/Vulkan/Models/PhysicalDeviceExtensions.h"
-#include "Rendering/Vulkan/Utilities/VkSwapchainUtility.h"
+#include "Rendering/Vulkan/Utilities/SwapchainUtility.h"
 
 namespace AVulkan
 {

@@ -1,5 +1,5 @@
 #include "Pch.h"
-#include "VkMemoryUtility.h"
+#include "MemoryUtility.h"
 
 namespace VkUtils
 {

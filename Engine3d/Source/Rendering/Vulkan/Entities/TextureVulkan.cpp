@@ -3,7 +3,7 @@
 
 #include "SharedLib/CustomAssert.h"
 #include "Rendering/Vulkan/VulkanGraphicsApi.h"
-#include "Rendering/Vulkan/Utilities/VkBufferUtility.h"
+#include "Rendering/Vulkan/Utilities/BufferUtility.h"
 #include "Rendering/Vulkan/Builders/AUniformBufferVulkan.h"
 #include "Rendering/Vulkan/Builders/AImage.h"
 #include "Rendering/Vulkan/Builders/AImageView.h"

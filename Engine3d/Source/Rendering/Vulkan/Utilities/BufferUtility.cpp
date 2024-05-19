@@ -1,6 +1,6 @@
 #include "Pch.h"
-#include "VkBufferUtility.h"
-#include "Rendering/Vulkan/Utilities/VkMemoryUtility.h"
+#include "BufferUtility.h"
+#include "Rendering/Vulkan/Utilities/MemoryUtility.h"
 
 namespace VkUtils
 {

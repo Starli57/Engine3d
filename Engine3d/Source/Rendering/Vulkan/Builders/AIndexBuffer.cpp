@@ -3,7 +3,7 @@
 #include "spdlog/spdlog.h"
 
 #include "AIndexBuffer.h"
-#include "Rendering/Vulkan/Utilities/VkBufferUtility.h"
+#include "Rendering/Vulkan/Utilities/BufferUtility.h"
 
 
 namespace AVulkan

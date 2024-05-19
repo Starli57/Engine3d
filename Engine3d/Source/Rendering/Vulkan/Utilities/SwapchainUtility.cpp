@@ -1,5 +1,5 @@
 #include "Pch.h"
-#include "VkSwapchainUtility.h"
+#include "SwapchainUtility.h"
 
 namespace VkUtils
 {

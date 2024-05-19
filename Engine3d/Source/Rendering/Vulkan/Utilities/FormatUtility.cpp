@@ -1,5 +1,5 @@
 #include "Pch.h"
-#include "VkFormatUtility.h"
+#include "FormatUtility.h"
 
 namespace VkUtils
 {

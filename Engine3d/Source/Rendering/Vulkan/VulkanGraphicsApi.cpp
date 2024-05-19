@@ -7,8 +7,8 @@
 #include "Components/MaterialComponent.h"
 #include "Rendering/Vulkan/Entities/TextureVulkan.h"
 #include "Builders/AImageView.h"
-#include "Utilities/VkMemoryUtility.h"
-#include "Utilities/VkFormatUtility.h"
+#include "Utilities/MemoryUtility.h"
+#include "Utilities/FormatUtility.h"
 
 namespace AVulkan
 {

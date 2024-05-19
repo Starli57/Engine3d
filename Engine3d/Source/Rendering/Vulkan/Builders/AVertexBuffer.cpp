@@ -1,5 +1,5 @@
 #include "Pch.h"
-#include "Rendering/Vulkan/Utilities/VkBufferUtility.h"
+#include "Rendering/Vulkan/Utilities/BufferUtility.h"
 #include "AVertexBuffer.h"
 #include "spdlog/spdlog.h"
 

@@ -1,7 +1,7 @@
 #include "Pch.h"
 #include "RenderPassUtility.h"
 #include "spdlog/spdlog.h"
-#include "Rendering/Vulkan/Utilities/VkFormatUtility.h"
+#include "Rendering/Vulkan/Utilities/FormatUtility.h"
 
 namespace VkUtils
 {
