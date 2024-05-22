@@ -16,8 +16,8 @@ Externals["TinyObjLoader"] = "Externals/TinyObjLoader"
 Externals["DearImgui"] = "Externals/DearImgui"
 
 Includes = {}
-Includes["Engine"] = "Engine3d/Source"
-Includes["Shared"] = "Shared/Source"
+Includes["EngineCore"] = "EngineCore/Source"
+Includes["EngineShared"] = "EngineShared/Source"
 Includes["ExampleProject"] = "ExampleProject/Source"
 
 Includes["Glfw"] = "%{Externals.Glfw}/include"
@@ -57,9 +57,9 @@ project "Editor"
 	includedirs
 	{
 		"%{prj.name}/Source",
-		"%{Includes.Engine}",
+		"%{Includes.EngineCore}",
+		"%{Includes.EngineShared}",
 		"%{Includes.ExampleProject}",
-		"%{Includes.Shared}",
 		
 		"%{Includes.DearImgui}",
 		"%{Includes.DearImgui}/backends",
@@ -74,8 +74,8 @@ project "Editor"
 	
 	links
 	{
-		"Engine3d",
-		"Shared",
+		"EngineCore",
+		"EngineShared",
 		"ExampleProject",
 
 		"DearImgui"
@@ -105,14 +105,13 @@ project "Editor"
 	filter "configurations:Release"
 		optimize "On"
 
-project "Engine3d"
-	location "Engine3d"
+project "EngineCore"
+	location "EngineCore"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "On"
 	systemversion "latest"
-
 
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -129,7 +128,7 @@ project "Engine3d"
 	includedirs
 	{
 		"%{prj.name}/Source",
-		"%{Includes.Shared}",
+		"%{Includes.EngineShared}",
 		"%{Includes.ExampleProject}",
 
 		"%{Includes.Glfw}",
@@ -143,7 +142,7 @@ project "Engine3d"
 
 	links
 	{
-		"Shared",
+		"EngineShared",
 		"ExampleProject",
 
 		"Glfw",
@@ -222,7 +221,7 @@ project "ExampleProject"
 
 	includedirs
 	{
-		"%{Includes.Shared}",
+		"%{Includes.EngineShared}",
 
 		"%{Includes.Glm}",
 		"%{Includes.SpdLog}"
@@ -230,7 +229,7 @@ project "ExampleProject"
 	
 	links
 	{
-		"Shared"
+		"EngineShared"
 	}
 	
 	defines
@@ -258,8 +257,8 @@ project "ExampleProject"
 	filter "configurations:Release"
 		optimize "On"
 		
-project "Shared"
-	location "Shared"
+project "EngineShared"
+	location "EngineShared"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
