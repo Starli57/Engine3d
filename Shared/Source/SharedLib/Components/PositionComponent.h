@@ -6,6 +6,6 @@ struct PositionComponent
 {
 	glm::vec3 position;
 
-	PositionComponent() {}
+	PositionComponent() { position = glm::vec3(0, 0, 0); }
 	PositionComponent(glm::vec3 position) :position(position) {}
 };

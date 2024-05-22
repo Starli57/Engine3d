@@ -6,6 +6,6 @@ struct RotationComponent
 {
 	glm::vec3 rotation;
 
-	RotationComponent() {}
+	RotationComponent() { rotation = glm::vec3(0, 0, 0); }
 	RotationComponent(glm::vec3 rotation) :rotation(rotation) {}
 };

@@ -6,6 +6,6 @@ struct ScaleComponent
 {
 	glm::vec3 scale;
 
-	ScaleComponent() {}
+	ScaleComponent() { scale = glm::vec3(1, 1, 1); }
 	ScaleComponent(glm::vec3 scale) :scale(scale) {}
 };

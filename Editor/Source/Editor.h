@@ -3,8 +3,6 @@
 #include "Engine.h"
 #include "IEngineEditor.h"
 
-#include "Imgui/ImguiVulkan.h"
-
 #include "SharedLib/Ref.h"
 
 class Editor
@@ -15,7 +13,7 @@ public:
 
 private:
 	Ref<Engine> engine;
-	Ref<ImguiVulkan> imgui;
+	Ref<IEngineEditor> editorUi;
 	Ref<ProjectSettigns> projectSettings;
 };
 
