@@ -7,6 +7,12 @@
 class Hierarchy : public IWindow
 {
 public:
+	Hierarchy(Ref<entt::registry> ecs);
+	~Hierarchy();
+
 	void Update() override;
+
+private:
+	Ref<entt::registry> ecs;
 };
 

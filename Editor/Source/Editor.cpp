@@ -12,21 +12,17 @@
 Editor::Editor()
 {
 	projectSettings = CreateRef<ProjectSettigns>("../ExampleProject/");
-
 	engine = CreateRef<Engine>(projectSettings);
 
 	auto graphicsApi = engine->GetGraphicsApi();
 	auto vulkanApi = static_cast<AVulkan::VulkanGraphicsApi*>(graphicsApi);
 
 	editorUi = CreateRef<ImguiVulkan>(*vulkanApi);
-	editorUi->AddWindow(CreateRef<Hierarchy>());
+	editorUi->AddWindow(CreateRef<Hierarchy>(engine->GetEcs()));
 	editorUi->AddWindow(CreateRef<Inspector>());
 
 	engine->BindEditor(editorUi);
-
-
 	engine->Run();
-
 }
 
 Editor::~Editor()

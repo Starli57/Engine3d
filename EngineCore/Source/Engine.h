@@ -24,6 +24,7 @@ public:
 	void BindEditor(Ref<IEngineEditor> editor);
 
 	IGraphicsApi* GetGraphicsApi() { return graphicsApi; }
+	Ref<entt::registry> GetEcs() { return ecs; }
 
 private:
 	const Ref<ProjectSettigns> projectSettings;
