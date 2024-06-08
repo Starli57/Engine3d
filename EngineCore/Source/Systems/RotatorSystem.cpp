@@ -1,6 +1,6 @@
 #include "Pch.h"
 #include "RotatorSystem.h"
-#include "SharedLib/Components/RotationVelocityComponent.h"
+#include "EngineShared/Components/RotationVelocityComponent.h"
 
 RotatorSystem::RotatorSystem(Ref<entt::registry> ecs) : ecs(ecs)
 {

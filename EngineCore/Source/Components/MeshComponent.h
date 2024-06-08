@@ -2,7 +2,7 @@
 
 #include "Entities/Mesh.h"
 #include "Entities/Material.h"
-#include "SharedLib/Ref.h"
+#include "EngineShared/Ref.h"
 
 class MeshComponent
 {

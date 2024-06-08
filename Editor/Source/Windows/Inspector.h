@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 
-#include "SharedLib/IWindow.h"
+#include "EngineShared/IWindow.h"
 
 class Inspector : public IWindow
 {

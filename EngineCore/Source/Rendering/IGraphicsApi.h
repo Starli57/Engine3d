@@ -4,8 +4,8 @@
 #include "AssetsDatabase.h"
 #include "Entities/Mesh.h"
 #include "Entities/Texture.h"
-#include "SharedLib/Ref.h"
-#include "SharedLib/EventHandler.h"
+#include "EngineShared/Ref.h"
+#include "EngineShared/EventHandler.h"
 
 class IGraphicsApi
 {

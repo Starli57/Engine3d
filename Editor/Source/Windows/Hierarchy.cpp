@@ -1,6 +1,6 @@
 
 #include "Hierarchy.h"
-#include "SharedLib/Components/NameComponent.h"
+#include "EngineShared/Components/NameComponent.h"
 
 void Hierarchy::Update()
 {

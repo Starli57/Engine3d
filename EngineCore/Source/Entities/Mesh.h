@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "SharedLib/Ref.h"
+#include "EngineShared/Ref.h"
 #include "Rendering/Model/Vertex.h"
 
 class Mesh

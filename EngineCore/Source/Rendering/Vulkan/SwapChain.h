@@ -3,8 +3,8 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
-#include "SharedLib/Ref.h"
-#include "SharedLib/Rollback/Rollback.h"
+#include "EngineShared/Ref.h"
+#include "EngineShared/Rollback/Rollback.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Models/SwapChainSurfaceSettings.h"
 #include "Rendering/Vulkan/Models/QueueFamilyIndices.h"

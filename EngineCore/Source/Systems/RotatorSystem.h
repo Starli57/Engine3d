@@ -4,9 +4,9 @@
 
 #include "ISystem.h"
 
-#include "SharedLib/Components/RotationComponent.h"
-#include "SharedLib/Ref.h"
-#include "SharedLib/Entity.h"
+#include "EngineShared/Components/RotationComponent.h"
+#include "EngineShared/Ref.h"
+#include "EngineShared/Entity.h"
 
 class RotatorSystem : ISystem
 {

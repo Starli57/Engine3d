@@ -18,8 +18,8 @@
 
 #include "Rendering/Vulkan/Utilities/CommandPoolUtility.h"
 
-#include "SharedLib/Ref.h"
-#include "SharedLib/Rollback/Rollback.h"
+#include "EngineShared/Ref.h"
+#include "EngineShared/Rollback/Rollback.h"
 
 class ImguiVulkan : public IEngineEditor
 {

@@ -2,7 +2,7 @@
 #include "AShaderModule.h"
 #include "spdlog/spdlog.h"
 
-#include "SharedLib/IOUtility.h"
+#include "EngineShared/IOUtility.h"
 
 namespace AVulkan
 {

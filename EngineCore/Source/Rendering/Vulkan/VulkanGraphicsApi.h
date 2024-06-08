@@ -7,7 +7,7 @@
 
 #include <IEngineEditor.h>
 #include "GraphicsPipeline.h"
-#include "SharedLib/Ref.h"
+#include "EngineShared/Ref.h"
 
 #include "Entities/Level.h"
 #include "Entities/Mesh.h"
@@ -34,9 +34,9 @@
 #include "Utilities/CommandPoolUtility.h"
 #include "Utilities/CommandBufferUtility.h"
 
-#include "SharedLib/ProjectSettings.h"
-#include "SharedLib/Rollback/Rollback.h"
-#include "SharedLib/Components/UboViewProjectionComponent.h"
+#include "EngineShared/ProjectSettings.h"
+#include "EngineShared/Rollback/Rollback.h"
+#include "EngineShared/Components/UboViewProjectionComponent.h"
 #include "Systems/TransformSystem.h"
 #include "Systems/Camera.h"
 

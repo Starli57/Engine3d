@@ -2,8 +2,8 @@
 
 #include <fstream>
 
-#include "SharedLib/CustomAssert.h"
-#include "SharedLib/Ref.h"
+#include "EngineShared/CustomAssert.h"
+#include "EngineShared/Ref.h"
 
 class IOUtility
 {

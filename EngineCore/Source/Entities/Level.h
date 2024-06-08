@@ -11,14 +11,14 @@
 #include "Systems/RotatorSystem.h"
 #include "Rendering/IGraphicsApi.h"
 #include "Rendering/Model/Vertex.h"
-#include "SharedLib/Entity.h"
-#include "SharedLib/ProjectSettings.h"
-#include "SharedLib/Components/PositionComponent.h"
-#include "SharedLib/Components/RotationComponent.h"
-#include "SharedLib/Components/ScaleComponent.h"
-#include "SharedLib/Components/RotationVelocityComponent.h"
-#include "SharedLib/Components/UboModelComponent.h"
-#include "SharedLib/Rollback/Rollback.h"
+#include "EngineShared/Entity.h"
+#include "EngineShared/ProjectSettings.h"
+#include "EngineShared/Components/PositionComponent.h"
+#include "EngineShared/Components/RotationComponent.h"
+#include "EngineShared/Components/ScaleComponent.h"
+#include "EngineShared/Components/RotationVelocityComponent.h"
+#include "EngineShared/Components/UboModelComponent.h"
+#include "EngineShared/Rollback/Rollback.h"
 
 class Level
 {

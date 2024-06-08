@@ -4,9 +4,9 @@
 #include <vector>
 
 #include "Entities/Mesh.h"
-#include "SharedLib/Components/UboViewProjectionComponent.h"
+#include "EngineShared/Components/UboViewProjectionComponent.h"
 #include "Rendering/Model/Vertex.h"
-#include "SharedLib/Ref.h"
+#include "EngineShared/Ref.h"
 
 namespace AVulkan
 {

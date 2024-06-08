@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-#include "SharedLib/IWindow.h"
-#include "SharedLib/Ref.h"
+#include "EngineShared/IWindow.h"
+#include "EngineShared/Ref.h"
 
 class IEngineEditor
 {

@@ -1,7 +1,7 @@
 #include "Pch.h"
 #include "Descriptors.h"
-#include "SharedLib/CustomAssert.h"
-#include "SharedLib/Components/UboViewProjectionComponent.h"
+#include "EngineShared/CustomAssert.h"
+#include "EngineShared/Components/UboViewProjectionComponent.h"
 #include "spdlog/spdlog.h"
 
 namespace AVulkan

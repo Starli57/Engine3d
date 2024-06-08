@@ -1,6 +1,6 @@
 #include "Pch.h"
 #include "AImage.h"
-#include "SharedLib/CustomAssert.h"
+#include "EngineShared/CustomAssert.h"
 #include "Rendering/Vulkan/Utilities/MemoryUtility.h"
 #include "Rendering/Vulkan/Utilities/BufferUtility.h"
 

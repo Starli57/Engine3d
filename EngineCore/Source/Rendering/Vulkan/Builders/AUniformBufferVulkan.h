@@ -4,8 +4,8 @@
 
 #include "Rendering/Vulkan/Utilities/BufferUtility.h"
 #include "Rendering/Vulkan/Models/BufferModel.h"
-#include "SharedLib/Ref.h"
-#include "SharedLib/Components/UboViewProjectionComponent.h"
+#include "EngineShared/Ref.h"
+#include "EngineShared/Components/UboViewProjectionComponent.h"
 
 namespace AVulkan
 {

@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <entt.hpp>
 
-#include "SharedLib/Ref.h"
+#include "EngineShared/Ref.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Entities/MeshVulkan.h"
 #include "Rendering/Vulkan/Entities/TextureVulkan.h"
@@ -11,7 +11,7 @@
 #include "Rendering/Vulkan/Descriptors.h"
 #include "Components/MeshComponent.h"
 #include "Components/MaterialComponent.h"
-#include "SharedLib/Components/UboModelComponent.h"
+#include "EngineShared/Components/UboModelComponent.h"
 
 namespace VkUtils
 {

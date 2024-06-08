@@ -4,11 +4,11 @@
 
 #include <array>
 
-#include "SharedLib/ProjectSettings.h"
-#include "SharedLib/Ref.h"
-#include "SharedLib/Rollback/Rollback.h"
+#include "EngineShared/ProjectSettings.h"
+#include "EngineShared/Ref.h"
+#include "EngineShared/Rollback/Rollback.h"
 #include "Rendering/Model/Vertex.h"
-#include "SharedLib/Components/UboModelComponent.h"
+#include "EngineShared/Components/UboModelComponent.h"
 
 namespace AVulkan
 {

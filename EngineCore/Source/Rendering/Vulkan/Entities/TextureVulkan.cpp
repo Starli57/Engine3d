@@ -1,7 +1,7 @@
 #include "Pch.h"
 #include "TextureVulkan.h"
 
-#include "SharedLib/CustomAssert.h"
+#include "EngineShared/CustomAssert.h"
 #include "Rendering/Vulkan/VulkanGraphicsApi.h"
 #include "Rendering/Vulkan/Utilities/BufferUtility.h"
 #include "Rendering/Vulkan/Builders/AUniformBufferVulkan.h"

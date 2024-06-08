@@ -7,8 +7,8 @@
 #include "Resources/MeshesList.h"
 #include "Components/MeshComponent.h"
 #include "Components/MaterialComponent.h"
-#include "SharedLib/Ref.h"
-#include "SharedLib/Components/NameComponent.h"
+#include "EngineShared/Ref.h"
+#include "EngineShared/Components/NameComponent.h"
 
 Level::Level(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
 {

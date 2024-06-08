@@ -6,10 +6,10 @@
 
 #include "ISystem.h"
 
-#include "SharedLib/Entity.h"
-#include "SharedLib/Components/PositionComponent.h"
-#include "SharedLib/Components/UboViewProjectionComponent.h"
-#include "SharedLib/Ref.h"
+#include "EngineShared/Entity.h"
+#include "EngineShared/Components/PositionComponent.h"
+#include "EngineShared/Components/UboViewProjectionComponent.h"
+#include "EngineShared/Ref.h"
 
 class Camera : public ISystem
 {

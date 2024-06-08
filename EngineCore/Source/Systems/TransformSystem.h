@@ -5,13 +5,13 @@
 
 #include <string>
 
-#include "SharedLib/Entity.h"
+#include "EngineShared/Entity.h"
 #include "ISystem.h"
-#include "SharedLib/Components/UboModelComponent.h"
-#include "SharedLib/Components/PositionComponent.h"
-#include "SharedLib/Components/RotationComponent.h"
-#include "SharedLib/Components/ScaleComponent.h"
-#include "SharedLib/Ref.h"
+#include "EngineShared/Components/UboModelComponent.h"
+#include "EngineShared/Components/PositionComponent.h"
+#include "EngineShared/Components/RotationComponent.h"
+#include "EngineShared/Components/ScaleComponent.h"
+#include "EngineShared/Ref.h"
 
 class TransformSystem : public ISystem
 {

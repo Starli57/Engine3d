@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Entities/Material.h"
-#include "SharedLib/Ref.h"
+#include "EngineShared/Ref.h"
 
 class MaterialComponent
 {

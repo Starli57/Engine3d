@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Models/ImageModel.h"
-#include "SharedLib/Ref.h"
+#include "EngineShared/Ref.h"
 
 namespace VkUtils
 {

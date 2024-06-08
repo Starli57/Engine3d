@@ -9,10 +9,10 @@
 #include "Rendering/Vulkan/Descriptors.h"
 #include "Rendering/Vulkan/Models/BufferModel.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
-#include "SharedLib/ProjectSettings.h"
-#include "SharedLib/IOUtility.h"
-#include "SharedLib/Ref.h"
-#include "SharedLib/Rollback/Rollback.h"
+#include "EngineShared/ProjectSettings.h"
+#include "EngineShared/IOUtility.h"
+#include "EngineShared/Ref.h"
+#include "EngineShared/Rollback/Rollback.h"
 
 namespace AVulkan
 {
