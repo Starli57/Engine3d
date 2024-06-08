@@ -13,11 +13,6 @@
 #include "EngineShared/Ecs.h"
 #include "EngineShared/Entity.h"
 #include "EngineShared/ProjectSettings.h"
-#include "EngineShared/Components/PositionComponent.h"
-#include "EngineShared/Components/RotationComponent.h"
-#include "EngineShared/Components/ScaleComponent.h"
-#include "EngineShared/Components/RotationVelocityComponent.h"
-#include "EngineShared/Components/UboModelComponent.h"
 #include "EngineShared/Rollback/Rollback.h"
 
 class Level

@@ -9,6 +9,12 @@
 #include "Components/MaterialComponent.h"
 #include "EngineShared/Ref.h"
 #include "EngineShared/Components/NameComponent.h"
+#include "EngineShared/Components/CameraComponent.h"
+#include "EngineShared/Components/PositionComponent.h"
+#include "EngineShared/Components/RotationComponent.h"
+#include "EngineShared/Components/ScaleComponent.h"
+#include "EngineShared/Components/RotationVelocityComponent.h"
+#include "EngineShared/Components/UboModelComponent.h"
 
 Level::Level(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
 {
@@ -68,6 +74,7 @@ void Level::LoadLevel()
 	cameraEntity->AddComponent<ScaleComponent>(glm::vec3(1, 1, 1));
 	cameraEntity->AddComponent<UboModelComponent>();
 	cameraEntity->AddComponent<UboViewProjectionComponent>();
+	cameraEntity->AddComponent<CameraComponent>();
 
 	rollback->Add([this]() { UnloadLevel(); });
 }

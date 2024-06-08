@@ -8,14 +8,14 @@
 
 #include "EngineShared/Components/PositionComponent.h"
 #include "EngineShared/Components/UboViewProjectionComponent.h"
+#include "EngineShared/Components/CameraComponent.h"
 #include "EngineShared/Ref.h"
 #include "EngineShared/Ecs.h"
 
 class Camera : public ISystem
 {
 public:
-	//todo: replace pov and screen aspect to components
-	Camera(Ref<Ecs> ecs, GLFWwindow* window, float pov);
+	Camera(Ref<Ecs> ecs, GLFWwindow* window);
 	virtual ~Camera() override;
 
 	virtual void Update(float deltaTime) override;
@@ -24,11 +24,5 @@ public:
 private:
 	Ref<Ecs> ecs;
 	GLFWwindow* window;
-
-	float pov = 60;
-
-	float zNear = 0.1f;
-	float zFar = 1000;
-
 };
 

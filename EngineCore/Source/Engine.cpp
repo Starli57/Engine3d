@@ -97,7 +97,7 @@ void Engine::Run()
 {
 	Ref<RotatorSystem> rotatorSystem = CreateRef<RotatorSystem>(ecs);
 	Ref<TransformSystem> transformSystem = CreateRef<TransformSystem>(ecs);
-	Ref<Camera> cameraSystem = CreateRef<Camera>(ecs, window, 60);
+	Ref<Camera> cameraSystem = CreateRef<Camera>(ecs, window);
 
 	while (!glfwWindowShouldClose(window))
 	{

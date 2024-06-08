@@ -47,8 +47,7 @@ public:
 	template<typename T>
 	bool HasComponent()
 	{
-		//todo: test this
-		return registry->ctx().contains<T>(entity);
+		return registry->any_of<T>(entity);
 	}
 
 	template<typename T>
