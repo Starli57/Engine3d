@@ -6,23 +6,23 @@
 
 #include "ISystem.h"
 
-#include "EngineShared/Entity.h"
 #include "EngineShared/Components/PositionComponent.h"
 #include "EngineShared/Components/UboViewProjectionComponent.h"
 #include "EngineShared/Ref.h"
+#include "EngineShared/Ecs.h"
 
 class Camera : public ISystem
 {
 public:
 	//todo: replace pov and screen aspect to components
-	Camera(Ref<entt::registry> ecs, GLFWwindow* window, float pov);
+	Camera(Ref<Ecs> ecs, GLFWwindow* window, float pov);
 	virtual ~Camera() override;
 
 	virtual void Update(float deltaTime) override;
 
 
 private:
-	Ref<entt::registry> ecs;
+	Ref<Ecs> ecs;
 	GLFWwindow* window;
 
 	float pov = 60;

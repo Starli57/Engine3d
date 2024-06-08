@@ -12,7 +12,7 @@
 
 namespace AVulkan
 {
-	VulkanGraphicsApi::VulkanGraphicsApi(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
+	VulkanGraphicsApi::VulkanGraphicsApi(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
 		this->ecs = ecs;
 		this->projectSettings = projectSettings;
@@ -281,10 +281,10 @@ namespace AVulkan
 	void VulkanGraphicsApi::UpdateUniformBuffer(uint32_t frame)
 	{
 		//todo: find most relevant camera
-		auto uboEntries = ecs->view<UboViewProjectionComponent>();
+		auto uboEntries = ecs->registry->view<UboViewProjectionComponent>();
 		auto [uboComponent] = uboEntries.get(uboEntries.front());
 
-		auto materialEntries = ecs->view<MaterialComponent>();
+		auto materialEntries = ecs->registry->view<MaterialComponent>();
 		for (auto materialEntry : materialEntries)
 		{
 			auto materialComponent = materialEntries.get<MaterialComponent>(materialEntry);

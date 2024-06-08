@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <chrono>
 #include <entt.hpp>
 #include "Defines/DllDecDefines.h"
@@ -9,8 +10,9 @@
 #include "Rendering/Vulkan/VulkanGraphicsApi.h"
 #include "Entities/Level.h"
 
-#include "EngineShared/ProjectSettings.h"
 #include "EngineShared/Ref.h"
+#include "EngineShared/Ecs.h"
+#include "EngineShared/ProjectSettings.h"
 #include "EngineShared/Rollback/Rollback.h"
 
 class Engine
@@ -24,7 +26,7 @@ public:
 	void BindEditor(Ref<IEngineEditor> editor);
 
 	IGraphicsApi* GetGraphicsApi() { return graphicsApi; }
-	Ref<entt::registry> GetEcs() { return ecs; }
+	Ref<Ecs> GetEcs() { return ecs; }
 
 private:
 	const Ref<ProjectSettigns> projectSettings;
@@ -33,8 +35,8 @@ private:
 	IGraphicsApi* graphicsApi;
 	Level* level;
 	
+	Ref<Ecs> ecs;
 	Ref<IEngineEditor> editor;
-	Ref<entt::registry> ecs;
 	Ref<AssetsDatabase> assetsDatabase;
 
 	Rollback* engineRollback;

@@ -1,13 +1,13 @@
 #include "Pch.h"
 #include "TransformSystem.h"
 
-TransformSystem::TransformSystem(Ref<entt::registry> ecs) : ecs(ecs)
+TransformSystem::TransformSystem(Ref<Ecs> ecs) : ecs(ecs)
 {
 }
 
 void TransformSystem::Update(float deltaTime)
 {
-	auto transformComponents = ecs->view<UboModelComponent, PositionComponent, RotationComponent, ScaleComponent>();
+	auto transformComponents = ecs->registry->view<UboModelComponent, PositionComponent, RotationComponent, ScaleComponent>();
 	for (auto entity : transformComponents)
 	{
 		auto& uboComponent = transformComponents.get<UboModelComponent>(entity);

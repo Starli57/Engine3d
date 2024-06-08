@@ -6,53 +6,58 @@
 class Entity
 {
 public:
-	Entity(Ref<entt::registry> ecs)
+	Entity(Ref<entt::registry> registry)
 	{
-		this->ecs = ecs;
-		this->ecsEntity = ecs->create();
+		this->registry = registry;
+		this->entity = registry->create();
+	}
+
+	~Entity()
+	{
+
 	}
 
 	template<typename T, typename... Args>
 	T& AddComponent(Args&&... args)
 	{
-		return ecs->emplace<T>(ecsEntity, std::forward<Args>(args)...);
+		return registry->emplace<T>(entity, std::forward<Args>(args)...);
 	}
 
 	template<typename T, typename... Args>
-	T& AddIfComponentNotExist(Args&&... args)
+	T& AddComponentIfNotExist(Args&&... args)
 	{
-		if (!HasComponent<T>()) return ecs->emplace<T>(ecsEntity, std::forward<Args>(args)...);
+		if (!HasComponent<T>()) return registry->emplace<T>(entity, std::forward<Args>(args)...);
 		else return GetComponent();
 	}
 
 	template<typename T, typename... Args>
 	T& AddOrReplaceComponent(Args&&... args)
 	{
-		return ecs->emplace_or_replace<T>(ecsEntity, std::forward<Args>(args)...);
+		return registry->emplace_or_replace<T>(entity, std::forward<Args>(args)...);
 	}
 
 	template<typename T>
 	T& GetComponent()
 	{
-		return ecs->get<T>(ecsEntity);
+		return registry->get<T>(entity);
 	}
 
 	template<typename T>
 	bool HasComponent()
 	{
 		//todo: test this
-		return ecs->ctx().contains<T>(ecsEntity);
+		return registry->ctx().contains<T>(entity);
 	}
 
 	template<typename T>
 	void RemoveComponent()
 	{
-		ecs->remove<T>(ecsEntity);
+		registry->remove<T>(entity);
 	}
 
 	bool operator==(const Entity& other) const
 	{
-		return ecsEntity == other.ecsEntity;
+		return entity == other.entity;
 	}
 
 	bool operator!=(const Entity& other) const
@@ -61,7 +66,7 @@ public:
 	}
 
 private:
-	Ref<entt::registry> ecs;
-	entt::entity ecsEntity;
+	Ref<entt::registry> registry;
+	entt::entity entity;
 };
 

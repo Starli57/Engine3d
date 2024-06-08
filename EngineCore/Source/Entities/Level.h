@@ -3,7 +3,6 @@
 #include <vector>
 
 #include <glm/glm.hpp>
-#include <entt.hpp>
 
 #include "Entities/Mesh.h"
 #include "AssetsDatabase.h"
@@ -11,6 +10,7 @@
 #include "Systems/RotatorSystem.h"
 #include "Rendering/IGraphicsApi.h"
 #include "Rendering/Model/Vertex.h"
+#include "EngineShared/Ecs.h"
 #include "EngineShared/Entity.h"
 #include "EngineShared/ProjectSettings.h"
 #include "EngineShared/Components/PositionComponent.h"
@@ -23,14 +23,14 @@
 class Level
 {
 public:
-	Level(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback);
+	Level(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback);
 	~Level();
 
 	void LoadLevel();
 	void UnloadLevel();
 
 private:
-	Ref<entt::registry> ecs;
+	Ref<Ecs> ecs;
 	Ref<AssetsDatabase> assetDatabase;
 	Ref<ProjectSettigns> projectSettings;
 

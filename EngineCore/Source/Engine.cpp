@@ -11,7 +11,7 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 	cachedTime = std::chrono::high_resolution_clock::now();
 	engineRollback = new Rollback("Engine");
 
-	ecs = CreateRef<entt::registry>();
+	ecs = CreateRef<Ecs>();
 
 	assetsDatabase = CreateRef<AssetsDatabase>();
 	engineRollback->Add([this]() { assetsDatabase.reset(); });

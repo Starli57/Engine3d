@@ -1,7 +1,6 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include <entt.hpp>
 
 #include "EngineShared/Ref.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
@@ -11,6 +10,7 @@
 #include "Rendering/Vulkan/Descriptors.h"
 #include "Components/MeshComponent.h"
 #include "Components/MaterialComponent.h"
+#include "EngineShared/Ecs.h"
 #include "EngineShared/Components/UboModelComponent.h"
 
 namespace VkUtils
@@ -23,6 +23,6 @@ namespace VkUtils
 	void BeginRenderPass(VkFramebuffer& frameBuffer, VkRenderPass& renderPass, VkCommandBuffer& commandBuffer, VkExtent2D& vkExtent);
 	void EndRenderPass(VkCommandBuffer& commandBuffer);
 
-	void RecordCommandBuffer(Ref<entt::registry> ecs, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,
+	void RecordCommandBuffer(Ref<Ecs> ecs, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,
 		VkCommandBuffer& commandBuffer, AVulkan::GraphicsPipeline& pipeline);
 }

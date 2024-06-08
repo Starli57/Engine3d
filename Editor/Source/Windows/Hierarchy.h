@@ -2,19 +2,21 @@
 
 #include <imgui.h>
 
+#include "EngineShared/Ref.h"
+#include "EngineShared/Ecs.h"
 #include "EngineShared/IWindow.h"
 
 class Hierarchy : public IWindow
 {
 public:
-	Hierarchy(Ref<entt::registry> ecs);
+	Hierarchy(Ref<Ecs> ecs);
 	~Hierarchy();
 
 	void Update() override;
 
 private:
-	Ref<entt::registry> ecs;
+	Ref<Ecs> ecs;
 
-	int selectedItemIndex;
+	int selectedItemIndex = 0;
 };
 

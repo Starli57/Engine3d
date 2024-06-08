@@ -7,7 +7,6 @@
 
 #include <IEngineEditor.h>
 #include "GraphicsPipeline.h"
-#include "EngineShared/Ref.h"
 
 #include "Entities/Level.h"
 #include "Entities/Mesh.h"
@@ -34,9 +33,12 @@
 #include "Utilities/CommandPoolUtility.h"
 #include "Utilities/CommandBufferUtility.h"
 
+#include "EngineShared/Ref.h"
+#include "EngineShared/Ecs.h"
 #include "EngineShared/ProjectSettings.h"
 #include "EngineShared/Rollback/Rollback.h"
 #include "EngineShared/Components/UboViewProjectionComponent.h"
+
 #include "Systems/TransformSystem.h"
 #include "Systems/Camera.h"
 
@@ -78,7 +80,7 @@ namespace AVulkan
 		uint32_t GetImageIndex() { return imageIndex; }
 		uint16_t GetFrame() { return frame; }
 
-		VulkanGraphicsApi(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* window, Rollback* vulkanRollback);
+		VulkanGraphicsApi(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* window, Rollback* vulkanRollback);
 		virtual ~VulkanGraphicsApi() override;
 
 		void Init() override;
@@ -92,7 +94,7 @@ namespace AVulkan
 
 
 	private:
-		Ref<entt::registry> ecs;
+		Ref<Ecs> ecs;
 		Ref<ProjectSettigns> projectSettings;
 		Ref<Rollback> rollback;
 		Ref<IEngineEditor> editor;

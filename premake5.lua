@@ -278,6 +278,7 @@ project "EngineShared"
 	includedirs
 	{
 		"%{prj.name}/Source",
+		"%{Includes.Entt}",
 		"%{Includes.Glm}",
 		"%{Includes.SpdLog}"
 	}

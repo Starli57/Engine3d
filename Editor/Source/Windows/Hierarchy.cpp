@@ -6,10 +6,10 @@ void Hierarchy::Update()
 {
     ImGui::Begin("Entities");
 
-    auto nameFilter = ecs->view<NameComponent>();
+    auto nameFilter = ecs->registry->view<NameComponent>();
     for (int i = 0; i < nameFilter.size(); i++)
     {
-        auto nameComponent = nameFilter.get<NameComponent>(nameFilter[i]);
+        auto nameComponent = nameFilter.get<NameComponent>(nameFilter.begin()[i]);
         if (ImGui::Selectable(nameComponent.name.c_str(), selectedItemIndex == i))
             selectedItemIndex = i;
     }
@@ -17,7 +17,7 @@ void Hierarchy::Update()
     ImGui::End();
 }
 
-Hierarchy::Hierarchy(Ref<entt::registry> ecs) : ecs(ecs)
+Hierarchy::Hierarchy(Ref<Ecs> ecs) : ecs(ecs), selectedItemIndex(0)
 {
 }
 

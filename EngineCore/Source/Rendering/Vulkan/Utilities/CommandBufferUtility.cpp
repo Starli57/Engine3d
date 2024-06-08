@@ -60,12 +60,12 @@ namespace VkUtils
 	}
 
 
-	void RecordCommandBuffer(Ref<entt::registry> ecs, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,
+	void RecordCommandBuffer(Ref<Ecs> ecs, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,
 		VkCommandBuffer& commandBuffer, AVulkan::GraphicsPipeline& pipeline)
 	{
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipeline());
 
-		auto entities = ecs->view<UboModelComponent, MeshComponent, MaterialComponent>();
+		auto entities = ecs->registry->view<UboModelComponent, MeshComponent, MaterialComponent>();
 		for (auto entity : entities)
 		{
 			auto [uboModelComponent, meshConatiner, materialComponent] = entities.get<UboModelComponent, MeshComponent, MaterialComponent>(entity);

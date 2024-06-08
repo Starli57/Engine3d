@@ -1,9 +1,5 @@
 #pragma once
 
-#include <entt.hpp>
-
-#include "EngineShared/Ref.h"
-
 class IWindow
 {
 public:

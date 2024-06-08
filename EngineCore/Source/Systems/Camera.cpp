@@ -1,7 +1,7 @@
 #include "Pch.h"
 #include "Camera.h"
 
-Camera::Camera(Ref<entt::registry> ecs, GLFWwindow* window, float pov)
+Camera::Camera(Ref<Ecs> ecs, GLFWwindow* window, float pov)
 {
 	this->ecs = ecs;
 	this->pov = pov;
@@ -20,7 +20,7 @@ void Camera::Update(float deltaTime = 0)
 
 	auto screenAspectRatio = width / (float)height;
 
-	auto entities = ecs->view<PositionComponent, UboViewProjectionComponent>();
+	auto entities = ecs->registry->view<PositionComponent, UboViewProjectionComponent>();
 	for (auto entity : entities)
 	{
 		auto& position = entities.get<PositionComponent>(entity).position;

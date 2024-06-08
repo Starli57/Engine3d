@@ -10,7 +10,7 @@
 #include "EngineShared/Ref.h"
 #include "EngineShared/Components/NameComponent.h"
 
-Level::Level(Ref<entt::registry> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
+Level::Level(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
 {
 	this->ecs = ecs;
 	this->projectSettings = projectSettings;
@@ -41,7 +41,7 @@ void Level::LoadLevel()
 	auto formulaMaterial = CreateRef<Material>(formulaDefuseTexture);
 
 	auto formulaMesh = graphicsApi->CreateMesh(projectSettings->projectPath + meshes[1]);
-	auto car = CreateRef<Entity>(ecs);
+	auto car = ecs->CreateEntity();
 	car->AddComponent<NameComponent>("Car");
 	car->AddComponent<PositionComponent>(glm::vec3(-0.5f, 0, -1));
 	car->AddComponent<RotationComponent>(glm::vec3(0, 0, 0));
@@ -51,7 +51,7 @@ void Level::LoadLevel()
 	car->AddComponent<MaterialComponent>(formulaMaterial);
 
 	auto vikingsRoomMesh = graphicsApi->CreateMesh(projectSettings->projectPath + meshes[0]);
-	auto vikingsRoom = CreateRef<Entity>(ecs);
+	auto vikingsRoom = ecs->CreateEntity();
 	vikingsRoom->AddComponent<NameComponent>("Room");
 	vikingsRoom->AddComponent<PositionComponent>(glm::vec3(-0.5f, -100, -10));
 	vikingsRoom->AddComponent<RotationComponent>(glm::vec3(0, 0, 90));
@@ -61,7 +61,7 @@ void Level::LoadLevel()
 	vikingsRoom->AddComponent<MeshComponent>(vikingsRoomMesh);
 	vikingsRoom->AddComponent<MaterialComponent>(vikingMaterial);
 
-	auto cameraEntity = CreateRef<Entity>(ecs);
+	auto cameraEntity = ecs->CreateEntity();
 	cameraEntity->AddComponent<NameComponent>("Camera");
 	cameraEntity->AddComponent<PositionComponent>(glm::vec3(0, 1, 500));
 	cameraEntity->AddComponent<RotationComponent>(glm::vec3(0, 0, 0));
@@ -75,5 +75,5 @@ void Level::LoadLevel()
 void Level::UnloadLevel()
 {
 	spdlog::info("Unload level");
-	ecs->clear();
+	ecs.reset();
 }

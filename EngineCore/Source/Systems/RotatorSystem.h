@@ -1,21 +1,19 @@
 #pragma once
 
-#include <entt.hpp>
-
 #include "ISystem.h"
 
 #include "EngineShared/Components/RotationComponent.h"
 #include "EngineShared/Ref.h"
-#include "EngineShared/Entity.h"
+#include "EngineShared/Ecs.h"
 
 class RotatorSystem : ISystem
 {
 public:
-	RotatorSystem(Ref<entt::registry> ecs);
+	RotatorSystem(Ref<Ecs> ecs);
 
 	void Update(float deltaTime) override;
 
 private:
-	Ref<entt::registry> ecs;
+	Ref<Ecs> ecs;
 };
 
