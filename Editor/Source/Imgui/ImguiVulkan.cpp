@@ -12,8 +12,6 @@ ImguiVulkan::ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi) : vulkanApi(vulk
     queueFamilies = VkUtils::GetQueueFamilies(vulkanApi.physicalDevice, vulkanApi.windowSurface);
     graphicsQueueFamily = queueFamilies.graphicsFamily.value();
 
-    auto commandPool = vulkanApi.commandPool;
-
     VkRenderPass renderPass;
     CreateRenderPass(renderPass);
 
@@ -33,6 +31,8 @@ ImguiVulkan::ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi) : vulkanApi(vulk
     {
         style.WindowRounding = 0.0f;
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+
+        io.ConfigViewportsNoAutoMerge = true;
     }
 
     ImGui_ImplGlfw_InitForVulkan(vulkanApi.window, true);
