@@ -19,8 +19,9 @@ Editor::Editor()
 	auto vulkanApi = static_cast<AVulkan::VulkanGraphicsApi*>(graphicsApi);
 
 	editorUi = CreateRef<ImguiVulkan>(*vulkanApi);
-	editorUi->AddWindow(CreateRef<Hierarchy>(engine->GetEcs()));
-	editorUi->AddWindow(CreateRef<Inspector>());
+	auto inspector = CreateRef<Inspector>();
+	editorUi->AddWindow(inspector);
+	editorUi->AddWindow(CreateRef<Hierarchy>(engine->GetEcs(), inspector));
 	editorUi->AddWindow(CreateRef<ImguiDemo>());
 
 	engine->BindEditor(editorUi);

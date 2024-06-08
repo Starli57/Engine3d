@@ -1,8 +1,19 @@
 #include "Inspector.h"
+#include "ComponentInspector.h"
 
 void Inspector::Update()
 {
+    if (observingEntity.get() == nullptr) return;
+
     ImGui::Begin("Inspector");
-    ImGui::Text("Hello, it's an inspector!");
+
+    NameInspector().Update(observingEntity);
+    PositionInspector().Update(observingEntity);
+
     ImGui::End();
+}
+
+void Inspector::Observe(Ref<Entity> entity)
+{
+    observingEntity = entity;
 }

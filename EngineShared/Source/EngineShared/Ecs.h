@@ -10,6 +10,7 @@ class Ecs
 {
 public:
 	Ref<entt::registry> registry;
+	std::vector<Ref<Entity>> allEntities;
 
 	Ecs();
 	~Ecs();
@@ -17,7 +18,5 @@ public:
 	Ref<Entity> CreateEntity();
 	void DestroyEntiy(Ref<Entity> entity);
 
-private:
-	std::vector<Ref<Entity>> allEntities;
 };
 

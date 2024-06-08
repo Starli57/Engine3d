@@ -6,6 +6,8 @@
 class Entity
 {
 public:
+	entt::entity GetEntity() { return entity; }
+
 	Entity(Ref<entt::registry> registry)
 	{
 		this->registry = registry;
