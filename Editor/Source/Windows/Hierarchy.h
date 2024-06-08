@@ -14,5 +14,7 @@ public:
 
 private:
 	Ref<entt::registry> ecs;
+
+	int selectedItemIndex;
 };
 

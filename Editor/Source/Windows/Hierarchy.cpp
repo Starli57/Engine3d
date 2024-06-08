@@ -5,12 +5,15 @@
 void Hierarchy::Update()
 {
     ImGui::Begin("Entities");
+
     auto nameFilter = ecs->view<NameComponent>();
-    for (auto entity : nameFilter)
+    for (int i = 0; i < nameFilter.size(); i++)
     {
-        auto nameComponent = nameFilter.get<NameComponent>(entity);
-        ImGui::Text(nameComponent.name.c_str());
+        auto nameComponent = nameFilter.get<NameComponent>(nameFilter[i]);
+        if (ImGui::Selectable(nameComponent.name.c_str(), selectedItemIndex == i))
+            selectedItemIndex = i;
     }
+
     ImGui::End();
 }
 

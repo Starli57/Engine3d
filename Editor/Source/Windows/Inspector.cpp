@@ -2,7 +2,7 @@
 
 void Inspector::Update()
 {
-    ImGui::Begin("Another Window");
-    ImGui::Text("Hello from another window!");
+    ImGui::Begin("Inspector");
+    ImGui::Text("Hello, it's an inspector!");
     ImGui::End();
 }
