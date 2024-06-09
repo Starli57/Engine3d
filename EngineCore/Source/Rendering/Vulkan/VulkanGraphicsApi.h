@@ -32,6 +32,7 @@
 #include "Utilities/FrameBufferUtility.h"
 #include "Utilities/CommandPoolUtility.h"
 #include "Utilities/CommandBufferUtility.h"
+#include "Utilities/SyncObjectsUtility.h"
 
 #include "EngineShared/Ref.h"
 #include "EngineShared/Ecs.h"

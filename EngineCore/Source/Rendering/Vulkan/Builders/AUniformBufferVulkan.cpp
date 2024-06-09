@@ -3,7 +3,7 @@
 
 namespace AVulkan
 {
-	Ref<BufferModel> AUniformBufferVulkan::Create(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice)
+	Ref<BufferModel> AUniformBufferVulkan::Create(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, Ref<Rollback> rollback)
 	{
 		Ref<BufferModel> bufferModel = CreateRef<BufferModel>();
 
@@ -18,11 +18,8 @@ namespace AVulkan
 		auto mapStatus = vkMapMemory(logicalDevice, bufferModel->bufferMemory, 0, bufferSize, 0, &bufferModel->bufferMapped);
 		CAssert::Check(mapStatus == VK_SUCCESS, "Uniform buffer can't be created, status: " + mapStatus);
 
-		return bufferModel;
-	}
+		rollback->Add([&logicalDevice, bufferModel]() {VkUtils::DisposeBuffer(logicalDevice, bufferModel->buffer, bufferModel->bufferMemory); });
 
-	void AUniformBufferVulkan::Dispose(VkDevice& logicalDevice, Ref<BufferModel> bufferModel)
-	{
-		VkUtils::DisposeBuffer(logicalDevice, bufferModel->buffer, bufferModel->bufferMemory);
+		return bufferModel;
 	}
 }

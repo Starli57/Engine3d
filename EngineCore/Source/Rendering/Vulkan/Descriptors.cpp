@@ -41,7 +41,7 @@ namespace AVulkan
 		vkDestroyDescriptorSetLayout(logicalDevice, descriptorSetLayout, nullptr);
 	}
 
-	VkDescriptorPool& Descriptors::CreateDescriptorPool(VkDevice& logicalDevice)
+	VkDescriptorPool& Descriptors::CreateDescriptorPool(VkDevice& logicalDevice, Ref<Rollback> rollback)
 	{
 		VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
 
@@ -60,32 +60,22 @@ namespace AVulkan
 
 		auto createStatus = vkCreateDescriptorPool(logicalDevice, &poolInfo, nullptr, &descriptorPool);
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create descriptor pool, status: " + createStatus);
-		spdlog::info("Descriptor pool allocated");
+		spdlog::info("Created descriptor pool");
 
 		descriptorPools.push_back(descriptorPool);
+
+		rollback->Add([descriptorPool, logicalDevice, this]()
+		{
+			vkDestroyDescriptorPool(logicalDevice, descriptorPool, 0);
+			spdlog::info("Disposed descriptor pool");
+		});
+
 		return descriptorPool;
 	}
 
-	void Descriptors::ResetDescriptorPool(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const
+	VkDescriptorSet Descriptors::AllocateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSetLayout& descriptorSetLayout, Ref<Rollback> rollback)
 	{
-		vkResetDescriptorPool(logicalDevice, descriptorPool, 0);
-	}
-
-	void Descriptors::DisposeDescriptorPool(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const
-	{
-		vkDestroyDescriptorPool(logicalDevice, descriptorPool, nullptr);
-		spdlog::info("Descriptor pool disposed");
-	}
-
-	void Descriptors::DisposeAllDescriptorPools(VkDevice& logicalDevice)
-	{
-		for (auto pool : descriptorPools) DisposeDescriptorPool(logicalDevice, pool);
-		descriptorPools.clear();
-	}
-
-	VkDescriptorSet Descriptors::AllocateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSetLayout& descriptorSetLayout)
-	{
-		auto pool = GetFreePool(logicalDevice);
+		auto pool = GetFreePool(logicalDevice, rollback);
 
 		VkDescriptorSet descriptorSet = VK_NULL_HANDLE;
 		VkDescriptorSetAllocateInfo allocInfo{};
@@ -137,7 +127,7 @@ namespace AVulkan
 		vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
 	}
 
-	VkDescriptorPool& Descriptors::GetFreePool(VkDevice& logicalDevice)
+	VkDescriptorPool& Descriptors::GetFreePool(VkDevice& logicalDevice, Ref<Rollback> rollback)
 	{
 		if ((currentSetIndex + 1) >= maxDescriptorSets)
 		{
@@ -146,13 +136,13 @@ namespace AVulkan
 
 			if (currentPoolIndex >= descriptorPools.size())
 			{
-				return CreateDescriptorPool(logicalDevice);
+				return CreateDescriptorPool(logicalDevice, rollback);
 			}
 		}
 
 		if (currentPoolIndex >= descriptorPools.size()) 
 		{
-			return CreateDescriptorPool(logicalDevice);
+			return CreateDescriptorPool(logicalDevice, rollback);
 		}
 
 		return descriptorPools.at(currentPoolIndex);

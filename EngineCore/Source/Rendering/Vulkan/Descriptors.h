@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 
 #include "Rendering/Vulkan/Models/SwapChainData.h"
+#include "EngineShared/Ref.h"
+#include "EngineShared/Rollback/Rollback.h"
 
 namespace AVulkan
 {
@@ -14,12 +16,9 @@ namespace AVulkan
 		void CreateLayout(VkDevice& logicalDevice);
 		void DisposeLayout(VkDevice& logicalDevice) const;
 
-		VkDescriptorPool& CreateDescriptorPool(VkDevice& logicalDevice);
-		void ResetDescriptorPool(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const;
-		void DisposeDescriptorPool(VkDevice& logicalDevice, VkDescriptorPool& descriptorPool) const;
-		void DisposeAllDescriptorPools(VkDevice& logicalDevice);
+		VkDescriptorPool& CreateDescriptorPool(VkDevice& logicalDevice, Ref<Rollback> rollback);
 
-		VkDescriptorSet AllocateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSetLayout& descriptorSetLayout);
+		VkDescriptorSet AllocateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSetLayout& descriptorSetLayout, Ref<Rollback> rollback);
 		void UpdateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSet& descriptorSet, 
 			VkBuffer& descriptorBuffer, VkImageView& textureImageView, VkSampler& textureSampler) const;
 
@@ -32,6 +31,6 @@ namespace AVulkan
 		VkDescriptorSetLayout descriptorSetLayout;
 		std::vector<VkDescriptorPool> descriptorPools;
 
-		VkDescriptorPool& GetFreePool(VkDevice& logicalDevice);
+		VkDescriptorPool& GetFreePool(VkDevice& logicalDevice, Ref<Rollback> rollback);
 	};
 }

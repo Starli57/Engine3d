@@ -28,7 +28,7 @@ namespace AVulkan
 		std::vector<Ref<BufferModel>> uniformBuffers;
 
 	private:
-		void CreateImage(TextureId textureId);
+		void CreateImage(TextureId textureId, Ref<Rollback> rollback);
 		void CreateImageView();
 
 		Ref<Rollback> rollback;

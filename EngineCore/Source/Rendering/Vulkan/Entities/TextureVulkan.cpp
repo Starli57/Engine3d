@@ -27,36 +27,32 @@ namespace AVulkan
         uniformBuffers = std::vector<Ref<BufferModel>>();
         imageModel = CreateRef<ImageModel>();
 
-        CreateImage(textureId);
+        CreateImage(textureId, rollback);
         CreateImageView();
 
         for (uint16_t i = 0; i < VulkanGraphicsApi::maxFramesInFlight; i++)
         {
-            auto descriptorSet = descriptors->AllocateDescriptorSet(logicalDevice, descriptorSetLayout);
-            auto uniformBuffer = uniformBufferBuilder.Create(logicalDevice, physicalDevice);
+            auto descriptorSet = descriptors->AllocateDescriptorSet(logicalDevice, descriptorSetLayout, rollback);
+            auto uniformBuffer = uniformBufferBuilder.Create(logicalDevice, physicalDevice, rollback);
             descriptors->UpdateDescriptorSet(logicalDevice, descriptorSet, uniformBuffer->buffer, imageModel->imageView, textureSampler);
 
             descriptorSets.push_back(descriptorSet);
             uniformBuffers.push_back(uniformBuffer);
         }
+
+        rollback->Add([this]()
+        {
+            uniformBuffers.clear();
+            descriptorSets.clear();
+        });
     }
 
     TextureVulkan::~TextureVulkan()
     {
-        auto uniformBufferBuilder = AUniformBufferVulkan();
-        for (auto uniform : uniformBuffers)
-        {
-            uniformBufferBuilder.Dispose(logicalDevice, uniform);
-        }
-        uniformBuffers.clear();
-        descriptorSets.clear();
-
-        vkDestroyImage(logicalDevice, imageModel->image, nullptr);
-        vkFreeMemory(logicalDevice, imageModel->imageMemory, nullptr);
     }
 
     //todo: make async
-    void TextureVulkan::CreateImage(TextureId textureId)
+    void TextureVulkan::CreateImage(TextureId textureId, Ref<Rollback> rollback)
     {
         int width;
         int height;
@@ -115,6 +111,9 @@ namespace AVulkan
 
         vkDestroyBuffer(logicalDevice, stagingBuffer, nullptr);
         vkFreeMemory(logicalDevice, stagingMemory, nullptr);
+
+        rollback->Add([this]() { vkDestroyImage(logicalDevice, imageModel->image, nullptr); });
+        rollback->Add([this]() { vkFreeMemory(logicalDevice, imageModel->imageMemory, nullptr); });
     }
 
     void TextureVulkan::CreateImageView()

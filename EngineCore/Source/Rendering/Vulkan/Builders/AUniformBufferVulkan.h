@@ -5,6 +5,7 @@
 #include "Rendering/Vulkan/Utilities/BufferUtility.h"
 #include "Rendering/Vulkan/Models/BufferModel.h"
 #include "EngineShared/Ref.h"
+#include "EngineShared/Rollback/Rollback.h"
 #include "EngineShared/Components/UboViewProjectionComponent.h"
 
 namespace AVulkan
@@ -12,8 +13,6 @@ namespace AVulkan
 	class AUniformBufferVulkan
 	{
 	public:
-		Ref<BufferModel> Create(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice);
-		void Dispose(VkDevice& logicalDevice, Ref<BufferModel> bufferModel);
-
+		Ref<BufferModel> Create(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, Ref<Rollback> rollback);
 	};
 }

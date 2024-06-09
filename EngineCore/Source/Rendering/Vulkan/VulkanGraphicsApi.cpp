@@ -149,12 +149,12 @@ namespace AVulkan
 
 	Ref<Mesh> VulkanGraphicsApi::CreateMesh(const std::string& meshPath)
 	{
-		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, meshPath);
+		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, meshPath, rollback);
 	}
 
 	Ref<Mesh> VulkanGraphicsApi::CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices)
 	{
-		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, vertices, indices);
+		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, vertices, indices, rollback);
 	}
 
 	Ref<Texture> VulkanGraphicsApi::CreateTexture(TextureId textureId)
@@ -186,7 +186,6 @@ namespace AVulkan
 		logicalDevice = VkUtils::CreateLogicalDevice(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
 		rollback->Add([this]() 
 		{
-			descriptors->DisposeAllDescriptorPools(logicalDevice);
 			VkUtils::DisposeLogicalDevice(logicalDevice);
 		});
 	}
@@ -310,14 +309,9 @@ namespace AVulkan
 
 		for (int i = 0; i < maxFramesInFlight; i++) 
 		{
-			vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i]);
-			rollback->Add([i, this]() { vkDestroySemaphore(logicalDevice, imageAvailableSemaphores[i], nullptr); });
-
-			vkCreateSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i]);
-			rollback->Add([i, this]() { vkDestroySemaphore(logicalDevice, renderFinishedSemaphores[i], nullptr); });
-
-			vkCreateFence(logicalDevice, &fenceInfo, nullptr, &drawFences[i]);
-			rollback->Add([i, this]() { vkDestroyFence(logicalDevice, drawFences[i], nullptr); });
+			VkUtils::CreateVkSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i], rollback);
+			VkUtils::CreateVkSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i], rollback);
+			VkUtils::CreateVkFence(logicalDevice, &fenceInfo, nullptr, &drawFences[i], rollback);
 		}
 	}
 }

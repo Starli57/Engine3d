@@ -8,7 +8,7 @@ ImguiVulkan::ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi) : vulkanApi(vulk
 
     rollback = CreateRef<Rollback>("Editor");
 
-    descriptorPool = vulkanApi.descriptors->CreateDescriptorPool(vulkanApi.logicalDevice);
+    descriptorPool = vulkanApi.descriptors->CreateDescriptorPool(vulkanApi.logicalDevice, rollback);
     queueFamilies = VkUtils::GetQueueFamilies(vulkanApi.physicalDevice, vulkanApi.windowSurface);
     graphicsQueueFamily = queueFamilies.graphicsFamily.value();
 
