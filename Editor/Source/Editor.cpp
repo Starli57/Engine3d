@@ -9,6 +9,7 @@
 #include "Windows/Hierarchy.h"
 #include "Windows/Inspector.h"
 #include "Windows/ImguiDemo.h"
+#include "Windows/VulkanDebugInfo.h"
 
 Editor::Editor()
 {
@@ -23,6 +24,7 @@ Editor::Editor()
 	editorUi->AddWindow(inspector);
 	editorUi->AddWindow(CreateRef<Hierarchy>(engine->GetEcs(), inspector));
 	editorUi->AddWindow(CreateRef<ImguiDemo>());
+	editorUi->AddWindow(CreateRef<VulkanDebugInfo>(*vulkanApi));
 
 	engine->BindEditorUpdateFunction([this]() {editorUi->Update(); });
 	engine->Run();
