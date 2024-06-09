@@ -760,7 +760,6 @@ void ImGui_ImplVulkan_DestroyFontsTexture()
 
     if (bd->FontDescriptorSet)
     {
-        ImGui_ImplVulkan_RemoveTexture(bd->FontDescriptorSet);
         bd->FontDescriptorSet = VK_NULL_HANDLE;
         io.Fonts->SetTexID(0);
     }
@@ -1150,13 +1149,6 @@ VkDescriptorSet ImGui_ImplVulkan_AddTexture(VkSampler sampler, VkImageView image
         vkUpdateDescriptorSets(v->Device, 1, write_desc, 0, nullptr);
     }
     return descriptor_set;
-}
-
-void ImGui_ImplVulkan_RemoveTexture(VkDescriptorSet descriptor_set)
-{
-    ImGui_ImplVulkan_Data* bd = ImGui_ImplVulkan_GetBackendData();
-    ImGui_ImplVulkan_InitInfo* v = &bd->VulkanInitInfo;
-    vkFreeDescriptorSets(v->Device, v->DescriptorPool, 1, &descriptor_set);
 }
 
 void ImGui_ImplVulkan_DestroyFrameRenderBuffers(VkDevice device, ImGui_ImplVulkan_FrameRenderBuffers* buffers, const VkAllocationCallbacks* allocator)
