@@ -69,7 +69,7 @@ void Engine::SetupGlfwHints()
 
 void Engine::CreateAppWindow()
 {
-	window = glfwCreateWindow(1000, 1000, "Engine window", nullptr, nullptr);
+	window = glfwCreateWindow(1600, 1000, "Engine window", nullptr, nullptr);
 	CAssert::Check(window != nullptr, "GLFW window can't be created");
 
 	engineRollback->Add([this]()

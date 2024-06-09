@@ -69,7 +69,7 @@ namespace AVulkan
 		FinanilizeRenderOperations();
 
 		swapChain->Recreate();
-		graphicsPipeline->ReCreate(descriptors->GetDescriptorSetLayout());
+		graphicsPipeline->ReCreate(swapChainData->extent, descriptors->GetDescriptorSetLayout());
 	}
 
 	//todo: make refactoring of the function

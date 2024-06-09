@@ -91,9 +91,11 @@ namespace AVulkan
 		}
 	}
 
-	void GraphicsPipeline::ReCreate(VkDescriptorSetLayout& descriptorSetLayout)
+	void GraphicsPipeline::ReCreate(VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout)
 	{
 		rollback->Dispose();
+
+		this->swapChainExtent = swapChainExtent;
 		Create(descriptorSetLayout);
 	}
 
