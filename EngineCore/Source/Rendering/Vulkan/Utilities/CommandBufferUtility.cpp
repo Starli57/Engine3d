@@ -4,7 +4,7 @@
 
 namespace VkUtils
 {
-	void AllocateCommandBuffer(VkDevice& logicalDevice, VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers, int buffersCount)
+	void AllocateCommandBuffers(VkDevice& logicalDevice, VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers, int buffersCount)
 	{
 		spdlog::info("Create command buffer");
 
@@ -18,6 +18,46 @@ namespace VkUtils
 
 		auto createStatus = vkAllocateCommandBuffers(logicalDevice, &allocInfo, commandBuffers.data());
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to allocate command buffers, status: " + createStatus);
+	}
+
+	void FreeCommandBuffers(VkDevice& logicalDevice, VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers)
+	{
+		if (commandBuffers.size() == 0) return;
+		spdlog::info("Free command buffers {0}", commandBuffers.size());
+
+		vkFreeCommandBuffers(logicalDevice, commandPool, commandBuffers.size(), commandBuffers.data());
+	}
+
+	void RecordCommandBuffer(Ref<Ecs> ecs, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,
+		VkCommandBuffer& commandBuffer, AVulkan::GraphicsPipeline& pipeline)
+	{
+		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipeline());
+
+		auto entities = ecs->registry->view<UboModelComponent, MeshComponent, MaterialComponent>();
+		for (auto entity : entities)
+		{
+			auto [uboModelComponent, meshConatiner, materialComponent] = entities.get<UboModelComponent, MeshComponent, MaterialComponent>(entity);
+			auto meshVulkan = static_pointer_cast<AVulkan::MeshVulkan> (meshConatiner.GetMesh());
+			auto textureVulkan = static_pointer_cast<AVulkan::TextureVulkan>(materialComponent.GetMaterial()->mainTexture);
+
+			VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };
+			VkDeviceSize offsets[] = { 0 };
+			vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+			vkCmdBindIndexBuffer(commandBuffer, meshVulkan->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+
+			auto uboModel = uboModelComponent.model;
+			vkCmdPushConstants(commandBuffer, pipeline.GetLayout(), VK_SHADER_STAGE_VERTEX_BIT,
+				0, sizeof(UboModelComponent), &uboModel);
+
+			auto descriptorSet = textureVulkan->descriptorSets.at(frame);
+			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetLayout(), 0, 1, &descriptorSet, 0, nullptr);
+
+			uint32_t instanceCount = 1;
+			uint32_t firstVertexIndex = 0;
+			uint32_t firstInstanceIndex = 0;
+
+			vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(meshVulkan->GetIndicesCount()), 1, 0, 0, 0);
+		}
 	}
 
 	void BeginCommandBuffer(VkCommandBuffer& commandBuffer) 
@@ -57,38 +97,5 @@ namespace VkUtils
 	void EndRenderPass(VkCommandBuffer& commandBuffer)
 	{
 		vkCmdEndRenderPass(commandBuffer);
-	}
-
-
-	void RecordCommandBuffer(Ref<Ecs> ecs, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,
-		VkCommandBuffer& commandBuffer, AVulkan::GraphicsPipeline& pipeline)
-	{
-		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipeline());
-
-		auto entities = ecs->registry->view<UboModelComponent, MeshComponent, MaterialComponent>();
-		for (auto entity : entities)
-		{
-			auto [uboModelComponent, meshConatiner, materialComponent] = entities.get<UboModelComponent, MeshComponent, MaterialComponent>(entity);
-			auto meshVulkan = static_pointer_cast<AVulkan:: MeshVulkan > (meshConatiner.GetMesh());
-			auto textureVulkan = static_pointer_cast<AVulkan::TextureVulkan>(materialComponent.GetMaterial()->mainTexture);
-
-			VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };
-			VkDeviceSize offsets[] = { 0 };
-			vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-			vkCmdBindIndexBuffer(commandBuffer, meshVulkan->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-
-			auto uboModel = uboModelComponent.model;
-			vkCmdPushConstants(commandBuffer, pipeline.GetLayout(), VK_SHADER_STAGE_VERTEX_BIT,
-				0, sizeof(UboModelComponent), &uboModel);
-
-			auto descriptorSet = textureVulkan->descriptorSets.at(frame);
-			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetLayout(), 0, 1, &descriptorSet, 0, nullptr);
-
-			uint32_t instanceCount = 1;
-			uint32_t firstVertexIndex = 0;
-			uint32_t firstInstanceIndex = 0;
-
-			vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(meshVulkan->GetIndicesCount()), 1, 0, 0, 0);
-		}
 	}
 }

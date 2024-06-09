@@ -91,6 +91,12 @@ namespace AVulkan
 		}
 	}
 
+	void GraphicsPipeline::ReCreate(VkDescriptorSetLayout& descriptorSetLayout)
+	{
+		rollback->Dispose();
+		Create(descriptorSetLayout);
+	}
+
 	void GraphicsPipeline::Dispose()
 	{
 		spdlog::info("Dispose graphics pipeline");

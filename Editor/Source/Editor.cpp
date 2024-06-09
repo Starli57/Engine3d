@@ -24,7 +24,7 @@ Editor::Editor()
 	editorUi->AddWindow(CreateRef<Hierarchy>(engine->GetEcs(), inspector));
 	editorUi->AddWindow(CreateRef<ImguiDemo>());
 
-	engine->BindEditor(editorUi);
+	engine->BindEditorUpdateFunction([this]() {editorUi->Update(); });
 	engine->Run();
 }
 

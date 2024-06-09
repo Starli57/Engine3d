@@ -110,10 +110,9 @@ void Engine::Run()
 		transformSystem->Update(deltaTime);
 		cameraSystem->Update(deltaTime);
 
-		//todo: handle exceptions and errors
 		graphicsApi->Render();
 
-		if (editor.get() != nullptr) editor->Update();
+		editorUpdate();
 
 		cachedTime = currentTime;
 	}
@@ -122,8 +121,7 @@ void Engine::Run()
 	spdlog::info("Window closed");
 }
 
-void Engine::BindEditor(Ref<IEngineEditor> editor)
+void Engine::BindEditorUpdateFunction(std::function<void()> editorUpdate)
 {
-	this->editor = editor;
-	engineRollback->Add([this] {this->editor.reset(); });
+	this->editorUpdate = editorUpdate;
 }

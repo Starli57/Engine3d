@@ -5,7 +5,6 @@
 #include <stack>
 #include <vector>
 
-#include <IEngineEditor.h>
 #include "GraphicsPipeline.h"
 
 #include "Entities/Level.h"
@@ -92,13 +91,10 @@ namespace AVulkan
 		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
 		Ref<Texture> CreateTexture(TextureId textureIdh) override;
 
-
-
 	private:
 		Ref<Ecs> ecs;
 		Ref<ProjectSettigns> projectSettings;
 		Ref<Rollback> rollback;
-		Ref<IEngineEditor> editor;
 
 		uint32_t imageIndex = 0;
 		uint16_t frame = 0;

@@ -15,8 +15,9 @@
 
 namespace VkUtils
 {
-	void AllocateCommandBuffer(VkDevice& logicalDevice, VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers, int buffersCount);
-		
+	void AllocateCommandBuffers(VkDevice& logicalDevice, VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers, int buffersCount);
+	void FreeCommandBuffers(VkDevice& logicalDevice, VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers);
+
 	void BeginCommandBuffer(VkCommandBuffer& commandBuffer);
 	void EndCommandBuffer(VkCommandBuffer& commandBuffer);
 

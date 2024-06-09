@@ -69,6 +69,7 @@ namespace AVulkan
 		FinanilizeRenderOperations();
 
 		swapChain->Recreate();
+		graphicsPipeline->ReCreate(descriptors->GetDescriptorSetLayout());
 	}
 
 	//todo: make refactoring of the function
@@ -232,7 +233,8 @@ namespace AVulkan
 
 	void VulkanGraphicsApi::CreateCommandBuffer()
 	{
-		VkUtils::AllocateCommandBuffer(logicalDevice, commandPool, commandBuffers, maxFramesInFlight);
+		VkUtils::AllocateCommandBuffers(logicalDevice, commandPool, commandBuffers, maxFramesInFlight);
+		rollback->Add([this]() { VkUtils::FreeCommandBuffers(logicalDevice, commandPool, commandBuffers); });
 	}
 
 	void VulkanGraphicsApi::CreateDescriptorSetLayout()
@@ -293,7 +295,6 @@ namespace AVulkan
 		}
 	}
 
-	//todo: replace 
 	void VulkanGraphicsApi::CreateSyncObjects()
 	{
 		imageAvailableSemaphores.resize(maxFramesInFlight);

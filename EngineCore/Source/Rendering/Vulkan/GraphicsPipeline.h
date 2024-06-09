@@ -22,6 +22,7 @@ namespace AVulkan
 		~GraphicsPipeline();
 
 		void Create(VkDescriptorSetLayout& descriptorSetLayout);
+		void ReCreate(VkDescriptorSetLayout& descriptorSetLayout);
 		void Dispose();
 
 

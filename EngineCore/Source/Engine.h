@@ -5,7 +5,6 @@
 #include <entt.hpp>
 #include "Defines/DllDecDefines.h"
 
-#include "IEngineEditor.h"
 #include "AssetsDatabase.h"
 #include "Rendering/Vulkan/VulkanGraphicsApi.h"
 #include "Entities/Level.h"
@@ -23,7 +22,7 @@ public:
 
 	void Run();
 
-	void BindEditor(Ref<IEngineEditor> editor);
+	void BindEditorUpdateFunction(std::function<void()> editorUpdate);
 
 	IGraphicsApi* GetGraphicsApi() { return graphicsApi; }
 	Ref<Ecs> GetEcs() { return ecs; }
@@ -36,10 +35,11 @@ private:
 	Level* level;
 	
 	Ref<Ecs> ecs;
-	Ref<IEngineEditor> editor;
 	Ref<AssetsDatabase> assetsDatabase;
 
 	Rollback* engineRollback;
+
+	std::function<void()> editorUpdate;
 
 	std::chrono::steady_clock::time_point cachedTime;
 

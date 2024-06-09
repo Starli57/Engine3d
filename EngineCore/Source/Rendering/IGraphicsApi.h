@@ -1,6 +1,5 @@
 #pragma once
 
-#include <IEngineEditor.h>
 #include "AssetsDatabase.h"
 #include "Entities/Mesh.h"
 #include "Entities/Texture.h"
