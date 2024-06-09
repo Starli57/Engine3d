@@ -66,7 +66,7 @@ public:
 		ImGui::DragFloat("FOV", &component->fov, 0.1f, 30, 120);
 		ImGui::DragFloat("ZNear", &component->zNear, 0.1f);
 		ImGui::DragFloat("ZFar", &component->zFar, 0.1f);
-		ImGui::DragFloat3("Center", glm::value_ptr(component->centerPoint));
+		ImGui::DragFloat3("Look at", glm::value_ptr(component->lookPoint));
 		ImGui::DragFloat3("Up Axis", glm::value_ptr(component->upAxis), 0.01f);
 	}
 };

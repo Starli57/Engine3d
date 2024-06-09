@@ -26,7 +26,7 @@ void Camera::Update(float deltaTime = 0)
 		auto& uboComponent = entities.get<UboViewProjectionComponent>(entity);
 		auto& cameraComponent = entities.get<CameraComponent>(entity);
 
-		uboComponent.view = glm::lookAt(position, cameraComponent.centerPoint, cameraComponent.upAxis);
+		uboComponent.view = glm::lookAt(position, cameraComponent.lookPoint, cameraComponent.upAxis);
 		uboComponent.proj = glm::perspective(glm::radians(cameraComponent.fov), 
 			screenAspectRatio, cameraComponent.zNear, cameraComponent.zFar);
 		uboComponent.proj[1][1] *= -1;

@@ -70,8 +70,6 @@ void Level::LoadLevel()
 	auto cameraEntity = ecs->CreateEntity();
 	cameraEntity->AddComponent<NameComponent>("Camera");
 	cameraEntity->AddComponent<PositionComponent>(glm::vec3(0, 1, 500));
-	cameraEntity->AddComponent<RotationComponent>(glm::vec3(0, 0, 0));
-	cameraEntity->AddComponent<ScaleComponent>(glm::vec3(1, 1, 1));
 	cameraEntity->AddComponent<UboModelComponent>();
 	cameraEntity->AddComponent<UboViewProjectionComponent>();
 	cameraEntity->AddComponent<CameraComponent>();
