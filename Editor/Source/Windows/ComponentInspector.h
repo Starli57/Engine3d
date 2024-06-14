@@ -8,6 +8,7 @@
 #include "EngineShared/Components/PositionComponent.h"
 #include "EngineShared/Components/RotationComponent.h"
 #include "EngineShared/Components/CameraComponent.h"
+#include "EngineShared/Components/RotationVelocityComponent.h"
 
 class IComponentInspector
 {
@@ -51,6 +52,19 @@ public:
 
 		ImGui::SeparatorText("Rotation Component");
 		ImGui::DragFloat3("Rotation", glm::value_ptr(component->rotation), 0.1f);
+	}
+};
+
+class RotationVelocityInspector : IComponentInspector
+{
+public:
+	void Update(Ref<Entity> entity) override
+	{
+		if (entity->HasComponent<RotationVelocityComponent>() == false) return;
+		auto component = &entity->GetComponent<RotationVelocityComponent>();
+
+		ImGui::SeparatorText("Rotation Velocity Component");
+		ImGui::DragFloat3("Velocity", glm::value_ptr(component->velocity), 0.1f);
 	}
 };
 

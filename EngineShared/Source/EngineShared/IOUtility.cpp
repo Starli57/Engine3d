@@ -4,8 +4,6 @@
 #include "IOUtility.h"
 #include "spdlog/spdlog.h"
 
-
-//todo: return a pointer instead
 std::vector<char> IOUtility::ReadFile(const std::string& filepath) const
 {
     std::ifstream file(filepath, std::ios::ate | std::ios::binary);

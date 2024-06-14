@@ -11,7 +11,7 @@ namespace AVulkan
 	{
 	public:
 		VkVertexInputBindingDescription GetBindingDescription();
-		std::array<VkVertexInputAttributeDescription, 3> GetAttributeDescriptions();
+		std::array<VkVertexInputAttributeDescription, 4> GetAttributeDescriptions();
 
 		void Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<std::vector<Vertex>> vertices,
 			VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool) const;
