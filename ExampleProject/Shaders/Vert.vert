@@ -24,7 +24,7 @@ void main()
     gl_Position = uboVP.proj * uboVP.view * uboM.model * vec4(inPosition, 1.0);
 
     outLocalPosition = (uboM.model * vec4(inPosition, 1.0)).xyz;
-    outNormal = inNormal;
+    outNormal = mat3(transpose(inverse(uboM.model))) * inNormal;
     outUv = inUv;
     outColor = inColor;
 }

@@ -9,12 +9,12 @@ layout(location = 0) out vec4 outColor;
 
 layout(binding = 1) uniform sampler2D texSampler;
 
-float minLightLevel = 0.2;
+float minLightLevel = 0.05;
 float sumLevel = 1 + minLightLevel;
 
 void main() 
 {
-	vec4 textureColor = vec4(texture(texSampler, uv).rgb, 1.0);
+	vec3 textureColor = texture(texSampler, uv).rgb;
 
 	vec3 lightPos = vec3(0, 1000, 0);
 
@@ -22,7 +22,7 @@ void main()
 	vec3 lightDir = normalize(lightPos - inLocalPosition);  
 	float diff = max(dot(norm, lightDir), 0.0);
 	float lightLevel = (diff + minLightLevel) / sumLevel;
-	
-	vec4 result = lightLevel * textureColor;
+
+	vec3 result = lightLevel * textureColor;
 	outColor = vec4(result.rgb, 1.0);
 }
