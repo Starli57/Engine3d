@@ -20,7 +20,7 @@ namespace AVulkan
 
 		VkDescriptorSet AllocateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSetLayout& descriptorSetLayout, Ref<Rollback> rollback);
 		void UpdateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSet& descriptorSet, 
-			VkBuffer& descriptorBuffer, VkImageView& textureImageView, VkSampler& textureSampler) const;
+			VkBuffer& descriptorBuffer, VkImageView& textureImageView, VkSampler& textureSampler, VkDeviceSize&& range) const;
 
 	private:
 		const uint32_t maxDescriptorSets = 4096;

@@ -11,8 +11,11 @@ void Inspector::Update()
     PositionInspector().Update(observingEntity);
     RotationInspector().Update(observingEntity);
     RotationVelocityInspector().Update(observingEntity);
+    ScaleInspector().Update(observingEntity);
 
     CameraInspector().Update(observingEntity);
+
+    DiffuseLightInspector().Update(observingEntity);
 
     ImGui::End();
 }

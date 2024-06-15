@@ -25,7 +25,8 @@ namespace AVulkan
 		virtual ~TextureVulkan() override;
 
 		std::vector<VkDescriptorSet> descriptorSets;
-		std::vector<Ref<BufferModel>> uniformBuffers;
+		std::vector<Ref<BufferModel>> uboViewProjection;
+		std::vector<Ref<BufferModel>> uboLights;
 
 	private:
 		void CreateImage(TextureId textureId, Ref<Rollback> rollback);

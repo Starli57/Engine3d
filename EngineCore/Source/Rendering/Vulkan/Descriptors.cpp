@@ -94,12 +94,12 @@ namespace AVulkan
 	}
 
 	void Descriptors::UpdateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSet& descriptorSet, VkBuffer& descriptorBuffer,
-		VkImageView& textureImageView, VkSampler& textureSampler) const
+		VkImageView& textureImageView, VkSampler& textureSampler, VkDeviceSize&& range) const
 	{
 		VkDescriptorBufferInfo bufferInfo{};
 		bufferInfo.buffer = descriptorBuffer;
 		bufferInfo.offset = 0;
-		bufferInfo.range = sizeof(UboViewProjectionComponent);
+		bufferInfo.range = range;
 
 		VkDescriptorImageInfo imageInfo{};
 		imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
