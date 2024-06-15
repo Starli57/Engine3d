@@ -9,14 +9,14 @@ layout(location = 0) out vec4 outColor;
 
 layout(binding = 1) uniform sampler2D texSampler;
 
-float minLightLevel = 0.05;
+float minLightLevel = 0.1;
 float sumLevel = 1 + minLightLevel;
 
 void main() 
 {
 	vec3 textureColor = texture(texSampler, uv).rgb;
 
-	vec3 lightPos = vec3(0, 1000, 0);
+	vec3 lightPos = vec3(400, 500, 200);
 
 	vec3 norm = normalize(inNormal);
 	vec3 lightDir = normalize(lightPos - inLocalPosition);  
