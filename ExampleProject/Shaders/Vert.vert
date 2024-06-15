@@ -10,6 +10,10 @@ layout(binding = 0) uniform ViewProjection {
     mat4 proj;
 } uboVP;
 
+layout(binding = 1) uniform Lights {
+    vec3 inLightPosition;
+} lights;
+
 layout(push_constant) uniform Model{
     mat4 model;
 } uboM;
@@ -18,6 +22,7 @@ layout(location = 0) out vec3 outLocalPosition;
 layout(location = 1) out vec3 outNormal;
 layout(location = 2) out vec2 outUv;
 layout(location = 3) out vec3 outColor;
+layout(location = 4) out vec3 outLightPosition;
 
 void main() 
 {
@@ -27,4 +32,5 @@ void main()
     outNormal = mat3(transpose(inverse(uboM.model))) * inNormal;
     outUv = inUv;
     outColor = inColor;
+    outLightPosition = lights.inLightPosition;
 }

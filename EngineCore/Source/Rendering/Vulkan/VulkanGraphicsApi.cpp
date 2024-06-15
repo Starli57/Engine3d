@@ -282,8 +282,8 @@ namespace AVulkan
 	void VulkanGraphicsApi::UpdateUniformBuffer(uint32_t frame)
 	{
 		//todo: find most relevant camera
-		auto uboEntries = ecs->registry->view<UboViewProjectionComponent>();
-		auto [uboComponent] = uboEntries.get(uboEntries.front());
+		auto viewProjectionEntries = ecs->registry->view<UboViewProjectionComponent>();
+		auto [viewProjectionComponent] = viewProjectionEntries.get(viewProjectionEntries.front());
 
 		auto materialEntries = ecs->registry->view<MaterialComponent>();
 		for (auto materialEntry : materialEntries)
@@ -291,7 +291,16 @@ namespace AVulkan
 			auto materialComponent = materialEntries.get<MaterialComponent>(materialEntry);
 			auto textureVulkan = static_pointer_cast<TextureVulkan>(materialComponent.GetMaterial()->mainTexture);
 
-			memcpy(textureVulkan->uniformBuffers.at(frame)->bufferMapped, &uboComponent, sizeof(UboViewProjectionComponent));
+			memcpy(textureVulkan->uboViewProjection.at(frame)->bufferMapped, &viewProjectionComponent, sizeof(UboViewProjectionComponent));
+
+			auto lightEntries = ecs->registry->view<UboDiffuseLightComponent>();
+			for (auto entity : lightEntries)
+			{
+				auto& positionComponent = lightEntries.get<UboDiffuseLightComponent>(entity);
+				memcpy(textureVulkan->uboLights.at(frame)->bufferMapped, &positionComponent, sizeof(UboDiffuseLightComponent));
+			}
+
+			textureVulkan->UpdateDescriptors(frame);
 		}
 	}
 

@@ -10,8 +10,16 @@ void Hierarchy::Update()
 
     for (int i = 0; i < ecs->allEntities.size(); i++)
     {
-        auto nameComponent = view.get<NameComponent>(ecs->allEntities[i]->GetEntity());
-        if (ImGui::Selectable(nameComponent.name.c_str(), selectedItemIndex == i))
+        auto entityRef = ecs->allEntities[i];
+        std::string entityName = "Entity";
+
+        if (entityRef->HasComponent<NameComponent>())
+        {
+            auto nameComponent = view.get<NameComponent>(entityRef->GetEntity());
+            entityName = nameComponent.name;
+        }
+
+        if (ImGui::Selectable(entityName.c_str(), selectedItemIndex == i))
         {
             selectedItemIndex = i;
             inspector->Observe(ecs->allEntities[i]);

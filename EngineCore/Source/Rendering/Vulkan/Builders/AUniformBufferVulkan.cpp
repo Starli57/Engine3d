@@ -3,11 +3,9 @@
 
 namespace AVulkan
 {
-	Ref<BufferModel> AUniformBufferVulkan::Create(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, Ref<Rollback> rollback)
+	Ref<BufferModel> AUniformBufferVulkan::Create(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, VkDeviceSize bufferSize, Ref<Rollback> rollback)
 	{
 		Ref<BufferModel> bufferModel = CreateRef<BufferModel>();
-
-		VkDeviceSize bufferSize = sizeof(UboViewProjectionComponent);
 
 		VkBufferUsageFlags stagingUsageFlags = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 		VkMemoryPropertyFlags stagingMemoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;

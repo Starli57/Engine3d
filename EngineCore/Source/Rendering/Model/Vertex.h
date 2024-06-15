@@ -22,6 +22,7 @@ struct Vertex
 	bool operator==(const Vertex& other) const 
 	{
 		return position == other.position 
+			&& normal == other.normal
 			&& color == other.color 
 			&& uv == other.uv;
 	}

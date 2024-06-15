@@ -19,8 +19,10 @@ namespace AVulkan
 		VkDescriptorPool& CreateDescriptorPool(VkDevice& logicalDevice, Ref<Rollback> rollback);
 
 		VkDescriptorSet AllocateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSetLayout& descriptorSetLayout, Ref<Rollback> rollback);
-		void UpdateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSet& descriptorSet, 
-			VkBuffer& descriptorBuffer, VkImageView& textureImageView, VkSampler& textureSampler) const;
+		void UpdateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSet& descriptorSet,
+			VkBuffer& viewProjectionDescriptorBuffer, VkDeviceSize&& viewProjectionDescriptorRange,
+			VkBuffer& lightDescriptorBuffer, VkDeviceSize&& lightDescriptorRange,
+			VkImageView& textureImageView, VkSampler& textureSampler) const;
 
 	private:
 		const uint32_t maxDescriptorSets = 4096;

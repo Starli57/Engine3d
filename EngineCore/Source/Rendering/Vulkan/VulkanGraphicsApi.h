@@ -38,6 +38,7 @@
 #include "EngineShared/ProjectSettings.h"
 #include "EngineShared/Rollback/Rollback.h"
 #include "EngineShared/Components/UboViewProjectionComponent.h"
+#include "EngineShared/Components/UboDiffuseLightComponent.h"
 
 #include "Systems/TransformSystem.h"
 #include "Systems/Camera.h"
