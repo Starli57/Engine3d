@@ -25,7 +25,7 @@ namespace AVulkan
 			VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId, Ref<Rollback> rollback);
 		virtual ~TextureVulkan() override;
 
-		void UpdateDescriptors();
+		void UpdateDescriptors(uint16_t frame);
 
 		std::vector<VkDescriptorSet> descriptorSets;
 		std::vector<Ref<BufferModel>> uboViewProjection;

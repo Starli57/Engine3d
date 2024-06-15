@@ -59,17 +59,13 @@ namespace AVulkan
     {
     }
 
-    void TextureVulkan::UpdateDescriptors()
+    void TextureVulkan::UpdateDescriptors(uint16_t frame)
     {
-        //todo: update only current frame
-        for (uint16_t i = 0; i < VulkanGraphicsApi::maxFramesInFlight; i++)
-        {
-            descriptors->UpdateDescriptorSet(
-                logicalDevice, descriptorSets[i],
-                uboViewProjection[i]->buffer, sizeof(UboViewProjectionComponent),
-                uboLights[i]->buffer, sizeof(UboDiffuseLightComponent),
+        descriptors->UpdateDescriptorSet(
+                logicalDevice, descriptorSets[frame],
+                uboViewProjection[frame]->buffer, sizeof(UboViewProjectionComponent),
+                uboLights[frame]->buffer, sizeof(UboDiffuseLightComponent),
                 imageModel->imageView, textureSampler);
-        }
     }
 
     //todo: make async

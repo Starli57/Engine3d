@@ -300,7 +300,7 @@ namespace AVulkan
 				memcpy(textureVulkan->uboLights.at(frame)->bufferMapped, &positionComponent, sizeof(UboDiffuseLightComponent));
 			}
 
-			textureVulkan->UpdateDescriptors();
+			textureVulkan->UpdateDescriptors(frame);
 		}
 	}
 
