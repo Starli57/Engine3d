@@ -49,8 +49,8 @@ void Level::LoadLevel()
 	auto formulaMesh = graphicsApi->CreateMesh(projectSettings->projectPath + meshes[1]);
 	auto car = ecs->CreateEntity();
 	car->AddComponent<NameComponent>("Car");
-	car->AddComponent<PositionComponent>(glm::vec3(-0.5f, 0, -1));
-	car->AddComponent<RotationComponent>(glm::vec3(0, 0, 0));
+	car->AddComponent<PositionComponent>(glm::vec3(0, -130, 0));
+	car->AddComponent<RotationComponent>(glm::vec3(130, 0, 0));
 	car->AddComponent<ScaleComponent>(glm::vec3(1, 1, 1));
 	car->AddComponent<UboModelComponent>();
 	car->AddComponent<MeshComponent>(formulaMesh);
@@ -59,17 +59,17 @@ void Level::LoadLevel()
 	auto vikingsRoomMesh = graphicsApi->CreateMesh(projectSettings->projectPath + meshes[0]);
 	auto vikingsRoom = ecs->CreateEntity();
 	vikingsRoom->AddComponent<NameComponent>("Room");
-	vikingsRoom->AddComponent<PositionComponent>(glm::vec3(-0.5f, -100, -10));
-	vikingsRoom->AddComponent<RotationComponent>(glm::vec3(0, 0, 90));
+	vikingsRoom->AddComponent<PositionComponent>(glm::vec3(0, 70, 7));
+	vikingsRoom->AddComponent<RotationComponent>(glm::vec3(0, -70, 0));
 	vikingsRoom->AddComponent<ScaleComponent>(glm::vec3(140, 140, 140));
-	vikingsRoom->AddComponent<RotationVelocityComponent>(glm::vec3(0, 0, 100));
+	vikingsRoom->AddComponent<RotationVelocityComponent>(glm::vec3(0, 0, 50));
 	vikingsRoom->AddComponent<UboModelComponent>();
 	vikingsRoom->AddComponent<MeshComponent>(vikingsRoomMesh);
 	vikingsRoom->AddComponent<MaterialComponent>(vikingMaterial);
 
 	auto cameraEntity = ecs->CreateEntity();
 	cameraEntity->AddComponent<NameComponent>("Camera");
-	cameraEntity->AddComponent<PositionComponent>(glm::vec3(0, 1, 500));
+	cameraEntity->AddComponent<PositionComponent>(glm::vec3(0, 100, 500));
 	cameraEntity->AddComponent<UboModelComponent>();
 	cameraEntity->AddComponent<UboViewProjectionComponent>();
 	cameraEntity->AddComponent<CameraComponent>();
