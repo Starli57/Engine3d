@@ -11,7 +11,7 @@
 #include "EngineShared/Components/RotationVelocityComponent.h"
 #include "EngineShared/Components/CameraComponent.h"
 #include "EngineShared/Components/ScaleComponent.h"
-#include "EngineShared/Components/DiffuseLightComponent.h"
+#include "EngineShared/Components/UboDiffuseLightComponent.h"
 
 class IComponentInspector
 {
@@ -106,9 +106,11 @@ class DiffuseLightInspector : IComponentInspector
 public:
 	void Update(Ref<Entity> entity) override
 	{
-		if (entity->HasComponent<DiffuseLightComponent>() == false) return;
-		auto component = &entity->GetComponent<DiffuseLightComponent>();
+		if (entity->HasComponent<UboDiffuseLightComponent>() == false) return;
+		auto component = &entity->GetComponent<UboDiffuseLightComponent>();
 
 		ImGui::SeparatorText("Diffuse Light");
+		ImGui::DragFloat3("Position", glm::value_ptr(component->position), 0.1f);
+	//	ImGui::DragFloat("Intensity", &component->intensity, 0.01f, 0, FLT_MAX);
 	}
 };

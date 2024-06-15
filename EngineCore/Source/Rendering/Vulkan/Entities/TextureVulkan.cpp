@@ -17,8 +17,8 @@ namespace AVulkan
     TextureVulkan::TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
         Ref<Descriptors> descriptors, VkDescriptorSetLayout& descriptorSetLayout,
         VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId, Ref<Rollback> rollback)
-        : Texture(textureId), physicalDevice(physicalDevice), logicalDevice(logicalDevice), 
-                             graphicsQueue(graphicsQueue), commandPool(commandPool), rollback(rollback)
+        : Texture(textureId), physicalDevice(physicalDevice), logicalDevice(logicalDevice), descriptors(descriptors),
+                     graphicsQueue(graphicsQueue), commandPool(commandPool), textureSampler(textureSampler), rollback(rollback)
     {
         this->projectSettings = projectSettings;
         auto uniformBufferBuilder = AUniformBufferVulkan();
@@ -43,13 +43,8 @@ namespace AVulkan
             auto lightningDescriptorSet = descriptors->AllocateDescriptorSet(logicalDevice, descriptorSetLayout, rollback);
             descriptorSets.push_back(lightningDescriptorSet);
 
-            auto lightning = uniformBufferBuilder.Create(logicalDevice, physicalDevice, sizeof(PositionComponent), rollback);
+            auto lightning = uniformBufferBuilder.Create(logicalDevice, physicalDevice, sizeof(UboDiffuseLightComponent), rollback);
             uboLights.push_back(lightning);
-
-            descriptors->UpdateDescriptorSet(logicalDevice, viewProjectionDescriptorSet, 
-                viewProjection->buffer, imageModel->imageView, textureSampler, sizeof(UboViewProjectionComponent));
-            descriptors->UpdateDescriptorSet(logicalDevice, lightningDescriptorSet, 
-                lightning->buffer, imageModel->imageView, textureSampler, sizeof(PositionComponent));
         }
 
         rollback->Add([this]()
@@ -62,6 +57,19 @@ namespace AVulkan
 
     TextureVulkan::~TextureVulkan()
     {
+    }
+
+    void TextureVulkan::UpdateDescriptors()
+    {
+        //todo: update only current frame
+        for (uint16_t i = 0; i < VulkanGraphicsApi::maxFramesInFlight; i++)
+        {
+            descriptors->UpdateDescriptorSet(
+                logicalDevice, descriptorSets[i],
+                uboViewProjection[i]->buffer, sizeof(UboViewProjectionComponent),
+                uboLights[i]->buffer, sizeof(UboDiffuseLightComponent),
+                imageModel->imageView, textureSampler);
+        }
     }
 
     //todo: make async

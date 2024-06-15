@@ -13,6 +13,7 @@
 #include "EngineShared/IOUtility.h"
 #include "EngineShared/Ref.h"
 #include "EngineShared/Rollback/Rollback.h"
+#include "EngineShared/Components/UboDiffuseLightComponent.h"
 
 namespace AVulkan
 {
@@ -23,6 +24,8 @@ namespace AVulkan
 			Ref<Descriptors> descriptors, VkDescriptorSetLayout& descriptorSetLayout, 
 			VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId, Ref<Rollback> rollback);
 		virtual ~TextureVulkan() override;
+
+		void UpdateDescriptors();
 
 		std::vector<VkDescriptorSet> descriptorSets;
 		std::vector<Ref<BufferModel>> uboViewProjection;
@@ -35,10 +38,12 @@ namespace AVulkan
 		Ref<Rollback> rollback;
 		Ref<ProjectSettigns> projectSettings;
 		Ref<ImageModel> imageModel;
+		Ref<Descriptors> descriptors;
 
 		VkPhysicalDevice& physicalDevice;
 		VkDevice& logicalDevice;
 		VkQueue& graphicsQueue;
 		VkCommandPool& commandPool;
+		VkSampler& textureSampler;
 	};
 }

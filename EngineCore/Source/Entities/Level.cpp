@@ -15,7 +15,7 @@
 #include "EngineShared/Components/ScaleComponent.h"
 #include "EngineShared/Components/RotationVelocityComponent.h"
 #include "EngineShared/Components/UboModelComponent.h"
-#include "EngineShared/Components/DiffuseLightComponent.h"
+#include "EngineShared/Components/UboDiffuseLightComponent.h"
 
 Level::Level(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
 {
@@ -76,9 +76,8 @@ void Level::LoadLevel()
 	cameraEntity->AddComponent<CameraComponent>();
 
 	auto diffuseLight = ecs->CreateEntity();
-	cameraEntity->AddComponent<NameComponent>("Diffuse Light");
-	cameraEntity->AddComponent<PositionComponent>(glm::vec3(400, 1000, -200));
-	cameraEntity->AddComponent<DiffuseLightComponent>();
+	diffuseLight->AddComponent<NameComponent>("Diffuse Light");
+	diffuseLight->AddComponent<UboDiffuseLightComponent>();
 
 	rollback->Add([this]() { UnloadLevel(); });
 }

@@ -293,12 +293,14 @@ namespace AVulkan
 
 			memcpy(textureVulkan->uboViewProjection.at(frame)->bufferMapped, &viewProjectionComponent, sizeof(UboViewProjectionComponent));
 
-			auto lightEntries = ecs->registry->view<PositionComponent, DiffuseLightComponent>();
+			auto lightEntries = ecs->registry->view<UboDiffuseLightComponent>();
 			for (auto entity : lightEntries)
 			{
-				auto& positionComponent = lightEntries.get<PositionComponent>(entity);
-				memcpy(textureVulkan->uboLights.at(frame)->bufferMapped, &positionComponent, sizeof(PositionComponent));
+				auto& positionComponent = lightEntries.get<UboDiffuseLightComponent>(entity);
+				memcpy(textureVulkan->uboLights.at(frame)->bufferMapped, &positionComponent, sizeof(UboDiffuseLightComponent));
 			}
+
+			textureVulkan->UpdateDescriptors();
 		}
 	}
 
