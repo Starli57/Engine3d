@@ -21,18 +21,22 @@ std::vector<char> IOUtility::ReadFile(const std::string& filepath) const
 void IOUtility::FindResourcesFiles(
     const std::string& rootFolderPath, 
     const std::vector<std::string>& extensions, 
-    std::vector<std::filesystem::path>& result)
+    std::unordered_map<std::string, std::filesystem::path>& result)
 {
     for (const auto& entry : std::filesystem::recursive_directory_iterator(rootFolderPath)) 
     {
         if (!entry.is_regular_file()) continue;
         
-        auto ext = entry.path().extension().string();
+        auto entryPath = entry.path();
+        auto fileName = entryPath.filename().string();
+        auto extension = entryPath.extension().string();
+
         for (auto relevantExtension : extensions)
         {
-            if (relevantExtension != ext) continue;
+            if (relevantExtension != extension) continue;
 
-            result.push_back(entry.path());
+            CAssert::Check(result.find(fileName) == result.end(), "File with the same name was already added: " + fileName);
+            result.emplace(fileName, entryPath);
             break;
         }
     }

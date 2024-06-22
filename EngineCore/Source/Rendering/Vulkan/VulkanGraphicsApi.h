@@ -88,7 +88,7 @@ namespace AVulkan
 		void Render() override;
 		void FinanilizeRenderOperations() override;
 
-		Ref<Mesh> CreateMesh(const std::string& meshPath) override;
+		Ref<Mesh> CreateMesh(const std::filesystem::path& meshPath) override;
 		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
 
 		Ref<Texture> CreateTexture(std::filesystem::path& textureFilePath) override;

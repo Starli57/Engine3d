@@ -2,14 +2,14 @@
 #include "Mesh.h"
 #include <tiny_obj_loader.h>
 
-Mesh::Mesh(const std::string& path)
+Mesh::Mesh(const std::filesystem::path& path)
 {
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> materials;
 	std::string warn, err;
 
-	auto isLoaded = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.c_str());
+	auto isLoaded = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, path.string().c_str());
 	CAssert::Check(isLoaded, warn + err);
 
 	vertices = CreateRef<std::vector<Vertex>>();

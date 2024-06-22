@@ -14,8 +14,8 @@
 class AssetsDatabase
 {
 public:
-	std::vector<std::filesystem::path> meshesPaths;
-	std::vector<std::filesystem::path> texturesPaths;
+	std::unordered_map<std::string, std::filesystem::path> meshesPaths;
+	std::unordered_map<std::string, std::filesystem::path> texturesPaths;
 
 	AssetsDatabase(Ref<ProjectSettigns> projectSettings);
 	~AssetsDatabase();

@@ -2,6 +2,7 @@
 
 #include <GLFW/glfw3.h>
 #include <vector>
+#include <filesystem>
 
 #include "Entities/Mesh.h"
 #include "Rendering/Model/Vertex.h"
@@ -18,7 +19,7 @@ namespace AVulkan
 		VkBuffer GetIndexBuffer();
 
 		MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue, 
-			VkCommandPool& commandPool, const std::string& path, Ref<Rollback> rollback);
+			VkCommandPool& commandPool, const std::filesystem::path& path, Ref<Rollback> rollback);
 
 		MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue, 
 			VkCommandPool& commandPool, Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices, Ref<Rollback> rollback);

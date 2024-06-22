@@ -1,21 +1,5 @@
 #include "Pch.h"
-
-#include <spdlog/spdlog.h>
-
 #include "Level.h"
-#include "Systems/Camera.h"
-#include "Resources/MeshesList.h"
-#include "Components/MeshComponent.h"
-#include "Components/MaterialComponent.h"
-#include "EngineShared/Ref.h"
-#include "EngineShared/Components/NameComponent.h"
-#include "EngineShared/Components/CameraComponent.h"
-#include "EngineShared/Components/PositionComponent.h"
-#include "EngineShared/Components/RotationComponent.h"
-#include "EngineShared/Components/ScaleComponent.h"
-#include "EngineShared/Components/RotationVelocityComponent.h"
-#include "EngineShared/Components/UboModelComponent.h"
-#include "EngineShared/Components/UboDiffuseLightComponent.h"
 
 Level::Level(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
 {
@@ -35,19 +19,31 @@ void Level::LoadLevel()
 {
 	spdlog::info("Load level");
 
-	auto vikingTexture = graphicsApi->CreateTexture(TextureId::viking_room);
+	auto vikingTexturePath = assetDatabase->texturesPaths.find("viking_room.png");
+	auto vikingTexture = graphicsApi->CreateTexture(vikingTexturePath->second);
 	assetDatabase->AddTexture(vikingTexture);
-	rollback->Add([this]() { assetDatabase->RemoveTexture(TextureId::viking_room); });
+	//todo: make dispose for textures better
+	rollback->Add([this]() 
+	{
+		auto vikingTexturePath = assetDatabase->texturesPaths.find("viking_room.png");
+		assetDatabase->RemoveTexture(vikingTexturePath->second); 
+	});
 
-	auto formulaDefuseTexture = graphicsApi->CreateTexture(TextureId::formula1_Diffuse);
+	auto formulaTexturePath = assetDatabase->texturesPaths.find("formula1_DefaultMaterial_Diffuse.png");
+	auto formulaDefuseTexture = graphicsApi->CreateTexture(formulaTexturePath->second);
 	assetDatabase->AddTexture(formulaDefuseTexture);
 	//todo: make dispose for textures better
-	rollback->Add([this]() { assetDatabase->RemoveTexture(TextureId::formula1_Diffuse); });
+	rollback->Add([this]()
+	{
+		auto formulaTexturePath = assetDatabase->texturesPaths.find("formula1_DefaultMaterial_Diffuse.png"); 
+		assetDatabase->RemoveTexture(formulaTexturePath->second);
+	});
 
 	auto vikingMaterial = CreateRef<Material>(vikingTexture);
 	auto formulaMaterial = CreateRef<Material>(formulaDefuseTexture);
 
-	auto formulaMesh = graphicsApi->CreateMesh(projectSettings->projectPath + meshes[1]);
+	auto formulaMeshPath = assetDatabase->meshesPaths.find("Formula_1_mesh.obj");
+	auto formulaMesh = graphicsApi->CreateMesh(formulaMeshPath->second);
 	auto car = ecs->CreateEntity();
 	car->AddComponent<NameComponent>("Car");
 	car->AddComponent<PositionComponent>(glm::vec3(0, -130, 0));
@@ -57,7 +53,8 @@ void Level::LoadLevel()
 	car->AddComponent<MeshComponent>(formulaMesh);
 	car->AddComponent<MaterialComponent>(formulaMaterial);
 
-	auto vikingsRoomMesh = graphicsApi->CreateMesh(projectSettings->projectPath + meshes[0]);
+	auto vikingRoomMeshPath = assetDatabase->meshesPaths.find("viking_room.obj");
+	auto vikingsRoomMesh = graphicsApi->CreateMesh(vikingRoomMeshPath->second);
 	auto vikingsRoom = ecs->CreateEntity();
 	vikingsRoom->AddComponent<NameComponent>("Room");
 	vikingsRoom->AddComponent<PositionComponent>(glm::vec3(0, 70, 7));

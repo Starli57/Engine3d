@@ -148,7 +148,7 @@ namespace AVulkan
 		vkDeviceWaitIdle(logicalDevice);
 	}
 
-	Ref<Mesh> VulkanGraphicsApi::CreateMesh(const std::string& meshPath)
+	Ref<Mesh> VulkanGraphicsApi::CreateMesh(const std::filesystem::path& meshPath)
 	{
 		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, meshPath, rollback);
 	}

@@ -11,7 +11,7 @@ namespace AVulkan
 	VkBuffer MeshVulkan::GetIndexBuffer()  { return indexBuffer; }
 
 	MeshVulkan::MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
-		VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::string& path, Ref<Rollback> rollback) : Mesh(path),
+		VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::filesystem::path& path, Ref<Rollback> rollback) : Mesh(path),
 		physicalDevice(physicalDevice), logicalDevice(logicalDevice)
 	{
 		CreateVertexBuffer(graphicsQueue, commandPool, rollback);
