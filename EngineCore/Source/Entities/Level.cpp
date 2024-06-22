@@ -22,22 +22,10 @@ void Level::LoadLevel()
 	auto vikingTexturePath = assetDatabase->texturesPaths.find("viking_room.png");
 	auto vikingTexture = graphicsApi->CreateTexture(vikingTexturePath->second);
 	assetDatabase->AddTexture(vikingTexture);
-	//todo: make dispose for textures better
-	rollback->Add([this]() 
-	{
-		auto vikingTexturePath = assetDatabase->texturesPaths.find("viking_room.png");
-		assetDatabase->RemoveTexture(vikingTexturePath->second); 
-	});
 
 	auto formulaTexturePath = assetDatabase->texturesPaths.find("formula1_DefaultMaterial_Diffuse.png");
 	auto formulaDefuseTexture = graphicsApi->CreateTexture(formulaTexturePath->second);
 	assetDatabase->AddTexture(formulaDefuseTexture);
-	//todo: make dispose for textures better
-	rollback->Add([this]()
-	{
-		auto formulaTexturePath = assetDatabase->texturesPaths.find("formula1_DefaultMaterial_Diffuse.png"); 
-		assetDatabase->RemoveTexture(formulaTexturePath->second);
-	});
 
 	auto vikingMaterial = CreateRef<Material>(vikingTexture);
 	auto formulaMaterial = CreateRef<Material>(formulaDefuseTexture);
