@@ -3,7 +3,6 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
-#include "Resources/TexturesList.h"
 #include "Entities/Texture.h"
 #include "Rendering/Vulkan/Models/ImageModel.h"
 #include "Rendering/Vulkan/Descriptors.h"
@@ -22,7 +21,7 @@ namespace AVulkan
 	public:
 		TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
 			Ref<Descriptors> descriptors, VkDescriptorSetLayout& descriptorSetLayout, 
-			VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId, Ref<Rollback> rollback);
+			VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, std::filesystem::path& textureFilePath, Ref<Rollback> rollback);
 		virtual ~TextureVulkan() override;
 
 		void UpdateDescriptors(uint16_t frame);
@@ -32,7 +31,7 @@ namespace AVulkan
 		std::vector<Ref<BufferModel>> uboLights;
 
 	private:
-		void CreateImage(TextureId textureId, Ref<Rollback> rollback);
+		void CreateImage(std::filesystem::path& textureFilePath, Ref<Rollback> rollback);
 		void CreateImageView();
 
 		Ref<Rollback> rollback;

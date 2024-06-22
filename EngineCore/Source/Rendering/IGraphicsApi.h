@@ -17,6 +17,6 @@ public:
 
     virtual Ref<Mesh> CreateMesh(const std::string& meshPath) = 0;
     virtual Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) = 0;
-    virtual Ref<Texture> CreateTexture(TextureId textureId) = 0;
+    virtual Ref<Texture> CreateTexture(std::filesystem::path& textureFilePath) = 0;
 };
 

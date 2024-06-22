@@ -13,7 +13,7 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 
 	ecs = CreateRef<Ecs>();
 
-	assetsDatabase = CreateRef<AssetsDatabase>();
+	assetsDatabase = CreateRef<AssetsDatabase>(projectSettings);
 	engineRollback->Add([this]() { assetsDatabase.reset(); });
 
 	try

@@ -2,22 +2,33 @@
 
 #include <GLFW/glfw3.h>
 #include <vector>
+#include <string>
 #include <unordered_map>
+#include <filesystem>
 
 #include "EngineShared/Ref.h"
+#include "EngineShared/CustomAssert.h"
+#include "EngineShared/ProjectSettings.h"
 #include "Entities/Texture.h"
 
 class AssetsDatabase
 {
 public:
-	AssetsDatabase();
+	std::vector<std::filesystem::path> meshesPaths;
+	std::vector<std::filesystem::path> texturesPaths;
+
+	AssetsDatabase(Ref<ProjectSettigns> projectSettings);
 	~AssetsDatabase();
 
-	bool HasTexture(TextureId textureId);
-	Ref<Texture> GetTexture(TextureId textureId);
+	bool HasTexture(const std::filesystem::path& texturePath);
+	Ref<Texture> GetTexture(const std::filesystem::path& texturePath);
 	void AddTexture(Ref<Texture> texture);
-	void RemoveTexture(TextureId textureId);
+	void RemoveTexture(const std::filesystem::path& texturePath);
 
 private:
-	std::unordered_map<TextureId, Ref<Texture>> textures;
+	Ref<ProjectSettigns> projectSettings;
+	std::unordered_map<std::filesystem::path, Ref<Texture>> textures;
+
+	void FillMeshesPaths();
+	void FillTexturesPaths();
 };
