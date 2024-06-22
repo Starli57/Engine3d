@@ -110,7 +110,7 @@ public:
 		auto component = &entity->GetComponent<UboDiffuseLightComponent>();
 
 		ImGui::SeparatorText("Diffuse Light");
-		ImGui::DragFloat3("Position", glm::value_ptr(component->position), 0.1f);
+		ImGui::DragFloat3("Position", glm::value_ptr(component->position), 0.25f);
 	//	ImGui::DragFloat("Intensity", &component->intensity, 0.01f, 0, FLT_MAX);
 	}
 };
