@@ -14,6 +14,7 @@ Externals["Entt"] = "Externals/Entt"
 Externals["Stb"] = "Externals/Stb"
 Externals["TinyObjLoader"] = "Externals/TinyObjLoader"
 Externals["DearImgui"] = "Externals/DearImgui"
+Externals["Rttr"] = "Externals/Rttr"
 
 Includes = {}
 Includes["EngineCore"] = "EngineCore/Source"
@@ -28,6 +29,7 @@ Includes["Entt"] = "%{Externals.Entt}/single_include/entt"
 Includes["Stb"] = "%{Externals.Stb}"
 Includes["TinyObjLoader"] = "%{Externals.TinyObjLoader}"
 Includes["DearImgui"] = "%{Externals.DearImgui}"
+Includes["Rttr"] = "%{Externals.Rttr}/src"
 
 LibFolders = {}
 LibFolders["Vulkan"] = "%{VulkanSdk}/Lib"
@@ -36,6 +38,61 @@ Libs = {}
 Libs["Vulkan"] = "%{LibFolders.Vulkan}/vulkan-1.lib"
 
 startproject "Editor"
+	
+project "ExampleProject"
+	location "ExampleProject"
+	kind "SharedLib"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "On"
+	systemversion "latest"
+
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/Source/**.h",
+		"%{prj.name}/Source/**.cpp"
+	}
+
+	includedirs
+	{
+		"%{Includes.EngineShared}",
+
+		"%{Includes.Glm}",
+		"%{Includes.SpdLog}"
+	}
+	
+	links
+	{
+		"EngineShared"
+	}
+	
+	defines
+	{
+		"GLFW_INCLUDE_VULKAN",
+		"GLM_FORCE_RADIANS",
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"STB_IMAGE_IMPLEMENTATION",
+		"TINYOBJLOADER_IMPLEMENTATION"
+	}
+
+	filter "system:windows"
+		defines
+		{
+			"PROJECT_WIN",
+			"PROJECT_DLL_BUILD"
+		}
+
+	filter "configurations:Debug"
+		defines
+		{
+			"DEBUG"
+		}
+
+	filter "configurations:Release"
+		optimize "On"
 		
 project "Editor"
 	location "Editor"
@@ -69,7 +126,8 @@ project "Editor"
 		"%{Includes.SpdLog}",
 		"%{Includes.Entt}",
 		"%{Includes.Stb}",
-		"%{Includes.TinyObjLoader}"
+		"%{Includes.TinyObjLoader}",
+		"%{Includes.Rttr}"
 	}
 	
 	links
@@ -202,61 +260,6 @@ project "EngineCore"
 	filter "configurations:Release"
 		optimize "On"
 		
-project "ExampleProject"
-	location "ExampleProject"
-	kind "SharedLib"
-	language "C++"
-	cppdialect "C++20"
-	staticruntime "On"
-	systemversion "latest"
-
-	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
-	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp"
-	}
-
-	includedirs
-	{
-		"%{Includes.EngineShared}",
-
-		"%{Includes.Glm}",
-		"%{Includes.SpdLog}"
-	}
-	
-	links
-	{
-		"EngineShared"
-	}
-	
-	defines
-	{
-		"GLFW_INCLUDE_VULKAN",
-		"GLM_FORCE_RADIANS",
-		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
-		"STB_IMAGE_IMPLEMENTATION",
-		"TINYOBJLOADER_IMPLEMENTATION"
-	}
-
-	filter "system:windows"
-		defines
-		{
-			"PROJECT_WIN",
-			"PROJECT_DLL_BUILD"
-		}
-
-	filter "configurations:Debug"
-		defines
-		{
-			"DEBUG"
-		}
-
-	filter "configurations:Release"
-		optimize "On"
-		
 project "EngineShared"
 	location "EngineShared"
 	kind "StaticLib"
@@ -280,7 +283,8 @@ project "EngineShared"
 		"%{prj.name}/Source",
 		"%{Includes.Entt}",
 		"%{Includes.Glm}",
-		"%{Includes.SpdLog}"
+		"%{Includes.SpdLog}",
+		"%{Includes.Rttr}"
 	}
 
 	links
