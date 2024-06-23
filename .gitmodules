@@ -19,6 +19,3 @@
 [submodule "Externals/DearImgui"]
 	path = Externals/DearImgui
 	url = git@github.com:ocornut/imgui.git
-[submodule "Externals/Rttr"]
-	path = Externals/Rttr
-	url = git@github.com:rttrorg/rttr.git
