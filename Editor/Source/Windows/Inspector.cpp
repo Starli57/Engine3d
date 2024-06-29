@@ -7,15 +7,8 @@ void Inspector::Update()
 
     ImGui::Begin("Inspector");
 
-    NameInspector().Update(observingEntity);
-    PositionInspector().Update(observingEntity);
-    RotationInspector().Update(observingEntity);
-    RotationVelocityInspector().Update(observingEntity);
-    ScaleInspector().Update(observingEntity);
-
-    CameraInspector().Update(observingEntity);
-
-    DiffuseLightInspector().Update(observingEntity);
+    auto componentInspector = CreateUniqueRef<ComponentInspector>();
+    componentInspector->Update(observingEntity);
 
     ImGui::End();
 }
