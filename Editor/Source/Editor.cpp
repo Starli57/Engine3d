@@ -23,7 +23,7 @@ Editor::Editor()
 	auto inspector = CreateRef<Inspector>();
 	editorUi->AddWindow(inspector);
 	editorUi->AddWindow(CreateRef<Hierarchy>(engine->GetEcs(), inspector));
-	editorUi->AddWindow(CreateRef<ImguiDemo>());
+//	editorUi->AddWindow(CreateRef<ImguiDemo>());
 	editorUi->AddWindow(CreateRef<VulkanDebugInfo>(*vulkanApi));
 
 	engine->BindEditorUpdateFunction([this]() {editorUi->Update(); });

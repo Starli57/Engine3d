@@ -13,104 +13,90 @@
 #include "EngineShared/Components/ScaleComponent.h"
 #include "EngineShared/Components/UboDiffuseLightComponent.h"
 
-class IComponentInspector
+class ComponentInspector
 {
 public:
-	virtual void Update(Ref<Entity> entity) = 0;
-};
-
-class NameInspector : IComponentInspector
-{
-public:
-	void Update(Ref<Entity> entity) override
+	void Update(Ref<Entity> entity)
 	{
-		if (entity->HasComponent<NameComponent>() == false) return;
-		auto component = entity->GetComponent<NameComponent>();
+		RenderComponent<NameComponent>(entity);
+		RenderComponent<PositionComponent>(entity);
+		RenderComponent<RotationComponent>(entity);
+		RenderComponent<RotationVelocityComponent>(entity);
+		RenderComponent<ScaleComponent>(entity);
 
-		ImGui::SeparatorText("Name");
-		ImGui::Text(component.name.c_str());
+		RenderComponent<CameraComponent>(entity);
+
+		RenderComponent<UboDiffuseLightComponent>(entity);
 	}
-};
 
-class PositionInspector : IComponentInspector
-{
-public:
-	void Update(Ref<Entity> entity) override
+private:
+	template <typename T>
+	void RenderComponent(Ref<Entity> entity)
 	{
-		if (entity->HasComponent<PositionComponent>() == false) return;
-		auto component = &entity->GetComponent<PositionComponent>();
+		if (!entity->HasComponent<T>()) return;
+		auto& component = entity->GetComponent<T>();
 
-		ImGui::SeparatorText("Position");
-		ImGui::DragFloat3("Position", glm::value_ptr(component->position), 0.1f);
+		ImGui::SeparatorText(typeid(T).name());
+		RenderComponent(component);
 	}
-};
 
-class RotationInspector : IComponentInspector
-{
-public:
-	void Update(Ref<Entity> entity) override
+	void RenderComponent(NameComponent& component) 
 	{
-		if (entity->HasComponent<RotationComponent>() == false) return;
-		auto component = &entity->GetComponent<RotationComponent>();
-
-		ImGui::SeparatorText("Rotation");
-		ImGui::DragFloat3("Rotation", glm::value_ptr(component->rotation), 0.1f);
+		RenderParameter(component.name);
 	}
-};
 
-class RotationVelocityInspector : IComponentInspector
-{
-public:
-	void Update(Ref<Entity> entity) override
+	void RenderComponent(PositionComponent& component) 
 	{
-		if (entity->HasComponent<RotationVelocityComponent>() == false) return;
-		auto component = &entity->GetComponent<RotationVelocityComponent>();
-
-		ImGui::SeparatorText("Rotation Velocity");
-		ImGui::DragFloat3("Velocity", glm::value_ptr(component->velocity), 0.1f);
+		RenderParameter("Position", component.position, 0.1f);
 	}
-};
 
-class ScaleInspector : IComponentInspector
-{
-public:
-	void Update(Ref<Entity> entity) override
+	void RenderComponent(RotationComponent& component) 
 	{
-		if (entity->HasComponent<ScaleComponent>() == false) return;
-		auto component = &entity->GetComponent<ScaleComponent>();
-
-		ImGui::SeparatorText("Scale");
-		ImGui::DragFloat3("Scale", glm::value_ptr(component->scale), 0.01f, 0, FLT_MAX);
+		RenderParameter("Rotation", component.rotation, 0.1f);
 	}
-};
 
-class CameraInspector : IComponentInspector
-{
-public:
-	void Update(Ref<Entity> entity) override
+	void RenderComponent(RotationVelocityComponent& component)
 	{
-		if (entity->HasComponent<CameraComponent>() == false) return;
-		auto component = &entity->GetComponent<CameraComponent>();
-
-		ImGui::SeparatorText("Camera");
-		ImGui::DragFloat("FOV", &component->fov, 0.1f, 30, 120);
-		ImGui::DragFloat("ZNear", &component->zNear, 0.1f);
-		ImGui::DragFloat("ZFar", &component->zFar, 0.1f);
-		ImGui::DragFloat3("Look at", glm::value_ptr(component->lookPoint));
-		ImGui::DragFloat3("Up Axis", glm::value_ptr(component->upAxis), 0.01f);
+		RenderParameter("Velocity", component.velocity, 0.1f);
 	}
-};
 
-class DiffuseLightInspector : IComponentInspector
-{
-public:
-	void Update(Ref<Entity> entity) override
+	void RenderComponent(ScaleComponent& component) 
 	{
-		if (entity->HasComponent<UboDiffuseLightComponent>() == false) return;
-		auto component = &entity->GetComponent<UboDiffuseLightComponent>();
+		RenderParameter("Scale", component.scale, 0.01f, 0, FLT_MAX);
+	}
 
-		ImGui::SeparatorText("Diffuse Light");
-		ImGui::DragFloat3("Position", glm::value_ptr(component->position), 0.1f);
-	//	ImGui::DragFloat("Intensity", &component->intensity, 0.01f, 0, FLT_MAX);
+	void RenderComponent(CameraComponent& component) 
+	{
+		RenderParameter("FOV", component.fov, 0.1f, 30.0f, 120.0f);
+		RenderParameter("ZNear", component.zNear, 0.1f);
+		RenderParameter("ZFar", component.zFar, 0.1f);
+		RenderParameter("Look at", component.lookPoint);
+		RenderParameter("Up Axis", component.upAxis, 0.01f);
+	}
+
+	void RenderComponent(UboDiffuseLightComponent& component)
+	{
+		RenderParameter("Position", component.position, 0.25f);
+		//	RenderParameter("Intensity", component->intensity, 0.01f, 0, FLT_MAX);
+	}
+
+	void RenderParameter(const char* label, int& parameter, int step = 1)
+	{
+		ImGui::InputInt(label, &parameter, step);
+	}
+
+	void RenderParameter(const char* label, float& parameter, float v_speed = 0.1f, float v_min = 0, float v_max = 0)
+	{
+		ImGui::DragFloat(label, &parameter, v_speed, v_min, v_max);
+	}
+
+	void RenderParameter(const char* label, glm::vec3& parameter, float v_speed = 0.1f, float v_min = 0, float v_max = 0)
+	{
+		ImGui::DragFloat3(label, glm::value_ptr(parameter), v_speed, v_min, v_max);
+	}
+
+	void RenderParameter(std::string& parameter)
+	{
+		ImGui::Text(parameter.c_str());
 	}
 };

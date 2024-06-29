@@ -148,7 +148,7 @@ namespace AVulkan
 		vkDeviceWaitIdle(logicalDevice);
 	}
 
-	Ref<Mesh> VulkanGraphicsApi::CreateMesh(const std::string& meshPath)
+	Ref<Mesh> VulkanGraphicsApi::CreateMesh(const std::filesystem::path& meshPath)
 	{
 		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, meshPath, rollback);
 	}
@@ -158,10 +158,10 @@ namespace AVulkan
 		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, vertices, indices, rollback);
 	}
 
-	Ref<Texture> VulkanGraphicsApi::CreateTexture(TextureId textureId)
+	Ref<Texture> VulkanGraphicsApi::CreateTexture(std::filesystem::path& textureFilePath)
 	{
 		return CreateRef<TextureVulkan>(projectSettings, physicalDevice, logicalDevice, descriptors,
-			descriptors->GetDescriptorSetLayout(), textureSampler, graphicsQueue, commandPool, textureId, rollback);
+			descriptors->GetDescriptorSetLayout(), textureSampler, graphicsQueue, commandPool, textureFilePath, rollback);
 	}
 
 	void VulkanGraphicsApi::CreateInstance()

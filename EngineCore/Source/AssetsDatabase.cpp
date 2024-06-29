@@ -1,12 +1,17 @@
 #include "Pch.h"
 #include "AssetsDatabase.h"
-#include "EngineShared/CustomAssert.h"
+#include "EngineShared/IOUtility.h"
 
 //todo: calculate texture links count to be able to dispose if not used
 
-AssetsDatabase::AssetsDatabase()
+AssetsDatabase::AssetsDatabase(Ref<ProjectSettigns> projectSettings)
 {
-	textures = std::unordered_map<TextureId, Ref<Texture>>();
+	this->projectSettings = projectSettings;
+
+	textures = std::unordered_map<std::filesystem::path, Ref<Texture>>();
+
+	FillMeshesPaths();
+	FillTexturesPaths();
 }
 	
 AssetsDatabase::~AssetsDatabase()
@@ -20,26 +25,42 @@ AssetsDatabase::~AssetsDatabase()
 	textures.clear();
 }
 
-bool AssetsDatabase::HasTexture(TextureId textureId)
+bool AssetsDatabase::HasTexture(const std::filesystem::path& texturePath)
 {
-	return textures.find(textureId) != textures.end();
+	return textures.find(texturePath) != textures.end();
 }
 
-Ref<Texture> AssetsDatabase::GetTexture(TextureId textureId)
+Ref<Texture> AssetsDatabase::GetTexture(const std::filesystem::path& texturePath)
 {
-	auto it = textures.find(textureId);
-	CAssert::Check(it != textures.end(), "Assets database doesn't have a texture with path: " + (int)textureId);
+	auto it = textures.find(texturePath);
+	CAssert::Check(it != textures.end(), "Assets database doesn't have a texture with path: " + texturePath.string());
 	return it->second;
 }
 
 void AssetsDatabase::AddTexture(Ref<Texture> texture)
 {
-	if (!HasTexture(texture->textureId)) textures.insert({ texture->textureId, texture });
+	if (!HasTexture(texture->textureFilePath)) textures.insert({ texture->textureFilePath, texture });
 }
 
-void AssetsDatabase::RemoveTexture(TextureId textureId)
+void AssetsDatabase::RemoveTexture(const std::filesystem::path& texturePath)
 {
-	auto it = textures.find(textureId);
-	CAssert::Check(it != textures.end(), "Assets database doesn't have a texture with path: " + (int)textureId);
+	auto it = textures.find(texturePath);
+	CAssert::Check(it != textures.end(), "Assets database doesn't have a texture with path: " + texturePath.string());
 	textures.erase(it->first);
+}
+
+void AssetsDatabase::FillMeshesPaths()
+{
+	auto relevantExtensions = std::vector<std::string>();
+	relevantExtensions.reserve(1);
+	relevantExtensions.push_back(".obj");
+	IOUtility().FindResourcesFiles(projectSettings->resourcesPath, relevantExtensions, meshesPaths);
+}
+
+void AssetsDatabase::FillTexturesPaths()
+{
+	auto relevantExtensions = std::vector<std::string>();
+	relevantExtensions.reserve(1);
+	relevantExtensions.push_back(".png");
+	IOUtility().FindResourcesFiles(projectSettings->resourcesPath, relevantExtensions, texturesPaths);
 }

@@ -16,8 +16,8 @@ namespace AVulkan
 {
     TextureVulkan::TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
         Ref<Descriptors> descriptors, VkDescriptorSetLayout& descriptorSetLayout,
-        VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, TextureId textureId, Ref<Rollback> rollback)
-        : Texture(textureId), physicalDevice(physicalDevice), logicalDevice(logicalDevice), descriptors(descriptors),
+        VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, std::filesystem::path& textureFilePath, Ref<Rollback> rollback)
+        : Texture(textureFilePath), physicalDevice(physicalDevice), logicalDevice(logicalDevice), descriptors(descriptors),
                      graphicsQueue(graphicsQueue), commandPool(commandPool), textureSampler(textureSampler), rollback(rollback)
     {
         this->projectSettings = projectSettings;
@@ -29,7 +29,7 @@ namespace AVulkan
 
         imageModel = CreateRef<ImageModel>();
 
-        CreateImage(textureId, rollback);
+        CreateImage(textureFilePath, rollback);
         CreateImageView();
 
         for (uint16_t i = 0; i < VulkanGraphicsApi::maxFramesInFlight; i++)
@@ -69,7 +69,7 @@ namespace AVulkan
     }
 
     //todo: make async
-    void TextureVulkan::CreateImage(TextureId textureId, Ref<Rollback> rollback)
+    void TextureVulkan::CreateImage(std::filesystem::path& textureFilePath, Ref<Rollback> rollback)
     {
         int width;
         int height;
@@ -77,18 +77,17 @@ namespace AVulkan
         uint64_t bitesPerPixel = 4;
         VkDeviceSize imageSize;
 
-        auto filePath = projectSettings->projectPath + textures[static_cast<size_t>(textureId)];
-        auto pixels = stbi_load(filePath.c_str(), &width, &height, &texChannels, STBI_rgb_alpha);
+        auto pixels = stbi_load(textureFilePath.string().c_str(), &width, &height, &texChannels, STBI_rgb_alpha);
         imageSize = width * height * bitesPerPixel;
 
         if (pixels == nullptr)
         {
-            std::filesystem::path fullPath = std::filesystem::absolute(filePath);
+            std::filesystem::path fullPath = std::filesystem::absolute(textureFilePath);
             CAssert::Check(pixels != nullptr, "Failed to load texture image: " + fullPath.string());
         }
         else
         {
-            spdlog::debug("Image loaded: " + filePath);
+            spdlog::debug("Image loaded: " + textureFilePath.string());
         }
 
         VkBuffer stagingBuffer;

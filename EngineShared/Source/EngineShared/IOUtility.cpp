@@ -1,6 +1,3 @@
-
-#include <filesystem>
-
 #include "IOUtility.h"
 #include "spdlog/spdlog.h"
 
@@ -19,4 +16,28 @@ std::vector<char> IOUtility::ReadFile(const std::string& filepath) const
     file.close();
 
     return buffer;
+}
+
+void IOUtility::FindResourcesFiles(
+    const std::string& rootFolderPath, 
+    const std::vector<std::string>& extensions, 
+    std::unordered_map<std::string, std::filesystem::path>& result)
+{
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(rootFolderPath)) 
+    {
+        if (!entry.is_regular_file()) continue;
+        
+        auto entryPath = entry.path();
+        auto fileName = entryPath.filename().string();
+        auto extension = entryPath.extension().string();
+
+        for (auto relevantExtension : extensions)
+        {
+            if (relevantExtension != extension) continue;
+
+            CAssert::Check(result.find(fileName) == result.end(), "File with the same name was already added: " + fileName);
+            result.emplace(fileName, entryPath);
+            break;
+        }
+    }
 }

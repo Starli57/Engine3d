@@ -4,8 +4,9 @@
 struct ProjectSettigns
 {
 	const std::string projectPath = "";
+	const std::string resourcesPath = "";
 
-	ProjectSettigns(const std::string& projectPath) : projectPath(projectPath)
+	ProjectSettigns(const std::string& projectPath) : projectPath(projectPath), resourcesPath(projectPath + "Resources")
 	{
 	};
 };

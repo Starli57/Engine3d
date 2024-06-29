@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <filesystem>
 
 #include "EngineShared/Ref.h"
 #include "Rendering/Model/Vertex.h"
@@ -14,7 +15,7 @@ public:
 	size_t GetVerticesCount();
 	size_t GetIndicesCount();
 
-	Mesh(const std::string& path);
+	Mesh(const std::filesystem::path& path);
 	Mesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices);
 	virtual ~Mesh();
 
