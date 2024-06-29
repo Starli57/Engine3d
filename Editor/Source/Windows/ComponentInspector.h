@@ -42,7 +42,7 @@ private:
 
 	void RenderComponent(NameComponent& component) 
 	{
-		RenderParameter("Name", component.name);
+		RenderParameter(component.name);
 	}
 
 	void RenderComponent(PositionComponent& component) 
@@ -95,7 +95,7 @@ private:
 		ImGui::DragFloat3(label, glm::value_ptr(parameter), v_speed, v_min, v_max);
 	}
 
-	void RenderParameter(const char* label, std::string& parameter)
+	void RenderParameter(std::string& parameter)
 	{
 		ImGui::Text(parameter.c_str());
 	}
