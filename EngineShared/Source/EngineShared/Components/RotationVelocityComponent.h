@@ -1,8 +1,9 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include "EngineShared/IComponent.h"
 
-struct RotationVelocityComponent
+struct RotationVelocityComponent : public IComponent
 {
 	glm::vec3 velocity;
 

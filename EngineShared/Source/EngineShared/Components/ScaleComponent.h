@@ -1,8 +1,9 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include "EngineShared/IComponent.h"
 
-struct ScaleComponent
+struct ScaleComponent : public IComponent
 {
 	glm::vec3 scale;
 

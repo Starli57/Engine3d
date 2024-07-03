@@ -90,6 +90,11 @@ private:
 		ImGui::DragFloat(label, &parameter, v_speed, v_min, v_max);
 	}
 
+	void RenderParameter(const char* label, glm::vec2& parameter, float v_speed = 0.1f, float v_min = 0, float v_max = 0)
+	{
+		ImGui::DragFloat2(label, glm::value_ptr(parameter), v_speed, v_min, v_max);
+	}
+
 	void RenderParameter(const char* label, glm::vec3& parameter, float v_speed = 0.1f, float v_min = 0, float v_max = 0)
 	{
 		ImGui::DragFloat3(label, glm::value_ptr(parameter), v_speed, v_min, v_max);

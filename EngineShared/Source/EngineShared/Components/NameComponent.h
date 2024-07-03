@@ -1,8 +1,9 @@
 #pragma once
 
-#include <iostream>
+#include <string>
+#include "EngineShared/IComponent.h"
 
-struct NameComponent
+struct NameComponent : public IComponent
 {
 	std::string name;
 

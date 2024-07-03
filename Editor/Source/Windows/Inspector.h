@@ -15,5 +15,7 @@ public:
 
 private:
 	Ref<Entity> observingEntity;
+
+	void ShowAddComponentBtn();
 };
 

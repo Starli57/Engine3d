@@ -1,8 +1,9 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include "EngineShared/IComponent.h"
 
-struct PositionComponent
+struct PositionComponent : public IComponent
 {
 	glm::vec3 position;
 

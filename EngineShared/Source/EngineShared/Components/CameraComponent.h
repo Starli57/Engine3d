@@ -1,8 +1,9 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include "EngineShared/IComponent.h"
 
-struct CameraComponent
+struct CameraComponent : public IComponent
 {
 	float fov;
 
