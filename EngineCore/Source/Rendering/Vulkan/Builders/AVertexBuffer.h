@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "EngineShared/Ref.h"
-#include "Rendering/Model/Vertex.h"
+#include "EngineShared/Vertex.h"
 
 namespace AVulkan
 {

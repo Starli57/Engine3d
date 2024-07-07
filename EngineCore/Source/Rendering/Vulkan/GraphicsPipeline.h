@@ -7,7 +7,6 @@
 #include "EngineShared/ProjectSettings.h"
 #include "EngineShared/Ref.h"
 #include "EngineShared/Rollback/Rollback.h"
-#include "Rendering/Model/Vertex.h"
 #include "EngineShared/Components/UboModelComponent.h"
 
 namespace AVulkan

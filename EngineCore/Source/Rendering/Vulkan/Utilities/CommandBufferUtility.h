@@ -8,7 +8,7 @@
 #include "Rendering/Vulkan/Entities/TextureVulkan.h"
 #include "Rendering/Vulkan/GraphicsPipeline.h"
 #include "Rendering/Vulkan/Descriptors.h"
-#include "Components/MeshComponent.h"
+#include "EngineShared/Components/MeshComponent.h"
 #include "Components/MaterialComponent.h"
 #include "EngineShared/Ecs.h"
 #include "EngineShared/Components/UboModelComponent.h"

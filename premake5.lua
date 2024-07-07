@@ -202,6 +202,43 @@ project "EngineCore"
 	filter "configurations:Release"
 		optimize "On"
 		
+project "EngineShared"
+	location "EngineShared"
+	kind "StaticLib"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "On"
+	systemversion "latest"
+
+
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/Source/**.h",
+		"%{prj.name}/Source/**.cpp",
+	}
+	
+	includedirs
+	{
+		"%{prj.name}/Source",
+		"%{Includes.Entt}",
+		"%{Includes.Glm}",
+		"%{Includes.SpdLog}",
+		"%{Includes.TinyObjLoader}"
+	}
+
+	links
+	{
+		"Glm"
+	}
+
+	defines
+	{
+		"TINYOBJLOADER_IMPLEMENTATION"
+	}
+
 project "ExampleProject"
 	location "ExampleProject"
 	kind "SharedLib"
@@ -256,37 +293,6 @@ project "ExampleProject"
 
 	filter "configurations:Release"
 		optimize "On"
-		
-project "EngineShared"
-	location "EngineShared"
-	kind "StaticLib"
-	language "C++"
-	cppdialect "C++20"
-	staticruntime "On"
-	systemversion "latest"
-
-
-	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
-	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp",
-	}
-	
-	includedirs
-	{
-		"%{prj.name}/Source",
-		"%{Includes.Entt}",
-		"%{Includes.Glm}",
-		"%{Includes.SpdLog}"
-	}
-
-	links
-	{
-		"Glm"
-	}
 
 project "Glfw"
 	kind "StaticLib"

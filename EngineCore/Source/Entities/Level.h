@@ -3,14 +3,13 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "Entities/Mesh.h"
 #include "AssetsDatabase.h"
-#include "Components/MeshComponent.h"
 #include "Components/MaterialComponent.h"
 #include "Systems/Camera.h"
 #include "Systems/RotatorSystem.h"
 #include "Rendering/IGraphicsApi.h"
-#include "Rendering/Model/Vertex.h"
+#include "EngineShared/Mesh.h"
+#include "EngineShared/Vertex.h"
 #include "EngineShared/Ref.h"
 #include "EngineShared/Ecs.h"
 #include "EngineShared/Entity.h"
@@ -24,6 +23,8 @@
 #include "EngineShared/Components/RotationVelocityComponent.h"
 #include "EngineShared/Components/UboModelComponent.h"
 #include "EngineShared/Components/UboDiffuseLightComponent.h"
+#include "EngineShared/Components/MeshComponent.h"
+#include "EngineShared/Components/MeshLoadRequest.h"
 
 class Level
 {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AssetsDatabase.h"
-#include "Entities/Mesh.h"
+#include "EngineShared/Mesh.h"
 #include "Entities/Texture.h"
 #include "EngineShared/Ref.h"
 #include "EngineShared/EventHandler.h"

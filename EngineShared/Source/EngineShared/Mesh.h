@@ -4,7 +4,7 @@
 #include <filesystem>
 
 #include "EngineShared/Ref.h"
-#include "Rendering/Model/Vertex.h"
+#include "EngineShared/Vertex.h"
 
 class Mesh
 {

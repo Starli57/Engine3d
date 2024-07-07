@@ -7,6 +7,7 @@
 #include "AssetsDatabase.h"
 #include "Rendering/Vulkan/VulkanGraphicsApi.h"
 #include "Entities/Level.h"
+#include "Systems/MeshLoaderSystem.h"
 
 #include "EngineShared/Ref.h"
 #include "EngineShared/Ecs.h"

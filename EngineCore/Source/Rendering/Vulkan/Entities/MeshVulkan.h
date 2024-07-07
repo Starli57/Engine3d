@@ -4,8 +4,8 @@
 #include <vector>
 #include <filesystem>
 
-#include "Entities/Mesh.h"
-#include "Rendering/Model/Vertex.h"
+#include "EngineShared/Mesh.h"
+#include "EngineShared/Vertex.h"
 #include "EngineShared/Ref.h"
 #include "EngineShared/Rollback/Rollback.h"
 #include "EngineShared/Components/UboViewProjectionComponent.h"

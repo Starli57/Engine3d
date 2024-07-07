@@ -36,8 +36,11 @@ namespace VkUtils
 		auto entities = ecs->registry->view<UboModelComponent, MeshComponent, MaterialComponent>();
 		for (auto entity : entities)
 		{
-			auto [uboModelComponent, meshConatiner, materialComponent] = entities.get<UboModelComponent, MeshComponent, MaterialComponent>(entity);
-			auto meshVulkan = static_pointer_cast<AVulkan::MeshVulkan> (meshConatiner.GetMesh());
+			auto [uboModelComponent, meshContainer, materialComponent] = entities.get<UboModelComponent, MeshComponent, MaterialComponent>(entity);
+			
+			if (meshContainer.GetMesh() == nullptr) continue;
+
+			auto meshVulkan = static_pointer_cast<AVulkan::MeshVulkan> (meshContainer.GetMesh());
 			auto textureVulkan = static_pointer_cast<AVulkan::TextureVulkan>(materialComponent.GetMaterial()->mainTexture);
 
 			VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };

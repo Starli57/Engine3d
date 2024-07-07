@@ -3,7 +3,7 @@
 #include <functional>
 
 #include "VulkanGraphicsApi.h"
-#include "Components/MeshComponent.h"
+#include "EngineShared/Components/MeshComponent.h"
 #include "Components/MaterialComponent.h"
 #include "Rendering/Vulkan/Entities/TextureVulkan.h"
 #include "Builders/AImageView.h"

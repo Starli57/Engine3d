@@ -8,7 +8,6 @@
 #include "GraphicsPipeline.h"
 
 #include "Entities/Level.h"
-#include "Entities/Mesh.h"
 
 #include "Models/SwapChainData.h"
 #include "Models/ImageModel.h"
@@ -33,6 +32,7 @@
 #include "Utilities/CommandBufferUtility.h"
 #include "Utilities/SyncObjectsUtility.h"
 
+#include "EngineShared/Mesh.h"
 #include "EngineShared/Ref.h"
 #include "EngineShared/Ecs.h"
 #include "EngineShared/ProjectSettings.h"

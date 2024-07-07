@@ -1,5 +1,7 @@
-#include "Pch.h"
+
 #include "Mesh.h"
+#include "EngineShared/CustomAssert.h"
+
 #include <tiny_obj_loader.h>
 
 Mesh::Mesh(const std::filesystem::path& path)
