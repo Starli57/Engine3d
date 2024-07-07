@@ -1,9 +1,10 @@
 #pragma once
 
-#include "EngineShared/Mesh.h"
 #include "EngineShared/Ref.h"
+#include "EngineShared/Mesh.h"
+#include "EngineShared/IComponent.h"
 
-class MeshComponent
+struct MeshComponent : public IComponent
 {
 public:
 

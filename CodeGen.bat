@@ -1,0 +1,2 @@
+python CodeGen_ComponentsUtility.py
+pause
