@@ -19,27 +19,32 @@ void Hierarchy::Update()
             entityName = nameComponent.name;
         }
 
-        if (ImGui::Button(entityName.c_str(), ImVec2(200,20)))
+        if (selectedItemIndex == i) 
         {
+            auto doSave = ImGui::Button("S");
+            ImGui::SetItemTooltip("Save changes");
+
+            ImGui::SameLine();
+            auto doDelete = ImGui::Button("X");
+            ImGui::SetItemTooltip("Delete entity");
+
+            if (doSave)
+            {
+                ;
+            }
+
+            if (doDelete)
+            {
+                ;
+            }
+
+            ImGui::SameLine();
+        }
+
+        if (ImGui::Selectable(entityName.c_str(), selectedItemIndex == i ))
+        {
+            selectedItemIndex = i;
             inspector->Observe(ecs->allEntities[i]);
-        }
-
-        ImGui::SameLine();
-        auto doSave = ImGui::Button("S");
-        ImGui::SetItemTooltip("Save changes");
-
-        ImGui::SameLine();
-        auto doDelete = ImGui::Button("X");
-        ImGui::SetItemTooltip("Delete entity");
-
-        if (doSave)
-        {
-            ;
-        }
-
-        if (doDelete)
-        {
-            ;
         }
     }
 

@@ -24,6 +24,7 @@ void Inspector::Observe(Ref<Entity> entity)
 void Inspector::ShowAddComponentBtn()
 {
     static int addComponentSelectdIndex = -1;
+    static int removeComponentSelectdIndex = -1;
 
     ImGui::Spacing();
     ImGui::Separator();
@@ -40,6 +41,25 @@ void Inspector::ShowAddComponentBtn()
             {
                 addComponentSelectdIndex = i;
                 AddComponent(observingEntity, componentsNames[i]);
+            }
+        }
+
+        ImGui::EndPopup();
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Remove component.."))
+        ImGui::OpenPopup("RemoveComponentPopup");
+
+    if (ImGui::BeginPopup("RemoveComponentPopup"))
+    {
+        for (int i = 0; i < componentsLength; i++)
+        {
+            if (ImGui::Selectable(componentsNames[i]))
+            {
+                removeComponentSelectdIndex = i;
+                RemoveComponent(observingEntity, componentsNames[i]);
             }
         }
 

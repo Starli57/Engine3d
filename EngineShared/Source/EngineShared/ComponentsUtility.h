@@ -62,7 +62,7 @@ bool HasComponent(Ref<Entity> entity, const std::string& componentName)
 
 void AddComponent(Ref<Entity> entity, const std::string& componentName)
 {
-       if (HasComponent(entity, componentName)) return;
+      if (HasComponent(entity, componentName)) return;
 
       if (componentName == "CameraComponent") entity->AddComponent<CameraComponent>();
       if (componentName == "MeshComponent") entity->AddComponent<MeshComponent>();
@@ -76,5 +76,24 @@ void AddComponent(Ref<Entity> entity, const std::string& componentName)
       if (componentName == "UboDiffuseLightComponent") entity->AddComponent<UboDiffuseLightComponent>();
       if (componentName == "UboModelComponent") entity->AddComponent<UboModelComponent>();
       if (componentName == "UboViewProjectionComponent") entity->AddComponent<UboViewProjectionComponent>();
+}
+
+
+void RemoveComponent(Ref<Entity> entity, const std::string& componentName)
+{
+      if (!HasComponent(entity, componentName)) return;
+
+      if (componentName == "CameraComponent") entity->RemoveComponent<CameraComponent>();
+      if (componentName == "MeshComponent") entity->RemoveComponent<MeshComponent>();
+      if (componentName == "MeshLoadRequest") entity->RemoveComponent<MeshLoadRequest>();
+      if (componentName == "MeshUnloadRequest") entity->RemoveComponent<MeshUnloadRequest>();
+      if (componentName == "NameComponent") entity->RemoveComponent<NameComponent>();
+      if (componentName == "PositionComponent") entity->RemoveComponent<PositionComponent>();
+      if (componentName == "RotationComponent") entity->RemoveComponent<RotationComponent>();
+      if (componentName == "RotationVelocityComponent") entity->RemoveComponent<RotationVelocityComponent>();
+      if (componentName == "ScaleComponent") entity->RemoveComponent<ScaleComponent>();
+      if (componentName == "UboDiffuseLightComponent") entity->RemoveComponent<UboDiffuseLightComponent>();
+      if (componentName == "UboModelComponent") entity->RemoveComponent<UboModelComponent>();
+      if (componentName == "UboViewProjectionComponent") entity->RemoveComponent<UboViewProjectionComponent>();
 }
 

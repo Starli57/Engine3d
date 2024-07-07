@@ -19,5 +19,7 @@ public:
 private:
 	Ref<Ecs> ecs;
 	Ref<Inspector> inspector;
+
+	int selectedItemIndex;
 };
 

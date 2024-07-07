@@ -3,7 +3,6 @@ import os
 components_folder = "EngineShared/Source/EngineShared/Components"
 output_file = "EngineShared/Source/EngineShared/ComponentsUtility.h"
 
-# Function to extract component names from header files
 def extract_component_names(folder):
     component_names = []
     for filename in os.listdir(folder):
@@ -11,10 +10,8 @@ def extract_component_names(folder):
             component_names.append(filename)
     return component_names
 
-# Get component names from the components folder
 components = extract_component_names(components_folder)
 
-# Write the generated C++ code to the output file
 with open(output_file, 'w') as f:
 
 #Defs
@@ -67,7 +64,7 @@ with open(output_file, 'w') as f:
     f.write("\n")
     f.write("void AddComponent(Ref<Entity> entity, const std::string& componentName)\n")
     f.write("{\n")
-    f.write("       if (HasComponent(entity, componentName)) return;\n")
+    f.write("      if (HasComponent(entity, componentName)) return;\n")
     f.write("\n")
     
     for component in components:
@@ -76,5 +73,18 @@ with open(output_file, 'w') as f:
     f.write("}\n")
     f.write("\n")
 
+#Remove component method
+
+    f.write("\n")
+    f.write("void RemoveComponent(Ref<Entity> entity, const std::string& componentName)\n")
+    f.write("{\n")
+    f.write("      if (!HasComponent(entity, componentName)) return;\n")
+    f.write("\n")
+    
+    for component in components:
+        f.write(f"      if (componentName == \"{component.split('.')[0].strip()}\") entity->RemoveComponent<{component.split('.')[0].strip()}>();\n")
+
+    f.write("}\n")
+    f.write("\n")
 
 print(f"Generated C++ for {output_file}")
