@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 
-#include "ComponentInspector.h"
+#include "ComponentsRenderer.h"
 #include "EngineShared/Ref.h"
 #include "EngineShared/Entity.h"
 #include "EngineShared/IWindow.h"

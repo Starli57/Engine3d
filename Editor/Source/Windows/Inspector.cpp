@@ -1,5 +1,4 @@
 #include "Inspector.h"
-#include "ComponentInspector.h"
 #include "EngineShared/ComponentsUtility.h"
 
 void Inspector::Update()
@@ -8,7 +7,7 @@ void Inspector::Update()
 
     ImGui::Begin("Inspector");
 
-    auto componentInspector = CreateUniqueRef<ComponentInspector>();
+    auto componentInspector = CreateUniqueRef<ComponentsRenderer>();
     componentInspector->Update(observingEntity);
 
     ShowAddComponentBtn();
