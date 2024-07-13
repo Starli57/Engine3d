@@ -3,6 +3,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "ParametersRenderer.h"
+#include "AssetsDatabase.h"
 #include "EngineShared/Ref.h"
 #include "EngineShared/Entity.h"
 #include "EngineShared/Components/NameComponent.h"
@@ -13,16 +14,18 @@
 #include "EngineShared/Components/CameraComponent.h"
 #include "EngineShared/Components/ScaleComponent.h"
 #include "EngineShared/Components/UboDiffuseLightComponent.h"
+#include "EngineShared/Components/MeshComponent.h"
 
 class ComponentsRenderer
 {
 public:
 
-	ComponentsRenderer();
+	ComponentsRenderer(Ref<AssetsDatabase> assetsDatabase);
 	void Update(Ref<Entity> entity);
 
 private:
 
+	Ref<AssetsDatabase> assetsDatabase;
 	Ref<ParametersRenderer> parametersRenderer;
 
 	template <typename T>
@@ -32,15 +35,15 @@ private:
 		auto& component = entity->GetComponent<T>();
 
 		ImGui::SeparatorText(typeid(T).name());
-		RenderComponent(component);
+		RenderComponent(entity, component);
 	}
 
-	void RenderComponent(NameComponent& component);
-	void RenderComponent(PositionComponent& component);
-	void RenderComponent(RotationComponent& component);
-	void RenderComponent(RotationVelocityComponent& component);
-	void RenderComponent(ScaleComponent& component);
-	void RenderComponent(CameraComponent& component);
-	void RenderComponent(UboDiffuseLightComponent& component);
-
+	void RenderComponent(Ref<Entity> entity, NameComponent& component);
+	void RenderComponent(Ref<Entity> entity, PositionComponent& component);
+	void RenderComponent(Ref<Entity> entity, RotationComponent& component);
+	void RenderComponent(Ref<Entity> entity, RotationVelocityComponent& component);
+	void RenderComponent(Ref<Entity> entity, ScaleComponent& component);
+	void RenderComponent(Ref<Entity> entity, CameraComponent& component);
+	void RenderComponent(Ref<Entity> entity, UboDiffuseLightComponent& component);
+	void RenderComponent(Ref<Entity> entity, MeshComponent& component);
 };

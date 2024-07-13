@@ -23,6 +23,6 @@ private:
 	IGraphicsApi* graphicsApi;
 
 	void Load(entt::entity& entity, MeshComponent& meshComponent);
-	void Unload(MeshComponent& meshComponent);
+	void Unload(entt::entity& entity, MeshComponent& meshComponent);
 };
 

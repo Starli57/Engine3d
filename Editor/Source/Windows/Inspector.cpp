@@ -1,14 +1,18 @@
 #include "Inspector.h"
 #include "EngineShared/ComponentsUtility.h"
 
+Inspector::Inspector(Ref<AssetsDatabase> assetsDatabase) : assetsDatabase(assetsDatabase)
+{
+    componentsRenderer = CreateUniqueRef<ComponentsRenderer>(assetsDatabase);
+}
+
 void Inspector::Update()
 {
     if (observingEntity.get() == nullptr) return;
 
     ImGui::Begin("Inspector");
 
-    auto componentInspector = CreateUniqueRef<ComponentsRenderer>();
-    componentInspector->Update(observingEntity);
+    componentsRenderer->Update(observingEntity);
 
     ShowAddComponentBtn();
 

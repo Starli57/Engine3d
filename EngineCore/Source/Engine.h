@@ -26,6 +26,7 @@ public:
 
 	IGraphicsApi* GetGraphicsApi() { return graphicsApi; }
 	Ref<Ecs> GetEcs() { return ecs; }
+	Ref<AssetsDatabase> GetAssetsDatabase() { return assetsDatabase; }
 
 private:
 	const Ref<ProjectSettigns> projectSettings;

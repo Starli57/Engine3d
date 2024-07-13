@@ -17,7 +17,7 @@ void MeshLoaderSystem::Update(float deltaTime)
 	for (auto entity : unloadEntities)
 	{
 		auto& meshComponent = unloadEntities.get<MeshComponent>(entity);
-		Unload(meshComponent);
+		Unload(entity, meshComponent);
 	}
 
 	for (auto entity : loadEntities)
@@ -38,8 +38,8 @@ void MeshLoaderSystem::Load(entt::entity& entity, MeshComponent& meshComponent)
 	}
 }
 
-void MeshLoaderSystem::Unload(MeshComponent& meshComponent)
+void MeshLoaderSystem::Unload(entt::entity& entity, MeshComponent& meshComponent)
 {
-	throw std::runtime_error("Mesh unload is not implemented");
-	//todo: need to delete UnloadRequest after that
+	meshComponent.DestroyMesh();
+	ecs->registry->remove<MeshUnloadRequest>(entity);
 }
