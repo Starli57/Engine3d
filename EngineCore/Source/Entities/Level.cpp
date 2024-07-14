@@ -7,12 +7,11 @@ Level::Level(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatab
 	this->projectSettings = projectSettings;
 	this->assetDatabase = assetDatabase;
 	this->graphicsApi = graphicsApi;
-	this->rollback = new Rollback("Level", *rollback);
 }
 
 Level::~Level()
 {
-	rollback->Dispose();
+	UnloadLevel();
 }
 
 void Level::LoadLevel()
@@ -63,8 +62,6 @@ void Level::LoadLevel()
 	auto diffuseLight = ecs->CreateEntity();
 	diffuseLight->AddComponent<NameComponent>("Diffuse Light");
 	diffuseLight->AddComponent<UboDiffuseLightComponent>();
-
-	rollback->Add([this]() { UnloadLevel(); });
 }
 
 void Level::UnloadLevel()

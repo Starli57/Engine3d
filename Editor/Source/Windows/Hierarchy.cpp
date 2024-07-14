@@ -35,7 +35,7 @@ void Hierarchy::Update()
 
             if (doDelete)
             {
-                ;
+                ecs->DestroyEntiy(entityRef);
             }
 
             ImGui::SameLine();
@@ -49,7 +49,7 @@ void Hierarchy::Update()
     }
 
     if (ImGui::Button("Create entity"))
-        ;
+        ecs->CreateEntity();
 
     ImGui::End();
 }

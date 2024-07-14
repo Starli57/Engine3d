@@ -21,6 +21,6 @@ Ref<Entity> Ecs::CreateEntity()
 
 void Ecs::DestroyEntiy(Ref<Entity> entity)
 {
-	//todo: add implementation
-	std::runtime_error("Not implemented");
+	allEntities.erase(std::remove(allEntities.begin(), allEntities.end(), entity), allEntities.end());
+	registry->destroy(entity->GetEntity());
 }

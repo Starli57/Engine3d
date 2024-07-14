@@ -41,7 +41,6 @@ private:
 	Ref<ProjectSettigns> projectSettings;
 
 	IGraphicsApi* graphicsApi;
-	Rollback* rollback;
 
 };
 
