@@ -54,7 +54,7 @@ void AssetsDatabase::FillMeshesPaths()
 	auto relevantExtensions = std::vector<std::string>();
 	relevantExtensions.reserve(1);
 	relevantExtensions.push_back(".obj");
-	IOUtility().FindResourcesFiles(projectSettings->resourcesPath, relevantExtensions, meshesPaths);
+	IOUtility().FindAndEmplaceResourcesFiles(projectSettings->resourcesPath, relevantExtensions, meshesPaths);
 }
 
 void AssetsDatabase::FillTexturesPaths()
@@ -62,5 +62,6 @@ void AssetsDatabase::FillTexturesPaths()
 	auto relevantExtensions = std::vector<std::string>();
 	relevantExtensions.reserve(1);
 	relevantExtensions.push_back(".png");
-	IOUtility().FindResourcesFiles(projectSettings->resourcesPath, relevantExtensions, texturesPaths);
+	IOUtility().FindAndEmplaceResourcesFiles(projectSettings->resourcesPath, relevantExtensions, texturesPaths);
 }
+

@@ -25,3 +25,29 @@ void ParametersRenderer::RenderParameter(std::string& parameter)
 {
 	ImGui::Text(parameter.c_str());
 }
+
+void ParametersRenderer::RenderParameter(const char* label, std::filesystem::path& parameter, 
+    std::unordered_map<std::string, std::filesystem::path>& pathes)
+{
+    ImGui::Text(label);
+    
+    auto filename = parameter.filename();
+    ImGui::SameLine();
+    ImGui::Text(filename.string().c_str());
+
+    if (ImGui::Button("Change.."))
+        ImGui::OpenPopup("ChangePopup");
+
+    if (ImGui::BeginPopup("ChangePopup"))
+    {
+        for (auto it : pathes)
+        {
+            if (ImGui::Selectable(it.first.c_str()))
+            {
+                ;
+            }
+        }
+
+        ImGui::EndPopup();
+    }
+}

@@ -5,38 +5,46 @@
 #include <stack>
 #include <vector>
 
-#include "GraphicsPipeline.h"
+#include "Descriptors.h"
 
 #include "Entities/Level.h"
+
+#include "Components/MaterialComponent.h"
 
 #include "Models/SwapChainData.h"
 #include "Models/ImageModel.h"
 
 #include "Rendering/IGraphicsApi.h"
-#include "Rendering/Vulkan/Entities/MeshVulkan.h"
-#include "Rendering/Vulkan/Entities/TextureVulkan.h"
+#include "Rendering/PipelinesCollection.h"
+
+#include "Rendering/Vulkan/MeshVulkan.h"
+#include "Rendering/Vulkan/TextureVulkan.h"
+#include "Rendering/Vulkan/VulkanPipeline.h"
 
 #include "Builders/AValidationLayers.h"
 #include "Builders/AImage.h"
 #include "Builders/AImageView.h"
 #include "Builders/AShaderModule.h"
-#include "Descriptors.h"
 
+#include "Utilities/CommandPoolUtility.h"
+#include "Utilities/CommandBufferUtility.h"
+#include "Utilities/FormatUtility.h"
+#include "Utilities/GraphicsPipelineUtility.h"
 #include "Utilities/PhysicalDeviceUtility.h"
 #include "Utilities/LogicalDeviceUtility.h"
 #include "Utilities/RenderPassUtility.h"
 #include "Utilities/WindowSurfaceUtility.h"
 #include "Utilities/InstanceUtility.h"
 #include "Utilities/FrameBufferUtility.h"
-#include "Utilities/CommandPoolUtility.h"
-#include "Utilities/CommandBufferUtility.h"
 #include "Utilities/SyncObjectsUtility.h"
+#include "Utilities/MemoryUtility.h"
 
 #include "EngineShared/Mesh.h"
 #include "EngineShared/Ref.h"
 #include "EngineShared/Ecs.h"
 #include "EngineShared/ProjectSettings.h"
 #include "EngineShared/Rollback/Rollback.h"
+#include "EngineShared/Components/MeshComponent.h"
 #include "EngineShared/Components/UboViewProjectionComponent.h"
 #include "EngineShared/Components/UboDiffuseLightComponent.h"
 
@@ -67,8 +75,6 @@ namespace AVulkan
 		Ref<SwapChainData> swapChainData;
 		Ref<Descriptors> descriptors;
 
-		GraphicsPipeline* graphicsPipeline;
-
 		VkCommandPool commandPool;
 		std::vector<VkCommandBuffer> commandBuffers;
 
@@ -98,6 +104,9 @@ namespace AVulkan
 		Ref<ProjectSettigns> projectSettings;
 		Ref<Rollback> rollback;
 
+		Ref<PipelinesCollection> pipelinesCollection;
+		std::unordered_map<std::string, Ref<VulkanPipeline>> pipelines;
+
 		uint32_t imageIndex = 0;
 		uint16_t frame = 0;
 		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
@@ -109,7 +118,7 @@ namespace AVulkan
 		void CreateSwapChain();
 		void CreateSwapChainImageViews();
 		void CreateRenderPass();
-		void CreateGraphicsPipeline();
+		void CreateGraphicsPipelines();
 		void CreateDepthBuffer();
 		void CreateFrameBuffers();
 		void CreateCommandPool();
@@ -121,5 +130,7 @@ namespace AVulkan
 		void RecreateSwapChain();
 
 		void UpdateUniformBuffer(uint32_t frame);
+
+		void DisposePipelines();
 	};
 }

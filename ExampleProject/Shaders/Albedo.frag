@@ -22,6 +22,6 @@ void main()
 	float diff = max(dot(norm, lightDir), 0.0);
 	float lightLevel = (diff + minLightLevel) / sumLevel;
 
-	vec3 result = lightLevel * textureColor;
+	vec3 result = lightLevel * inColor * textureColor;
 	outColor = vec4(result.rgb, 1.0);
 }

@@ -18,7 +18,7 @@ std::vector<char> IOUtility::ReadFile(const std::string& filepath) const
     return buffer;
 }
 
-void IOUtility::FindResourcesFiles(
+void IOUtility::FindAndEmplaceResourcesFiles(
     const std::string& rootFolderPath, 
     const std::vector<std::string>& extensions, 
     std::unordered_map<std::string, std::filesystem::path>& result)

@@ -2,15 +2,20 @@
 
 #include <GLFW/glfw3.h>
 
-#include "EngineShared/Ref.h"
-#include "Rendering/Vulkan/Models/SwapChainData.h"
-#include "Rendering/Vulkan/Entities/MeshVulkan.h"
-#include "Rendering/Vulkan/Entities/TextureVulkan.h"
-#include "Rendering/Vulkan/GraphicsPipeline.h"
+#include <unordered_map>
+
+#include "Rendering/Vulkan/MeshVulkan.h"
+#include "Rendering/Vulkan/TextureVulkan.h"
+#include "Rendering/Vulkan/VulkanPipeline.h"
 #include "Rendering/Vulkan/Descriptors.h"
-#include "EngineShared/Components/MeshComponent.h"
+#include "Rendering/Vulkan/Models/SwapChainData.h"
+#include "Rendering/Vulkan/Utilities/GraphicsPipelineUtility.h"
+
 #include "Components/MaterialComponent.h"
+
+#include "EngineShared/Ref.h"
 #include "EngineShared/Ecs.h"
+#include "EngineShared/Components/MeshComponent.h"
 #include "EngineShared/Components/UboModelComponent.h"
 
 namespace VkUtils
@@ -25,5 +30,5 @@ namespace VkUtils
 	void EndRenderPass(VkCommandBuffer& commandBuffer);
 
 	void RecordCommandBuffer(Ref<Ecs> ecs, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,
-		VkCommandBuffer& commandBuffer, AVulkan::GraphicsPipeline& pipeline);
+		VkCommandBuffer& commandBuffer, std::unordered_map<std::string, Ref<VulkanPipeline>>& pipelines);
 }

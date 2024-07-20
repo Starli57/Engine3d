@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "Entities/Material.h"
 #include "EngineShared/Ref.h"
 
@@ -10,6 +12,7 @@ public:
 	~MaterialComponent();
 
 	Ref<Material> GetMaterial();
+
 	void DestroyMaterial();
 
 private:

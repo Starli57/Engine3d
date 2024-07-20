@@ -3,12 +3,6 @@
 #include <functional>
 
 #include "VulkanGraphicsApi.h"
-#include "EngineShared/Components/MeshComponent.h"
-#include "Components/MaterialComponent.h"
-#include "Rendering/Vulkan/Entities/TextureVulkan.h"
-#include "Builders/AImageView.h"
-#include "Utilities/MemoryUtility.h"
-#include "Utilities/FormatUtility.h"
 
 namespace AVulkan
 {
@@ -17,12 +11,14 @@ namespace AVulkan
 		this->ecs = ecs;
 		this->projectSettings = projectSettings;
 		this->window = glfwWindow;
-		this->rollback = CreateRef<Rollback>("VulkanGraphicsApi", *vulkanRollback);
 		this->descriptors = CreateRef<Descriptors>();
+		this->pipelinesCollection = CreateRef<PipelinesCollection>(projectSettings);
+		this->rollback = CreateRef<Rollback>("VulkanGraphicsApi", *vulkanRollback);
 	}
 
 	VulkanGraphicsApi::~VulkanGraphicsApi()
 	{
+		DisposePipelines();
 		rollback.reset();
 	}
 
@@ -38,7 +34,7 @@ namespace AVulkan
 			CreateSwapChainImageViews();
 			CreateRenderPass();
 			CreateDescriptorSetLayout();
-			CreateGraphicsPipeline();
+			CreateGraphicsPipelines();
 			CreateDepthBuffer();
 			CreateFrameBuffers();
 			CreateCommandPool();
@@ -69,7 +65,9 @@ namespace AVulkan
 		FinanilizeRenderOperations();
 
 		swapChain->Recreate();
-		graphicsPipeline->ReCreate(swapChainData->extent, descriptors->GetDescriptorSetLayout());
+
+	//	for(auto pipelineConfig : pipelinesCollection->pipelinesConfigs)
+	//		GraphicsPipelineUtility().ReCreate(pipeline swapChainData->extent, descriptors->GetDescriptorSetLayout());
 	}
 
 	//todo: make refactoring of the function
@@ -98,7 +96,7 @@ namespace AVulkan
 
 		VkUtils::BeginCommandBuffer(commandBuffer);
 		VkUtils::BeginRenderPass(swapChainData->frameBuffers[imageIndex], renderPass, commandBuffer, swapChainData->extent);
-		VkUtils::RecordCommandBuffer(ecs, descriptors, frame, commandBuffer, *graphicsPipeline);
+		VkUtils::RecordCommandBuffer(ecs, descriptors, frame, commandBuffer, pipelines);
 		VkUtils::EndRenderPass(commandBuffer);
 		VkUtils::EndCommandBuffer(commandBuffer);
 
@@ -212,12 +210,18 @@ namespace AVulkan
 		rollback->Add([this]() { VkUtils::DisposeRenderPass(logicalDevice, renderPass);; });
 	}
 
-	void VulkanGraphicsApi::CreateGraphicsPipeline()
+	void VulkanGraphicsApi::CreateGraphicsPipelines()
 	{
-		graphicsPipeline = new GraphicsPipeline(projectSettings, logicalDevice, swapChainData->extent, renderPass, rollback);
-		graphicsPipeline->Create(descriptors->GetDescriptorSetLayout());
+		pipelines.reserve(pipelinesCollection->pipelinesConfigs.size());
 
-		rollback->Add([this]() { delete graphicsPipeline; });
+		for (auto config : pipelinesCollection->pipelinesConfigs)
+		{
+			GraphicsPipelineUtility pipelineUtility;
+			auto pipeline = pipelineUtility.Create(config.second, logicalDevice, renderPass, 
+				swapChainData->extent, descriptors->GetDescriptorSetLayout());
+
+			pipelines.emplace(config.first, pipeline);
+		}
 	}
 
 	void VulkanGraphicsApi::CreateFrameBuffers()
@@ -302,6 +306,18 @@ namespace AVulkan
 
 			textureVulkan->UpdateDescriptors(frame);
 		}
+	}
+
+	void VulkanGraphicsApi::DisposePipelines()
+	{
+		GraphicsPipelineUtility pipelineUtility;
+		for (auto& pipeline : pipelines)
+		{
+			pipelineUtility.Dispose(pipeline.second, logicalDevice);
+		}
+		pipelines.clear();
+
+		spdlog::info("All graphics pipelines disposed");
 	}
 
 	void VulkanGraphicsApi::CreateSyncObjects()

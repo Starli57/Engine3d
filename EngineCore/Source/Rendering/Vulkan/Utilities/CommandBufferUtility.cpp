@@ -29,16 +29,19 @@ namespace VkUtils
 	}
 
 	void RecordCommandBuffer(Ref<Ecs> ecs, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,
-		VkCommandBuffer& commandBuffer, AVulkan::GraphicsPipeline& pipeline)
+		VkCommandBuffer& commandBuffer, std::unordered_map<std::string, Ref<VulkanPipeline>>& pipelines)
 	{
-		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetPipeline());
-
 		auto entities = ecs->registry->view<UboModelComponent, MeshComponent, MaterialComponent>();
 		for (auto entity : entities)
 		{
 			auto [uboModelComponent, meshContainer, materialComponent] = entities.get<UboModelComponent, MeshComponent, MaterialComponent>(entity);
 			
 			if (meshContainer.GetMesh() == nullptr) continue;
+
+			auto material = materialComponent.GetMaterial();
+			auto pipeline = pipelines.at(material->pipelineId);
+
+			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
 
 			auto meshVulkan = static_pointer_cast<AVulkan::MeshVulkan> (meshContainer.GetMesh());
 			auto textureVulkan = static_pointer_cast<AVulkan::TextureVulkan>(materialComponent.GetMaterial()->mainTexture);
@@ -49,11 +52,11 @@ namespace VkUtils
 			vkCmdBindIndexBuffer(commandBuffer, meshVulkan->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 
 			auto uboModel = uboModelComponent.model;
-			vkCmdPushConstants(commandBuffer, pipeline.GetLayout(), VK_SHADER_STAGE_VERTEX_BIT,
+			vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT,
 				0, sizeof(UboModelComponent), &uboModel);
 
 			auto descriptorSet = textureVulkan->descriptorSets.at(frame);
-			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.GetLayout(), 0, 1, &descriptorSet, 0, nullptr);
+			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->layout, 0, 1, &descriptorSet, 0, nullptr);
 
 			uint32_t instanceCount = 1;
 			uint32_t firstVertexIndex = 0;
