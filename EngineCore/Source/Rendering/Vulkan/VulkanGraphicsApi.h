@@ -19,6 +19,7 @@
 
 #include "Rendering/Vulkan/MeshVulkan.h"
 #include "Rendering/Vulkan/TextureVulkan.h"
+#include "Rendering/Vulkan/VulkanMaterial.h"
 #include "Rendering/Vulkan/VulkanPipeline.h"
 
 #include "Builders/AValidationLayers.h"
@@ -98,6 +99,7 @@ namespace AVulkan
 		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
 
 		Ref<Texture> CreateTexture(std::filesystem::path& textureFilePath) override;
+		Ref<Material> CreateMaterial(std::string& pipelineId) override;
 
 	private:
 		Ref<Ecs> ecs;

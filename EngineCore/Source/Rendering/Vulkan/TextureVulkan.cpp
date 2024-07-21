@@ -1,71 +1,23 @@
 #include "Pch.h"
+#include <stb_image.h>
 #include "TextureVulkan.h"
 
-#include "EngineShared/CustomAssert.h"
-#include "Rendering/Vulkan/VulkanGraphicsApi.h"
-#include "Rendering/Vulkan/Utilities/BufferUtility.h"
-#include "Rendering/Vulkan/Builders/AUniformBufferVulkan.h"
-#include "Rendering/Vulkan/Builders/AImage.h"
-#include "Rendering/Vulkan/Builders/AImageView.h"
-
-#include <stb_image.h>
-#include <filesystem>
-#include <spdlog/spdlog.h>
 
 namespace AVulkan
 {
-    TextureVulkan::TextureVulkan(Ref<ProjectSettigns> projectSettings, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
-        Ref<Descriptors> descriptors, VkDescriptorSetLayout& descriptorSetLayout,
-        VkSampler& textureSampler, VkQueue& graphicsQueue, VkCommandPool& commandPool, std::filesystem::path& textureFilePath, Ref<Rollback> rollback)
-        : Texture(textureFilePath), physicalDevice(physicalDevice), logicalDevice(logicalDevice), descriptors(descriptors),
-                     graphicsQueue(graphicsQueue), commandPool(commandPool), textureSampler(textureSampler), rollback(rollback)
+    TextureVulkan::TextureVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue,
+        VkCommandPool& commandPool, std::filesystem::path& textureFilePath, Ref<Rollback> rollback)
+        : Texture(textureFilePath), physicalDevice(physicalDevice), logicalDevice(logicalDevice),
+          graphicsQueue(graphicsQueue), commandPool(commandPool), rollback(rollback)
     {
-        this->projectSettings = projectSettings;
-        auto uniformBufferBuilder = AUniformBufferVulkan();
-
-        descriptorSets = std::vector<VkDescriptorSet>();
-        uboViewProjection = std::vector<Ref<BufferModel>>();
-        uboLights = std::vector<Ref<BufferModel>>();
-
         imageModel = CreateRef<ImageModel>();
 
         CreateImage(textureFilePath, rollback);
         CreateImageView();
-
-        for (uint16_t i = 0; i < VulkanGraphicsApi::maxFramesInFlight; i++)
-        {
-            auto viewProjectionDescriptorSet = descriptors->AllocateDescriptorSet(logicalDevice, descriptorSetLayout, rollback);
-            descriptorSets.push_back(viewProjectionDescriptorSet);
-
-            auto viewProjection = uniformBufferBuilder.Create(logicalDevice, physicalDevice, sizeof(UboViewProjectionComponent), rollback);
-            uboViewProjection.push_back(viewProjection);
-
-            auto lightningDescriptorSet = descriptors->AllocateDescriptorSet(logicalDevice, descriptorSetLayout, rollback);
-            descriptorSets.push_back(lightningDescriptorSet);
-
-            auto lightning = uniformBufferBuilder.Create(logicalDevice, physicalDevice, sizeof(UboDiffuseLightComponent), rollback);
-            uboLights.push_back(lightning);
-        }
-
-        rollback->Add([this]()
-        {
-            uboViewProjection.clear();
-            uboLights.clear();
-            descriptorSets.clear();
-        });
     }
 
     TextureVulkan::~TextureVulkan()
     {
-    }
-
-    void TextureVulkan::UpdateDescriptors(uint16_t frame)
-    {
-        descriptors->UpdateDescriptorSet(
-                logicalDevice, descriptorSets[frame],
-                uboViewProjection[frame]->buffer, sizeof(UboViewProjectionComponent),
-                uboLights[frame]->buffer, sizeof(UboDiffuseLightComponent),
-                imageModel->imageView, textureSampler);
     }
 
     //todo: make async

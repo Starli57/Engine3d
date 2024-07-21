@@ -7,6 +7,7 @@
 #include "Rendering/Vulkan/MeshVulkan.h"
 #include "Rendering/Vulkan/TextureVulkan.h"
 #include "Rendering/Vulkan/VulkanPipeline.h"
+#include "Rendering/Vulkan/VulkanMaterial.h"
 #include "Rendering/Vulkan/Descriptors.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Utilities/GraphicsPipelineUtility.h"

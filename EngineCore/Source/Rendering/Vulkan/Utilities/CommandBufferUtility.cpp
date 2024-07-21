@@ -44,7 +44,7 @@ namespace VkUtils
 			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
 
 			auto meshVulkan = static_pointer_cast<AVulkan::MeshVulkan> (meshContainer.GetMesh());
-			auto textureVulkan = static_pointer_cast<AVulkan::TextureVulkan>(materialComponent.GetMaterial()->mainTexture);
+			auto materialVulkan = static_pointer_cast<AVulkan::VulkanMaterial>(materialComponent.GetMaterial());
 
 			VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };
 			VkDeviceSize offsets[] = { 0 };
@@ -55,7 +55,7 @@ namespace VkUtils
 			vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT,
 				0, sizeof(UboModelComponent), &uboModel);
 
-			auto descriptorSet = textureVulkan->descriptorSets.at(frame);
+			auto descriptorSet = materialVulkan->descriptorSets.at(frame);
 			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->layout, 0, 1, &descriptorSet, 0, nullptr);
 
 			uint32_t instanceCount = 1;

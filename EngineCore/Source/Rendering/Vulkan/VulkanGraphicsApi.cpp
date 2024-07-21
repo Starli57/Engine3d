@@ -158,8 +158,13 @@ namespace AVulkan
 
 	Ref<Texture> VulkanGraphicsApi::CreateTexture(std::filesystem::path& textureFilePath)
 	{
-		return CreateRef<TextureVulkan>(projectSettings, physicalDevice, logicalDevice, descriptors,
-			descriptors->GetDescriptorSetLayout(), textureSampler, graphicsQueue, commandPool, textureFilePath, rollback);
+		return CreateRef<TextureVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, textureFilePath, rollback);
+	}
+
+	Ref<Material> VulkanGraphicsApi::CreateMaterial(std::string& pipelineId)
+	{
+		return CreateRef<VulkanMaterial>(pipelineId, physicalDevice, logicalDevice, descriptors, 
+			textureSampler, descriptors->GetDescriptorSetLayout(), rollback);
 	}
 
 	void VulkanGraphicsApi::CreateInstance()
@@ -293,18 +298,18 @@ namespace AVulkan
 		for (auto materialEntry : materialEntries)
 		{
 			auto materialComponent = materialEntries.get<MaterialComponent>(materialEntry);
-			auto textureVulkan = static_pointer_cast<TextureVulkan>(materialComponent.GetMaterial()->mainTexture);
+			auto materialVulkan = static_pointer_cast<VulkanMaterial>(materialComponent.GetMaterial());
 
-			memcpy(textureVulkan->uboViewProjection.at(frame)->bufferMapped, &viewProjectionComponent, sizeof(UboViewProjectionComponent));
+			memcpy(materialVulkan->uboViewProjection.at(frame)->bufferMapped, &viewProjectionComponent, sizeof(UboViewProjectionComponent));
 
 			auto lightEntries = ecs->registry->view<UboDiffuseLightComponent>();
 			for (auto entity : lightEntries)
 			{
 				auto& positionComponent = lightEntries.get<UboDiffuseLightComponent>(entity);
-				memcpy(textureVulkan->uboLights.at(frame)->bufferMapped, &positionComponent, sizeof(UboDiffuseLightComponent));
+				memcpy(materialVulkan->uboLights.at(frame)->bufferMapped, &positionComponent, sizeof(UboDiffuseLightComponent));
 			}
 
-			textureVulkan->UpdateDescriptors(frame);
+			materialVulkan->UpdateDescriptors(frame);
 		}
 	}
 

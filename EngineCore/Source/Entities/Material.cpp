@@ -1,12 +1,25 @@
 #include "Pch.h"
 #include "Material.h"
 
-Material::Material(Ref<Texture> texture, std::string pipelineId) : mainTexture(texture), pipelineId(pipelineId)
+Material::Material(std::string pipelineId) : pipelineId(pipelineId)
 {
-	//todo: increment texture usage counter
 }
 
 Material::~Material()
 {
-	//todo: decrement texture usage counter
+}
+
+void Material::SetAlbedoTexture(Ref<Texture> texture)
+{
+	this->albedoTexture = texture;
+}
+
+void Material::SetNormalMap(Ref<Texture> texture)
+{
+	this->normalMap = texture;
+}
+
+void Material::SetSpecular(Ref<Texture> texture)
+{
+	this->specular = texture;
 }

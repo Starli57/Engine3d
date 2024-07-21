@@ -26,8 +26,12 @@ void Level::LoadLevel()
 	auto formulaDefuseTexture = graphicsApi->CreateTexture(formulaTexturePath->second);
 	assetDatabase->AddTexture(formulaDefuseTexture);
 
-	auto vikingMaterial = CreateRef<Material>(vikingTexture, "albedoOpaque");
-	auto formulaMaterial = CreateRef<Material>(formulaDefuseTexture, "vertexColorOpaque");
+	std::string albedoOpaquePipelineId = "albedoOpaque";
+	auto vikingMaterial = graphicsApi->CreateMaterial(albedoOpaquePipelineId);
+	vikingMaterial->SetAlbedoTexture(vikingTexture);
+
+	std::string vertexColorOpaquePipelineId = "vertexColorOpaque";
+	auto formulaMaterial = graphicsApi->CreateMaterial(vertexColorOpaquePipelineId);
 
 	auto formulaMeshPath = assetDatabase->meshesPaths.find("Formula_1_mesh.obj");
 	auto car = ecs->CreateEntity();
