@@ -66,8 +66,12 @@ namespace AVulkan
 
 		swapChain->Recreate();
 
-	//	for(auto pipelineConfig : pipelinesCollection->pipelinesConfigs)
-	//		GraphicsPipelineUtility().ReCreate(pipeline swapChainData->extent, descriptors->GetDescriptorSetLayout());
+		for (auto pipelineConfig : pipelinesCollection->pipelinesConfigs)
+		{
+			auto& pipeline = pipelines.at(pipelineConfig.first);
+			pipeline = GraphicsPipelineUtility().ReCreate(pipeline, pipelineConfig.second, logicalDevice, renderPass,
+				swapChainData->extent, descriptors->GetDescriptorSetLayout());
+		}
 	}
 
 	//todo: make refactoring of the function
