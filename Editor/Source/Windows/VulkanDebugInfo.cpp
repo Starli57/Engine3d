@@ -1,6 +1,6 @@
 #include "VulkanDebugInfo.h"
 
-VulkanDebugInfo::VulkanDebugInfo(AVulkan::VulkanGraphicsApi& vulkanApi) : vulkanApi(vulkanApi)
+VulkanDebugInfo::VulkanDebugInfo(AVulkan::GraphicsApiVulkan& vulkanApi) : vulkanApi(vulkanApi)
 {
 }
 

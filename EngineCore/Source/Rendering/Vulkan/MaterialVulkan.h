@@ -4,7 +4,7 @@
 #include <string>
 
 #include "TextureVulkan.h"
-#include "VulkanGraphicsApi.h"
+#include "GraphicsApiVulkan.h"
 
 #include "Entities/Material.h"
 
@@ -14,12 +14,12 @@
 
 namespace AVulkan
 {
-	class VulkanMaterial : public Material
+	class MaterialVulkan : public Material
 	{
 	public:
-		VulkanMaterial(std::string pipelineId, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<Descriptors> descriptors,
+		MaterialVulkan(std::string pipelineId, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<Descriptors> descriptors,
 			VkSampler& textureSampler, VkDescriptorSetLayout& descriptorSetLayout, Ref<Rollback> rollback);
-		~VulkanMaterial();
+		~MaterialVulkan();
 
 		void UpdateDescriptors(uint16_t frame);
 

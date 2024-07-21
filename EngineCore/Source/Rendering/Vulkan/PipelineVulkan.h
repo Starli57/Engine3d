@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-struct VulkanPipeline
+struct PipelineVulkan
 {
 	VkPipeline pipeline;
 	VkPipelineLayout layout;

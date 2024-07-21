@@ -85,7 +85,7 @@ void Engine::CreateAppWindow()
 void Engine::InitGraphicsApi()
 {
 #if GLFW_INCLUDE_VULKAN
-	graphicsApi = new AVulkan::VulkanGraphicsApi(ecs, projectSettings, window, engineRollback);
+	graphicsApi = new AVulkan::GraphicsApiVulkan(ecs, projectSettings, window, engineRollback);
 	graphicsApi->Init();
 	engineRollback->Add([this] { delete graphicsApi; });
 #else

@@ -5,7 +5,7 @@
 #include <entt.hpp>
 
 #include "AssetsDatabase.h"
-#include "Rendering/Vulkan/VulkanGraphicsApi.h"
+#include "Rendering/Vulkan/GraphicsApiVulkan.h"
 #include "Entities/Level.h"
 #include "Systems/MeshLoaderSystem.h"
 

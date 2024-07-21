@@ -2,7 +2,7 @@
 #include <spdlog/spdlog.h>
 #include "ImguiVulkan.h"
 
-ImguiVulkan::ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi) : vulkanApi(vulkanApi)
+ImguiVulkan::ImguiVulkan(AVulkan::GraphicsApiVulkan& vulkanApi) : vulkanApi(vulkanApi)
 {
     spdlog::info("Start editor imgui initialization");
 

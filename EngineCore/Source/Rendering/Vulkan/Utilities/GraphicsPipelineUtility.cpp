@@ -6,11 +6,11 @@
 
 namespace AVulkan
 {
-	Ref<VulkanPipeline> GraphicsPipelineUtility::Create(Ref<PipelineConfig> pipelineConfig, VkDevice& logicalDevice, 
+	Ref<PipelineVulkan> GraphicsPipelineUtility::Create(Ref<PipelineConfig> pipelineConfig, VkDevice& logicalDevice,
 		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout)
 	{
 		spdlog::info("Create graphics pipeline");
-		auto pipeline = CreateRef<VulkanPipeline>();
+		auto pipeline = CreateRef<PipelineVulkan>();
 
 		try
 		{
@@ -96,14 +96,14 @@ namespace AVulkan
 		return pipeline;
 	}
 
-	Ref<VulkanPipeline> GraphicsPipelineUtility::ReCreate(Ref<VulkanPipeline> pipeline, Ref<PipelineConfig> pipelineConfig, VkDevice& logicalDevice,
+	Ref<PipelineVulkan> GraphicsPipelineUtility::ReCreate(Ref<PipelineVulkan> pipeline, Ref<PipelineConfig> pipelineConfig, VkDevice& logicalDevice,
 		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout)
 	{
 		Dispose(pipeline, logicalDevice);
 		return Create(pipelineConfig, logicalDevice, renderpass, swapChainExtent, descriptorSetLayout);
 	}
 
-	void GraphicsPipelineUtility::Dispose(Ref<VulkanPipeline> pipeline, VkDevice& logicalDevice)
+	void GraphicsPipelineUtility::Dispose(Ref<PipelineVulkan> pipeline, VkDevice& logicalDevice)
 	{
 		vkDestroyPipelineLayout(logicalDevice, pipeline->layout, nullptr);
 		vkDestroyPipeline(logicalDevice, pipeline->pipeline, nullptr);

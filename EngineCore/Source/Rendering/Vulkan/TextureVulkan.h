@@ -7,7 +7,7 @@
 #include <filesystem>
 
 #include "Entities/Texture.h"
-#include "Rendering/Vulkan/VulkanGraphicsApi.h"
+#include "Rendering/Vulkan/GraphicsApiVulkan.h"
 #include "Rendering/Vulkan/Utilities/BufferUtility.h"
 #include "Rendering/Vulkan/Builders/AUniformBufferVulkan.h"
 #include "Rendering/Vulkan/Builders/AImage.h"

@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "Rendering/PipelineConfig.h"
-#include "Rendering/Vulkan/VulkanPipeline.h"
+#include "Rendering/Vulkan/PipelineVulkan.h"
 #include "Rendering/Vulkan/Builders/AShaderModule.h"
 #include "Rendering/Vulkan/Builders/AVertexBuffer.h"
 
@@ -20,13 +20,13 @@ namespace AVulkan
 	class GraphicsPipelineUtility
 	{
 	public:
-		Ref<VulkanPipeline> Create(Ref<PipelineConfig> pipelineConfig, VkDevice& logicalDevice,
+		Ref<PipelineVulkan> Create(Ref<PipelineConfig> pipelineConfig, VkDevice& logicalDevice,
 			VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout);
 
-		Ref<VulkanPipeline> ReCreate(Ref<VulkanPipeline> pipeline, Ref<PipelineConfig> pipelineConfig, VkDevice& logicalDevice,
+		Ref<PipelineVulkan> ReCreate(Ref<PipelineVulkan> pipeline, Ref<PipelineConfig> pipelineConfig, VkDevice& logicalDevice,
 			VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout);
 
-		void Dispose(Ref<VulkanPipeline> pipeline, VkDevice& logicalDevice);
+		void Dispose(Ref<PipelineVulkan> pipeline, VkDevice& logicalDevice);
 
 	private:
 

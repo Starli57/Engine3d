@@ -29,7 +29,7 @@ namespace VkUtils
 	}
 
 	void RecordCommandBuffer(Ref<Ecs> ecs, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,
-		VkCommandBuffer& commandBuffer, std::unordered_map<std::string, Ref<VulkanPipeline>>& pipelines)
+		VkCommandBuffer& commandBuffer, std::unordered_map<std::string, Ref<PipelineVulkan>>& pipelines)
 	{
 		auto entities = ecs->registry->view<UboModelComponent, MeshComponent, MaterialComponent>();
 		for (auto entity : entities)
@@ -44,7 +44,7 @@ namespace VkUtils
 			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
 
 			auto meshVulkan = static_pointer_cast<AVulkan::MeshVulkan> (meshContainer.GetMesh());
-			auto materialVulkan = static_pointer_cast<AVulkan::VulkanMaterial>(materialComponent.GetMaterial());
+			auto materialVulkan = static_pointer_cast<AVulkan::MaterialVulkan>(materialComponent.GetMaterial());
 
 			VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };
 			VkDeviceSize offsets[] = { 0 };

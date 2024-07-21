@@ -2,15 +2,15 @@
 
 #include <imgui.h>
 
-#include "Rendering/Vulkan/VulkanGraphicsApi.h"
+#include "Rendering/Vulkan/GraphicsApiVulkan.h"
 #include "EngineShared/IWindow.h"
 
 class VulkanDebugInfo : public IWindow
 {
 public:
-	VulkanDebugInfo(AVulkan::VulkanGraphicsApi& vulkanApi);
+	VulkanDebugInfo(AVulkan::GraphicsApiVulkan& vulkanApi);
 	void Update() override;
 
 private:
-	AVulkan::VulkanGraphicsApi& vulkanApi;
+	AVulkan::GraphicsApiVulkan& vulkanApi;
 };

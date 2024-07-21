@@ -5,7 +5,7 @@
 #include "Editor.h"
 
 #include "Imgui/ImguiVulkan.h"
-#include "Rendering/Vulkan/VulkanGraphicsApi.h"
+#include "Rendering/Vulkan/GraphicsApiVulkan.h"
 #include "Windows/Hierarchy.h"
 #include "Windows/Inspector.h"
 #include "Windows/ImguiDemo.h"
@@ -17,7 +17,7 @@ Editor::Editor()
 	engine = CreateRef<Engine>(projectSettings);
 
 	auto graphicsApi = engine->GetGraphicsApi();
-	auto vulkanApi = static_cast<AVulkan::VulkanGraphicsApi*>(graphicsApi);
+	auto vulkanApi = static_cast<AVulkan::GraphicsApiVulkan*>(graphicsApi);
 
 	editorUi = CreateRef<ImguiVulkan>(*vulkanApi);
 

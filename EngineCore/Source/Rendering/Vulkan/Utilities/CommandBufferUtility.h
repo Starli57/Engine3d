@@ -6,8 +6,8 @@
 
 #include "Rendering/Vulkan/MeshVulkan.h"
 #include "Rendering/Vulkan/TextureVulkan.h"
-#include "Rendering/Vulkan/VulkanPipeline.h"
-#include "Rendering/Vulkan/VulkanMaterial.h"
+#include "Rendering/Vulkan/PipelineVulkan.h"
+#include "Rendering/Vulkan/MaterialVulkan.h"
 #include "Rendering/Vulkan/Descriptors.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Utilities/GraphicsPipelineUtility.h"
@@ -31,5 +31,5 @@ namespace VkUtils
 	void EndRenderPass(VkCommandBuffer& commandBuffer);
 
 	void RecordCommandBuffer(Ref<Ecs> ecs, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,
-		VkCommandBuffer& commandBuffer, std::unordered_map<std::string, Ref<VulkanPipeline>>& pipelines);
+		VkCommandBuffer& commandBuffer, std::unordered_map<std::string, Ref<PipelineVulkan>>& pipelines);
 }

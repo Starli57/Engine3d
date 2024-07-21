@@ -2,27 +2,27 @@
 
 #include <functional>
 
-#include "VulkanGraphicsApi.h"
+#include "GraphicsApiVulkan.h"
 
 namespace AVulkan
 {
-	VulkanGraphicsApi::VulkanGraphicsApi(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
+	GraphicsApiVulkan::GraphicsApiVulkan(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
 		this->ecs = ecs;
 		this->projectSettings = projectSettings;
 		this->window = glfwWindow;
 		this->descriptors = CreateRef<Descriptors>();
 		this->pipelinesCollection = CreateRef<PipelinesCollection>(projectSettings);
-		this->rollback = CreateRef<Rollback>("VulkanGraphicsApi", *vulkanRollback);
+		this->rollback = CreateRef<Rollback>("GraphicsApiVulkan", *vulkanRollback);
 	}
 
-	VulkanGraphicsApi::~VulkanGraphicsApi()
+	GraphicsApiVulkan::~GraphicsApiVulkan()
 	{
 		DisposePipelines();
 		rollback.reset();
 	}
 
-	void VulkanGraphicsApi::Init()
+	void GraphicsApiVulkan::Init()
 	{
 		try
 		{
@@ -44,13 +44,13 @@ namespace AVulkan
 		}
 		catch (const std::exception& e)
 		{
-			spdlog::critical("VulkanGraphicsApi critical error: {0}", e.what());
+			spdlog::critical("GraphicsApiVulkan critical error: {0}", e.what());
 			rollback->Dispose();
 			throw e;
 		}
 	}
 
-	void VulkanGraphicsApi::RecreateSwapChain()
+	void GraphicsApiVulkan::RecreateSwapChain()
 	{
 		int width = 0, height = 0;
 		glfwGetFramebufferSize(window, &width, &height);
@@ -75,7 +75,7 @@ namespace AVulkan
 	}
 
 	//todo: make refactoring of the function
-	void VulkanGraphicsApi::Render()
+	void GraphicsApiVulkan::Render()
 	{
 
 		auto commandBuffer = commandBuffers[frame];
@@ -145,51 +145,51 @@ namespace AVulkan
 		frame = (frame + 1) % maxFramesInFlight;
 	}
 
-	void VulkanGraphicsApi::FinanilizeRenderOperations()
+	void GraphicsApiVulkan::FinanilizeRenderOperations()
 	{
 		vkDeviceWaitIdle(logicalDevice);
 	}
 
-	Ref<Mesh> VulkanGraphicsApi::CreateMesh(const std::filesystem::path& meshPath)
+	Ref<Mesh> GraphicsApiVulkan::CreateMesh(const std::filesystem::path& meshPath)
 	{
 		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, meshPath, rollback);
 	}
 
-	Ref<Mesh> VulkanGraphicsApi::CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices)
+	Ref<Mesh> GraphicsApiVulkan::CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices)
 	{
 		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, vertices, indices, rollback);
 	}
 
-	Ref<Texture> VulkanGraphicsApi::CreateTexture(std::filesystem::path& textureFilePath)
+	Ref<Texture> GraphicsApiVulkan::CreateTexture(std::filesystem::path& textureFilePath)
 	{
 		return CreateRef<TextureVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, textureFilePath, rollback);
 	}
 
-	Ref<Material> VulkanGraphicsApi::CreateMaterial(std::string& pipelineId)
+	Ref<Material> GraphicsApiVulkan::CreateMaterial(std::string& pipelineId)
 	{
-		return CreateRef<VulkanMaterial>(pipelineId, physicalDevice, logicalDevice, descriptors, 
+		return CreateRef<MaterialVulkan>(pipelineId, physicalDevice, logicalDevice, descriptors, 
 			textureSampler, descriptors->GetDescriptorSetLayout(), rollback);
 	}
 
-	void VulkanGraphicsApi::CreateInstance()
+	void GraphicsApiVulkan::CreateInstance()
 	{
 		VkUtils::CreateInstance(instance);
 		rollback->Add([this]() { VkUtils::DisposeInstance(instance); });
 	}
 
-	void VulkanGraphicsApi::CreateWindowSurface()
+	void GraphicsApiVulkan::CreateWindowSurface()
 	{
 		windowSurface = VkUtils::CreateSurface(instance, *window);
 		rollback->Add([this]() { VkUtils::DisposeSurface(instance, windowSurface); });
 	}
 
-	void VulkanGraphicsApi::SelectPhysicalRenderingDevice()
+	void GraphicsApiVulkan::SelectPhysicalRenderingDevice()
 	{
 		physicalDevice = VkUtils::GetBestRenderingDevice(instance, windowSurface);
 		VkUtils::PrintPhysicalDeviceDebugInformation(physicalDevice, windowSurface);
 	}
 
-	void VulkanGraphicsApi::CreateLogicalDevice()
+	void GraphicsApiVulkan::CreateLogicalDevice()
 	{
 		logicalDevice = VkUtils::CreateLogicalDevice(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
 		rollback->Add([this]() 
@@ -198,7 +198,7 @@ namespace AVulkan
 		});
 	}
 
-	void VulkanGraphicsApi::CreateSwapChain()
+	void GraphicsApiVulkan::CreateSwapChain()
 	{
 		swapChainData = CreateRef<SwapChainData>();
 		swapChain = CreateRef<SwapChain>(rollback, *window, physicalDevice, logicalDevice, windowSurface, graphicsQueue, swapChainData);
@@ -208,18 +208,18 @@ namespace AVulkan
 		rollback->Add([this] {swapChain->Dispose(); });
 	}
 
-	void VulkanGraphicsApi::CreateSwapChainImageViews()
+	void GraphicsApiVulkan::CreateSwapChainImageViews()
 	{
 		swapChain->CreateSwapChainImageViews();
 	}
 
-	void VulkanGraphicsApi::CreateRenderPass()
+	void GraphicsApiVulkan::CreateRenderPass()
 	{
 		renderPass = VkUtils::CreateRenderPass(physicalDevice, logicalDevice, swapChainData->imageFormat);
 		rollback->Add([this]() { VkUtils::DisposeRenderPass(logicalDevice, renderPass);; });
 	}
 
-	void VulkanGraphicsApi::CreateGraphicsPipelines()
+	void GraphicsApiVulkan::CreateGraphicsPipelines()
 	{
 		pipelines.reserve(pipelinesCollection->pipelinesConfigs.size());
 
@@ -233,36 +233,36 @@ namespace AVulkan
 		}
 	}
 
-	void VulkanGraphicsApi::CreateFrameBuffers()
+	void GraphicsApiVulkan::CreateFrameBuffers()
 	{
 		swapChain->CreateFrameBuffers(renderPass);
 	}
 
-	void VulkanGraphicsApi::CreateCommandPool()
+	void GraphicsApiVulkan::CreateCommandPool()
 	{
 		commandPool = VkUtils::CreateCommandPool(logicalDevice, physicalDevice, windowSurface);
 		rollback->Add([this]() { VkUtils::DisposeCommandPool(logicalDevice, commandPool); });
 	}
 
-	void VulkanGraphicsApi::CreateCommandBuffer()
+	void GraphicsApiVulkan::CreateCommandBuffer()
 	{
 		VkUtils::AllocateCommandBuffers(logicalDevice, commandPool, commandBuffers, maxFramesInFlight);
 		rollback->Add([this]() { VkUtils::FreeCommandBuffers(logicalDevice, commandPool, commandBuffers); });
 	}
 
-	void VulkanGraphicsApi::CreateDescriptorSetLayout()
+	void GraphicsApiVulkan::CreateDescriptorSetLayout()
 	{
 		descriptors->CreateLayout(logicalDevice);
 		rollback->Add([this]() { descriptors->DisposeLayout(logicalDevice); });
 	}
 
-	void VulkanGraphicsApi::CreateDepthBuffer()
+	void GraphicsApiVulkan::CreateDepthBuffer()
 	{
 		spdlog::info("Create depth buffer");
 		swapChain->CreateDepthBuffer(commandPool);
 	}
 
-	void VulkanGraphicsApi::CreateTextureSampler()
+	void GraphicsApiVulkan::CreateTextureSampler()
 	{
 		//todo: replace logic to helper class
 		VkPhysicalDeviceProperties properties{};
@@ -292,21 +292,21 @@ namespace AVulkan
 		rollback->Add([this]() { vkDestroySampler(logicalDevice, textureSampler, nullptr); });
 	}
 
-	void VulkanGraphicsApi::UpdateUniformBuffer(uint32_t frame)
+	void GraphicsApiVulkan::UpdateUniformBuffer(uint32_t frame)
 	{
 		//todo: find most relevant camera
 		auto viewProjectionEntries = ecs->registry->view<UboViewProjectionComponent>();
 		auto [viewProjectionComponent] = viewProjectionEntries.get(viewProjectionEntries.front());
 
 		auto materialEntries = ecs->registry->view<MaterialComponent>();
+		auto lightEntries = ecs->registry->view<UboDiffuseLightComponent>();
 		for (auto materialEntry : materialEntries)
 		{
 			auto materialComponent = materialEntries.get<MaterialComponent>(materialEntry);
-			auto materialVulkan = static_pointer_cast<VulkanMaterial>(materialComponent.GetMaterial());
+			auto materialVulkan = static_pointer_cast<MaterialVulkan>(materialComponent.GetMaterial());
 
 			memcpy(materialVulkan->uboViewProjection.at(frame)->bufferMapped, &viewProjectionComponent, sizeof(UboViewProjectionComponent));
 
-			auto lightEntries = ecs->registry->view<UboDiffuseLightComponent>();
 			for (auto entity : lightEntries)
 			{
 				auto& positionComponent = lightEntries.get<UboDiffuseLightComponent>(entity);
@@ -317,7 +317,7 @@ namespace AVulkan
 		}
 	}
 
-	void VulkanGraphicsApi::DisposePipelines()
+	void GraphicsApiVulkan::DisposePipelines()
 	{
 		GraphicsPipelineUtility pipelineUtility;
 		for (auto& pipeline : pipelines)
@@ -329,7 +329,7 @@ namespace AVulkan
 		spdlog::info("All graphics pipelines disposed");
 	}
 
-	void VulkanGraphicsApi::CreateSyncObjects()
+	void GraphicsApiVulkan::CreateSyncObjects()
 	{
 		imageAvailableSemaphores.resize(maxFramesInFlight);
 		renderFinishedSemaphores.resize(maxFramesInFlight);

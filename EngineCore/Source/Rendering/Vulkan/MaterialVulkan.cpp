@@ -1,9 +1,9 @@
 #include "Pch.h"
-#include "VulkanMaterial.h"
+#include "MaterialVulkan.h"
 
 namespace AVulkan
 {
-    VulkanMaterial::VulkanMaterial(std::string pipelineId, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<Descriptors> descriptors,
+    MaterialVulkan::MaterialVulkan(std::string pipelineId, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<Descriptors> descriptors,
         VkSampler& textureSampler, VkDescriptorSetLayout& descriptorSetLayout, Ref<Rollback> rollback) :
         Material(pipelineId), logicalDevice(logicalDevice), descriptors(descriptors), textureSampler(textureSampler)
     {
@@ -14,7 +14,7 @@ namespace AVulkan
         uboLights = std::vector<Ref<BufferModel>>();
 
         //todo: replace ubo data to independent component
-        for (uint16_t i = 0; i < VulkanGraphicsApi::maxFramesInFlight; i++)
+        for (uint16_t i = 0; i < GraphicsApiVulkan::maxFramesInFlight; i++)
         {
             auto viewProjectionDescriptorSet = descriptors->AllocateDescriptorSet(logicalDevice, descriptorSetLayout, rollback);
             descriptorSets.push_back(viewProjectionDescriptorSet);
@@ -30,14 +30,14 @@ namespace AVulkan
         }
     }
 
-    VulkanMaterial::~VulkanMaterial()
+    MaterialVulkan::~MaterialVulkan()
     {
         uboLights.clear();
         uboViewProjection.clear();
         descriptorSets.clear();
     }
     
-    void VulkanMaterial::UpdateDescriptors(uint16_t frame)
+    void MaterialVulkan::UpdateDescriptors(uint16_t frame)
     {
         VkImageView albedoImageView = nullptr;
 

@@ -19,8 +19,8 @@
 
 #include "Rendering/Vulkan/MeshVulkan.h"
 #include "Rendering/Vulkan/TextureVulkan.h"
-#include "Rendering/Vulkan/VulkanMaterial.h"
-#include "Rendering/Vulkan/VulkanPipeline.h"
+#include "Rendering/Vulkan/MaterialVulkan.h"
+#include "Rendering/Vulkan/PipelineVulkan.h"
 
 #include "Builders/AValidationLayers.h"
 #include "Builders/AImage.h"
@@ -54,7 +54,7 @@
 
 namespace AVulkan
 {
-	class VulkanGraphicsApi : public IGraphicsApi
+	class GraphicsApiVulkan : public IGraphicsApi
 	{
 	public:
 		static constexpr uint16_t maxFramesInFlight = 2;
@@ -88,8 +88,8 @@ namespace AVulkan
 		uint32_t GetImageIndex() { return imageIndex; }
 		uint16_t GetFrame() { return frame; }
 
-		VulkanGraphicsApi(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* window, Rollback* vulkanRollback);
-		virtual ~VulkanGraphicsApi() override;
+		GraphicsApiVulkan(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* window, Rollback* vulkanRollback);
+		virtual ~GraphicsApiVulkan() override;
 
 		void Init() override;
 		void Render() override;
@@ -107,7 +107,7 @@ namespace AVulkan
 		Ref<Rollback> rollback;
 
 		Ref<PipelinesCollection> pipelinesCollection;
-		std::unordered_map<std::string, Ref<VulkanPipeline>> pipelines;
+		std::unordered_map<std::string, Ref<PipelineVulkan>> pipelines;
 
 		uint32_t imageIndex = 0;
 		uint16_t frame = 0;

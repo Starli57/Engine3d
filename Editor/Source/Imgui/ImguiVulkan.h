@@ -9,7 +9,7 @@
 #include <vulkan/vulkan.h>
 
 #include "IEngineEditor.h"
-#include "Rendering/Vulkan/VulkanGraphicsApi.h"
+#include "Rendering/Vulkan/GraphicsApiVulkan.h"
 #include "Rendering/Vulkan/Descriptors.h"
 #include "Rendering/Vulkan/SwapChain.h"
 #include "Rendering/Vulkan/Models/SwapChainData.h"
@@ -25,7 +25,7 @@ class ImguiVulkan : public IEngineEditor
 {
 public:
 
-    ImguiVulkan(AVulkan::VulkanGraphicsApi& vulkanApi);
+    ImguiVulkan(AVulkan::GraphicsApiVulkan& vulkanApi);
     ~ImguiVulkan();
 
     void Update() override;
@@ -34,7 +34,7 @@ public:
 
 private:
 
-	AVulkan::VulkanGraphicsApi& vulkanApi;
+	AVulkan::GraphicsApiVulkan& vulkanApi;
     Ref<Rollback> rollback;
 
 	VkDescriptorPool descriptorPool;
