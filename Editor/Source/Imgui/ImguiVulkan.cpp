@@ -1,5 +1,13 @@
 
 #include <spdlog/spdlog.h>
+
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_vulkan.h>
+
+#include <GLFW/glfw3.h>
+#include <vulkan/vulkan.h>
+
 #include "ImguiVulkan.h"
 
 ImguiVulkan::ImguiVulkan(AVulkan::GraphicsApiVulkan& vulkanApi) : vulkanApi(vulkanApi)
@@ -49,7 +57,6 @@ ImguiVulkan::ImguiVulkan(AVulkan::GraphicsApiVulkan& vulkanApi) : vulkanApi(vulk
     initInfo.MinImageCount = 2;
     initInfo.ImageCount = vulkanApi.swapChainData->imagesCount;
     initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
-    initInfo.SurfaceFormat = vulkanApi.swapChainData->surfaceFormat;
 
     ImGui_ImplVulkan_Init(&initInfo);
     ImGui_ImplVulkan_CreateFontsTexture();
