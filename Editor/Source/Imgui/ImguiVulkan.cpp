@@ -13,7 +13,6 @@ ImguiVulkan::ImguiVulkan(AVulkan::GraphicsApiVulkan& vulkanApi) : vulkanApi(vulk
     queueFamilies = VkUtils::GetQueueFamilies(vulkanApi.physicalDevice, vulkanApi.windowSurface);
     graphicsQueueFamily = queueFamilies.graphicsFamily.value();
 
-    VkRenderPass renderPass;
     CreateRenderPass(renderPass);
 
     // Setup Dear ImGui context
@@ -59,11 +58,13 @@ ImguiVulkan::ImguiVulkan(AVulkan::GraphicsApiVulkan& vulkanApi) : vulkanApi(vulk
 
 ImguiVulkan::~ImguiVulkan()
 {
-    rollback->Dispose();
-
     ImGui_ImplVulkan_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+
+    vkDestroyRenderPass(vulkanApi.logicalDevice, renderPass, nullptr);
+
+    rollback->Dispose();
 
     spdlog::info("Finished ImguiVulkan dispose");
 }
@@ -122,7 +123,6 @@ void ImguiVulkan::CreateRenderPass(VkRenderPass& renderPass)
     auto renderPassStatus = vkCreateRenderPass(vulkanApi.logicalDevice, &renderPassInfo, nullptr, &renderPass);
 
     CAssert::Check(renderPassStatus == VK_SUCCESS, "Failed to create imgui render pass");
-    rollback->Add([this, renderPass] { vkDestroyRenderPass(vulkanApi.logicalDevice, renderPass, nullptr); });
 }
 
 void ImguiVulkan::DefaultEditorColors(ImGuiStyle* dst)
@@ -155,7 +155,7 @@ void ImguiVulkan::DefaultEditorColors(ImGuiStyle* dst)
     colors[ImGuiCol_Header]                = ImVec4(0.82f, 0.28f, 0.29f, 0.76f);
     colors[ImGuiCol_HeaderHovered]         = ImVec4(0.82f, 0.28f, 0.29f, 0.86f);
     colors[ImGuiCol_HeaderActive]          = ImVec4(0.82f, 0.28f, 0.29f, 1.00f);
-    colors[ImGuiCol_Separator]             = ImVec4(0.14f, 0.16f, 0.19f, 1.00f);
+    colors[ImGuiCol_Separator]             = ImVec4(0.20f, 0.22f, 0.25f, 1.00f);
     colors[ImGuiCol_SeparatorHovered]      = ImVec4(0.82f, 0.28f, 0.29f, 0.78f);
     colors[ImGuiCol_SeparatorActive]       = ImVec4(0.82f, 0.28f, 0.29f, 1.00f);
     colors[ImGuiCol_ResizeGrip]            = ImVec4(0.47f, 0.77f, 0.83f, 0.04f);

@@ -37,6 +37,7 @@ private:
 	AVulkan::GraphicsApiVulkan& vulkanApi;
     Ref<Rollback> rollback;
 
+	VkRenderPass renderPass;
 	VkDescriptorPool descriptorPool;
 
 	AVulkan::QueueFamilyIndices queueFamilies;
