@@ -1,5 +1,12 @@
 #pragma once
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_vulkan.h>
+#include <imgui_internal.h>
+
+#include <GLFW/glfw3.h>
+#include <vulkan/vulkan.h>
 
 #include "IEngineEditor.h"
 #include "Rendering/Vulkan/GraphicsApiVulkan.h"
@@ -34,4 +41,6 @@ private:
 
 	AVulkan::QueueFamilyIndices queueFamilies;
 	uint32_t graphicsQueueFamily;
+
+	void DefaultEditorColors(ImGuiStyle* dst);
 };
