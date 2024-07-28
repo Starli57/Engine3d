@@ -20,15 +20,15 @@ void Level::LoadLevel()
 
 	auto vikingTexturePath = assetDatabase->texturesPaths.find("viking_room.png");
 	auto vikingTexture = graphicsApi->CreateTexture(vikingTexturePath->second);
-	assetDatabase->AddTexture(vikingTexture);
+	auto vikignTextureIndex = assetDatabase->AddTexture(vikingTexture);
 
 	auto formulaTexturePath = assetDatabase->texturesPaths.find("formula1_DefaultMaterial_Diffuse.png");
 	auto formulaDefuseTexture = graphicsApi->CreateTexture(formulaTexturePath->second);
-	assetDatabase->AddTexture(formulaDefuseTexture);
+	auto formulaTextureIndex = assetDatabase->AddTexture(formulaDefuseTexture);
 
 	std::string albedoOpaquePipelineId = "albedoOpaque";
 	auto vikingMaterial = graphicsApi->CreateMaterial(albedoOpaquePipelineId);
-	vikingMaterial->SetAlbedoTexture(vikingTexture);
+	vikingMaterial->SetAlbedoTexture(vikignTextureIndex);
 
 	std::string vertexColorOpaquePipelineId = "vertexColorOpaque";
 	auto formulaMaterial = graphicsApi->CreateMaterial(vertexColorOpaquePipelineId);

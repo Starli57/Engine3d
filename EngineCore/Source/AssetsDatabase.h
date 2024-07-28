@@ -20,14 +20,18 @@ public:
 	AssetsDatabase(Ref<ProjectSettigns> projectSettings);
 	~AssetsDatabase();
 
+	int32_t TextureIndex(const std::filesystem::path& texturePath);
 	bool HasTexture(const std::filesystem::path& texturePath);
+
+	Ref<Texture> GetTexture(const int index);
 	Ref<Texture> GetTexture(const std::filesystem::path& texturePath);
-	void AddTexture(Ref<Texture> texture);
+	
+	int32_t AddTexture(Ref<Texture> texture);
 	void RemoveTexture(const std::filesystem::path& texturePath);
 
 private:
 	Ref<ProjectSettigns> projectSettings;
-	std::unordered_map<std::filesystem::path, Ref<Texture>> textures;
+	std::vector<Ref<Texture>> textures;
 
 	void FillMeshesPaths();
 	void FillTexturesPaths();

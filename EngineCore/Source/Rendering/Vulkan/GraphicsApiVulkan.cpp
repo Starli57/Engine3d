@@ -6,9 +6,11 @@
 
 namespace AVulkan
 {
-	GraphicsApiVulkan::GraphicsApiVulkan(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* glfwWindow, Rollback* vulkanRollback)
+	GraphicsApiVulkan::GraphicsApiVulkan(Ref<Ecs> ecs, Ref<AssetsDatabase> assetDatabase, Ref<ProjectSettigns> projectSettings, 
+		GLFWwindow* glfwWindow, Rollback* vulkanRollback)
 	{
 		this->ecs = ecs;
+		this->assetDatabase = assetDatabase;
 		this->projectSettings = projectSettings;
 		this->window = glfwWindow;
 		this->descriptors = CreateRef<Descriptors>();
@@ -167,7 +169,7 @@ namespace AVulkan
 
 	Ref<Material> GraphicsApiVulkan::CreateMaterial(std::string& pipelineId)
 	{
-		return CreateRef<MaterialVulkan>(pipelineId, physicalDevice, logicalDevice, descriptors, 
+		return CreateRef<MaterialVulkan>(pipelineId, assetDatabase, physicalDevice, logicalDevice, descriptors,
 			textureSampler, descriptors->GetDescriptorSetLayout(), rollback);
 	}
 

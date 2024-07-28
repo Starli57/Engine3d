@@ -4,7 +4,6 @@
 #include <glm/glm.hpp>
 
 #include "AssetsDatabase.h"
-#include "Components/MaterialComponent.h"
 #include "Systems/Camera.h"
 #include "Systems/RotatorSystem.h"
 #include "Rendering/IGraphicsApi.h"
@@ -15,6 +14,7 @@
 #include "EngineShared/Entity.h"
 #include "EngineShared/ProjectSettings.h"
 #include "EngineShared/Rollback/Rollback.h"
+#include "EngineShared/Components/MaterialComponent.h"
 #include "EngineShared/Components/NameComponent.h"
 #include "EngineShared/Components/CameraComponent.h"
 #include "EngineShared/Components/PositionComponent.h"

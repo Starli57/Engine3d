@@ -5,11 +5,10 @@
 #include <stack>
 #include <vector>
 
+#include "AssetsDatabase.h"
 #include "Descriptors.h"
 
 #include "Entities/Level.h"
-
-#include "Components/MaterialComponent.h"
 
 #include "Models/SwapChainData.h"
 #include "Models/ImageModel.h"
@@ -45,6 +44,7 @@
 #include "EngineShared/Ecs.h"
 #include "EngineShared/ProjectSettings.h"
 #include "EngineShared/Rollback/Rollback.h"
+#include "EngineShared/Components/MaterialComponent.h"
 #include "EngineShared/Components/MeshComponent.h"
 #include "EngineShared/Components/UboViewProjectionComponent.h"
 #include "EngineShared/Components/UboDiffuseLightComponent.h"
@@ -88,7 +88,8 @@ namespace AVulkan
 		uint32_t GetImageIndex() { return imageIndex; }
 		uint16_t GetFrame() { return frame; }
 
-		GraphicsApiVulkan(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, GLFWwindow* window, Rollback* vulkanRollback);
+		GraphicsApiVulkan(Ref<Ecs> ecs, Ref<AssetsDatabase> assetDatabase, Ref<ProjectSettigns> projectSettings, 
+			GLFWwindow* window, Rollback* vulkanRollback);
 		virtual ~GraphicsApiVulkan() override;
 
 		void Init() override;
@@ -103,6 +104,7 @@ namespace AVulkan
 
 	private:
 		Ref<Ecs> ecs;
+		Ref<AssetsDatabase> assetDatabase;
 		Ref<ProjectSettigns> projectSettings;
 		Ref<Rollback> rollback;
 

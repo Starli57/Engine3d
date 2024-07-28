@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
+#include "AssetsDatabase.h"
 #include "TextureVulkan.h"
 #include "GraphicsApiVulkan.h"
 
@@ -17,8 +18,8 @@ namespace AVulkan
 	class MaterialVulkan : public Material
 	{
 	public:
-		MaterialVulkan(std::string pipelineId, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<Descriptors> descriptors,
-			VkSampler& textureSampler, VkDescriptorSetLayout& descriptorSetLayout, Ref<Rollback> rollback);
+		MaterialVulkan(std::string pipelineId, Ref<AssetsDatabase> assetDatabase, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
+			Ref<Descriptors> descriptors, VkSampler& textureSampler, VkDescriptorSetLayout& descriptorSetLayout, Ref<Rollback> rollback);
 		~MaterialVulkan();
 
 		void UpdateDescriptors(uint16_t frame);
@@ -29,6 +30,7 @@ namespace AVulkan
 		std::vector<Ref<BufferModel>> uboLights;
 
 	private:
+		Ref<AssetsDatabase> assetDatabase;
 		Ref<Descriptors> descriptors;
 
 		VkDevice& logicalDevice;

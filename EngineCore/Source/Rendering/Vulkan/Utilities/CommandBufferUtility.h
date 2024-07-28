@@ -12,11 +12,10 @@
 #include "Rendering/Vulkan/Models/SwapChainData.h"
 #include "Rendering/Vulkan/Utilities/GraphicsPipelineUtility.h"
 
-#include "Components/MaterialComponent.h"
-
 #include "EngineShared/Ref.h"
 #include "EngineShared/Ecs.h"
 #include "EngineShared/Components/MeshComponent.h"
+#include "EngineShared/Components/MaterialComponent.h"
 #include "EngineShared/Components/UboModelComponent.h"
 
 namespace VkUtils

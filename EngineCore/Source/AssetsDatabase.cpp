@@ -8,7 +8,7 @@ AssetsDatabase::AssetsDatabase(Ref<ProjectSettigns> projectSettings)
 {
 	this->projectSettings = projectSettings;
 
-	textures = std::unordered_map<std::filesystem::path, Ref<Texture>>();
+	textures = std::vector<Ref<Texture>>();
 
 	FillMeshesPaths();
 	FillTexturesPaths();
@@ -16,37 +16,58 @@ AssetsDatabase::AssetsDatabase(Ref<ProjectSettigns> projectSettings)
 	
 AssetsDatabase::~AssetsDatabase()
 {
-	//todo: check if vk objects are disposed correctly
-	for (auto& pair : textures) {
-		Ref<Texture>& textureRef = pair.second;
-		textureRef.reset();
+	for (auto& texture : textures) {
+		texture.reset();
 	}
 
 	textures.clear();
 }
 
+int32_t AssetsDatabase::TextureIndex(const std::filesystem::path& texturePath)
+{
+	int32_t index = 0;
+	for (auto it = textures.begin(); it != textures.end(); ++it, ++index) 
+	{
+		if (it->get()->textureFilePath == texturePath) 
+		{
+			return index;
+		}
+	}
+	return -1;
+}
+
 bool AssetsDatabase::HasTexture(const std::filesystem::path& texturePath)
 {
-	return textures.find(texturePath) != textures.end();
+	return TextureIndex(texturePath) >= 0;
+}
+
+Ref<Texture> AssetsDatabase::GetTexture(const int index)
+{
+	CAssert::Check(index >= 0 && index < textures.size(), "Texture index is out of range");
+	return textures[index];
 }
 
 Ref<Texture> AssetsDatabase::GetTexture(const std::filesystem::path& texturePath)
 {
-	auto it = textures.find(texturePath);
-	CAssert::Check(it != textures.end(), "Assets database doesn't have a texture with path: " + texturePath.string());
-	return it->second;
+	auto textureIndex = TextureIndex(texturePath);
+	CAssert::Check(textureIndex >= 0, "Assets database doesn't have a texture with path: " + texturePath.string());
+	return textures[textureIndex];
 }
 
-void AssetsDatabase::AddTexture(Ref<Texture> texture)
+int32_t AssetsDatabase::AddTexture(Ref<Texture> texture)
 {
-	if (!HasTexture(texture->textureFilePath)) textures.insert({ texture->textureFilePath, texture });
+	auto textureIndex = TextureIndex(texture->textureFilePath);
+	if (textureIndex >= 0) return textureIndex;
+
+	textures.push_back(texture);
+	return textures.size() - 1;
 }
 
 void AssetsDatabase::RemoveTexture(const std::filesystem::path& texturePath)
 {
-	auto it = textures.find(texturePath);
-	CAssert::Check(it != textures.end(), "Assets database doesn't have a texture with path: " + texturePath.string());
-	textures.erase(it->first);
+	auto textureIndex = TextureIndex(texturePath);
+	CAssert::Check(textureIndex >= 0, "Assets database doesn't have a texture with path: " + texturePath.string());
+	textures.erase(textures.begin() + textureIndex);
 }
 
 void AssetsDatabase::FillMeshesPaths()

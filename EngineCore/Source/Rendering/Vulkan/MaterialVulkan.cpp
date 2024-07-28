@@ -3,9 +3,9 @@
 
 namespace AVulkan
 {
-    MaterialVulkan::MaterialVulkan(std::string pipelineId, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<Descriptors> descriptors,
-        VkSampler& textureSampler, VkDescriptorSetLayout& descriptorSetLayout, Ref<Rollback> rollback) :
-        Material(pipelineId), logicalDevice(logicalDevice), descriptors(descriptors), textureSampler(textureSampler)
+    MaterialVulkan::MaterialVulkan(std::string pipelineId, Ref<AssetsDatabase> assetDatabase, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
+        Ref<Descriptors> descriptors, VkSampler& textureSampler, VkDescriptorSetLayout& descriptorSetLayout, Ref<Rollback> rollback) :
+        Material(pipelineId), assetDatabase(assetDatabase), logicalDevice(logicalDevice), descriptors(descriptors), textureSampler(textureSampler)
     {
         auto uniformBufferBuilder = AUniformBufferVulkan();
 
@@ -41,9 +41,9 @@ namespace AVulkan
     {
         VkImageView albedoImageView = nullptr;
 
-        if (albedoTexture.has_value())
+        if (albedoTexture >= 0)
         {
-            auto albedo = static_pointer_cast<AVulkan::TextureVulkan>(albedoTexture.value());
+            auto albedo = static_pointer_cast<AVulkan::TextureVulkan>(assetDatabase->GetTexture(albedoTexture));
             albedoImageView = albedo->imageModel->imageView;
         }
 
