@@ -1,0 +1,9 @@
+#pragma once
+
+#include <glm/glm.hpp>
+#include "EngineCore/IComponent.h"
+
+struct UboDiffuseLightComponent : public IComponent
+{
+	glm::vec3 position = glm::vec3(300,500,200);
+};

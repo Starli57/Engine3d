@@ -16,8 +16,7 @@ Externals["TinyObjLoader"] = "Externals/TinyObjLoader"
 Externals["DearImgui"] = "Externals/DearImgui"
 
 Includes = {}
-Includes["EngineCore"] = "EngineCore/Source"
-Includes["EngineShared"] = "EngineShared/Source"
+Includes["EngineCore"] = "EngineCore"
 Includes["ExampleProject"] = "ExampleProject/Source"
 
 Includes["Glfw"] = "%{Externals.Glfw}/include"
@@ -50,15 +49,14 @@ project "Editor"
 
 	files
 	{
-		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp"
+		"%{prj.name}/Editor/**.h",
+		"%{prj.name}/Editor/**.cpp"
 	}
 
 	includedirs
 	{
-		"%{prj.name}/Source",
+		"%{prj.name}",
 		"%{Includes.EngineCore}",
-		"%{Includes.EngineShared}",
 		"%{Includes.ExampleProject}",
 		
 		"%{Includes.DearImgui}",
@@ -75,7 +73,6 @@ project "Editor"
 	links
 	{
 		"EngineCore",
-		"EngineShared",
 		"ExampleProject",
 
 		"DearImgui"
@@ -116,20 +113,18 @@ project "EngineCore"
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "Pch.h"
-	pchsource "%{prj.name}/Source/Pch.cpp"
+	pchheader "EngineCore/Pch.h"
+	pchsource "%{prj.name}/EngineCore/Pch.cpp"
 
 	files
 	{
-		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp",
+		"%{prj.name}/EngineCore/**.h",
+		"%{prj.name}/EngineCore/**.cpp",
 	}
 	
 	includedirs
 	{
-		"%{prj.name}/Source",
-		"%{Includes.EngineShared}",
-		"%{Includes.ExampleProject}",
+		"%{prj.name}",
 
 		"%{Includes.Glfw}",
 		"%{Includes.Glm}",
@@ -142,9 +137,6 @@ project "EngineCore"
 
 	links
 	{
-		"EngineShared",
-		"ExampleProject",
-
 		"Glfw",
 		"Glm",
 		"%{Libs.Vulkan}"
@@ -175,8 +167,6 @@ project "EngineCore"
 		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Meshes" }
 		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Textures" }
 
-		postbuildcommands { "copy $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\ExampleProject.dll $(SolutionDir)Output\\" .. outputdir .. "\\Engine3d" }
-
 		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Shaders $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
 		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Resources\\Meshes $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Meshes" }
 		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Resources\\Textures $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Textures" }
@@ -186,8 +176,6 @@ project "EngineCore"
 		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
 		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Meshes" }
 		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Textures" }
-
-		postbuildcommands { "copy $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/ExampleProject.dll $(SolutionDir)Output/" .. outputdir .. "/Engine3d" }
 
 		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Shaders $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
 		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Resources/Meshes $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Meshes" }
@@ -202,46 +190,9 @@ project "EngineCore"
 	filter "configurations:Release"
 		optimize "On"
 		
-project "EngineShared"
-	location "EngineShared"
-	kind "StaticLib"
-	language "C++"
-	cppdialect "C++20"
-	staticruntime "On"
-	systemversion "latest"
-
-
-	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
-	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp",
-	}
-	
-	includedirs
-	{
-		"%{prj.name}/Source",
-		"%{Includes.Entt}",
-		"%{Includes.Glm}",
-		"%{Includes.SpdLog}",
-		"%{Includes.TinyObjLoader}"
-	}
-
-	links
-	{
-		"Glm"
-	}
-
-	defines
-	{
-		"TINYOBJLOADER_IMPLEMENTATION"
-	}
-
 project "ExampleProject"
 	location "ExampleProject"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "On"
@@ -258,15 +209,22 @@ project "ExampleProject"
 
 	includedirs
 	{
-		"%{Includes.EngineShared}",
-
+		"%{Includes.EngineCore}",
+		
+		"%{Includes.Glfw}",
 		"%{Includes.Glm}",
-		"%{Includes.SpdLog}"
+		"%{Includes.Vulkan}",
+		"%{Includes.SpdLog}",
+		"%{Includes.Entt}",
+		"%{Includes.Stb}",
+		"%{Includes.TinyObjLoader}"
 	}
 	
 	links
 	{
-		"EngineShared"
+		"Glfw",
+		"Glm",
+		"%{Libs.Vulkan}"
 	}
 	
 	defines
