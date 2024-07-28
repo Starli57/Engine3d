@@ -23,6 +23,8 @@ ImguiVulkan::ImguiVulkan(AVulkan::GraphicsApiVulkan& vulkanApi) : vulkanApi(vulk
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;        
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+   
+    io.Fonts->AddFontFromFileTTF("../Externals/DearImgui/misc/fonts/Roboto-Medium.ttf", 16);
 
     DefaultEditorColors(nullptr);
 

@@ -29,7 +29,7 @@ public:
 	T& AddComponentIfNotExist(Args&&... args)
 	{
 		if (!HasComponent<T>()) return registry->emplace<T>(entity, std::forward<Args>(args)...);
-		else return GetComponent();
+		else return GetComponent<T>();
 	}
 
 	template<typename T, typename... Args>

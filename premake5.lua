@@ -17,7 +17,7 @@ Externals["DearImgui"] = "Externals/DearImgui"
 
 Includes = {}
 Includes["EngineCore"] = "EngineCore"
-Includes["ExampleProject"] = "ExampleProject/Source"
+Includes["ExampleProject"] = "ExampleProject"
 
 Includes["Glfw"] = "%{Externals.Glfw}/include"
 Includes["Glm"] = "%{Externals.Glm}"

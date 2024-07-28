@@ -3,7 +3,7 @@
 #include <string>
 #include <optional>
 
-#include "EngineCore/Assets/Texture.h"
+#include "Texture.h"
 #include "Asset.h"
 #include "EngineCore/Ref.h"
 #include "EngineCore/UniqueId.h"
