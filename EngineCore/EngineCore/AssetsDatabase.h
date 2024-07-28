@@ -8,11 +8,11 @@
 
 #include "EngineCore/Ref.h"
 #include "UniqueId.h"
-#include "CustomAssert.h"
+#include "EngineCore/CustomAssert.h"
 #include "ProjectSettings.h"
-#include "Mesh.h"
-#include "Material.h"
-#include "Texture.h"
+#include "EngineCore/Assets/Mesh.h"
+#include "EngineCore/Assets/Material.h"
+#include "EngineCore/Assets/Texture.h"
 
 class AssetsDatabase
 {

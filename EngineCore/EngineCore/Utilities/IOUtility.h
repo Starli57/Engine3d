@@ -6,7 +6,7 @@
 #include <filesystem>
 #include <unordered_map>
 
-#include "CustomAssert.h"
+#include "EngineCore/CustomAssert.h"
 #include "EngineCore/Ref.h"
 
 class IOUtility

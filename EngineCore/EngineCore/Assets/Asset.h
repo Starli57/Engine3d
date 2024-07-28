@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include "UniqueId.h"
+#include "EngineCore/UniqueId.h"
 
 class Asset
 {

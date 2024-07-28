@@ -15,11 +15,11 @@
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
 #include "EngineCore/ProjectSettings.h"
 #include "EngineCore/CustomAssert.h"
-#include "EngineCore/IOUtility.h"
+#include "EngineCore/Utilities/IOUtility.h"
 #include "EngineCore/Ref.h"
 #include "EngineCore/Rollback/Rollback.h"
 #include "EngineCore/Components/UboDiffuseLightComponent.h"
-#include "EngineCore/Texture.h"
+#include "EngineCore/Assets/Texture.h"
 
 
 namespace AVulkan

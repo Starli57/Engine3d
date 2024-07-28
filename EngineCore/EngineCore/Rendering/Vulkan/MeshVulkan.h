@@ -4,7 +4,7 @@
 #include <vector>
 #include <filesystem>
 
-#include "EngineCore/Mesh.h"
+#include "EngineCore/Assets/Mesh.h"
 #include "EngineCore/Vertex.h"
 #include "EngineCore/Ref.h"
 #include "EngineCore/Rollback/Rollback.h"

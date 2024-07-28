@@ -7,7 +7,7 @@
 #include "EngineCore/Systems/Camera.h"
 #include "EngineCore/Systems/RotatorSystem.h"
 #include "EngineCore/Rendering/IGraphicsApi.h"
-#include "EngineCore/Mesh.h"
+#include "EngineCore/Assets/Mesh.h"
 #include "EngineCore/Vertex.h"
 #include "EngineCore/Ref.h"
 #include "EngineCore/Ecs.h"

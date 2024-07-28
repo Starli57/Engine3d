@@ -1,9 +1,9 @@
 #pragma once
 
 #include "EngineCore/AssetsDatabase.h"
-#include "EngineCore/Texture.h"
-#include "EngineCore/Material.h"
-#include "EngineCore/Mesh.h"
+#include "EngineCore/Assets/Texture.h"
+#include "EngineCore/Assets/Material.h"
+#include "EngineCore/Assets/Mesh.h"
 #include "EngineCore/Ref.h"
 #include "EngineCore/EventHandler.h"
 

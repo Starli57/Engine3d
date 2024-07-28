@@ -5,8 +5,8 @@
 #include <stdexcept>
 
 #include "EngineCore/Ref.h"
-#include "Entity.h"
-#include "IComponent.h"
+#include "EngineCore/Entity.h"
+#include "EngineCore/IComponent.h"
 
 #include "EngineCore/Components/CameraComponent.h"
 #include "EngineCore/Components/MaterialComponent.h"

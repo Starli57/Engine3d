@@ -3,10 +3,10 @@
 #include <string>
 #include <optional>
 
-#include "Texture.h"
-#include "EngineCore/Ref.h"
-#include "UniqueId.h"
+#include "EngineCore/Assets/Texture.h"
 #include "Asset.h"
+#include "EngineCore/Ref.h"
+#include "EngineCore/UniqueId.h"
 
 class Material : public Asset
 {

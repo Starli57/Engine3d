@@ -1,6 +1,6 @@
 
 #include "EngineCore/Pch.h"
-#include "Mesh.h"
+#include "EngineCore/Assets/Mesh.h"
 
 #include <tiny_obj_loader.h>
 

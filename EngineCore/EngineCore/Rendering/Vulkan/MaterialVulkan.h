@@ -6,7 +6,7 @@
 #include "TextureVulkan.h"
 #include "GraphicsApiVulkan.h"
 
-#include "EngineCore/Material.h"
+#include "EngineCore/Assets/Material.h"
 #include "EngineCore/AssetsDatabase.h"
 #include "EngineCore/Rendering/Vulkan/Descriptors.h"
 #include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"

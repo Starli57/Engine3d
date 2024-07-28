@@ -38,7 +38,7 @@
 #include "Utilities/SyncObjectsUtility.h"
 #include "Utilities/MemoryUtility.h"
 
-#include "EngineCore/Mesh.h"
+#include "EngineCore/Assets/Mesh.h"
 #include "EngineCore/Ref.h"
 #include "EngineCore/Ecs.h"
 #include "EngineCore/ProjectSettings.h"

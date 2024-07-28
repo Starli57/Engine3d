@@ -5,7 +5,7 @@
 
 #include "Asset.h"
 #include "EngineCore/Ref.h"
-#include "Vertex.h"
+#include "EngineCore/Vertex.h"
 
 class Mesh : public Asset
 {
