@@ -8,27 +8,8 @@
 class MaterialComponent
 {
 public:
+	uint32_t materialIndex;
 
-	MaterialComponent(Ref<Material> material) : material(material)
-	{
-	}
-
-	~MaterialComponent()
-	{
-		DestroyMaterial();
-	}
-
-	Ref<Material> GetMaterial()
-	{
-		return material;
-	}
-
-	void DestroyMaterial()
-	{
-		material.reset();
-	}
-
-private:
-	Ref<Material> material;
+	MaterialComponent(uint32_t materialIndex) : materialIndex(materialIndex) {};
 };
 

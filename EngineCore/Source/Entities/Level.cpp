@@ -29,9 +29,11 @@ void Level::LoadLevel()
 	std::string albedoOpaquePipelineId = "albedoOpaque";
 	auto vikingMaterial = graphicsApi->CreateMaterial(albedoOpaquePipelineId);
 	vikingMaterial->SetAlbedoTexture(vikignTextureIndex);
+	auto vikingMaterialIndex = assetDatabase->AddMaterial(vikingMaterial);
 
 	std::string vertexColorOpaquePipelineId = "vertexColorOpaque";
 	auto formulaMaterial = graphicsApi->CreateMaterial(vertexColorOpaquePipelineId);
+	auto formulaMaterialIndex = assetDatabase->AddMaterial(formulaMaterial);
 
 	auto formulaMeshPath = assetDatabase->meshesPaths.find("Formula_1_mesh.obj");
 	auto car = ecs->CreateEntity();
@@ -42,7 +44,7 @@ void Level::LoadLevel()
 	car->AddComponent<UboModelComponent>();
 	car->AddComponent<MeshComponent>(formulaMeshPath->second);
 	car->AddComponent<MeshLoadRequest>();
-	car->AddComponent<MaterialComponent>(formulaMaterial);
+	car->AddComponent<MaterialComponent>(formulaMaterialIndex);
 
 	auto vikingRoomMeshPath = assetDatabase->meshesPaths.find("viking_room.obj");
 	auto vikingsRoom = ecs->CreateEntity();
@@ -54,7 +56,7 @@ void Level::LoadLevel()
 	vikingsRoom->AddComponent<UboModelComponent>();
 	vikingsRoom->AddComponent<MeshComponent>(vikingRoomMeshPath->second);
 	vikingsRoom->AddComponent<MeshLoadRequest>();
-	vikingsRoom->AddComponent<MaterialComponent>(vikingMaterial);
+	vikingsRoom->AddComponent<MaterialComponent>(vikingMaterialIndex);
 
 	auto cameraEntity = ecs->CreateEntity();
 	cameraEntity->AddComponent<NameComponent>("Camera");

@@ -102,7 +102,7 @@ namespace AVulkan
 
 		VkUtils::BeginCommandBuffer(commandBuffer);
 		VkUtils::BeginRenderPass(swapChainData->frameBuffers[imageIndex], renderPass, commandBuffer, swapChainData->extent);
-		VkUtils::RecordCommandBuffer(ecs, descriptors, frame, commandBuffer, pipelines);
+		VkUtils::RecordCommandBuffer(ecs, assetDatabase, descriptors, frame, commandBuffer, pipelines);
 		VkUtils::EndRenderPass(commandBuffer);
 		VkUtils::EndCommandBuffer(commandBuffer);
 
@@ -305,7 +305,7 @@ namespace AVulkan
 		for (auto materialEntry : materialEntries)
 		{
 			auto materialComponent = materialEntries.get<MaterialComponent>(materialEntry);
-			auto materialVulkan = static_pointer_cast<MaterialVulkan>(materialComponent.GetMaterial());
+			auto materialVulkan = static_pointer_cast<MaterialVulkan>(assetDatabase->GetMaterial(materialComponent.materialIndex));
 
 			memcpy(materialVulkan->uboViewProjection.at(frame)->bufferMapped, &viewProjectionComponent, sizeof(UboViewProjectionComponent));
 

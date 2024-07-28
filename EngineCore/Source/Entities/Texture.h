@@ -2,7 +2,10 @@
 
 #include <filesystem>
 
-class Texture
+#include "Asset.h"
+#include "EngineShared/UniqueId.h"
+
+class Texture : public Asset
 {
 public:
 	const std::filesystem::path& textureFilePath;

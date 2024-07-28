@@ -36,12 +36,25 @@ int32_t AssetsDatabase::TextureIndex(const std::filesystem::path& texturePath)
 	return -1;
 }
 
+int32_t AssetsDatabase::TextureIndex(const UniqueId uniqueId)
+{
+	int32_t index = 0;
+	for (auto it = textures.begin(); it != textures.end(); ++it, ++index)
+	{
+		if (it->get()->uniqueId == uniqueId)
+		{
+			return index;
+		}
+	}
+	return -1;
+}
+
 bool AssetsDatabase::HasTexture(const std::filesystem::path& texturePath)
 {
 	return TextureIndex(texturePath) >= 0;
 }
 
-Ref<Texture> AssetsDatabase::GetTexture(const int index)
+Ref<Texture> AssetsDatabase::GetTexture(const int32_t index)
 {
 	CAssert::Check(index >= 0 && index < textures.size(), "Texture index is out of range");
 	return textures[index];
@@ -68,6 +81,36 @@ void AssetsDatabase::RemoveTexture(const std::filesystem::path& texturePath)
 	auto textureIndex = TextureIndex(texturePath);
 	CAssert::Check(textureIndex >= 0, "Assets database doesn't have a texture with path: " + texturePath.string());
 	textures.erase(textures.begin() + textureIndex);
+}
+
+int32_t AssetsDatabase::MaterialIndex(const UniqueId uniqueId)
+{
+	int32_t index = 0;
+	for (auto it = materials.begin(); it != materials.end(); ++it, ++index)
+	{
+		if (it->get()->uniqueId == uniqueId)
+		{
+			return index;
+		}
+	}
+	return -1;
+}
+
+Ref<Material> AssetsDatabase::GetMaterial(const int32_t index)
+{
+	CAssert::Check(index >= 0 && index < textures.size(), "Material index is out of range");
+	return materials[index];
+}
+
+int32_t AssetsDatabase::AddMaterial(Ref<Material> material)
+{
+	materials.push_back(material);
+	return materials.size() - 1;
+}
+
+void AssetsDatabase::RemoveMaterial(Ref<Material> material)
+{
+	textures.erase(textures.begin() + MaterialIndex(material->uniqueId));
 }
 
 void AssetsDatabase::FillMeshesPaths()

@@ -4,6 +4,8 @@
 
 #include <unordered_map>
 
+#include "AssetsDatabase.h"
+
 #include "Rendering/Vulkan/MeshVulkan.h"
 #include "Rendering/Vulkan/TextureVulkan.h"
 #include "Rendering/Vulkan/PipelineVulkan.h"
@@ -29,6 +31,6 @@ namespace VkUtils
 	void BeginRenderPass(VkFramebuffer& frameBuffer, VkRenderPass& renderPass, VkCommandBuffer& commandBuffer, VkExtent2D& vkExtent);
 	void EndRenderPass(VkCommandBuffer& commandBuffer);
 
-	void RecordCommandBuffer(Ref<Ecs> ecs, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,
+	void RecordCommandBuffer(Ref<Ecs> ecs, Ref<AssetsDatabase> assetsDatabase, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,
 		VkCommandBuffer& commandBuffer, std::unordered_map<std::string, Ref<PipelineVulkan>>& pipelines);
 }
