@@ -1,21 +1,25 @@
 
 #include "ParametersRenderer.h"
 
-void ParametersRenderer::RenderParameter(const char* label, int& parameter, int step)
-{
-	ImGui::InputInt(label, &parameter, step);
-}
-
-void ParametersRenderer::RenderParameter(const char* label, uint32_t& parameter, uint32_t step)
+void ParametersRenderer::RenderParameter(const char* label, int& parameter, int step, int min, int max)
 {
     int buf = static_cast<int>(parameter);
     if (ImGui::InputInt(label, &buf))
-        parameter = static_cast<int32_t>(buf);
+        parameter = std::clamp<int>(static_cast<int>(buf), min, max);
 }
 
-void ParametersRenderer::RenderParameter(const char* label, std::optional<int>& parameter, int step)
+void ParametersRenderer::RenderParameter(const char* label, uint32_t& parameter, uint32_t step, uint32_t min, uint32_t max)
 {
-    ImGui::InputInt(label, &parameter.value(), step);
+    int buf = static_cast<int>(parameter);
+    if (ImGui::InputInt(label, &buf))
+        parameter = std::clamp<int32_t>(static_cast<int32_t>(buf), min, max);
+}
+
+void ParametersRenderer::RenderParameter(const char* label, std::optional<int>& parameter, int step, int min, int max)
+{
+    int buf = parameter.has_value() ? static_cast<int>(parameter.value()) : 0;
+    if (ImGui::InputInt(label, &buf))
+        parameter = std::clamp<int>(static_cast<int>(buf), min, max);
 }
 
 void ParametersRenderer::RenderParameter(const char* label, float& parameter, float v_speed, float v_min, float v_max)

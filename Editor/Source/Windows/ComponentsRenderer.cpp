@@ -62,10 +62,12 @@ void ComponentsRenderer::RenderComponent(Ref<Entity> entity, UboDiffuseLightComp
 
 void ComponentsRenderer::RenderComponent(Ref<Entity> entity, MeshComponent& component)
 {
-	parametersRenderer->RenderParameter("Mesh index", component.meshIndex);
+	int max = assetsDatabase->MeshesCount() - 1;
+	parametersRenderer->RenderParameter("Mesh index", component.meshIndex, 1, 0, max);
 }
 
 void ComponentsRenderer::RenderComponent(Ref<Entity> entity, MaterialComponent& component)
 {
-	parametersRenderer->RenderParameter("Material index", component.materialIndex);
+	uint32_t max = assetsDatabase->MaterialsCount() - 1;
+	parametersRenderer->RenderParameter("Material index", component.materialIndex, 1U, 0U, max);
 }

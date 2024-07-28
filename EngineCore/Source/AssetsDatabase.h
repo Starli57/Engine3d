@@ -23,6 +23,10 @@ public:
 	AssetsDatabase(Ref<ProjectSettigns> projectSettings);
 	~AssetsDatabase();
 
+	size_t MeshesCount() { return meshes.size(); }
+	size_t MaterialsCount() { return materials.size(); }
+	size_t TexturesCount() { return textures.size(); }
+
 	int32_t MeshIndex(const UniqueId uniqueId);
 	int32_t MaterialIndex(const UniqueId uniqueId);
 	int32_t TextureIndex(UniqueId uniqueId);
