@@ -15,6 +15,7 @@
 #include "EngineShared/Components/ScaleComponent.h"
 #include "EngineShared/Components/UboDiffuseLightComponent.h"
 #include "EngineShared/Components/MeshComponent.h"
+#include "EngineShared/Components/MaterialComponent.h"
 
 class ComponentsRenderer
 {
@@ -46,4 +47,5 @@ private:
 	void RenderComponent(Ref<Entity> entity, CameraComponent& component);
 	void RenderComponent(Ref<Entity> entity, UboDiffuseLightComponent& component);
 	void RenderComponent(Ref<Entity> entity, MeshComponent& component);
+	void RenderComponent(Ref<Entity> entity, MaterialComponent& component);
 };

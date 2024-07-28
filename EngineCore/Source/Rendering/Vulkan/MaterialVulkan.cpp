@@ -41,9 +41,9 @@ namespace AVulkan
     {
         VkImageView albedoImageView = nullptr;
 
-        if (albedoTexture >= 0)
+        if (albedoTexture.has_value())
         {
-            auto albedo = static_pointer_cast<AVulkan::TextureVulkan>(assetDatabase->GetTexture(albedoTexture));
+            auto albedo = static_pointer_cast<AVulkan::TextureVulkan>(assetDatabase->GetTexture(albedoTexture.value()));
             albedoImageView = albedo->imageModel->imageView;
         }
 

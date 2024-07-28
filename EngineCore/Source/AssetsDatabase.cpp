@@ -2,13 +2,11 @@
 #include "AssetsDatabase.h"
 #include "EngineShared/IOUtility.h"
 
-//todo: calculate texture links count to be able to dispose if not used
+//todo: calculate assets links count to be able to dispose if not used
 
 AssetsDatabase::AssetsDatabase(Ref<ProjectSettigns> projectSettings)
 {
 	this->projectSettings = projectSettings;
-
-	textures = std::vector<Ref<Texture>>();
 
 	FillMeshesPaths();
 	FillTexturesPaths();
@@ -16,11 +14,25 @@ AssetsDatabase::AssetsDatabase(Ref<ProjectSettigns> projectSettings)
 	
 AssetsDatabase::~AssetsDatabase()
 {
-	for (auto& texture : textures) {
-		texture.reset();
-	}
+	//todo: check which resources need to dispose here
+	for (auto& texture : textures) texture.reset();
 
 	textures.clear();
+}
+
+int32_t AssetsDatabase::MeshIndex(const UniqueId uniqueId)
+{
+	return GetIndex(meshes, uniqueId);
+}
+
+int32_t AssetsDatabase::MaterialIndex(const UniqueId uniqueId)
+{
+	return GetIndex(materials, uniqueId);
+}
+
+int32_t AssetsDatabase::TextureIndex(const UniqueId uniqueId)
+{
+	return GetIndex(textures, uniqueId);
 }
 
 int32_t AssetsDatabase::TextureIndex(const std::filesystem::path& texturePath)
@@ -36,22 +48,16 @@ int32_t AssetsDatabase::TextureIndex(const std::filesystem::path& texturePath)
 	return -1;
 }
 
-int32_t AssetsDatabase::TextureIndex(const UniqueId uniqueId)
+Ref<Mesh> AssetsDatabase::GetMesh(const int32_t index)
 {
-	int32_t index = 0;
-	for (auto it = textures.begin(); it != textures.end(); ++it, ++index)
-	{
-		if (it->get()->uniqueId == uniqueId)
-		{
-			return index;
-		}
-	}
-	return -1;
+	CAssert::Check(index >= 0 && index < meshes.size(), "Mesh index is out of range");
+	return meshes[index];
 }
 
-bool AssetsDatabase::HasTexture(const std::filesystem::path& texturePath)
+Ref<Material> AssetsDatabase::GetMaterial(const int32_t index)
 {
-	return TextureIndex(texturePath) >= 0;
+	CAssert::Check(index >= 0 && index < textures.size(), "Material index is out of range");
+	return materials[index];
 }
 
 Ref<Texture> AssetsDatabase::GetTexture(const int32_t index)
@@ -67,6 +73,19 @@ Ref<Texture> AssetsDatabase::GetTexture(const std::filesystem::path& texturePath
 	return textures[textureIndex];
 }
 
+int32_t AssetsDatabase::AddMesh(Ref<Mesh> mesh)
+{
+	//todo: check if the mesh is already in the list
+	meshes.push_back(mesh);
+	return meshes.size() - 1;
+}
+
+int32_t AssetsDatabase::AddMaterial(Ref<Material> material)
+{
+	materials.push_back(material);
+	return materials.size() - 1;
+}
+
 int32_t AssetsDatabase::AddTexture(Ref<Texture> texture)
 {
 	auto textureIndex = TextureIndex(texture->textureFilePath);
@@ -76,41 +95,19 @@ int32_t AssetsDatabase::AddTexture(Ref<Texture> texture)
 	return textures.size() - 1;
 }
 
-void AssetsDatabase::RemoveTexture(const std::filesystem::path& texturePath)
+void AssetsDatabase::RemoveMesh(Ref<Mesh> mesh)
 {
-	auto textureIndex = TextureIndex(texturePath);
-	CAssert::Check(textureIndex >= 0, "Assets database doesn't have a texture with path: " + texturePath.string());
-	textures.erase(textures.begin() + textureIndex);
-}
-
-int32_t AssetsDatabase::MaterialIndex(const UniqueId uniqueId)
-{
-	int32_t index = 0;
-	for (auto it = materials.begin(); it != materials.end(); ++it, ++index)
-	{
-		if (it->get()->uniqueId == uniqueId)
-		{
-			return index;
-		}
-	}
-	return -1;
-}
-
-Ref<Material> AssetsDatabase::GetMaterial(const int32_t index)
-{
-	CAssert::Check(index >= 0 && index < textures.size(), "Material index is out of range");
-	return materials[index];
-}
-
-int32_t AssetsDatabase::AddMaterial(Ref<Material> material)
-{
-	materials.push_back(material);
-	return materials.size() - 1;
+	meshes.erase(meshes.begin() + MeshIndex(mesh->uniqueId));
 }
 
 void AssetsDatabase::RemoveMaterial(Ref<Material> material)
 {
-	textures.erase(textures.begin() + MaterialIndex(material->uniqueId));
+	materials.erase(materials.begin() + MaterialIndex(material->uniqueId));
+}
+
+void AssetsDatabase::RemoveTexture(Ref<Texture> texture)
+{
+	textures.erase(textures.begin() + TextureIndex(texture->uniqueId));
 }
 
 void AssetsDatabase::FillMeshesPaths()

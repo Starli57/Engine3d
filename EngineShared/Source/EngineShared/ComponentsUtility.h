@@ -2,13 +2,14 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <stdexcept>
 #include "Ref.h"
+#include "Entity.h"
 #include "IComponent.h"
 
 #include "Components/CameraComponent.h"
+#include "Components/MaterialComponent.h"
 #include "Components/MeshComponent.h"
-#include "Components/MeshLoadRequest.h"
-#include "Components/MeshUnloadRequest.h"
 #include "Components/NameComponent.h"
 #include "Components/PositionComponent.h"
 #include "Components/RotationComponent.h"
@@ -23,14 +24,13 @@
 /// Don't make any changes in the file
 /// </summary>
 
-const int componentsLength = 12;
+const int componentsLength = 11;
 
 const char* componentsNames[componentsLength] =
 {
       "CameraComponent",
+      "MaterialComponent",
       "MeshComponent",
-      "MeshLoadRequest",
-      "MeshUnloadRequest",
       "NameComponent",
       "PositionComponent",
       "RotationComponent",
@@ -45,9 +45,8 @@ const char* componentsNames[componentsLength] =
 bool HasComponent(Ref<Entity> entity, const std::string& componentName)
 {
       if (componentName == "CameraComponent") return entity->HasComponent<CameraComponent>();
+      if (componentName == "MaterialComponent") return entity->HasComponent<MaterialComponent>();
       if (componentName == "MeshComponent") return entity->HasComponent<MeshComponent>();
-      if (componentName == "MeshLoadRequest") return entity->HasComponent<MeshLoadRequest>();
-      if (componentName == "MeshUnloadRequest") return entity->HasComponent<MeshUnloadRequest>();
       if (componentName == "NameComponent") return entity->HasComponent<NameComponent>();
       if (componentName == "PositionComponent") return entity->HasComponent<PositionComponent>();
       if (componentName == "RotationComponent") return entity->HasComponent<RotationComponent>();
@@ -65,9 +64,8 @@ void AddComponent(Ref<Entity> entity, const std::string& componentName)
       if (HasComponent(entity, componentName)) return;
 
       if (componentName == "CameraComponent") entity->AddComponent<CameraComponent>();
+      if (componentName == "MaterialComponent") entity->AddComponent<MaterialComponent>();
       if (componentName == "MeshComponent") entity->AddComponent<MeshComponent>();
-      if (componentName == "MeshLoadRequest") entity->AddComponent<MeshLoadRequest>();
-      if (componentName == "MeshUnloadRequest") entity->AddComponent<MeshUnloadRequest>();
       if (componentName == "NameComponent") entity->AddComponent<NameComponent>();
       if (componentName == "PositionComponent") entity->AddComponent<PositionComponent>();
       if (componentName == "RotationComponent") entity->AddComponent<RotationComponent>();
@@ -84,9 +82,8 @@ void RemoveComponent(Ref<Entity> entity, const std::string& componentName)
       if (!HasComponent(entity, componentName)) return;
 
       if (componentName == "CameraComponent") entity->RemoveComponent<CameraComponent>();
+      if (componentName == "MaterialComponent") entity->RemoveComponent<MaterialComponent>();
       if (componentName == "MeshComponent") entity->RemoveComponent<MeshComponent>();
-      if (componentName == "MeshLoadRequest") entity->RemoveComponent<MeshLoadRequest>();
-      if (componentName == "MeshUnloadRequest") entity->RemoveComponent<MeshUnloadRequest>();
       if (componentName == "NameComponent") entity->RemoveComponent<NameComponent>();
       if (componentName == "PositionComponent") entity->RemoveComponent<PositionComponent>();
       if (componentName == "RotationComponent") entity->RemoveComponent<RotationComponent>();

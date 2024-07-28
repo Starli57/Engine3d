@@ -98,7 +98,6 @@ void Engine::Run()
 	Ref<RotatorSystem> rotatorSystem = CreateRef<RotatorSystem>(ecs);
 	Ref<TransformSystem> transformSystem = CreateRef<TransformSystem>(ecs);
 	Ref<Camera> cameraSystem = CreateRef<Camera>(ecs, window);
-	Ref<MeshLoaderSystem> meshLoder = CreateRef<MeshLoaderSystem>(graphicsApi, ecs);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -107,7 +106,6 @@ void Engine::Run()
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - cachedTime).count();
 
-		meshLoder->Update(deltaTime);
 		rotatorSystem->Update(deltaTime);
 		transformSystem->Update(deltaTime);
 		cameraSystem->Update(deltaTime);

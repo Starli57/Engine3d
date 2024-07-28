@@ -36,14 +36,14 @@ namespace VkUtils
 		{
 			auto [uboModelComponent, meshContainer, materialComponent] = entities.get<UboModelComponent, MeshComponent, MaterialComponent>(entity);
 			
-			if (meshContainer.GetMesh() == nullptr) continue;
+			if (meshContainer.meshIndex.has_value() == false) continue;
 
 			auto material = assetsDatabase->GetMaterial(materialComponent.materialIndex);
 			auto pipeline = pipelines.at(material->pipelineId);
 
 			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
 
-			auto meshVulkan = static_pointer_cast<AVulkan::MeshVulkan> (meshContainer.GetMesh());
+			auto meshVulkan = static_pointer_cast<AVulkan::MeshVulkan> (assetsDatabase->GetMesh(meshContainer.meshIndex.value()));
 			auto materialVulkan = static_pointer_cast<AVulkan::MaterialVulkan>(material);
 
 			VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };

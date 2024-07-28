@@ -18,6 +18,7 @@ void Level::LoadLevel()
 {
 	spdlog::info("Load level");
 
+	//textures
 	auto vikingTexturePath = assetDatabase->texturesPaths.find("viking_room.png");
 	auto vikingTexture = graphicsApi->CreateTexture(vikingTexturePath->second);
 	auto vikignTextureIndex = assetDatabase->AddTexture(vikingTexture);
@@ -26,6 +27,7 @@ void Level::LoadLevel()
 	auto formulaDefuseTexture = graphicsApi->CreateTexture(formulaTexturePath->second);
 	auto formulaTextureIndex = assetDatabase->AddTexture(formulaDefuseTexture);
 
+	//materials
 	std::string albedoOpaquePipelineId = "albedoOpaque";
 	auto vikingMaterial = graphicsApi->CreateMaterial(albedoOpaquePipelineId);
 	vikingMaterial->SetAlbedoTexture(vikignTextureIndex);
@@ -35,15 +37,22 @@ void Level::LoadLevel()
 	auto formulaMaterial = graphicsApi->CreateMaterial(vertexColorOpaquePipelineId);
 	auto formulaMaterialIndex = assetDatabase->AddMaterial(formulaMaterial);
 
+	//meshes
 	auto formulaMeshPath = assetDatabase->meshesPaths.find("Formula_1_mesh.obj");
+	auto formulaMesh = graphicsApi->CreateMesh(formulaMeshPath->second);
+	auto formulaMeshIndex = assetDatabase->AddMesh(formulaMesh);
+
+	auto vikingsRoomMeshPath = assetDatabase->meshesPaths.find("viking_room.obj");
+	auto vikingsRoomMesh = graphicsApi->CreateMesh(vikingsRoomMeshPath->second);
+	auto vikingsRoomMeshIndex = assetDatabase->AddMesh(vikingsRoomMesh);
+
 	auto car = ecs->CreateEntity();
 	car->AddComponent<NameComponent>("Car");
 	car->AddComponent<PositionComponent>(glm::vec3(0, -130, 0));
 	car->AddComponent<RotationComponent>(glm::vec3(130, 0, 0));
 	car->AddComponent<ScaleComponent>(glm::vec3(1, 1, 1));
 	car->AddComponent<UboModelComponent>();
-	car->AddComponent<MeshComponent>(formulaMeshPath->second);
-	car->AddComponent<MeshLoadRequest>();
+	car->AddComponent<MeshComponent>(formulaMeshIndex);
 	car->AddComponent<MaterialComponent>(formulaMaterialIndex);
 
 	auto vikingRoomMeshPath = assetDatabase->meshesPaths.find("viking_room.obj");
@@ -54,8 +63,7 @@ void Level::LoadLevel()
 	vikingsRoom->AddComponent<ScaleComponent>(glm::vec3(140, 140, 140));
 	vikingsRoom->AddComponent<RotationVelocityComponent>(glm::vec3(0, 0, 50));
 	vikingsRoom->AddComponent<UboModelComponent>();
-	vikingsRoom->AddComponent<MeshComponent>(vikingRoomMeshPath->second);
-	vikingsRoom->AddComponent<MeshLoadRequest>();
+	vikingsRoom->AddComponent<MeshComponent>(vikingsRoomMeshIndex);
 	vikingsRoom->AddComponent<MaterialComponent>(vikingMaterialIndex);
 
 	auto cameraEntity = ecs->CreateEntity();

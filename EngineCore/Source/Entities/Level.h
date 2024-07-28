@@ -24,7 +24,6 @@
 #include "EngineShared/Components/UboModelComponent.h"
 #include "EngineShared/Components/UboDiffuseLightComponent.h"
 #include "EngineShared/Components/MeshComponent.h"
-#include "EngineShared/Components/MeshLoadRequest.h"
 
 class Level
 {

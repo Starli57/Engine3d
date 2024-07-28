@@ -15,6 +15,7 @@ void ComponentsRenderer::Update(Ref<Entity> entity)
 	RenderComponent<RotationVelocityComponent>(entity);
 	RenderComponent<ScaleComponent>(entity);
 	RenderComponent<MeshComponent>(entity);
+	RenderComponent<MaterialComponent>(entity);
 	RenderComponent<CameraComponent>(entity);
 	RenderComponent<UboDiffuseLightComponent>(entity);
 }
@@ -59,35 +60,12 @@ void ComponentsRenderer::RenderComponent(Ref<Entity> entity, UboDiffuseLightComp
 	//	RenderParameter("Intensity", component->intensity, 0.01f, 0, FLT_MAX);
 }
 
-//looks like this component has a custom parameter like meshPath, because
-//it's not enough to just show or change the path, 
-//need to call specific engine methods to unload and load new mesh 
 void ComponentsRenderer::RenderComponent(Ref<Entity> entity, MeshComponent& component)
 {
-	ImGui::Text("Mesh");
+	parametersRenderer->RenderParameter("Mesh index", component.meshIndex);
+}
 
-	if (component.meshPath.has_value())
-	{
-		auto filename = component.meshPath.value().filename();
-		ImGui::SameLine();
-		ImGui::Text(filename.string().c_str());
-	}
-
-	if (ImGui::Button("Change.."))
-	{
-		ImGui::OpenPopup("ChangePopup");
-	}
-
-	if (ImGui::BeginPopup("ChangePopup"))
-	{
-		for (auto it : assetsDatabase->meshesPaths)
-		{
-			if (ImGui::Selectable(it.first.c_str()))
-			{
-				component.meshPath = it.second;
-			}
-		}
-
-		ImGui::EndPopup();
-	}
+void ComponentsRenderer::RenderComponent(Ref<Entity> entity, MaterialComponent& component)
+{
+	parametersRenderer->RenderParameter("Material index", component.materialIndex);
 }

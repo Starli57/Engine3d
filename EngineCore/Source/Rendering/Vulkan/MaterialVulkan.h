@@ -7,11 +7,11 @@
 #include "TextureVulkan.h"
 #include "GraphicsApiVulkan.h"
 
-#include "Entities/Material.h"
-
 #include "Rendering/Vulkan/Descriptors.h"
 #include "Rendering/Vulkan/Models/BufferModel.h"
 #include "Rendering/Vulkan/Builders/AUniformBufferVulkan.h"
+
+#include "EngineShared/Material.h"
 
 namespace AVulkan
 {

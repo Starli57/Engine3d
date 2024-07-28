@@ -2,7 +2,7 @@
 
 #include <filesystem>
 
-#include "Asset.h"
+#include "EngineShared/Asset.h"
 #include "EngineShared/UniqueId.h"
 
 class Texture : public Asset

@@ -6,7 +6,6 @@
 #include <string>
 #include <filesystem>
 
-#include "Entities/Texture.h"
 #include "Rendering/Vulkan/GraphicsApiVulkan.h"
 #include "Rendering/Vulkan/Utilities/BufferUtility.h"
 #include "Rendering/Vulkan/Builders/AUniformBufferVulkan.h"
@@ -20,6 +19,7 @@
 #include "EngineShared/Ref.h"
 #include "EngineShared/Rollback/Rollback.h"
 #include "EngineShared/Components/UboDiffuseLightComponent.h"
+#include "EngineShared/Texture.h"
 
 
 namespace AVulkan

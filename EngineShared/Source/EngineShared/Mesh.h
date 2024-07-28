@@ -3,10 +3,11 @@
 #include <vector>
 #include <filesystem>
 
+#include "EngineShared/Asset.h"
 #include "EngineShared/Ref.h"
 #include "EngineShared/Vertex.h"
 
-class Mesh
+class Mesh : public Asset
 {
 public:
 	Ref<std::vector<Vertex>> GetVertices();

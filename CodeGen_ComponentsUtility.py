@@ -19,8 +19,10 @@ with open(output_file, 'w') as f:
     f.write("#pragma once\n")
     f.write("#include <string>\n")
     f.write("#include <vector>\n")
+    f.write("#include <stdexcept>\n")
 
     f.write("#include \"Ref.h\"\n")
+    f.write("#include \"Entity.h\"\n")
     f.write("#include \"IComponent.h\"\n")
     f.write("\n")
 

@@ -6,6 +6,18 @@ void ParametersRenderer::RenderParameter(const char* label, int& parameter, int 
 	ImGui::InputInt(label, &parameter, step);
 }
 
+void ParametersRenderer::RenderParameter(const char* label, uint32_t& parameter, uint32_t step)
+{
+    int buf = static_cast<int>(parameter);
+    if (ImGui::InputInt(label, &buf))
+        parameter = static_cast<int32_t>(buf);
+}
+
+void ParametersRenderer::RenderParameter(const char* label, std::optional<int>& parameter, int step)
+{
+    ImGui::InputInt(label, &parameter.value(), step);
+}
+
 void ParametersRenderer::RenderParameter(const char* label, float& parameter, float v_speed, float v_min, float v_max)
 {
 	ImGui::DragFloat(label, &parameter, v_speed, v_min, v_max);

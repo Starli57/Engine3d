@@ -1,7 +1,7 @@
-#include "Pch.h"
+
 #include "Material.h"
 
-Material::Material(const std::string& pipelineId) : pipelineId(pipelineId)
+Material::Material(const std::string pipelineId) : pipelineId(pipelineId)
 {
 }
 
