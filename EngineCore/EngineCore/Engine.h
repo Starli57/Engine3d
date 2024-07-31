@@ -28,6 +28,8 @@ public:
 	Ref<Ecs> GetEcs() { return ecs; }
 	Ref<AssetsDatabase> GetAssetsDatabase() { return assetsDatabase; }
 
+	float GetDeltaTime() { return deltaTime; }
+
 private:
 	const Ref<ProjectSettigns> projectSettings;
 
@@ -39,6 +41,8 @@ private:
 	Ref<AssetsDatabase> assetsDatabase;
 
 	Rollback* engineRollback;
+
+	float deltaTime;
 
 	std::function<void()> editorUpdate;
 

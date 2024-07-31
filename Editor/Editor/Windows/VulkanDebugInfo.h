@@ -2,15 +2,17 @@
 
 #include <imgui.h>
 
+#include "EngineCore/Engine.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 #include "EngineCore/IWindow.h"
 
 class VulkanDebugInfo : public IWindow
 {
 public:
-	VulkanDebugInfo(AVulkan::GraphicsApiVulkan& vulkanApi);
+	VulkanDebugInfo(Ref<Engine> engine, AVulkan::GraphicsApiVulkan& vulkanApi);
 	void Update() override;
 
 private:
+	Ref<Engine> engine;
 	AVulkan::GraphicsApiVulkan& vulkanApi;
 };

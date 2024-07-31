@@ -27,7 +27,7 @@ Editor::Editor()
 	editorUi->AddWindow(inspector);
 	editorUi->AddWindow(CreateRef<Hierarchy>(engine->GetEcs(), inspector));
 	editorUi->AddWindow(CreateRef<ImguiDemo>());
-	editorUi->AddWindow(CreateRef<VulkanDebugInfo>(*vulkanApi));
+	editorUi->AddWindow(CreateRef<VulkanDebugInfo>(engine, *vulkanApi));
 
 	engine->BindEditorUpdateFunction([this]() {editorUi->Update(); });
 	game->Run();

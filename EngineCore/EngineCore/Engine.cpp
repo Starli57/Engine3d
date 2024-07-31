@@ -104,7 +104,7 @@ void Engine::Run()
 		glfwPollEvents();
 
 		auto currentTime = std::chrono::high_resolution_clock::now();
-		float deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - cachedTime).count();
+		deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - cachedTime).count();
 
 		rotatorSystem->Update(deltaTime);
 		transformSystem->Update(deltaTime);
