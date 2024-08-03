@@ -24,7 +24,7 @@ ImguiVulkan::ImguiVulkan(AVulkan::GraphicsApiVulkan& vulkanApi) : vulkanApi(vulk
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;        
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
    
-    io.Fonts->AddFontFromFileTTF("../Externals/DearImgui/misc/fonts/Roboto-Medium.ttf", 16);
+    io.Fonts->AddFontFromFileTTF("../Externals/Fonts/Roboto-Medium.ttf", 20);
 
     DefaultEditorColors(nullptr);
 
