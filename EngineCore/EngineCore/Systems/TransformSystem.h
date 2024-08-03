@@ -10,8 +10,8 @@
 #include "EngineCore/Components/PositionComponent.h"
 #include "EngineCore/Components/RotationComponent.h"
 #include "EngineCore/Components/ScaleComponent.h"
-#include "EngineCore/Ref.h"
-#include "EngineCore/Ecs.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Core/Ecs.h"
 
 class TransformSystem : public ISystem
 {

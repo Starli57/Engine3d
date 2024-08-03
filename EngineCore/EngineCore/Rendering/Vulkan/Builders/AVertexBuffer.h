@@ -2,8 +2,8 @@
 
 #include <GLFW/glfw3.h>
 
-#include "EngineCore/Ref.h"
-#include "EngineCore/Vertex.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Rendering/Vertex.h"
 
 namespace AVulkan
 {

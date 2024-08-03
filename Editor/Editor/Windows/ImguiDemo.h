@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 
-#include "EngineCore/IWindow.h"
+#include "EngineCore/Editor/IWindow.h"
 
 class ImguiDemo : public IWindow
 {

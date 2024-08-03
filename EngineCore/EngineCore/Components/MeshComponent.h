@@ -1,7 +1,7 @@
 #pragma once
 
 #include <optional>
-#include "EngineCore/IComponent.h"
+#include "EngineCore/Core/IComponent.h"
 
 struct MeshComponent : public IComponent
 {

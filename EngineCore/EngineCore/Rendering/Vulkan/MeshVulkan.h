@@ -5,8 +5,8 @@
 #include <filesystem>
 
 #include "EngineCore/Assets/Mesh.h"
-#include "EngineCore/Vertex.h"
-#include "EngineCore/Ref.h"
+#include "EngineCore/Rendering/Vertex.h"
+#include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rollback/Rollback.h"
 #include "EngineCore/Components/UboViewProjectionComponent.h"
 

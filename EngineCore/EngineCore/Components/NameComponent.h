@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "EngineCore/IComponent.h"
+#include "EngineCore/Core/IComponent.h"
 
 struct NameComponent : public IComponent
 {

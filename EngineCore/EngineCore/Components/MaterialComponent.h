@@ -7,7 +7,7 @@ class MaterialComponent
 public:
 	uint32_t materialIndex;
 
-	MaterialComponent() {}
+	MaterialComponent() { materialIndex = 0; }
 	MaterialComponent(uint32_t materialIndex) : materialIndex(materialIndex) {};
 };
 

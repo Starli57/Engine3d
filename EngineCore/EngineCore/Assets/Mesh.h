@@ -4,8 +4,8 @@
 #include <filesystem>
 
 #include "Asset.h"
-#include "EngineCore/Ref.h"
-#include "EngineCore/Vertex.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Rendering/Vertex.h"
 
 class Mesh : public Asset
 {

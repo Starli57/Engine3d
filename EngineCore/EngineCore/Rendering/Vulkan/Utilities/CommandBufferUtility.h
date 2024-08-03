@@ -4,7 +4,7 @@
 
 #include <unordered_map>
 
-#include "EngineCore/AssetsDatabase.h"
+#include "EngineCore/AssetsManagement/AssetsDatabase.h"
 
 #include "EngineCore/Rendering/Vulkan/MeshVulkan.h"
 #include "EngineCore/Rendering/Vulkan/TextureVulkan.h"
@@ -14,8 +14,8 @@
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/GraphicsPipelineUtility.h"
 
-#include "EngineCore/Ref.h"
-#include "EngineCore/Ecs.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Components/MeshComponent.h"
 #include "EngineCore/Components/MaterialComponent.h"
 #include "EngineCore/Components/UboModelComponent.h"

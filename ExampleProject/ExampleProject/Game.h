@@ -2,8 +2,8 @@
 
 #include "EngineCore/Engine.h"
 
-#include "EngineCore/Ref.h"
-#include "EngineCore/ProjectSettings.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Core/ProjectSettings.h"
 
 class Game
 {

@@ -3,16 +3,16 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include "EngineCore/AssetsDatabase.h"
+#include "EngineCore/AssetsManagement/AssetsDatabase.h"
 #include "EngineCore/Systems/Camera.h"
 #include "EngineCore/Systems/RotatorSystem.h"
 #include "EngineCore/Rendering/IGraphicsApi.h"
 #include "EngineCore/Assets/Mesh.h"
-#include "EngineCore/Vertex.h"
-#include "EngineCore/Ref.h"
-#include "EngineCore/Ecs.h"
-#include "EngineCore/Entity.h"
-#include "EngineCore/ProjectSettings.h"
+#include "EngineCore/Rendering/Vertex.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Core/Ecs.h"
+#include "EngineCore/Core/Entity.h"
+#include "EngineCore/Core/ProjectSettings.h"
 #include "EngineCore/Rollback/Rollback.h"
 #include "EngineCore/Components/MaterialComponent.h"
 #include "EngineCore/Components/NameComponent.h"

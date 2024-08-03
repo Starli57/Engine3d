@@ -1,6 +1,5 @@
 #include "EngineCore/Pch.h"
 #include "Camera.h"
-
 Camera::Camera(Ref<Ecs> ecs, GLFWwindow* window)
 {
 	this->ecs = ecs;

@@ -3,8 +3,8 @@
 #include <iostream>
 #include <vector>
 
-#include "EngineCore/IWindow.h"
-#include "EngineCore/Ref.h"
+#include "EngineCore/Editor/IWindow.h"
+#include "EngineCore/Core/Ref.h"
 
 class IEngineEditor
 {

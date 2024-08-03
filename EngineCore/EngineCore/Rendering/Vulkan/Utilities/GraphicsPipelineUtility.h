@@ -10,8 +10,8 @@
 #include "EngineCore/Rendering/Vulkan/Builders/AShaderModule.h"
 #include "EngineCore/Rendering/Vulkan/Builders/AVertexBuffer.h"
 
-#include "EngineCore/ProjectSettings.h"
-#include "EngineCore/Ref.h"
+#include "EngineCore/Core/ProjectSettings.h"
+#include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rollback/Rollback.h"
 #include "EngineCore/Components/UboModelComponent.h"
 

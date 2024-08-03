@@ -3,9 +3,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "ParametersRenderer.h"
-#include "EngineCore/Ref.h"
-#include "EngineCore/Entity.h"
-#include "EngineCore/AssetsDatabase.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Core/Entity.h"
+#include "EngineCore/AssetsManagement/AssetsDatabase.h"
 #include "EngineCore/Components/NameComponent.h"
 #include "EngineCore/Components/PositionComponent.h"
 #include "EngineCore/Components/RotationComponent.h"

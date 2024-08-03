@@ -5,8 +5,8 @@
 
 #include "Texture.h"
 #include "Asset.h"
-#include "EngineCore/Ref.h"
-#include "EngineCore/UniqueId.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Utilities/UniqueId.h"
 
 class Material : public Asset
 {

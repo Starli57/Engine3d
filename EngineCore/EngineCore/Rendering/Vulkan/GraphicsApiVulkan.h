@@ -10,7 +10,7 @@
 #include "Models/SwapChainData.h"
 #include "Models/ImageModel.h"
 
-#include "EngineCore/AssetsDatabase.h"
+#include "EngineCore/AssetsManagement/AssetsDatabase.h"
 #include "EngineCore/Entities/Level.h"
 #include "EngineCore/Rendering/IGraphicsApi.h"
 #include "EngineCore/Rendering/PipelinesCollection.h"
@@ -39,9 +39,9 @@
 #include "Utilities/MemoryUtility.h"
 
 #include "EngineCore/Assets/Mesh.h"
-#include "EngineCore/Ref.h"
-#include "EngineCore/Ecs.h"
-#include "EngineCore/ProjectSettings.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Core/Ecs.h"
+#include "EngineCore/Core/ProjectSettings.h"
 #include "EngineCore/Rollback/Rollback.h"
 #include "EngineCore/Components/MaterialComponent.h"
 #include "EngineCore/Components/MeshComponent.h"

@@ -4,9 +4,9 @@
 
 #include "Inspector.h"
 
-#include "EngineCore/Ref.h"
-#include "EngineCore/Ecs.h"
-#include "EngineCore/IWindow.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Core/Ecs.h"
+#include "EngineCore/Editor/IWindow.h"
 
 class Hierarchy : public IWindow
 {

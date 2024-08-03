@@ -1,11 +1,11 @@
 #pragma once
 
-#include "EngineCore/AssetsDatabase.h"
+#include "EngineCore/AssetsManagement/AssetsDatabase.h"
 #include "EngineCore/Assets/Texture.h"
 #include "EngineCore/Assets/Material.h"
 #include "EngineCore/Assets/Mesh.h"
-#include "EngineCore/Ref.h"
-#include "EngineCore/EventHandler.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Core/EventHandler.h"
 
 class IGraphicsApi
 {

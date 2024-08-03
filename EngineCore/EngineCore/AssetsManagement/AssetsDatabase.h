@@ -6,10 +6,10 @@
 #include <unordered_map>
 #include <filesystem>
 
-#include "EngineCore/Ref.h"
-#include "UniqueId.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Utilities/UniqueId.h"
 #include "EngineCore/CustomAssert.h"
-#include "ProjectSettings.h"
+#include "EngineCore/Core/ProjectSettings.h"
 #include "EngineCore/Assets/Mesh.h"
 #include "EngineCore/Assets/Material.h"
 #include "EngineCore/Assets/Texture.h"

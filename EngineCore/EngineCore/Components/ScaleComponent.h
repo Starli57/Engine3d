@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "EngineCore/IComponent.h"
+#include "EngineCore/Core/IComponent.h"
 
 struct ScaleComponent : public IComponent
 {

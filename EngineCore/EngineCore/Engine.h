@@ -6,12 +6,12 @@
 
 #include "Entities/Level.h"
 
-#include "EngineCore/AssetsDatabase.h"
+#include "EngineCore/AssetsManagement/AssetsDatabase.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 
-#include "EngineCore/Ref.h"
-#include "EngineCore/Ecs.h"
-#include "EngineCore/ProjectSettings.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Core/Ecs.h"
+#include "EngineCore/Core/ProjectSettings.h"
 #include "EngineCore/Rollback/Rollback.h"
 
 class Engine

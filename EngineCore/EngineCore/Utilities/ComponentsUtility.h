@@ -4,9 +4,9 @@
 #include <vector>
 #include <stdexcept>
 
-#include "EngineCore/Ref.h"
-#include "EngineCore/Entity.h"
-#include "EngineCore/IComponent.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Core/Entity.h"
+#include "EngineCore/Core/IComponent.h"
 
 #include "EngineCore/Components/CameraComponent.h"
 #include "EngineCore/Components/MaterialComponent.h"

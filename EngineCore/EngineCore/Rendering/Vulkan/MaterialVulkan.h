@@ -7,7 +7,7 @@
 #include "GraphicsApiVulkan.h"
 
 #include "EngineCore/Assets/Material.h"
-#include "EngineCore/AssetsDatabase.h"
+#include "EngineCore/AssetsManagement/AssetsDatabase.h"
 #include "EngineCore/Rendering/Vulkan/Descriptors.h"
 #include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
 #include "EngineCore/Rendering/Vulkan/Builders/AUniformBufferVulkan.h"

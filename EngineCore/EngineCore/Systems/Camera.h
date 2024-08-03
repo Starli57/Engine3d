@@ -9,8 +9,8 @@
 #include "EngineCore/Components/UboViewProjectionComponent.h"
 #include "EngineCore/Components/CameraComponent.h"
 #include "EngineCore/Systems/ISystem.h"
-#include "EngineCore/Ref.h"
-#include "EngineCore/Ecs.h"
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Core/Ecs.h"
 
 class Camera : public ISystem
 {

@@ -4,7 +4,7 @@
 
 #include "EngineCore/Engine.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
-#include "EngineCore/IWindow.h"
+#include "EngineCore/Editor/IWindow.h"
 
 class VulkanDebugInfo : public IWindow
 {
