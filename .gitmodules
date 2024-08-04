@@ -19,3 +19,6 @@
 [submodule "Externals/DearImgui"]
 	path = Externals/DearImgui
 	url = git@github.com:ocornut/imgui.git
+[submodule "Externals/YamlCpp"]
+	path = Externals/YamlCpp
+	url = git@github.com:jbeder/yaml-cpp.git

@@ -14,6 +14,7 @@ Externals["Entt"] = "Externals/Entt"
 Externals["Stb"] = "Externals/Stb"
 Externals["TinyObjLoader"] = "Externals/TinyObjLoader"
 Externals["DearImgui"] = "Externals/DearImgui"
+Externals["YamlCpp"] = "Externals/YamlCpp"
 
 Includes = {}
 Includes["EngineCore"] = "EngineCore"
@@ -27,6 +28,7 @@ Includes["Entt"] = "%{Externals.Entt}/single_include/entt"
 Includes["Stb"] = "%{Externals.Stb}"
 Includes["TinyObjLoader"] = "%{Externals.TinyObjLoader}"
 Includes["DearImgui"] = "%{Externals.DearImgui}"
+Includes["YamlCpp"] = "%{Externals.YamlCpp}/include"
 
 LibFolders = {}
 LibFolders["Vulkan"] = "%{VulkanSdk}/Lib"
@@ -67,7 +69,8 @@ project "Editor"
 		"%{Includes.SpdLog}",
 		"%{Includes.Entt}",
 		"%{Includes.Stb}",
-		"%{Includes.TinyObjLoader}"
+		"%{Includes.TinyObjLoader}",
+		"%{Includes.YamlCpp}"
 	}
 	
 	links
@@ -132,14 +135,16 @@ project "EngineCore"
 		"%{Includes.SpdLog}",
 		"%{Includes.Entt}",
 		"%{Includes.Stb}",
-		"%{Includes.TinyObjLoader}"
+		"%{Includes.TinyObjLoader}",
+		"%{Includes.YamlCpp}"
 	}
 
 	links
 	{
 		"Glfw",
 		"Glm",
-		"%{Libs.Vulkan}"
+		"%{Libs.Vulkan}",
+		"YamlCpp"
 	}
 	
 	defines
@@ -346,4 +351,30 @@ project "DearImgui"
 	defines
 	{
 		"GLFW_INCLUDE_VULKAN"
+	}
+
+			
+project "YamlCpp"
+	kind "StaticLib"
+	language "C++"
+	systemversion "latest"
+	staticruntime "On"
+	
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+	
+	files
+	{
+		"%{Externals.YamlCpp}/src/*.h",
+		"%{Externals.YamlCpp}/src/*.cpp"
+	}
+
+	includedirs
+	{
+		"%{Includes.YamlCpp}"
+	}
+
+	defines
+	{
+		"YAML_CPP_STATIC_DEFINE"
 	}
