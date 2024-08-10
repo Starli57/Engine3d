@@ -40,10 +40,10 @@ void Inspector::ShowAddComponentBtn()
     {
         for (int i = 0; i < componentsLength; i++)
         {
-            if (ImGui::Selectable(componentsNames[i]))
+            if (ImGui::Selectable(allComponentsNames[i]))
             {
                 addComponentSelectdIndex = i;
-                AddComponent(observingEntity, componentsNames[i]);
+                AddComponent(observingEntity, allComponentsNames[i]);
             }
         }
 
@@ -59,10 +59,10 @@ void Inspector::ShowAddComponentBtn()
     {
         for (int i = 0; i < componentsLength; i++)
         {
-            if (ImGui::Selectable(componentsNames[i]))
+            if (ImGui::Selectable(allComponentsNames[i]))
             {
                 removeComponentSelectdIndex = i;
-                RemoveComponent(observingEntity, componentsNames[i]);
+                RemoveComponent(observingEntity, allComponentsNames[i]);
             }
         }
 

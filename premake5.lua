@@ -78,7 +78,8 @@ project "Editor"
 		"EngineCore",
 		"ExampleProject",
 
-		"DearImgui"
+		"DearImgui",
+		"YamlCpp"
 	}
 	
 	defines
@@ -87,7 +88,8 @@ project "Editor"
 		"GLM_FORCE_RADIANS",
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
 		"STB_IMAGE_IMPLEMENTATION",
-		"TINYOBJLOADER_IMPLEMENTATION"
+		"TINYOBJLOADER_IMPLEMENTATION",
+		"YAML_CPP_STATIC_DEFINE"
 	}
 
 	filter "system:windows"
@@ -153,7 +155,8 @@ project "EngineCore"
 		"GLM_FORCE_RADIANS",
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
 		"STB_IMAGE_IMPLEMENTATION",
-		"TINYOBJLOADER_IMPLEMENTATION"
+		"TINYOBJLOADER_IMPLEMENTATION",
+		"YAML_CPP_STATIC_DEFINE"
 	}
 	
 	prebuildcommands 

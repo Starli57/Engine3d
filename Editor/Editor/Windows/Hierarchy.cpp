@@ -30,7 +30,7 @@ void Hierarchy::Update()
 
             if (doSave)
             {
-                ;
+                serializer->SerializePrefab(entityRef);
             }
 
             if (doDelete)
@@ -54,9 +54,10 @@ void Hierarchy::Update()
     ImGui::End();
 }
 
-Hierarchy::Hierarchy(Ref<Ecs> ecs, Ref<Inspector> inspector) 
+Hierarchy::Hierarchy(Ref<Ecs> ecs, Ref<Inspector> inspector, Ref<ProjectSettigns> projectSettings)
     : ecs(ecs), inspector(inspector)
 {
+    serializer = CreateRef<EntitySerializer>(projectSettings);
 }
 
 Hierarchy::~Hierarchy()

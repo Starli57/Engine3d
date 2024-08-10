@@ -25,7 +25,7 @@ Editor::Editor()
 
 	auto inspector = CreateRef<Inspector>(engine->GetAssetsDatabase());
 	editorUi->AddWindow(inspector);
-	editorUi->AddWindow(CreateRef<Hierarchy>(engine->GetEcs(), inspector));
+	editorUi->AddWindow(CreateRef<Hierarchy>(engine->GetEcs(), inspector, projectSettings));
 	editorUi->AddWindow(CreateRef<ImguiDemo>());
 	editorUi->AddWindow(CreateRef<VulkanDebugInfo>(engine, *vulkanApi));
 

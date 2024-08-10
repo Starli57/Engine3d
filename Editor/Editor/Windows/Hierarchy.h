@@ -6,12 +6,14 @@
 
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
+#include "EngineCore/Core/ProjectSettings.h"
 #include "EngineCore/Editor/IWindow.h"
+#include "EngineCore/Serialization/EntitySerializer.h"
 
 class Hierarchy : public IWindow
 {
 public:
-	Hierarchy(Ref<Ecs> ecs, Ref<Inspector> inspector);
+	Hierarchy(Ref<Ecs> ecs, Ref<Inspector> inspector, Ref<ProjectSettigns> projectSettings);
 	~Hierarchy();
 
 	void Update() override;
@@ -19,6 +21,7 @@ public:
 private:
 	Ref<Ecs> ecs;
 	Ref<Inspector> inspector;
+	Ref<EntitySerializer> serializer;
 
 	int selectedItemIndex;
 };

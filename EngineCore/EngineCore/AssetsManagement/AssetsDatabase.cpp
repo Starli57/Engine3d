@@ -77,13 +77,13 @@ int32_t AssetsDatabase::AddMesh(Ref<Mesh> mesh)
 {
 	//todo: check if the mesh is already in the list
 	meshes.push_back(mesh);
-	return meshes.size() - 1;
+	return static_cast<int32_t>(meshes.size() - 1);
 }
 
 int32_t AssetsDatabase::AddMaterial(Ref<Material> material)
 {
 	materials.push_back(material);
-	return materials.size() - 1;
+	return static_cast<int32_t>(materials.size() - 1);
 }
 
 int32_t AssetsDatabase::AddTexture(Ref<Texture> texture)
@@ -92,7 +92,7 @@ int32_t AssetsDatabase::AddTexture(Ref<Texture> texture)
 	if (textureIndex >= 0) return textureIndex;
 
 	textures.push_back(texture);
-	return textures.size() - 1;
+	return static_cast<int32_t>(textures.size() - 1);
 }
 
 void AssetsDatabase::RemoveMesh(Ref<Mesh> mesh)
