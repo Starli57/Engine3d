@@ -28,6 +28,7 @@
 const int componentsLength = 11;
 extern const char* allComponentsNames[componentsLength];
 
+
 bool HasComponent(Ref<Entity> entity, const std::string& componentName);
 void AddComponent(Ref<Entity> entity, const std::string& componentName);
 void RemoveComponent(Ref<Entity> entity, const std::string& componentName);

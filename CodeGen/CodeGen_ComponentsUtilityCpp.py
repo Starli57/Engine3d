@@ -1,7 +1,7 @@
 import os
 
-components_folder = "EngineShared/Source/EngineShared/Components"
-output_file = "EngineShared/Source/EngineShared/ComponentsUtility.h"
+components_folder = "EngineCore/EngineCore/Components"
+output_file = "EngineCore/EngineCore/Utilities/ComponentsUtility.cpp"
 
 def extract_component_names(folder):
     component_names = []
@@ -16,18 +16,9 @@ with open(output_file, 'w') as f:
 
 #Defs
     f.write("\n")
-    f.write("#pragma once\n")
-    f.write("#include <string>\n")
-    f.write("#include <vector>\n")
-    f.write("#include <stdexcept>\n")
-
-    f.write("#include \"Ref.h\"\n")
-    f.write("#include \"Entity.h\"\n")
-    f.write("#include \"IComponent.h\"\n")
+    f.write("#include \"EngineCore/Pch.h\"\n")
+    f.write("#include \"EngineCore/Utilities/ComponentsUtility.h\"\n")
     f.write("\n")
-
-    for component in components:
-        f.write(f"#include \"Components/{component}\"\n")
 
 #Notes
     f.write("\n")
@@ -39,11 +30,7 @@ with open(output_file, 'w') as f:
 
 #Components array
     f.write("\n")
-    f.write(f"const int componentsLength = {len(components)};")
-    f.write("\n")
-    f.write("\n")
-
-    f.write("const char* componentsNames[componentsLength] =\n")
+    f.write("const char* allComponentsNames[componentsLength] =\n")
     f.write("{\n")
     for component in components:
         f.write(f"      \"{component.split('.')[0].strip()}\",\n")

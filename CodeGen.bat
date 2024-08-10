@@ -1,2 +1,3 @@
-python CodeGen_ComponentsUtility.py
+python CodeGen/CodeGen_ComponentsUtilityH.py
+python CodeGen/CodeGen_ComponentsUtilityCpp.py
 pause
