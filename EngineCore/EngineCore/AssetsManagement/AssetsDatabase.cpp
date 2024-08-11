@@ -55,7 +55,7 @@ Ref<Mesh> AssetsDatabase::GetMesh(const int32_t index)
 
 Ref<Material> AssetsDatabase::GetMaterial(const int32_t index)
 {
-	CAssert::Check(index >= 0 && index < textures.size(), "Material index is out of range");
+	CAssert::Check(index >= 0 && index < materials.size(), "Material index is out of range");
 	return materials[index];
 }
 

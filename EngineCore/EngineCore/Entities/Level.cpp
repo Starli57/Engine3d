@@ -34,9 +34,13 @@ void Level::LoadLevel()
 	vikingMaterial->SetAlbedoTexture(vikignTextureIndex);
 	auto vikingMaterialIndex = assetDatabase->AddMaterial(vikingMaterial);
 
-	std::string vertexColorOpaquePipelineId = "vertexColorOpaque";
-	auto formulaMaterial = graphicsApi->CreateMaterial(vertexColorOpaquePipelineId);
+	auto formulaMaterial = graphicsApi->CreateMaterial(albedoOpaquePipelineId);
+	formulaMaterial->SetAlbedoTexture(formulaTextureIndex);
 	auto formulaMaterialIndex = assetDatabase->AddMaterial(formulaMaterial);
+
+	std::string vertexColorOpaquePipelineId = "vertexColorOpaque";
+	auto formulaColorMaterial = graphicsApi->CreateMaterial(vertexColorOpaquePipelineId);
+	auto formulaColorMaterialIndex = assetDatabase->AddMaterial(formulaColorMaterial);
 
 	//meshes
 	auto formulaMeshPath = assetDatabase->meshesPaths.find("Formula_1_mesh.obj");
@@ -55,7 +59,7 @@ void Level::LoadLevel()
 	car->AddComponent<ScaleComponent>(glm::vec3(1, 1, 1));
 	car->AddComponent<UboModelComponent>();
 	car->AddComponent<MeshComponent>(formulaMeshIndex);
-	car->AddComponent<MaterialComponent>(formulaMaterialIndex);
+	car->AddComponent<MaterialComponent>(formulaColorMaterialIndex);
 
 	auto vikingRoomMeshPath = assetDatabase->meshesPaths.find("viking_room.obj");
 	auto vikingsRoom = ecs->CreateEntity();
