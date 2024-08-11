@@ -80,6 +80,7 @@ void EntitySerializer::SerializePrefab(Ref<Entity> entity, const std::string& fi
 	YAML::Emitter out;
 	out << YAML::BeginMap;
 
+	SerializeComponent<IdComponent>(out, entity);
 	SerializeComponent<NameComponent>(out, entity);
 	SerializeComponent<PositionComponent>(out, entity);
 	SerializeComponent<RotationComponent>(out, entity);
@@ -112,7 +113,8 @@ bool EntitySerializer::InstantiatePrefab(Ref<Ecs> ecs, const std::filesystem::pa
 	}
 
 	auto entity = ecs->CreateEntity();
-
+	entity->AddComponent<IdComponent>(UniqueIdGenerator::Generate());
+	
 	auto nameComponent = data["NameComponent"];
 	if (nameComponent)
 	{
@@ -281,4 +283,9 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboModelComponent& component)
 {
 	out << YAML::Key << "UboModelComponent";
+}
+
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, IdComponent& component)
+{
+	//don't need to serialize, because ID is unique only inside 1 session
 }

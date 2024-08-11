@@ -3,7 +3,7 @@ NameComponent:
 PositionComponent:
   position: [0, 70, 7]
 RotationComponent:
-  rotation: [0, -70, 181.339157]
+  rotation: [0, -70, 679.156738]
 RotationVelocityComponent:
   velocity: [0, 0, 50]
 ScaleComponent:
@@ -12,3 +12,4 @@ MeshComponent:
   meshIndex: 1
 MaterialComponent:
   materialIndex: 0
+UboModelComponent

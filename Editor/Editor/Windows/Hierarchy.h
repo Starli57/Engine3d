@@ -8,6 +8,8 @@
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/ProjectSettings.h"
 #include "EngineCore/Editor/IWindow.h"
+#include "EngineCore/Components/NameComponent.h"
+#include "EngineCore/Components/IdComponent.h"
 #include "EngineCore/Serialization/EntitySerializer.h"
 
 class Hierarchy : public IWindow

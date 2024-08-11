@@ -1,12 +1,11 @@
 
 #include "Hierarchy.h"
-#include "EngineCore/Components/NameComponent.h"
 
 void Hierarchy::Update()
 {
     ImGui::Begin("Entities");
 
-    auto view = ecs->registry->view<NameComponent>();
+    auto view = ecs->registry->view<NameComponent, IdComponent>();
 
     for (int i = 0; i < ecs->allEntities.size(); i++)
     {
@@ -17,6 +16,12 @@ void Hierarchy::Update()
         {
             auto nameComponent = view.get<NameComponent>(entityRef->GetEntity());
             entityName = nameComponent.name;
+        }
+
+        if (entityRef->HasComponent<IdComponent>())
+        {
+            auto id = view.get<IdComponent>(entityRef->GetEntity()).id;
+            entityName = std::format("{}_{}", entityName, id);
         }
 
         if (selectedItemIndex == i) 

@@ -9,6 +9,7 @@
 #include "EngineCore/Core/Entity.h"
 #include "EngineCore/Core/ProjectSettings.h"
 
+#include "EngineCore/Components/IdComponent.h"
 #include "EngineCore/Components/CameraComponent.h"
 #include "EngineCore/Components/MaterialComponent.h"
 #include "EngineCore/Components/MeshComponent.h"
@@ -54,4 +55,5 @@ private:
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, MeshComponent& component);
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, MaterialComponent& component);
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboModelComponent& component);
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, IdComponent& component);
 };

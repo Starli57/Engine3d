@@ -48,6 +48,7 @@ void Level::LoadLevel()
 	auto vikingsRoomMeshIndex = assetDatabase->AddMesh(vikingsRoomMesh);
 
 	auto car = ecs->CreateEntity();
+	car->AddComponent<IdComponent>();
 	car->AddComponent<NameComponent>("Car");
 	car->AddComponent<PositionComponent>(glm::vec3(0, -130, 0));
 	car->AddComponent<RotationComponent>(glm::vec3(130, 0, 0));
@@ -58,6 +59,7 @@ void Level::LoadLevel()
 
 	auto vikingRoomMeshPath = assetDatabase->meshesPaths.find("viking_room.obj");
 	auto vikingsRoom = ecs->CreateEntity();
+	vikingsRoom->AddComponent<IdComponent>();
 	vikingsRoom->AddComponent<NameComponent>("Room");
 	vikingsRoom->AddComponent<PositionComponent>(glm::vec3(0, 70, 7));
 	vikingsRoom->AddComponent<RotationComponent>(glm::vec3(0, -70, 0));
@@ -68,6 +70,7 @@ void Level::LoadLevel()
 	vikingsRoom->AddComponent<MaterialComponent>(vikingMaterialIndex);
 
 	auto cameraEntity = ecs->CreateEntity();
+	cameraEntity->AddComponent<IdComponent>();
 	cameraEntity->AddComponent<NameComponent>("Camera");
 	cameraEntity->AddComponent<PositionComponent>(glm::vec3(0, 100, 500));
 	cameraEntity->AddComponent<UboModelComponent>();
@@ -75,6 +78,7 @@ void Level::LoadLevel()
 	cameraEntity->AddComponent<CameraComponent>();
 
 	auto diffuseLight = ecs->CreateEntity();
+	diffuseLight->AddComponent<IdComponent>();
 	diffuseLight->AddComponent<NameComponent>("Diffuse Light");
 	diffuseLight->AddComponent<UboDiffuseLightComponent>();
 }

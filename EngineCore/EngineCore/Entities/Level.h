@@ -14,6 +14,7 @@
 #include "EngineCore/Core/Entity.h"
 #include "EngineCore/Core/ProjectSettings.h"
 #include "EngineCore/Rollback/Rollback.h"
+#include "EngineCore/Components/IdComponent.h"
 #include "EngineCore/Components/MaterialComponent.h"
 #include "EngineCore/Components/NameComponent.h"
 #include "EngineCore/Components/CameraComponent.h"
