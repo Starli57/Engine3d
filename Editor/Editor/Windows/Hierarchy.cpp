@@ -30,7 +30,8 @@ void Hierarchy::Update()
 
             if (doSave)
             {
-                serializer->SerializePrefab(entityRef);
+                auto filePath = projectSettings->prefabsPath + "/" + entityName + ".yaml";
+                serializer->SerializePrefab(entityRef, filePath);
             }
 
             if (doDelete)
@@ -55,7 +56,7 @@ void Hierarchy::Update()
 }
 
 Hierarchy::Hierarchy(Ref<Ecs> ecs, Ref<Inspector> inspector, Ref<ProjectSettigns> projectSettings)
-    : ecs(ecs), inspector(inspector)
+    : ecs(ecs), inspector(inspector), projectSettings(projectSettings)
 {
     serializer = CreateRef<EntitySerializer>(projectSettings);
 }

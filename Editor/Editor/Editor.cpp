@@ -8,6 +8,7 @@
 #include "Windows/Hierarchy.h"
 #include "Windows/Inspector.h"
 #include "Windows/ImguiDemo.h"
+#include "Windows/AssetsWindow.h"
 #include "Windows/VulkanDebugInfo.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 
@@ -28,6 +29,7 @@ Editor::Editor()
 	editorUi->AddWindow(CreateRef<Hierarchy>(engine->GetEcs(), inspector, projectSettings));
 	editorUi->AddWindow(CreateRef<ImguiDemo>());
 	editorUi->AddWindow(CreateRef<VulkanDebugInfo>(engine, *vulkanApi));
+	editorUi->AddWindow(CreateRef<AssetsWindow>(engine->GetAssetsDatabase(), engine->GetLevel()));
 
 	engine->BindEditorUpdateFunction([this]() {editorUi->Update(); });
 	game->Run();

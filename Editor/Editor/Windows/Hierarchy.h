@@ -22,6 +22,7 @@ private:
 	Ref<Ecs> ecs;
 	Ref<Inspector> inspector;
 	Ref<EntitySerializer> serializer;
+	Ref<ProjectSettigns> projectSettings;
 
 	int selectedItemIndex;
 };

@@ -1,0 +1,14 @@
+NameComponent:
+  name: Room
+PositionComponent:
+  position: [0, 70, 7]
+RotationComponent:
+  rotation: [0, -70, 181.339157]
+RotationVelocityComponent:
+  velocity: [0, 0, 50]
+ScaleComponent:
+  scale: [140, 140, 140]
+MeshComponent:
+  meshIndex: 1
+MaterialComponent:
+  materialIndex: 0

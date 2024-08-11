@@ -34,6 +34,8 @@ public:
 	void LoadLevel();
 	void UnloadLevel();
 
+	void InstantiatePrefab(const std::filesystem::path& path);
+
 private:
 	Ref<Ecs> ecs;
 	Ref<AssetsDatabase> assetDatabase;

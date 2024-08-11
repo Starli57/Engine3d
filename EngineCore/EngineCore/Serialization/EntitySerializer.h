@@ -26,8 +26,8 @@ public:
 	EntitySerializer(Ref<ProjectSettigns> projectSettings);
 	~EntitySerializer();
 
-	void SerializePrefab(Ref<Entity> entity);
-	void InstantiatePrefab(std::string& path);
+	void SerializePrefab(Ref<Entity> entity, const std::string& filePath);
+	void InstantiatePrefab(const std::filesystem::path& path);
 
 private:
 

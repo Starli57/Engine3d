@@ -1,5 +1,6 @@
 #include "EngineCore/Pch.h"
 #include "Level.h"
+#include <EngineCore/Serialization/EntitySerializer.h>
 
 Level::Level(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback)
 {
@@ -82,4 +83,10 @@ void Level::UnloadLevel()
 {
 	spdlog::info("Unload level");
 	ecs.reset();
+}
+
+void Level::InstantiatePrefab(const std::filesystem::path& path)
+{
+	auto serializer = CreateRef<EntitySerializer>(projectSettings);
+	serializer->InstantiatePrefab(path);
 }

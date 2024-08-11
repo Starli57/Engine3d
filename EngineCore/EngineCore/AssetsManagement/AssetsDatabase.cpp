@@ -2,14 +2,13 @@
 #include "EngineCore/AssetsManagement/AssetsDatabase.h"
 #include "EngineCore/Utilities/IOUtility.h"
 
-//todo: calculate assets links count to be able to dispose if not used
-
 AssetsDatabase::AssetsDatabase(Ref<ProjectSettigns> projectSettings)
 {
 	this->projectSettings = projectSettings;
 
 	FillMeshesPaths();
 	FillTexturesPaths();
+	FillPrefabsPaths();
 }
 	
 AssetsDatabase::~AssetsDatabase()
@@ -124,5 +123,13 @@ void AssetsDatabase::FillTexturesPaths()
 	relevantExtensions.reserve(1);
 	relevantExtensions.push_back(".png");
 	IOUtility().FindAndEmplaceResourcesFiles(projectSettings->resourcesPath, relevantExtensions, texturesPaths);
+}
+
+void AssetsDatabase::FillPrefabsPaths()
+{
+	auto relevantExtensions = std::vector<std::string>();
+	relevantExtensions.reserve(1);
+	relevantExtensions.push_back(".yaml");
+	IOUtility().FindAndEmplaceResourcesFiles(projectSettings->prefabsPath, relevantExtensions, prefabsPaths);
 }
 

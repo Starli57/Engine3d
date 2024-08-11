@@ -27,6 +27,7 @@ public:
 	IGraphicsApi* GetGraphicsApi() { return graphicsApi; }
 	Ref<Ecs> GetEcs() { return ecs; }
 	Ref<AssetsDatabase> GetAssetsDatabase() { return assetsDatabase; }
+	Level* GetLevel() { return level; }
 
 	float GetDeltaTime() { return deltaTime; }
 

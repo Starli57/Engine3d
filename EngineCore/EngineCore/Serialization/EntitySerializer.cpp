@@ -75,7 +75,7 @@ EntitySerializer::~EntitySerializer()
 {
 }
 
-void EntitySerializer::SerializePrefab(Ref<Entity> entity)
+void EntitySerializer::SerializePrefab(Ref<Entity> entity, const std::string& filePath)
 {
 	YAML::Emitter out;
 	out << YAML::BeginMap;
@@ -92,12 +92,11 @@ void EntitySerializer::SerializePrefab(Ref<Entity> entity)
 
 	out << YAML::EndMap;
 
-	auto filePath = projectSettings->prefabsPath + "/prefabName.yaml";
 	std::ofstream fout(filePath);
 	fout << out.c_str();
 }
 
-void EntitySerializer::InstantiatePrefab(std::string& path)
+void EntitySerializer::InstantiatePrefab(const std::filesystem::path& path)
 {
 }
 

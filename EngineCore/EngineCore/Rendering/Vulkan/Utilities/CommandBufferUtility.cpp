@@ -25,7 +25,7 @@ namespace VkUtils
 		if (commandBuffers.size() == 0) return;
 		spdlog::info("Free command buffers {0}", commandBuffers.size());
 
-		vkFreeCommandBuffers(logicalDevice, commandPool, commandBuffers.size(), commandBuffers.data());
+		vkFreeCommandBuffers(logicalDevice, commandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
 	}
 
 	void RecordCommandBuffer(Ref<Ecs> ecs, Ref<AssetsDatabase> assetsDatabase, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,

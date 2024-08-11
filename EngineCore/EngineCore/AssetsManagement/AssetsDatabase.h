@@ -19,6 +19,7 @@ class AssetsDatabase
 public:
 	std::unordered_map<std::string, std::filesystem::path> meshesPaths;
 	std::unordered_map<std::string, std::filesystem::path> texturesPaths;
+	std::unordered_map<std::string, std::filesystem::path> prefabsPaths;
 
 	AssetsDatabase(Ref<ProjectSettigns> projectSettings);
 	~AssetsDatabase();
@@ -68,4 +69,5 @@ private:
 
 	void FillMeshesPaths();
 	void FillTexturesPaths();
+	void FillPrefabsPaths();
 };
