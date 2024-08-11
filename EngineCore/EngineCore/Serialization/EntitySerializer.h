@@ -2,7 +2,9 @@
 
 #include <fstream>
 #include <yaml-cpp/yaml.h>
+#include <filesystem>
 
+#include <EngineCore/Core/Ecs.h>
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Entity.h"
 #include "EngineCore/Core/ProjectSettings.h"
@@ -27,7 +29,7 @@ public:
 	~EntitySerializer();
 
 	void SerializePrefab(Ref<Entity> entity, const std::string& filePath);
-	void InstantiatePrefab(const std::filesystem::path& path);
+	bool InstantiatePrefab(Ref<Ecs> ecs, const std::filesystem::path& path);
 
 private:
 
@@ -51,4 +53,5 @@ private:
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboDiffuseLightComponent& component);
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, MeshComponent& component);
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, MaterialComponent& component);
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboModelComponent& component);
 };

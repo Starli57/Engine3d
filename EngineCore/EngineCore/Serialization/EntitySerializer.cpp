@@ -89,6 +89,7 @@ void EntitySerializer::SerializePrefab(Ref<Entity> entity, const std::string& fi
 	SerializeComponent<UboDiffuseLightComponent>(out, entity);
 	SerializeComponent<MeshComponent>(out, entity);
 	SerializeComponent<MaterialComponent>(out, entity);
+	SerializeComponent<UboModelComponent>(out, entity);
 
 	out << YAML::EndMap;
 
@@ -96,8 +97,90 @@ void EntitySerializer::SerializePrefab(Ref<Entity> entity, const std::string& fi
 	fout << out.c_str();
 }
 
-void EntitySerializer::InstantiatePrefab(const std::filesystem::path& path)
+bool EntitySerializer::InstantiatePrefab(Ref<Ecs> ecs, const std::filesystem::path& path)
 {
+	YAML::Node data;
+
+	try
+	{
+		data = YAML::LoadFile(path.string());
+	}
+	catch (YAML::ParserException e)
+	{
+		spdlog::critical("Failed to instantiate prefab path={0} error={1}", path.string(), e.what());
+		return false;
+	}
+
+	auto entity = ecs->CreateEntity();
+
+	auto nameComponent = data["NameComponent"];
+	if (nameComponent)
+	{
+		entity->AddComponent<NameComponent>(nameComponent["name"].as<std::string>());
+	}
+
+	auto positionComponent = data["PositionComponent"];
+	if (positionComponent) 
+	{
+		entity->AddComponent<PositionComponent>(positionComponent["position"].as<glm::vec3>());
+	}
+
+	auto rotationComponent = data["RotationComponent"];
+	if (rotationComponent)
+	{
+		entity->AddComponent<RotationComponent>(rotationComponent["rotation"].as<glm::vec3>());
+	}
+
+	auto rotationVelocityComponent = data["RotationVelocityComponent"];
+	if (rotationVelocityComponent)
+	{
+		entity->AddComponent<RotationVelocityComponent>(rotationVelocityComponent["velocity"].as<glm::vec3>());
+	}
+
+	auto scaleComponent = data["ScaleComponent"];
+	if (scaleComponent)
+	{
+		entity->AddComponent<ScaleComponent>(scaleComponent["scale"].as<glm::vec3>());
+	}
+
+	auto cameraComponent = data["CameraComponent"];
+	if (cameraComponent)
+	{
+		entity->AddComponent<CameraComponent>(
+			cameraComponent["fov"].as<float>(),
+			cameraComponent["zNear"].as<float>(),
+			cameraComponent["zFar"].as<float>(),
+			cameraComponent["lookPoint"].as<glm::vec3>(),
+			cameraComponent["upAxis"].as<glm::vec3>());
+	}
+
+	auto uboModelComponent = data["UboModelComponent"];
+	if (uboModelComponent) 
+	{
+		entity->AddComponent<UboModelComponent>();
+	}
+
+	auto uboDiffuseLightComponent = data["UboDiffuseLightComponent"];
+	if (uboDiffuseLightComponent)
+	{
+		entity->AddComponent<UboDiffuseLightComponent>(uboDiffuseLightComponent["position"].as<glm::vec3>());
+	}
+
+	auto meshComponent = data["MeshComponent"];
+	if (meshComponent)
+	{
+		auto meshIndex = meshComponent["meshIndex"].as<int>();
+		if (meshIndex == -1) entity->AddComponent<MeshComponent>();
+		else entity->AddComponent<MeshComponent>(meshIndex);
+	}
+
+	auto materialComponent = data["MaterialComponent"];
+	if (materialComponent)
+	{
+		entity->AddComponent<MaterialComponent>(materialComponent["materialIndex"].as<uint32_t>());
+	}
+
+	return true;
 }
 
 void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, NameComponent& component)
@@ -193,4 +276,9 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 	out << YAML::Key << "materialIndex" << YAML::Value << component.materialIndex;
 
 	out << YAML::EndMap;
+}
+
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboModelComponent& component)
+{
+	out << YAML::Key << "UboModelComponent";
 }

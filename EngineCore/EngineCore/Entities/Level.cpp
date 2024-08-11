@@ -88,5 +88,5 @@ void Level::UnloadLevel()
 void Level::InstantiatePrefab(const std::filesystem::path& path)
 {
 	auto serializer = CreateRef<EntitySerializer>(projectSettings);
-	serializer->InstantiatePrefab(path);
+	serializer->InstantiatePrefab(ecs, path);
 }
