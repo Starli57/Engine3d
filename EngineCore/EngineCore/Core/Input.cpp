@@ -20,6 +20,16 @@ GLFWkeyfun Input::SetKeyCallback(GLFWwindow* window, GLFWkeyfun callback)
 	return glfwSetKeyCallback(window, callback);
 }
 
+GLFWcursorposfun Input::SetCursorPosCallback(GLFWcursorposfun callback)
+{
+	return SetCursorPosCallback(cachedWindow, callback);
+}
+
+GLFWcursorposfun Input::SetCursorPosCallback(GLFWwindow* window, GLFWcursorposfun callback)
+{
+	return glfwSetCursorPosCallback(window, callback);
+}
+
 bool Input::IsKeyPressed(int key)
 {
 	return IsKeyPressed(cachedWindow, key);
@@ -53,4 +63,14 @@ bool Input::IsKeyHold(GLFWwindow* window, int key)
 {
 	auto state = glfwGetKey(window, key);
 	return state == GLFW_REPEAT;
+}
+
+void Input::GetCursorPosition(double& x, double& y)
+{
+	GetCursorPosition(cachedWindow, x, y);
+}
+
+void Input::GetCursorPosition(GLFWwindow* window, double& x, double& y)
+{
+	glfwGetCursorPos(window, &x, &y);
 }

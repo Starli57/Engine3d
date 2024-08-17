@@ -21,14 +21,9 @@ void FreeCameraSystem::Update(float deltaTime)
 		auto& freeCamComponent = entities.get<FreeCameraComponent>(entity);
 
 		//todo: it's better to have separated component to set and apply position
-		if (input->IsKeyHold(68))//d
+		if (input->IsKeyPressed(GLFW_KEY_D))
 			position.x += freeCamComponent.movementSpeed * deltaTime;
-		if (input->IsKeyHold(65))//a
-			position.x -= freeCamComponent.movementSpeed * deltaTime;
-
-		if (input->IsKeyPressed(68))//d
-			position.x += freeCamComponent.movementSpeed * deltaTime;
-		if (input->IsKeyPressed(65))//a
+		if (input->IsKeyPressed(GLFW_KEY_A))
 			position.x -= freeCamComponent.movementSpeed * deltaTime;
 	}
 }
