@@ -11,7 +11,8 @@
 const char* allComponentsNames[componentsLength] =
 {
       "CameraComponent",
-      "FreeCameraComponent",
+      "CameraFreeComponent",
+      "CameraOrbitComponent",
       "IdComponent",
       "MaterialComponent",
       "MeshComponent",
@@ -29,7 +30,8 @@ const char* allComponentsNames[componentsLength] =
 bool HasComponent(Ref<Entity> entity, const std::string& componentName)
 {
       if (componentName == "CameraComponent") return entity->HasComponent<CameraComponent>();
-      if (componentName == "FreeCameraComponent") return entity->HasComponent<FreeCameraComponent>();
+      if (componentName == "CameraFreeComponent") return entity->HasComponent<CameraFreeComponent>();
+      if (componentName == "CameraOrbitComponent") return entity->HasComponent<CameraOrbitComponent>();
       if (componentName == "IdComponent") return entity->HasComponent<IdComponent>();
       if (componentName == "MaterialComponent") return entity->HasComponent<MaterialComponent>();
       if (componentName == "MeshComponent") return entity->HasComponent<MeshComponent>();
@@ -50,7 +52,8 @@ void AddComponent(Ref<Entity> entity, const std::string& componentName)
       if (HasComponent(entity, componentName)) return;
 
       if (componentName == "CameraComponent") entity->AddComponent<CameraComponent>();
-      if (componentName == "FreeCameraComponent") entity->AddComponent<FreeCameraComponent>();
+      if (componentName == "CameraFreeComponent") entity->AddComponent<CameraFreeComponent>();
+      if (componentName == "CameraOrbitComponent") entity->AddComponent<CameraOrbitComponent>();
       if (componentName == "IdComponent") entity->AddComponent<IdComponent>();
       if (componentName == "MaterialComponent") entity->AddComponent<MaterialComponent>();
       if (componentName == "MeshComponent") entity->AddComponent<MeshComponent>();
@@ -70,7 +73,8 @@ void RemoveComponent(Ref<Entity> entity, const std::string& componentName)
       if (!HasComponent(entity, componentName)) return;
 
       if (componentName == "CameraComponent") entity->RemoveComponent<CameraComponent>();
-      if (componentName == "FreeCameraComponent") entity->RemoveComponent<FreeCameraComponent>();
+      if (componentName == "CameraFreeComponent") entity->RemoveComponent<CameraFreeComponent>();
+      if (componentName == "CameraOrbitComponent") entity->RemoveComponent<CameraOrbitComponent>();
       if (componentName == "IdComponent") entity->RemoveComponent<IdComponent>();
       if (componentName == "MaterialComponent") entity->RemoveComponent<MaterialComponent>();
       if (componentName == "MeshComponent") entity->RemoveComponent<MeshComponent>();

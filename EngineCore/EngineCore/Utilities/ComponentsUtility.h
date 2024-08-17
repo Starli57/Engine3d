@@ -9,7 +9,8 @@
 #include "EngineCore/Core/IComponent.h"
 
 #include "EngineCore/Components/CameraComponent.h"
-#include "EngineCore/Components/FreeCameraComponent.h"
+#include "EngineCore/Components/CameraFreeComponent.h"
+#include "EngineCore/Components/CameraOrbitComponent.h"
 #include "EngineCore/Components/IdComponent.h"
 #include "EngineCore/Components/MaterialComponent.h"
 #include "EngineCore/Components/MeshComponent.h"
@@ -27,7 +28,7 @@
 /// Don't make any changes in the file
 /// </summary>
 
-const int componentsLength = 13;
+const int componentsLength = 14;
 extern const char* allComponentsNames[componentsLength];
 
 
