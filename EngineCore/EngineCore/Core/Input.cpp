@@ -30,6 +30,16 @@ GLFWcursorposfun Input::SetCursorPosCallback(GLFWwindow* window, GLFWcursorposfu
 	return glfwSetCursorPosCallback(window, callback);
 }
 
+GLFWmousebuttonfun Input::SetMouseButtonCallback(GLFWmousebuttonfun callback)
+{
+	return SetMouseButtonCallback(cachedWindow, callback);
+}
+
+GLFWmousebuttonfun Input::SetMouseButtonCallback(GLFWwindow* window, GLFWmousebuttonfun callback)
+{
+	return glfwSetMouseButtonCallback(window, callback);
+}
+
 bool Input::IsKeyPressed(int key)
 {
 	return IsKeyPressed(cachedWindow, key);
@@ -63,6 +73,26 @@ bool Input::IsKeyHold(GLFWwindow* window, int key)
 {
 	auto state = glfwGetKey(window, key);
 	return state == GLFW_REPEAT;
+}
+
+bool Input::IsMousePressed(int button)
+{
+	return IsMousePressed(cachedWindow, button);
+}
+
+bool Input::IsMouseReleased(int button)
+{
+	return IsMouseReleased(cachedWindow, button);
+}
+
+bool Input::IsMousePressed(GLFWwindow* window, int button)
+{
+	return glfwGetMouseButton(window, button) == GLFW_PRESS;
+}
+
+bool Input::IsMouseReleased(GLFWwindow* window, int button)
+{
+	return glfwGetMouseButton(window, button) == GLFW_RELEASE;
 }
 
 void Input::GetCursorPosition(double& x, double& y)

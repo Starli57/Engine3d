@@ -14,6 +14,9 @@ public:
 	GLFWcursorposfun SetCursorPosCallback(GLFWcursorposfun callback);
 	GLFWcursorposfun SetCursorPosCallback(GLFWwindow* window, GLFWcursorposfun callback);
 
+	GLFWmousebuttonfun SetMouseButtonCallback(GLFWmousebuttonfun callback);
+	GLFWmousebuttonfun SetMouseButtonCallback(GLFWwindow* window, GLFWmousebuttonfun callback);
+
 	bool IsKeyPressed(int key);
 	bool IsKeyPressed(GLFWwindow* window, int key);
 
@@ -22,6 +25,12 @@ public:
 
 	bool IsKeyHold(int key);
 	bool IsKeyHold(GLFWwindow* window, int key);
+
+	bool IsMousePressed(int button);
+	bool IsMousePressed(GLFWwindow* window, int button);
+
+	bool IsMouseReleased(int button);
+	bool IsMouseReleased(GLFWwindow* window, int button);
 
 	void GetCursorPosition(double& x, double& y);
 	void GetCursorPosition(GLFWwindow* window, double& x, double& y);
