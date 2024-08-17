@@ -30,6 +30,8 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 		throw e;
 	}
 
+	input = CreateRef<Input>(window);
+
 	level = new Level(ecs, projectSettings, assetsDatabase, graphicsApi, engineRollback);
 	level->LoadLevel();
 	engineRollback->Add([this] { delete level; });
