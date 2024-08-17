@@ -9,6 +9,7 @@
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/Input.h"
 #include "EngineCore/Core/ProjectSettings.h"
+#include "EngineCore/Systems/FreeCameraSystem.h"
 #include "EngineCore/AssetsManagement/AssetsDatabase.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 #include "EngineCore/Rollback/Rollback.h"

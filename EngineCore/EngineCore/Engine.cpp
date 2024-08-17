@@ -97,9 +97,10 @@ void Engine::InitGraphicsApi()
 
 void Engine::Run()
 {
-	Ref<RotatorSystem> rotatorSystem = CreateRef<RotatorSystem>(ecs);
-	Ref<TransformSystem> transformSystem = CreateRef<TransformSystem>(ecs);
-	Ref<Camera> cameraSystem = CreateRef<Camera>(ecs, window);
+	auto rotatorSystem = CreateRef<RotatorSystem>(ecs);
+	auto transformSystem = CreateRef<TransformSystem>(ecs);
+	auto cameraSystem = CreateRef<Camera>(ecs, window);
+	auto freeCameraSystem = CreateRef<FreeCameraSystem>(ecs, input);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -110,6 +111,7 @@ void Engine::Run()
 
 		rotatorSystem->Update(deltaTime);
 		transformSystem->Update(deltaTime);
+		freeCameraSystem->Update(deltaTime);
 		cameraSystem->Update(deltaTime);
 
 		graphicsApi->Render();
