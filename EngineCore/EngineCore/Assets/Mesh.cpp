@@ -45,7 +45,7 @@ Mesh::Mesh(const std::filesystem::path& path)
 			vertex.color = { 1.0f, 1.0f, 1.0f };
 
 			vertices->push_back(vertex);
-			indices->push_back(indices->size());
+			indices->push_back(static_cast<uint32_t>(indices->size()));
 		}
 	}
 

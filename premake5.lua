@@ -15,6 +15,7 @@ Externals["Stb"] = "Externals/Stb"
 Externals["TinyObjLoader"] = "Externals/TinyObjLoader"
 Externals["DearImgui"] = "Externals/DearImgui"
 Externals["YamlCpp"] = "Externals/YamlCpp"
+Externals["Catch2"] = "Externals/Catch2"
 
 Includes = {}
 Includes["EngineCore"] = "EngineCore"
@@ -29,6 +30,7 @@ Includes["Stb"] = "%{Externals.Stb}"
 Includes["TinyObjLoader"] = "%{Externals.TinyObjLoader}"
 Includes["DearImgui"] = "%{Externals.DearImgui}"
 Includes["YamlCpp"] = "%{Externals.YamlCpp}/include"
+Includes["Catch2"] = "%{Externals.Catch2}/extras"
 
 LibFolders = {}
 LibFolders["Vulkan"] = "%{VulkanSdk}/Lib"
@@ -51,8 +53,8 @@ project "Editor"
 
 	files
 	{
-		"%{prj.name}/Editor/**.h",
-		"%{prj.name}/Editor/**.cpp"
+		"%{prj.name}/**.h",
+		"%{prj.name}/**.cpp"
 	}
 
 	includedirs
@@ -123,8 +125,8 @@ project "EngineCore"
 
 	files
 	{
-		"%{prj.name}/EngineCore/**.h",
-		"%{prj.name}/EngineCore/**.cpp",
+		"%{prj.name}/**.h",
+		"%{prj.name}/**.cpp",
 	}
 	
 	includedirs
@@ -211,12 +213,13 @@ project "ExampleProject"
 
 	files
 	{
-		"%{prj.name}/Source/**.h",
-		"%{prj.name}/Source/**.cpp"
+		"%{prj.name}/**.h",
+		"%{prj.name}/**.cpp"
 	}
 
 	includedirs
 	{
+		"%{prj.name}",
 		"%{Includes.EngineCore}",
 		
 		"%{Includes.Glfw}",
@@ -259,6 +262,33 @@ project "ExampleProject"
 
 	filter "configurations:Release"
 		optimize "On"
+
+project "Tests"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++20"
+	systemversion "latest"
+	staticruntime "On"
+	
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+	
+	files
+	{
+		"%{prj.name}/**.h",
+		"%{prj.name}/**.cpp"
+	}
+
+	includedirs
+	{
+		"%{prj.name}",
+		"%{Includes.Catch2}"
+	}
+
+	links
+	{
+		"Catch2"
+	}
 
 project "Glfw"
 	kind "StaticLib"
@@ -380,4 +410,24 @@ project "YamlCpp"
 	defines
 	{
 		"YAML_CPP_STATIC_DEFINE"
+	}
+
+project "Catch2"
+	kind "StaticLib"
+	language "C++"
+	systemversion "latest"
+	staticruntime "On"
+	
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+	
+	files
+	{
+		"%{Externals.Catch2}/extras/*.hpp",
+		"%{Externals.Catch2}/extras/*.cpp"
+	}
+
+	includedirs
+	{
+		"%{Includes.Catch2}"
 	}

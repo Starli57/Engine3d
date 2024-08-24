@@ -22,3 +22,6 @@
 [submodule "Externals/YamlCpp"]
 	path = Externals/YamlCpp
 	url = git@github.com:jbeder/yaml-cpp.git
+[submodule "Externals/Catch2"]
+	path = Externals/Catch2
+	url = git@github.com:catchorg/Catch2.git
