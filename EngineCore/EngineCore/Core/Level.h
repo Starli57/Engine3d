@@ -32,9 +32,6 @@ public:
 	Level(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings, Ref<AssetsDatabase> assetDatabase, IGraphicsApi* graphicsApi, Rollback* rollback);
 	~Level();
 
-	void LoadLevel();
-	void UnloadLevel();
-
 	void InstantiatePrefab(const std::filesystem::path& path);
 
 private:

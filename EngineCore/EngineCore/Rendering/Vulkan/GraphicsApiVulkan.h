@@ -11,7 +11,6 @@
 #include "Models/ImageModel.h"
 
 #include "EngineCore/AssetsManagement/AssetsDatabase.h"
-#include "EngineCore/Entities/Level.h"
 #include "EngineCore/Rendering/IGraphicsApi.h"
 #include "EngineCore/Rendering/PipelinesCollection.h"
 

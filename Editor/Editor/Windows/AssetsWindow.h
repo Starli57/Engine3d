@@ -2,8 +2,8 @@
 
 #include <imgui.h>
 #include "EngineCore/Editor/IWindow.h"
-#include <EngineCore/AssetsManagement/AssetsDatabase.h>
-#include <EngineCore/Entities/Level.h>
+#include "EngineCore/AssetsManagement/AssetsDatabase.h"
+#include "EngineCore/Core/Level.h"
 
 class AssetsWindow : public IWindow
 {

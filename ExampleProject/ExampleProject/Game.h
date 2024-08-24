@@ -15,5 +15,12 @@ public:
 
 	Ref<Engine> engine;
 	Ref<ProjectSettigns> projectSettings;
+
+private:
+	Ref<AssetsDatabase> assetDatabase;
+	Ref<Ecs> ecs;
+	IGraphicsApi* graphicsApi;
+
+	void LoadLevel();
 };
 

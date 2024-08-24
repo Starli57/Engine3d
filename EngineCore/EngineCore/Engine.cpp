@@ -33,7 +33,6 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 	input = CreateRef<Input>(window);
 
 	level = new Level(ecs, projectSettings, assetsDatabase, graphicsApi, engineRollback);
-	level->LoadLevel();
 	engineRollback->Add([this] { delete level; });
 
 	spdlog::info("--Engine init finished--");
