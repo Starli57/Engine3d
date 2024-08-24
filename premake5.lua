@@ -282,12 +282,27 @@ project "Tests"
 	includedirs
 	{
 		"%{prj.name}",
-		"%{Includes.Catch2}"
+		"%{Includes.EngineCore}",
+
+		"%{Includes.Catch2}",
+		"%{Includes.Glfw}",
+		"%{Includes.Glm}",
+		"%{Includes.Vulkan}",
+		"%{Includes.SpdLog}",
+		"%{Includes.Entt}",
+		"%{Includes.Stb}",
+		"%{Includes.TinyObjLoader}",
+		"%{Includes.YamlCpp}"
 	}
 
 	links
 	{
-		"Catch2"
+		"EngineCore",
+		"Catch2",
+		"Glfw",
+		"Glm",
+		"%{Libs.Vulkan}",
+		"YamlCpp"
 	}
 
 project "Glfw"
