@@ -113,74 +113,17 @@ bool EntitySerializer::InstantiatePrefab(Ref<Ecs> ecs, const std::filesystem::pa
 	}
 
 	auto entity = ecs->CreateEntity();
-	entity->AddComponent<IdComponent>(UniqueIdGenerator::Generate());
-	
-	auto nameComponent = data["NameComponent"];
-	if (nameComponent)
-	{
-		entity->AddComponent<NameComponent>(nameComponent["name"].as<std::string>());
-	}
-
-	auto positionComponent = data["PositionComponent"];
-	if (positionComponent) 
-	{
-		entity->AddComponent<PositionComponent>(positionComponent["position"].as<glm::vec3>());
-	}
-
-	auto rotationComponent = data["RotationComponent"];
-	if (rotationComponent)
-	{
-		entity->AddComponent<RotationComponent>(rotationComponent["rotation"].as<glm::vec3>());
-	}
-
-	auto rotationVelocityComponent = data["RotationVelocityComponent"];
-	if (rotationVelocityComponent)
-	{
-		entity->AddComponent<RotationVelocityComponent>(rotationVelocityComponent["velocity"].as<glm::vec3>());
-	}
-
-	auto scaleComponent = data["ScaleComponent"];
-	if (scaleComponent)
-	{
-		entity->AddComponent<ScaleComponent>(scaleComponent["scale"].as<glm::vec3>());
-	}
-
-	auto cameraComponent = data["CameraComponent"];
-	if (cameraComponent)
-	{
-		entity->AddComponent<CameraComponent>(
-			cameraComponent["fov"].as<float>(),
-			cameraComponent["zNear"].as<float>(),
-			cameraComponent["zFar"].as<float>(),
-			cameraComponent["lookPoint"].as<glm::vec3>(),
-			cameraComponent["upAxis"].as<glm::vec3>());
-	}
-
-	auto uboModelComponent = data["UboModelComponent"];
-	if (uboModelComponent) 
-	{
-		entity->AddComponent<UboModelComponent>();
-	}
-
-	auto uboDiffuseLightComponent = data["UboDiffuseLightComponent"];
-	if (uboDiffuseLightComponent)
-	{
-		entity->AddComponent<UboDiffuseLightComponent>(uboDiffuseLightComponent["position"].as<glm::vec3>());
-	}
-
-	auto meshComponent = data["MeshComponent"];
-	if (meshComponent)
-	{
-		auto meshIndex = meshComponent["meshIndex"].as<int>();
-		if (meshIndex == -1) entity->AddComponent<MeshComponent>();
-		else entity->AddComponent<MeshComponent>(meshIndex);
-	}
-
-	auto materialComponent = data["MaterialComponent"];
-	if (materialComponent)
-	{
-		entity->AddComponent<MaterialComponent>(materialComponent["materialIndex"].as<uint32_t>());
-	}
+	InstantiateComponentId(entity);
+	InstantiateComponentName(entity, data);
+	InstantiateComponentPosition(entity, data);
+	InstantiateComponentRotation(entity, data);
+	InstantiateComponentRotationVelocity(entity, data);
+	InstantiateComponentScale(entity, data);
+	InstantiateComponentCamera(entity, data);
+	InstantiateComponentUboModel(entity, data);
+	InstantiateComponentUboDiffuseLight(entity, data);
+	InstantiateComponentMesh(entity, data);
+	InstantiateComponentMaterial(entity, data);
 
 	return true;
 }
@@ -288,4 +231,106 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, IdComponent& component)
 {
 	//don't need to serialize, because ID is unique only inside 1 session
+}
+
+void EntitySerializer::InstantiateComponentName(Ref<Entity> entity, YAML::Node node)
+{
+	auto nameComponent = node["NameComponent"];
+	if (nameComponent)
+	{
+		entity->AddComponent<NameComponent>(nameComponent["name"].as<std::string>());
+	}
+}
+
+void EntitySerializer::InstantiateComponentPosition(Ref<Entity> entity, YAML::Node node)
+{
+	auto positionComponent = node["PositionComponent"];
+	if (positionComponent)
+	{
+		entity->AddComponent<PositionComponent>(positionComponent["position"].as<glm::vec3>());
+	}
+}
+
+void EntitySerializer::InstantiateComponentRotation(Ref<Entity> entity, YAML::Node node)
+{
+	auto rotationComponent = node["RotationComponent"];
+	if (rotationComponent)
+	{
+		entity->AddComponent<RotationComponent>(rotationComponent["rotation"].as<glm::vec3>());
+	}
+}
+
+void EntitySerializer::InstantiateComponentRotationVelocity(Ref<Entity> entity, YAML::Node node)
+{
+	auto rotationVelocityComponent = node["RotationVelocityComponent"];
+	if (rotationVelocityComponent)
+	{
+		entity->AddComponent<RotationVelocityComponent>(rotationVelocityComponent["velocity"].as<glm::vec3>());
+	}
+}
+
+void EntitySerializer::InstantiateComponentScale(Ref<Entity> entity, YAML::Node node)
+{
+	auto scaleComponent = node["ScaleComponent"];
+	if (scaleComponent)
+	{
+		entity->AddComponent<ScaleComponent>(scaleComponent["scale"].as<glm::vec3>());
+	}
+}
+
+void EntitySerializer::InstantiateComponentCamera(Ref<Entity> entity, YAML::Node node)
+{
+	auto cameraComponent = node["CameraComponent"];
+	if (cameraComponent)
+	{
+		entity->AddComponent<CameraComponent>(
+			cameraComponent["fov"].as<float>(),
+			cameraComponent["zNear"].as<float>(),
+			cameraComponent["zFar"].as<float>(),
+			cameraComponent["lookPoint"].as<glm::vec3>(),
+			cameraComponent["upAxis"].as<glm::vec3>());
+	}
+}
+
+void EntitySerializer::InstantiateComponentUboDiffuseLight(Ref<Entity> entity, YAML::Node node)
+{
+	auto uboDiffuseLightComponent = node["UboDiffuseLightComponent"];
+	if (uboDiffuseLightComponent)
+	{
+		entity->AddComponent<UboDiffuseLightComponent>(uboDiffuseLightComponent["position"].as<glm::vec3>());
+	}
+}
+
+void EntitySerializer::InstantiateComponentMesh(Ref<Entity> entity, YAML::Node node)
+{
+	auto meshComponent = node["MeshComponent"];
+	if (meshComponent)
+	{
+		auto meshIndex = meshComponent["meshIndex"].as<int>();
+		if (meshIndex == -1) entity->AddComponent<MeshComponent>();
+		else entity->AddComponent<MeshComponent>(meshIndex);
+	}
+}
+
+void EntitySerializer::InstantiateComponentMaterial(Ref<Entity> entity, YAML::Node node)
+{
+	auto materialComponent = node["MaterialComponent"];
+	if (materialComponent)
+	{
+		entity->AddComponent<MaterialComponent>(materialComponent["materialIndex"].as<uint32_t>());
+	}
+}
+
+void EntitySerializer::InstantiateComponentUboModel(Ref<Entity> entity, YAML::Node node)
+{
+	auto uboModelComponent = node["UboModelComponent"];
+	if (uboModelComponent)
+	{
+		entity->AddComponent<UboModelComponent>();
+	}
+}
+
+void EntitySerializer::InstantiateComponentId(Ref<Entity> entity)
+{
+	entity->AddComponent<IdComponent>(UniqueIdGenerator::Generate());
 }

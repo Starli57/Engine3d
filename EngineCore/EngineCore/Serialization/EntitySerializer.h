@@ -56,4 +56,16 @@ private:
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, MaterialComponent& component);
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboModelComponent& component);
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, IdComponent& component);
+
+	void InstantiateComponentName(Ref<Entity> entity, YAML::Node node);
+	void InstantiateComponentPosition(Ref<Entity> entity, YAML::Node node);
+	void InstantiateComponentRotation(Ref<Entity> entity, YAML::Node node);
+	void InstantiateComponentRotationVelocity(Ref<Entity> entity, YAML::Node node);
+	void InstantiateComponentScale(Ref<Entity> entity, YAML::Node node);
+	void InstantiateComponentCamera(Ref<Entity> entity, YAML::Node node);
+	void InstantiateComponentUboDiffuseLight(Ref<Entity> entity, YAML::Node node);
+	void InstantiateComponentMesh(Ref<Entity> entity, YAML::Node node);
+	void InstantiateComponentMaterial(Ref<Entity> entity, YAML::Node node);
+	void InstantiateComponentUboModel(Ref<Entity> entity, YAML::Node node);
+	void InstantiateComponentId(Ref<Entity> entity);
 };
