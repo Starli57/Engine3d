@@ -1,8 +1,8 @@
 #include "EngineCore/Pch.h"
 
 #include "MeshVulkan.h"
-#include "EngineCore/Rendering/Vulkan/Builders/AVertexBuffer.h"
-#include "EngineCore/Rendering/Vulkan/Builders/AIndexBuffer.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/VertexBufferUtility.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/IndexBufferUtility.h"
 #include "spdlog/spdlog.h"
 
 namespace AVulkan
@@ -31,25 +31,25 @@ namespace AVulkan
 
 	void MeshVulkan::CreateVertexBuffer(VkQueue& graphicsQueue, VkCommandPool& commandPool, Ref<Rollback> rollback)
 	{
-		AVertexBuffer().Create(physicalDevice, logicalDevice,
+		VkUtils::CreateVertexBuffer(physicalDevice, logicalDevice,
 			vertices, vertexBuffer, vertexBufferMemory, graphicsQueue, commandPool);
 
 		rollback->Add([this]()
 		{
 			spdlog::info("Dispose Vertex Buffer");
-			AVertexBuffer().Dispose(logicalDevice, vertexBuffer, vertexBufferMemory);
+			VkUtils::DisposeVertexBuffer(logicalDevice, vertexBuffer, vertexBufferMemory);
 		});
 	}
 
 	void MeshVulkan::CreateIndexBuffer(VkQueue& graphicsQueue, VkCommandPool& commandPool, Ref<Rollback> rollback)
 	{
-		AIndexBuffer().Create(physicalDevice, logicalDevice,
+		VkUtils::CreateIndexBuffer(physicalDevice, logicalDevice,
 			indices, indexBuffer, indexBufferMemory, graphicsQueue, commandPool);
 
 		rollback->Add([this]()
 		{
 			spdlog::info("Dispose Index Buffer");
-			AIndexBuffer().Dispose(logicalDevice, indexBuffer, indexBufferMemory);
+			VkUtils::DisposeIndexBuffer(logicalDevice, indexBuffer, indexBufferMemory);
 		});
 	}
 }

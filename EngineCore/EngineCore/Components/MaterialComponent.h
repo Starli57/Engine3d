@@ -2,9 +2,8 @@
 
 #include <string>
 
-class MaterialComponent
+struct MaterialComponent
 {
-public:
 	uint32_t materialIndex;
 
 	MaterialComponent() { materialIndex = 0; }

@@ -1,10 +1,11 @@
-workspace "Engine3d_cpp"
+workspace "Engine"
 	configurations { "Debug", "Release" }
 	architecture "x86_64"
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 VulkanSdk = os.getenv("VULKAN_SDK")
+PythonSdk = os.getenv("PYTHON_SDK")
 
 Externals = {}
 Externals["Glfw"] = "Externals/GLFW"
@@ -13,39 +14,140 @@ Externals["SpdLog"] = "Externals/SpdLog"
 Externals["Entt"] = "Externals/Entt"
 Externals["Stb"] = "Externals/Stb"
 Externals["TinyObjLoader"] = "Externals/TinyObjLoader"
+Externals["TinyGltf"] = "Externals/TinyGltf"
 Externals["DearImgui"] = "Externals/DearImgui"
 Externals["YamlCpp"] = "Externals/YamlCpp"
 Externals["Catch2"] = "Externals/Catch2"
+Externals["Pybind11"] = "Externals/Pybind11"
 
 Includes = {}
+Includes["Editor"] = "Editor"
 Includes["EngineCore"] = "EngineCore"
 Includes["ExampleProject"] = "ExampleProject"
 
 Includes["Glfw"] = "%{Externals.Glfw}/include"
 Includes["Glm"] = "%{Externals.Glm}"
-Includes["Vulkan"] = "%{VulkanSdk}/Include"
 Includes["SpdLog"] = "%{Externals.SpdLog}/include"
 Includes["Entt"] = "%{Externals.Entt}/single_include/entt"
 Includes["Stb"] = "%{Externals.Stb}"
 Includes["TinyObjLoader"] = "%{Externals.TinyObjLoader}"
+Includes["TinyGltf"] = "%{Externals.TinyGltf}"
 Includes["DearImgui"] = "%{Externals.DearImgui}"
 Includes["YamlCpp"] = "%{Externals.YamlCpp}/include"
 Includes["Catch2"] = "%{Externals.Catch2}/extras"
+Includes["Pybind11"] = "%{Externals.Pybind11}/include"
+
+Includes["Vulkan"] = "%{VulkanSdk}/Include"
+Includes["Python"] = "%{PythonSdk}/include"
 
 LibFolders = {}
 LibFolders["Vulkan"] = "%{VulkanSdk}/Lib"
+LibFolders["Python"] = "%{PythonSdk}/libs"
 
 Libs = {}
 Libs["Vulkan"] = "%{LibFolders.Vulkan}/vulkan-1.lib"
+Libs["Python"] = "%{LibFolders.Python}/python312.lib"
 
-startproject "Editor"
+startproject "ExampleProject"
 		
-project "Editor"
-	location "Editor"
+project "ExampleProject"
+	location "ExampleProject"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
-	staticruntime "On"
+	staticruntime "Off"
+	systemversion "latest"
+
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/**.h",
+		"%{prj.name}/**.cpp"
+	}
+
+	includedirs
+	{
+		"%{prj.name}",
+		"%{Includes.Editor}",
+		"%{Includes.EngineCore}",
+		
+		"%{Includes.Glfw}",
+		"%{Includes.Glm}",
+		"%{Includes.SpdLog}",
+		"%{Includes.Entt}",
+		"%{Includes.Stb}",
+		"%{Includes.TinyObjLoader}",
+		"%{Includes.TinyGltf}",
+		"%{Includes.Pybind11}",
+
+		"%{Includes.Vulkan}",
+		"%{Includes.Python}"
+	}
+	
+	links
+	{
+		"Editor",
+		"EngineCore",
+
+		"Glfw",
+		"Glm",
+
+		"%{Libs.Vulkan}",
+		"%{Libs.Python}"
+	}
+	
+	defines
+	{
+		"GLFW_INCLUDE_VULKAN",
+		"GLM_FORCE_RADIANS",
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE"
+	}
+
+	filter "system:windows"
+		defines
+		{
+			"PROJECT_WIN",
+			"PROJECT_DLL_BUILD"
+		}
+
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Meshes" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Textures" }
+
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Shaders $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Resources\\Meshes $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Meshes" }
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Resources\\Textures $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Textures" }
+		postbuildcommands { "copy $(SolutionDir)\\Output\\" .. outputdir .. "\\Editor\\Editor.dll $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\" }
+		
+	filter "not system:windows"
+		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject" }
+		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
+		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Meshes" }
+		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Textures" }
+
+		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Shaders $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
+		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Resources/Meshes $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Meshes" }
+		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Resources/Textures $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Textures" }
+		postbuildcommands { "copy $(SolutionDir)/Output/" .. outputdir .. "/Editor/Editor.dll $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/" }
+
+	filter "configurations:Debug"
+		defines
+		{
+			"DEBUG"
+		}
+
+	filter "configurations:Release"
+		optimize "On"
+
+project "Editor"
+	location "Editor"
+	kind "SharedLib"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "Off"
 	systemversion "latest"
 
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
@@ -61,27 +163,31 @@ project "Editor"
 	{
 		"%{prj.name}",
 		"%{Includes.EngineCore}",
-		"%{Includes.ExampleProject}",
 		
 		"%{Includes.DearImgui}",
 		"%{Includes.DearImgui}/backends",
 		"%{Includes.Glfw}",
 		"%{Includes.Glm}",
-		"%{Includes.Vulkan}",
 		"%{Includes.SpdLog}",
 		"%{Includes.Entt}",
 		"%{Includes.Stb}",
 		"%{Includes.TinyObjLoader}",
-		"%{Includes.YamlCpp}"
+		"%{Includes.TinyGltf}",
+		"%{Includes.YamlCpp}",
+		"%{Includes.Pybind11}",
+
+		"%{Includes.Vulkan}",
+		"%{Includes.Python}"
 	}
 	
 	links
 	{
 		"EngineCore",
-		"ExampleProject",
 
 		"DearImgui",
-		"YamlCpp"
+		"YamlCpp",
+		
+		"%{Libs.Python}"
 	}
 	
 	defines
@@ -89,15 +195,22 @@ project "Editor"
 		"GLFW_INCLUDE_VULKAN",
 		"GLM_FORCE_RADIANS",
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
-		"STB_IMAGE_IMPLEMENTATION",
-		"TINYOBJLOADER_IMPLEMENTATION",
 		"YAML_CPP_STATIC_DEFINE"
-	}
+	}    
+	
+--	targetextension ".pyd"
+	
+	filter "system:windows"
+		postbuildcommands { "copy $(SolutionDir)\\Output\\" .. outputdir .. "\\Editor\\Editor.dll $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\" }
+		
+	filter "not system:windows"
+		postbuildcommands { "copy $(SolutionDir)/Output/" .. outputdir .. "/Editor/Editor.dll $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/" }
 
 	filter "system:windows"
 		defines
 		{
-			"PROJECT_WIN"
+			"PROJECT_WIN",
+			"PROJECT_DLL_BUILD"
 		}
 
 	filter "configurations:Debug"
@@ -114,7 +227,7 @@ project "EngineCore"
 	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
-	staticruntime "On"
+	staticruntime "Off"
 	systemversion "latest"
 
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
@@ -126,7 +239,7 @@ project "EngineCore"
 	files
 	{
 		"%{prj.name}/**.h",
-		"%{prj.name}/**.cpp",
+		"%{prj.name}/**.cpp"
 	}
 	
 	includedirs
@@ -135,20 +248,26 @@ project "EngineCore"
 
 		"%{Includes.Glfw}",
 		"%{Includes.Glm}",
-		"%{Includes.Vulkan}",
 		"%{Includes.SpdLog}",
 		"%{Includes.Entt}",
 		"%{Includes.Stb}",
 		"%{Includes.TinyObjLoader}",
-		"%{Includes.YamlCpp}"
+		"%{Includes.TinyGltf}",
+		"%{Includes.YamlCpp}",
+		"%{Includes.Pybind11}",
+		
+		"%{Includes.Vulkan}",
+		"%{Includes.Python}"
 	}
 
 	links
 	{
 		"Glfw",
 		"Glm",
+		"YamlCpp",
+
 		"%{Libs.Vulkan}",
-		"YamlCpp"
+		"%{Libs.Python}"
 	}
 	
 	defines
@@ -156,8 +275,6 @@ project "EngineCore"
 		"GLFW_INCLUDE_VULKAN",
 		"GLM_FORCE_RADIANS",
 		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
-		"STB_IMAGE_IMPLEMENTATION",
-		"TINYOBJLOADER_IMPLEMENTATION",
 		"YAML_CPP_STATIC_DEFINE"
 	}
 	
@@ -166,87 +283,7 @@ project "EngineCore"
 		"cd $(SolutionDir)",
 		"call compileShaders.bat"
 	} 
-
-	filter "system:windows"
-		defines
-		{
-			"PROJECT_WIN"
-		}
-		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject" }
-		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
-		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Meshes" }
-		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Textures" }
-
-		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Shaders $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
-		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Resources\\Meshes $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Meshes" }
-		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Resources\\Textures $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Textures" }
-		
-	filter { "not system:windows" }
-		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject" }
-		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
-		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Meshes" }
-		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Textures" }
-
-		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Shaders $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
-		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Resources/Meshes $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Meshes" }
-		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Resources/Textures $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Textures" }
-
-	filter "configurations:Debug"
-		defines
-		{
-			"DEBUG"
-		}
-
-	filter "configurations:Release"
-		optimize "On"
-		
-project "ExampleProject"
-	location "ExampleProject"
-	kind "StaticLib"
-	language "C++"
-	cppdialect "C++20"
-	staticruntime "On"
-	systemversion "latest"
-
-	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
-	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
-
-	files
-	{
-		"%{prj.name}/**.h",
-		"%{prj.name}/**.cpp"
-	}
-
-	includedirs
-	{
-		"%{prj.name}",
-		"%{Includes.EngineCore}",
-		
-		"%{Includes.Glfw}",
-		"%{Includes.Glm}",
-		"%{Includes.Vulkan}",
-		"%{Includes.SpdLog}",
-		"%{Includes.Entt}",
-		"%{Includes.Stb}",
-		"%{Includes.TinyObjLoader}"
-	}
 	
-	links
-	{
-		"Glfw",
-		"Glm",
-		"%{Libs.Vulkan}"
-	}
-	
-	defines
-	{
-		"GLFW_INCLUDE_VULKAN",
-		"GLM_FORCE_RADIANS",
-		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
-		"STB_IMAGE_IMPLEMENTATION",
-		"TINYOBJLOADER_IMPLEMENTATION"
-	}
-
 	filter "system:windows"
 		defines
 		{
@@ -268,7 +305,7 @@ project "Tests"
 	language "C++"
 	cppdialect "C++20"
 	systemversion "latest"
-	staticruntime "On"
+	staticruntime "Off"
 	
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -287,12 +324,14 @@ project "Tests"
 		"%{Includes.Catch2}",
 		"%{Includes.Glfw}",
 		"%{Includes.Glm}",
-		"%{Includes.Vulkan}",
 		"%{Includes.SpdLog}",
 		"%{Includes.Entt}",
 		"%{Includes.Stb}",
 		"%{Includes.TinyObjLoader}",
-		"%{Includes.YamlCpp}"
+		"%{Includes.YamlCpp}",
+		"%{Includes.Pybind11}",
+
+		"%{Includes.Vulkan}"
 	}
 
 	links
@@ -301,15 +340,23 @@ project "Tests"
 		"Catch2",
 		"Glfw",
 		"Glm",
-		"%{Libs.Vulkan}",
-		"YamlCpp"
+		"YamlCpp",
+
+		"%{Libs.Vulkan}"
 	}
+	
+	filter "system:windows"
+		defines
+		{
+			"PROJECT_WIN",
+			"PROJECT_DLL_BUILD"
+		}
 
 project "Glfw"
 	kind "StaticLib"
 	language "C"
 	systemversion "latest"
-	staticruntime "On"
+	staticruntime "Off"
 	
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -345,8 +392,9 @@ project "Glfw"
 project "Glm"
 	kind "StaticLib"
 	language "C++"
+	cppdialect "C++20"
 	systemversion "latest"
-	staticruntime "On"
+	staticruntime "Off"
 	
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -367,7 +415,7 @@ project "DearImgui"
 	kind "StaticLib"
 	language "C++"
 	systemversion "latest"
-	staticruntime "On"
+	staticruntime "Off"
 	
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -406,7 +454,7 @@ project "YamlCpp"
 	kind "StaticLib"
 	language "C++"
 	systemversion "latest"
-	staticruntime "On"
+	staticruntime "Off"
 	
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
@@ -431,7 +479,7 @@ project "Catch2"
 	kind "StaticLib"
 	language "C++"
 	systemversion "latest"
-	staticruntime "On"
+	staticruntime "Off"
 	
 	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
 	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")

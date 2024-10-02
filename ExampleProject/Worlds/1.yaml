@@ -1,0 +1,173 @@
+NameComponent:
+  name: Car
+PositionComponent:
+  position: [-200, -50, 0]
+RotationComponent:
+  rotation: [90, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshIndex: 2
+MaterialComponent:
+  materialIndex: 1
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: Diffuse Light
+UboDiffuseLightComponent:
+  position: [-500, 1000, 400]
+---
+NameComponent:
+  name: Camera
+PositionComponent:
+  position: [-732.24176, 157.825104, 523.841309]
+RotationComponent:
+  rotation: [-57.8470688, -13.3659267, 0]
+CameraComponent:
+  fov: 60
+  zNear: 0.100000001
+  zFar: 5000
+  upAxis: [0, 1, 0]
+CameraFreeComponent:
+  movementSpeed: 250
+  rotationSpeed: 20
+UboModelComponent:
+  {}
+UboViewProjectionComponent:
+  {}
+---
+NameComponent:
+  name: Sphere
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [50, 50, 50]
+MeshComponent:
+  meshIndex: 1
+MaterialComponent:
+  materialIndex: 2
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: Box
+PositionComponent:
+  position: [0, -75, 7]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [10000, 1, 10000]
+MeshComponent:
+  meshIndex: 0
+MaterialComponent:
+  materialIndex: 2
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: Sphere
+PositionComponent:
+  position: [150, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [50, 50, 50]
+MeshComponent:
+  meshIndex: 1
+MaterialComponent:
+  materialIndex: 2
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: Sphere
+PositionComponent:
+  position: [300, 0, 1]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [50, 50, 50]
+MeshComponent:
+  meshIndex: 1
+MaterialComponent:
+  materialIndex: 2
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: Sphere
+PositionComponent:
+  position: [150, 0, -150]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [50, 50, 50]
+MeshComponent:
+  meshIndex: 1
+MaterialComponent:
+  materialIndex: 2
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: Sphere
+PositionComponent:
+  position: [0, 0, -150]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [50, 50, 50]
+MeshComponent:
+  meshIndex: 1
+MaterialComponent:
+  materialIndex: 2
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: Box
+PositionComponent:
+  position: [200, -57.5999985, 200]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [100, 100, 20]
+MeshComponent:
+  meshIndex: 0
+MaterialComponent:
+  materialIndex: 2
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: Car
+PositionComponent:
+  position: [-450, -50, 0]
+RotationComponent:
+  rotation: [90, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshIndex: 2
+MaterialComponent:
+  materialIndex: 2
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: Car
+PositionComponent:
+  position: [-700, -50, 0]
+RotationComponent:
+  rotation: [90, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshIndex: 2
+MaterialComponent:
+  materialIndex: 3
+UboModelComponent:
+  {}

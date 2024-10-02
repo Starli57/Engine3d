@@ -10,14 +10,15 @@
 #include "EngineCore/AssetsManagement/AssetsDatabase.h"
 #include "EngineCore/Rendering/Vulkan/Descriptors.h"
 #include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
-#include "EngineCore/Rendering/Vulkan/Builders/AUniformBufferVulkan.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/UniformBufferVulkanUtility.h"
+#include "EngineCore/Components/PositionComponent.h"
 
 namespace AVulkan
 {
 	class MaterialVulkan : public Material
 	{
 	public:
-		MaterialVulkan(std::string pipelineId, Ref<AssetsDatabase> assetDatabase, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
+		MaterialVulkan(const std::string pipelineId, Ref<AssetsDatabase> assetDatabase, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
 			Ref<Descriptors> descriptors, VkSampler& textureSampler, VkDescriptorSetLayout& descriptorSetLayout, Ref<Rollback> rollback);
 		~MaterialVulkan();
 
@@ -27,6 +28,7 @@ namespace AVulkan
 
 		std::vector<Ref<BufferModel>> uboViewProjection;
 		std::vector<Ref<BufferModel>> uboLights;
+		std::vector<Ref<BufferModel>> uboCamera;
 
 	private:
 		Ref<AssetsDatabase> assetDatabase;

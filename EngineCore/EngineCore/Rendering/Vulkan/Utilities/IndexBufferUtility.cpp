@@ -2,14 +2,13 @@
 
 #include "spdlog/spdlog.h"
 
-#include "AIndexBuffer.h"
+#include "IndexBufferUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
 
-
-namespace AVulkan
+namespace VkUtils
 {
-	void AIndexBuffer::Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<std::vector<uint32_t>> indices,
-        VkBuffer& indexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool) const
+	void CreateIndexBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<std::vector<uint32_t>> indices,
+        VkBuffer& indexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool)
 	{
         spdlog::info("Create Index buffer");
 
@@ -37,7 +36,7 @@ namespace AVulkan
 	}
 
 
-    void AIndexBuffer::Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const
+    void DisposeIndexBuffer(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
     {
         spdlog::info("Dispose Index Buffer");
         VkUtils::DisposeBuffer(logicalDevice, buffer, bufferMemory);

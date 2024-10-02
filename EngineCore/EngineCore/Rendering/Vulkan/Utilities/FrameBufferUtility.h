@@ -7,6 +7,7 @@
 
 namespace VkUtils
 {
-	void CreateFrameBuffer(VkDevice& logicalDevice, VkRenderPass& renderPass, AVulkan::SwapChainData& swapChainData, Ref<AVulkan::ImageModel> depthBufferModel);
+	void CreateFrameBuffer(VkDevice& logicalDevice, VkRenderPass& renderPass, AVulkan::SwapChainData& swapChainData, 
+		Ref<AVulkan::ImageModel> msaaColorBuffer, Ref<AVulkan::ImageModel> msaaDepthBuffer);
 	void DisposeFrameBuffer(VkDevice& logicalDevice, std::vector<VkFramebuffer>& frameBuffers);
 }

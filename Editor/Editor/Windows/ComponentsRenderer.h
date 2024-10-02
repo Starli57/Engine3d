@@ -12,6 +12,7 @@
 #include "EngineCore/Components/ScaleComponent.h"
 #include "EngineCore/Components/RotationVelocityComponent.h"
 #include "EngineCore/Components/CameraComponent.h"
+#include "EngineCore/Components/CameraFreeComponent.h"
 #include "EngineCore/Components/ScaleComponent.h"
 #include "EngineCore/Components/UboDiffuseLightComponent.h"
 #include "EngineCore/Components/MeshComponent.h"
@@ -45,6 +46,7 @@ private:
 	void RenderComponent(Ref<Entity> entity, RotationVelocityComponent& component);
 	void RenderComponent(Ref<Entity> entity, ScaleComponent& component);
 	void RenderComponent(Ref<Entity> entity, CameraComponent& component);
+	void RenderComponent(Ref<Entity> entity, CameraFreeComponent& component);
 	void RenderComponent(Ref<Entity> entity, UboDiffuseLightComponent& component);
 	void RenderComponent(Ref<Entity> entity, MeshComponent& component);
 	void RenderComponent(Ref<Entity> entity, MaterialComponent& component);

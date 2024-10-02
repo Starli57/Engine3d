@@ -4,10 +4,17 @@
 Input::Input(GLFWwindow* window)
 {
 	this->cachedWindow = window;
+	UpdateCursorDelta();
+	ResetCursorDelta();
 }
 
 Input::~Input()
 {
+}
+
+void Input::Update()
+{
+	UpdateCursorDelta();
 }
 
 GLFWkeyfun Input::SetKeyCallback(GLFWkeyfun callback)
@@ -103,4 +110,29 @@ void Input::GetCursorPosition(double& x, double& y)
 void Input::GetCursorPosition(GLFWwindow* window, double& x, double& y)
 {
 	glfwGetCursorPos(window, &x, &y);
+}
+
+void Input::GetCursorDelta(double& x, double& y)
+{
+	x = cursorDeltaX;
+	y = cursorDeltaY;
+}
+
+void Input::UpdateCursorDelta()
+{
+	double newX;
+	double newY;
+	GetCursorPosition(newX, newY);
+
+	cursorDeltaX = newX - prevCursorPosX;
+	cursorDeltaY = newY - prevCursorPosY;
+
+	prevCursorPosX = newX;
+	prevCursorPosY = newY;
+}
+
+void Input::ResetCursorDelta()
+{
+	cursorDeltaX = 0;
+	cursorDeltaY = 0;
 }

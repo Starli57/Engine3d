@@ -18,7 +18,7 @@ void CameraOrbitSystem::Update(float deltaTime)
 		auto& position = entities.get<PositionComponent>(entity).position;
 		auto& cam = entities.get<CameraOrbitComponent>(entity);
 
-		position.x = glm::cos(glfwGetTime() * cam.angularSpeed) * cam.radius;
-		position.z = glm::sin(glfwGetTime() * cam.angularSpeed) * cam.radius;
+		position.x = static_cast<float>(glm::cos(glfwGetTime() * (double)cam.angularSpeed)) * cam.radius;
+		position.z = static_cast<float>(glm::sin(glfwGetTime() * (double)cam.angularSpeed)) * cam.radius;
 	}
 }

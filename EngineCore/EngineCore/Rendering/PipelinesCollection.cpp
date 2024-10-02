@@ -3,17 +3,19 @@
 
 PipelinesCollection::PipelinesCollection(Ref<ProjectSettigns> projectSettings)
 {
-	auto albedoOpaque = CreateRef<PipelineConfig>();
+	auto albedoOpaque = CreateRef<VulkanPipelineConfig>();
 	albedoOpaque->pipelineName = "albedoOpaque";
 	albedoOpaque->fragShaderPath = projectSettings->projectPath + "Shaders/AlbedoFrag.spv";
 	albedoOpaque->vertShaderPath = projectSettings->projectPath + "Shaders/AlbedoVert.spv";
+	albedoOpaque->polygonMode = VK_POLYGON_MODE_FILL;
 	pipelinesConfigs.emplace(albedoOpaque->pipelineName, albedoOpaque);
 
-	auto vertexColorOpaque = CreateRef<PipelineConfig>();
-	vertexColorOpaque->pipelineName = "vertexColorOpaque";
-	vertexColorOpaque->fragShaderPath = projectSettings->projectPath + "Shaders/ColorOnlyFrag.spv";
-	vertexColorOpaque->vertShaderPath = projectSettings->projectPath + "Shaders/AlbedoVert.spv";
-	pipelinesConfigs.emplace(vertexColorOpaque->pipelineName, vertexColorOpaque);
+	auto edges = CreateRef<VulkanPipelineConfig>();
+	edges->pipelineName = "edges";
+	edges->fragShaderPath = projectSettings->projectPath + "Shaders/AlbedoFrag.spv";
+	edges->vertShaderPath = projectSettings->projectPath + "Shaders/AlbedoVert.spv";
+	edges->polygonMode = VK_POLYGON_MODE_LINE;
+	pipelinesConfigs.emplace(edges->pipelineName, edges);
 }
 
 PipelinesCollection::~PipelinesCollection()

@@ -1,12 +1,12 @@
 #include "EngineCore/Pch.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
-#include "AVertexBuffer.h"
+#include "VertexBufferUtility.h"
 #include "spdlog/spdlog.h"
 
-namespace AVulkan
+namespace VkUtils
 {
-	void AVertexBuffer::Create(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<std::vector<Vertex>> vertices, 
-		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool) const
+	void CreateVertexBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<std::vector<Vertex>> vertices,
+		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool)
 	{
 		spdlog::info("Create Vertex Buffer");
 
@@ -36,13 +36,13 @@ namespace AVulkan
 		VkUtils::DisposeBuffer(logicalDevice, stagingBuffer, stagingMemory);
 	}
 
-	void AVertexBuffer::Dispose(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory) const
+	void DisposeVertexBuffer(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{
 		spdlog::info("Dispose Vertex Buffer");
 		VkUtils::DisposeBuffer(logicalDevice, buffer, bufferMemory);
 	}
 
-	VkVertexInputBindingDescription AVertexBuffer::GetBindingDescription()
+	VkVertexInputBindingDescription GetVertexInputBindingDescription()
 	{
 		VkVertexInputBindingDescription bindingDescription{};
 		bindingDescription.binding = 0;
@@ -52,7 +52,7 @@ namespace AVulkan
 		return bindingDescription;
 	}
 
-	std::array<VkVertexInputAttributeDescription, 4> AVertexBuffer::GetAttributeDescriptions()
+	std::array<VkVertexInputAttributeDescription, 4> GetVertexInputAttributeDescriptions()
 	{
 		std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{};
 

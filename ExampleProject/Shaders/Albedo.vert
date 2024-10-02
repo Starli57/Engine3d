@@ -14,6 +14,10 @@ layout(binding = 1) uniform Lights {
     vec3 inLightPosition;
 } lights;
 
+layout(binding = 2) uniform Camera {
+    vec3 viewPosition;
+} camera;
+
 layout(push_constant) uniform Model{
     mat4 model;
 } uboM;
@@ -23,6 +27,7 @@ layout(location = 1) out vec3 outNormal;
 layout(location = 2) out vec2 outUv;
 layout(location = 3) out vec3 outColor;
 layout(location = 4) out vec3 outLightPosition;
+layout(location = 5) out vec3 outViewPosition;
 
 void main() 
 {
@@ -33,4 +38,5 @@ void main()
     outUv = inUv;
     outColor = inColor;
     outLightPosition = lights.inLightPosition;
+    outViewPosition = camera.viewPosition;
 }

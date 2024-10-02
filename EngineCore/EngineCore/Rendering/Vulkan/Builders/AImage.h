@@ -8,14 +8,14 @@ namespace AVulkan
     class AImage
     {
     public:
-        AImage(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool);
+        AImage(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue);
 
         VkImage Create(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
-            VkMemoryPropertyFlags properties, VkDeviceMemory& imageMemory) const;
+            VkSampleCountFlagBits msaa, VkMemoryPropertyFlags properties, VkDeviceMemory& imageMemory) const;
 
-        void CopyBufferToImage(VkBuffer& buffer, VkImage& image, uint32_t width, uint32_t height) const;
+        void CopyBufferToImage(VkBuffer& buffer, VkImage& image, uint32_t width, uint32_t height, VkCommandPool& commandPool) const;
 
-        void TransitionImageLayout(VkImage& image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) const;
+        void TransitionImageLayout(VkImage& image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, VkCommandPool& commandPool) const;
 
         void Destroy(VkImage& image) const;
 
@@ -23,6 +23,5 @@ namespace AVulkan
         VkPhysicalDevice& physicalDevice;
         VkDevice& logicalDevice;
         VkQueue& graphicsQueue;
-        VkCommandPool& commandPool;
     };
 }

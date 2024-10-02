@@ -17,6 +17,7 @@ void ComponentsRenderer::Update(Ref<Entity> entity)
 	RenderComponent<MeshComponent>(entity);
 	RenderComponent<MaterialComponent>(entity);
 	RenderComponent<CameraComponent>(entity);
+	RenderComponent<CameraFreeComponent>(entity);
 	RenderComponent<UboDiffuseLightComponent>(entity);
 }
 
@@ -50,8 +51,13 @@ void ComponentsRenderer::RenderComponent(Ref<Entity> entity, CameraComponent& co
 	parametersRenderer->RenderParameter("FOV", component.fov, 0.1f, 30.0f, 120.0f);
 	parametersRenderer->RenderParameter("ZNear", component.zNear, 0.1f);
 	parametersRenderer->RenderParameter("ZFar", component.zFar, 0.1f);
-	parametersRenderer->RenderParameter("Look at", component.lookPoint);
 	parametersRenderer->RenderParameter("Up Axis", component.upAxis, 0.01f);
+}
+
+void ComponentsRenderer::RenderComponent(Ref<Entity> entity, CameraFreeComponent& component)
+{
+	parametersRenderer->RenderParameter("Movement speed", component.movementSpeed, 1, 0, 10000);
+	parametersRenderer->RenderParameter("Rotation speed", component.rotationSpeed, 0.2f, 0, 100);
 }
 
 void ComponentsRenderer::RenderComponent(Ref<Entity> entity, UboDiffuseLightComponent& component)

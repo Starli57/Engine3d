@@ -5,9 +5,9 @@
 namespace AVulkan
 {
 	SwapChain::SwapChain(Ref<Rollback> rollback, GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkSurfaceKHR& surface,
-		VkQueue& graphicsQueue, Ref<SwapChainData> swapChainData) :
+		VkQueue& graphicsQueue, Ref<SwapChainData> swapChainData, Ref<VulkanConfiguration> rendererConfig) :
 		window(window), physicalDevice(physicalDevice), logicalDevice(logicalDevice), surface(surface),
-		graphicsQueue(graphicsQueue), swapChainData(swapChainData)
+		graphicsQueue(graphicsQueue), swapChainData(swapChainData), rendererConfig(rendererConfig)
 	{
 		this->rollback = CreateRef<Rollback>("SwapChain", rollback);
 		physicalDeviceQueueIndices = VkUtils::GetQueueFamilies(physicalDevice, surface);
@@ -24,7 +24,9 @@ namespace AVulkan
 
 		CreateSwapchain();
 		CreateSwapChainImageViews();
-		CreateDepthBuffer(commandPool);
+		CreateDepthBuffer();
+		CreateMSAAColorResources();
+		CreateMSAADepthResources();
 		CreateFrameBuffers(renderPass);
 	}
 
@@ -59,7 +61,7 @@ namespace AVulkan
 		swapChainData->images.resize(swapChainData->imagesCount);
 		vkGetSwapchainImagesKHR(logicalDevice, swapChainData->swapChain, &swapChainData->imagesCount, swapChainData->images.data());
 
-		swapChainData->imageFormat = swapChainData->surfaceFormat.format;
+		rendererConfig->imageFormat = swapChainData->surfaceFormat.format;
 		swapChainData->extent = extent;
 
 
@@ -71,42 +73,85 @@ namespace AVulkan
 		swapChainData->imageViews.reserve(swapChainData->images.size());
 		for (int i = 0; i < swapChainData->images.size(); i++)
 		{
-			AImageView().Create(logicalDevice, swapChainData->imageFormat, VK_IMAGE_ASPECT_COLOR_BIT,
+			AImageView().Create(logicalDevice, rendererConfig->imageFormat, VK_IMAGE_ASPECT_COLOR_BIT,
 				swapChainData->images[i], swapChainData->imageViews[i], rollback);
 		}
 	}
 
-	void SwapChain::CreateDepthBuffer(VkCommandPool& commandPool)
+	void SwapChain::CreateDepthBuffer()
 	{
 		spdlog::info("Create depth buffer");
-		this->commandPool = commandPool;
 
-		VkFormat depthFormat = VkUtils::FindDepthBufferFormat(physicalDevice);
-		depthBufferModel = CreateRef<ImageModel>();
+		swapChainData->depthBufferModel = CreateRef<ImageModel>();
 
-		depthBufferModel->image = AImage(physicalDevice, logicalDevice, graphicsQueue, commandPool).Create(
-			swapChainData->extent.width, swapChainData->extent.height, depthFormat,
+		swapChainData->depthBufferModel->image = AImage(physicalDevice, logicalDevice, graphicsQueue).Create(
+			swapChainData->extent.width, swapChainData->extent.height, rendererConfig->depthFormat,
 			VK_IMAGE_TILING_OPTIMAL,
 			VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+			VK_SAMPLE_COUNT_1_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-			depthBufferModel->imageMemory);
+			swapChainData->depthBufferModel->imageMemory);
 
-		AImageView().Create(logicalDevice, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
-			depthBufferModel->image, depthBufferModel->imageView, rollback);
+		AImageView().Create(logicalDevice, rendererConfig->depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
+			swapChainData->depthBufferModel->image, swapChainData->depthBufferModel->imageView, rollback);
 
 		rollback->Add([this]()
 		{
-			AImage(physicalDevice, logicalDevice, graphicsQueue, this->commandPool).Destroy(depthBufferModel->image);
-			VkUtils::FreeDeviceMemory(logicalDevice, depthBufferModel->imageMemory);
-			depthBufferModel.reset();
+			AImage(physicalDevice, logicalDevice, graphicsQueue).Destroy(swapChainData->depthBufferModel->image);
+			VkUtils::FreeDeviceMemory(logicalDevice, swapChainData->depthBufferModel->imageMemory);
+			swapChainData->depthBufferModel.reset();
 		});
 	}
 
 	void SwapChain::CreateFrameBuffers(VkRenderPass& renderPass)
 	{
 		this->renderPass = renderPass;
-		VkUtils::CreateFrameBuffer(logicalDevice, renderPass, *swapChainData.get(), depthBufferModel);
+		VkUtils::CreateFrameBuffer(logicalDevice, renderPass, *swapChainData.get(), swapChainData->msaaColorSample, swapChainData->msaaDepthSample);
 		rollback->Add([this]() { VkUtils::DisposeFrameBuffer(logicalDevice, swapChainData->frameBuffers); });
+	}
+
+	void SwapChain::CreateMSAAColorResources()
+	{
+		spdlog::info("Create msaa color buffer");
+		swapChainData->msaaColorSample = CreateRef<ImageModel>();
+		swapChainData->msaaColorSample->image = AImage(physicalDevice, logicalDevice, graphicsQueue).Create(
+			swapChainData->extent.width, swapChainData->extent.height, rendererConfig->imageFormat,
+			VK_IMAGE_TILING_OPTIMAL, 
+			VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+			rendererConfig->msaa, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+			swapChainData->msaaColorSample->imageMemory);
+
+		AImageView().Create(logicalDevice, rendererConfig->imageFormat, VK_IMAGE_ASPECT_COLOR_BIT,
+			swapChainData->msaaColorSample->image, swapChainData->msaaColorSample->imageView, rollback);
+
+		rollback->Add([this]()
+		{
+			AImage(physicalDevice, logicalDevice, graphicsQueue).Destroy(swapChainData->msaaColorSample->image);
+			VkUtils::FreeDeviceMemory(logicalDevice, swapChainData->msaaColorSample->imageMemory);
+			swapChainData->msaaColorSample.reset();
+		});
+	}
+
+	void SwapChain::CreateMSAADepthResources()
+	{
+		spdlog::info("Create msaa depth buffer");
+		
+		swapChainData->msaaDepthSample = CreateRef<ImageModel>();
+		swapChainData->msaaDepthSample->image = AImage(physicalDevice, logicalDevice, graphicsQueue).Create(
+			swapChainData->extent.width, swapChainData->extent.height, rendererConfig->depthFormat,
+			VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+			rendererConfig->msaa, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+			swapChainData->msaaDepthSample->imageMemory);
+
+		AImageView().Create(logicalDevice, rendererConfig->depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
+			swapChainData->msaaDepthSample->image, swapChainData->msaaDepthSample->imageView, rollback);
+
+		rollback->Add([this]()
+		{
+			AImage(physicalDevice, logicalDevice, graphicsQueue).Destroy(swapChainData->msaaDepthSample->image);
+			VkUtils::FreeDeviceMemory(logicalDevice, swapChainData->msaaDepthSample->imageMemory);
+			swapChainData->msaaDepthSample.reset();
+		});
 	}
 
 	void SwapChain::Dispose()
@@ -158,12 +203,12 @@ namespace AVulkan
 		{
 			if (data.format == VK_FORMAT_R8G8B8A8_SRGB && data.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 			{
-				spdlog::info("Choosed color format: {0}", data.format);
+				spdlog::info("Choosed color format: {0}", (int)data.format);
 				return data;
 			}
 		}
 
-		spdlog::warn("fallback color format: {0}", availableFormats[0].format);
+		spdlog::warn("fallback color format: {0}", (int)availableFormats[0].format);
 		return availableFormats[0];
 	}
 
@@ -200,7 +245,7 @@ namespace AVulkan
 			}
 		}
 
-		spdlog::warn("Present mode is not available: {0} Default mode will be used {1}", highQualityMode, defaultMode);
+		spdlog::warn("Present mode is not available: {0} Default mode will be used {1}", (int)highQualityMode, (int)defaultMode);
 		return defaultMode;
 	}
 

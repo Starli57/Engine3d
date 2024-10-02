@@ -39,7 +39,10 @@ void ParametersRenderer::RenderParameter(const char* label, glm::vec3& parameter
 
 void ParametersRenderer::RenderParameter(std::string& parameter)
 {
-	ImGui::Text(parameter.c_str());
+    char buffer[64];
+    strncpy_s(buffer, parameter.c_str(), sizeof(buffer));
+    if (ImGui::InputText("Name", buffer, IM_ARRAYSIZE(buffer)))
+        parameter = std::string(buffer);
 }
 
 void ParametersRenderer::RenderParameter(const char* label, std::filesystem::path& parameter, 

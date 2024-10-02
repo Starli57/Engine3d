@@ -16,9 +16,9 @@ public:
     virtual void Render() = 0;
     virtual void FinanilizeRenderOperations() = 0;
 
-    virtual Ref<Mesh> CreateMesh(const std::filesystem::path& meshPath) = 0;
+    virtual Ref<Mesh> LoadMesh(const std::filesystem::path& meshPath) = 0;
     virtual Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) = 0;
-    virtual Ref<Texture> CreateTexture(std::filesystem::path& textureFilePath) = 0;
-    virtual Ref<Material> CreateMaterial(std::string& pipelineId) = 0;
+    virtual Ref<Texture> CreateTexture(const std::filesystem::path& textureFilePath) = 0;
+    virtual Ref<Material> CreateMaterial(const std::string& pipelineId) = 0;
 };
 

@@ -6,8 +6,8 @@ struct Vertex
 {
 	glm::vec3 position;
 	glm::vec3 normal;
-	glm::vec2 uv;
 	glm::vec3 color;
+	glm::vec2 uv;
 
 	Vertex() {};
 
@@ -15,8 +15,8 @@ struct Vertex
 	{
 		this->position = position;
 		this->normal = normal;
-		this->uv = uv;
 		this->color = color;
+		this->uv = uv;
 	}
 
 	bool operator==(const Vertex& other) const 

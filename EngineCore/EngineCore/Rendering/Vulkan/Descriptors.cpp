@@ -25,14 +25,20 @@ namespace AVulkan
 		uboLightLayout.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 		uboLightLayout.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
+		VkDescriptorSetLayoutBinding uboCameraLayout{};
+		uboCameraLayout.binding = 2;
+		uboCameraLayout.descriptorCount = 1;
+		uboCameraLayout.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		uboCameraLayout.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
 		VkDescriptorSetLayoutBinding samplerLayout{};
-		samplerLayout.binding = 2;
+		samplerLayout.binding = 3;
 		samplerLayout.descriptorCount = 1;
 		samplerLayout.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 		samplerLayout.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
 		samplerLayout.pImmutableSamplers = nullptr;
 
-		std::array<VkDescriptorSetLayoutBinding, 3> bindings = { uboViewProjectionLayout, uboLightLayout, samplerLayout };
+		std::array<VkDescriptorSetLayoutBinding, 4> bindings = { uboViewProjectionLayout, uboLightLayout, uboCameraLayout, samplerLayout };
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 		layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
@@ -102,6 +108,7 @@ namespace AVulkan
 	void Descriptors::UpdateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSet& descriptorSet, 
 		VkBuffer& viewProjectionDescriptorBuffer, VkDeviceSize&& viewProjectionDescriptorRange,
 		VkBuffer& lightDescriptorBuffer, VkDeviceSize&& lightDescriptorRange,
+		VkBuffer& cameraDescriptorBuffer, VkDeviceSize&& cameraDescriptorRange,
 		VkImageView& textureImageView, VkSampler& textureSampler) const
 	{
 		VkDescriptorBufferInfo viewProjectionDescriptorInfo{};
@@ -114,9 +121,13 @@ namespace AVulkan
 		lightDescriptorInfo.range = lightDescriptorRange;
 		lightDescriptorInfo.offset = 0;
 
+		VkDescriptorBufferInfo cameraDescriptorInfo{};
+		cameraDescriptorInfo.buffer = cameraDescriptorBuffer;
+		cameraDescriptorInfo.range = cameraDescriptorRange;
+		cameraDescriptorInfo.offset = 0;
 
-		std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
-		uint32_t descriptorsCount = 2;
+		std::array<VkWriteDescriptorSet, 4> descriptorWrites{};
+		uint32_t descriptorsCount = 3;
 
 		descriptorWrites[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		descriptorWrites[0].dstSet = descriptorSet;
@@ -134,6 +145,14 @@ namespace AVulkan
 		descriptorWrites[1].descriptorCount = 1;
 		descriptorWrites[1].pBufferInfo = &lightDescriptorInfo;
 
+		descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+		descriptorWrites[2].dstSet = descriptorSet;
+		descriptorWrites[2].dstBinding = 2;
+		descriptorWrites[2].dstArrayElement = 0;
+		descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		descriptorWrites[2].descriptorCount = 1;
+		descriptorWrites[2].pBufferInfo = &cameraDescriptorInfo;
+
 		if (textureSampler != VK_NULL_HANDLE && textureImageView != VK_NULL_HANDLE)
 		{
 			VkDescriptorImageInfo imageInfo{};
@@ -141,13 +160,13 @@ namespace AVulkan
 			imageInfo.imageView = textureImageView;
 			imageInfo.sampler = textureSampler;
 
-			descriptorWrites[2].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-			descriptorWrites[2].dstSet = descriptorSet;
-			descriptorWrites[2].dstBinding = 2;
-			descriptorWrites[2].dstArrayElement = 0;
-			descriptorWrites[2].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-			descriptorWrites[2].descriptorCount = 1;
-			descriptorWrites[2].pImageInfo = &imageInfo;
+			descriptorWrites[3].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+			descriptorWrites[3].dstSet = descriptorSet;
+			descriptorWrites[3].dstBinding = 3;
+			descriptorWrites[3].dstArrayElement = 0;
+			descriptorWrites[3].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+			descriptorWrites[3].descriptorCount = 1;
+			descriptorWrites[3].pImageInfo = &imageInfo;
 			descriptorsCount++;
 		}
 

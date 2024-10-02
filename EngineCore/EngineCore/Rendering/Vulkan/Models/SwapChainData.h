@@ -1,8 +1,9 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-
 #include <vector>
+#include "EngineCore/Rendering/Vulkan/Models/ImageModel.h"
+#include "EngineCore/Core/Ref.h"
 
 namespace AVulkan
 {
@@ -14,7 +15,6 @@ namespace AVulkan
 		VkSwapchainKHR oldSwapChain;//todo: add usage to reuse resources
 
 		VkSurfaceFormatKHR surfaceFormat;
-		VkFormat imageFormat;
 		VkExtent2D extent;
 
 		uint32_t imagesCount;
@@ -22,5 +22,9 @@ namespace AVulkan
 		std::vector<VkImageView> imageViews;
 
 		std::vector<VkFramebuffer> frameBuffers;
+
+		Ref<ImageModel> depthBufferModel;
+		Ref<ImageModel> msaaColorSample;
+		Ref<ImageModel> msaaDepthSample;
 	};
 }

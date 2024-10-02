@@ -1,7 +1,10 @@
 #pragma once
 
+#include "Editor/Editor.h"
 #include "EngineCore/Engine.h"
-
+#include "EngineCore/Components/IdComponent.h"
+#include "EngineCore/Components/NameComponent.h"
+#include "EngineCore/Components/RotationVelocityComponent.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/ProjectSettings.h"
 
@@ -12,12 +15,13 @@ public:
 	~Game();
 
 	void Run();
-
-	Ref<Engine> engine;
-	Ref<ProjectSettigns> projectSettings;
-
 private:
+	Ref<Editor> editor;
+	Ref<Engine> engine;
+
+	Ref<ProjectSettigns> projectSettings;
 	Ref<AssetsDatabase> assetDatabase;
+	Ref<ResourcesManager> resourcesManager;
 	Ref<Ecs> ecs;
 	IGraphicsApi* graphicsApi;
 

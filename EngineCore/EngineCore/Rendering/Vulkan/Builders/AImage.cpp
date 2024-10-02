@@ -6,13 +6,13 @@
 
 namespace AVulkan
 {
-    AImage::AImage(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue, VkCommandPool& commandPool)
-        : physicalDevice(physicalDevice), logicalDevice(logicalDevice), graphicsQueue(graphicsQueue), commandPool(commandPool)
+    AImage::AImage(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue)
+        : physicalDevice(physicalDevice), logicalDevice(logicalDevice), graphicsQueue(graphicsQueue)
     {
     }
 
     VkImage AImage::Create(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
-        VkMemoryPropertyFlags properties, VkDeviceMemory& imageMemory) const
+        VkSampleCountFlagBits msaa, VkMemoryPropertyFlags properties, VkDeviceMemory& imageMemory) const
     {
         VkImageCreateInfo imageInfo{};
         imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -26,7 +26,7 @@ namespace AVulkan
         imageInfo.tiling = tiling;
         imageInfo.usage = usage;
         imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageInfo.samples = msaa;
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         VkImage image = nullptr;
@@ -48,7 +48,7 @@ namespace AVulkan
         return image;
     }
 
-    void AImage::CopyBufferToImage(VkBuffer& buffer, VkImage& image, uint32_t width, uint32_t height) const
+    void AImage::CopyBufferToImage(VkBuffer& buffer, VkImage& image, uint32_t width, uint32_t height, VkCommandPool& commandPool) const
     {
         auto commandBuffer = VkUtils::BeginCommandBuffer(logicalDevice, commandPool);
 
@@ -72,7 +72,7 @@ namespace AVulkan
         vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
     }
 
-    void AImage::TransitionImageLayout(VkImage& image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) const
+    void AImage::TransitionImageLayout(VkImage& image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, VkCommandPool& commandPool) const
     {
         auto commandBuffer = VkUtils::BeginCommandBuffer(logicalDevice, commandPool);
 

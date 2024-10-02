@@ -4,18 +4,21 @@
 #include <chrono>
 #include <entt.hpp>
 
-#include "EngineCore/Core/Level.h"
+#include "EngineCore/Defines/DllDefines.h"
+#include "EngineCore/Core/World.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/Input.h"
 #include "EngineCore/Core/ProjectSettings.h"
-#include "EngineCore/Systems/CameraFreeSystem.h"
+#include "EngineCore/Systems/CameraFlySystem.h"
 #include "EngineCore/Systems/CameraOrbitSystem.h"
+#include "EngineCore/Systems/RotatorSystem.h"
 #include "EngineCore/AssetsManagement/AssetsDatabase.h"
+#include "EngineCore/AssetsManagement/ResourcesManager.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 #include "EngineCore/Rollback/Rollback.h"
 
-class Engine
+class PROJECT_API Engine
 {
 public:
 	Engine(Ref<ProjectSettigns> projectSettings);
@@ -27,8 +30,11 @@ public:
 
 	IGraphicsApi* GetGraphicsApi() { return graphicsApi; }
 	Ref<Ecs> GetEcs() { return ecs; }
+	
 	Ref<AssetsDatabase> GetAssetsDatabase() { return assetsDatabase; }
-	Level* GetLevel() { return level; }
+	Ref<ResourcesManager> GetResourcesManager() { return resourcesManager; }
+
+	Ref<World> GetLevel() { return world; }
 
 	float GetDeltaTime() { return deltaTime; }
 
@@ -37,11 +43,12 @@ private:
 
 	GLFWwindow* window;
 	IGraphicsApi* graphicsApi;
-	Level* level;
-	
+
+	Ref<World> world;
 	Ref<Ecs> ecs;
 	Ref<Input> input;
 	Ref<AssetsDatabase> assetsDatabase;
+	Ref<ResourcesManager> resourcesManager;
 
 	Rollback* engineRollback;
 

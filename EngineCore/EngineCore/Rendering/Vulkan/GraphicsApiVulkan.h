@@ -18,12 +18,12 @@
 #include "EngineCore/Rendering/Vulkan/TextureVulkan.h"
 #include "EngineCore/Rendering/Vulkan/MaterialVulkan.h"
 #include "EngineCore/Rendering/Vulkan/PipelineVulkan.h"
+#include "EngineCore/Rendering/Vulkan/Configs/VulkanConfiguration.h"
 
 #include "Builders/AValidationLayers.h"
 #include "Builders/AImage.h"
 #include "Builders/AImageView.h"
 #include "Builders/AShaderModule.h"
-
 #include "Utilities/CommandPoolUtility.h"
 #include "Utilities/CommandBufferUtility.h"
 #include "Utilities/FormatUtility.h"
@@ -42,6 +42,8 @@
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/ProjectSettings.h"
 #include "EngineCore/Rollback/Rollback.h"
+#include "EngineCore/Components/PositionComponent.h"
+#include "EngineCore/Components/RotationComponent.h"
 #include "EngineCore/Components/MaterialComponent.h"
 #include "EngineCore/Components/MeshComponent.h"
 #include "EngineCore/Components/UboViewProjectionComponent.h"
@@ -55,7 +57,6 @@ namespace AVulkan
 	class GraphicsApiVulkan : public IGraphicsApi
 	{
 	public:
-		static constexpr uint16_t maxFramesInFlight = 2;
 
 		GLFWwindow* window;
 
@@ -73,6 +74,7 @@ namespace AVulkan
 		Ref<SwapChain> swapChain;
 		Ref<SwapChainData> swapChainData;
 		Ref<Descriptors> descriptors;
+		Ref<VulkanConfiguration> rendererConfig;
 
 		VkCommandPool commandPool;
 		std::vector<VkCommandBuffer> commandBuffers;
@@ -94,11 +96,11 @@ namespace AVulkan
 		void Render() override;
 		void FinanilizeRenderOperations() override;
 
-		Ref<Mesh> CreateMesh(const std::filesystem::path& meshPath) override;
+		Ref<Mesh> LoadMesh(const std::filesystem::path& meshPath) override;
 		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
 
-		Ref<Texture> CreateTexture(std::filesystem::path& textureFilePath) override;
-		Ref<Material> CreateMaterial(std::string& pipelineId) override;
+		Ref<Texture> CreateTexture(const std::filesystem::path& textureFilePath) override;
+		Ref<Material> CreateMaterial(const std::string& pipelineId) override;
 
 	private:
 		Ref<Ecs> ecs;
@@ -111,14 +113,12 @@ namespace AVulkan
 
 		uint32_t imageIndex = 0;
 		uint16_t frame = 0;
-		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
 
 		void CreateInstance();
 		void SelectPhysicalRenderingDevice();
 		void CreateLogicalDevice();
 		void CreateWindowSurface();
 		void CreateSwapChain();
-		void CreateSwapChainImageViews();
 		void CreateRenderPass();
 		void CreateGraphicsPipelines();
 		void CreateDepthBuffer();

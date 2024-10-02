@@ -20,4 +20,6 @@ namespace VkUtils
 
 	bool DoSupportQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface);
 	bool DoSupportPhysicalDeviceExtensions(VkPhysicalDevice& device);
+
+	VkSampleCountFlagBits GetMaxUsableSampleCount(VkPhysicalDevice& physicalDevice);
 }

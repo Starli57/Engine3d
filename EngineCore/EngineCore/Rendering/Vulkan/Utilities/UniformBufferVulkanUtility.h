@@ -8,11 +8,8 @@
 #include "EngineCore/Rollback/Rollback.h"
 #include "EngineCore/Components/UboViewProjectionComponent.h"
 
-namespace AVulkan
+namespace VkUtils
 {
-	class AUniformBufferVulkan
-	{
-	public:
-		Ref<BufferModel> Create(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, VkDeviceSize bufferSize, Ref<Rollback> rollback);
-	};
+	Ref<AVulkan::BufferModel> CreateUniformBuffer(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, 
+			VkDeviceSize bufferSize, Ref<Rollback> rollback);
 }

@@ -6,12 +6,13 @@
 #include "EngineCore/Systems/ISystem.h"
 #include "EngineCore/Components/CameraFreeComponent.h"
 #include "EngineCore/Components/PositionComponent.h"
+#include "EngineCore/Components/RotationComponent.h"
 
-class CameraFreeSystem : ISystem
+class CameraFlySystem : ISystem
 {
 public:
-	CameraFreeSystem(Ref<Ecs> ecs, Ref<Input> input);
-	~CameraFreeSystem();
+	CameraFlySystem(Ref<Ecs> ecs, Ref<Input> input);
+	~CameraFlySystem();
 
 	virtual void Update(float deltaTime) override;
 

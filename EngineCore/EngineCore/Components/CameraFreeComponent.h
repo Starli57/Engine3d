@@ -5,6 +5,13 @@
 
 struct CameraFreeComponent : IComponent
 {
-	float movementSpeed = 100.0f;
-	float rotationSpeed = 100.0f;
+	float movementSpeed = 250.0f;
+	float rotationSpeed = 20.0f;
+
+	CameraFreeComponent() {}
+
+	CameraFreeComponent(float movementSpeed, float rotationSpeed)
+		: movementSpeed(movementSpeed), rotationSpeed(rotationSpeed)
+	{
+	}
 };

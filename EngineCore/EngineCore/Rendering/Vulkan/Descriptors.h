@@ -22,6 +22,7 @@ namespace AVulkan
 		void UpdateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSet& descriptorSet,
 			VkBuffer& viewProjectionDescriptorBuffer, VkDeviceSize&& viewProjectionDescriptorRange,
 			VkBuffer& lightDescriptorBuffer, VkDeviceSize&& lightDescriptorRange,
+			VkBuffer& cameraDescriptorBuffer, VkDeviceSize&& cameraDescriptorRange,
 			VkImageView& textureImageView, VkSampler& textureSampler) const;
 
 	private:

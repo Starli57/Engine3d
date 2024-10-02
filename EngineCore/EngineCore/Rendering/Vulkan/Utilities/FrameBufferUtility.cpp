@@ -4,17 +4,20 @@
 
 namespace VkUtils
 {
-    void CreateFrameBuffer(VkDevice& logicalDevice, VkRenderPass& renderPass, AVulkan::SwapChainData& swapChainData, Ref<AVulkan::ImageModel> depthBufferModel)
+    void CreateFrameBuffer(VkDevice& logicalDevice, VkRenderPass& renderPass, AVulkan::SwapChainData& swapChainData, 
+        Ref<AVulkan::ImageModel> msaaColorBuffer, Ref<AVulkan::ImageModel> msaaDepthBuffer)
     {
         spdlog::info("Create frame buffers");
         swapChainData.frameBuffers.resize(swapChainData.imagesCount);
 
         for (size_t i = 0; i < swapChainData.imagesCount; i++)
         {
-            std::array<VkImageView, 2> attachments =
+            std::array<VkImageView, 3> attachments =
             {
-                swapChainData.imageViews[i],
-                depthBufferModel->imageView
+                msaaColorBuffer->imageView,
+                msaaDepthBuffer->imageView,
+                swapChainData.imageViews[i]
+                
             };
 
             VkFramebufferCreateInfo framebufferInfo{};

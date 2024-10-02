@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <filesystem>
 
+#include "EngineCore/Defines/DllDefines.h"
 #include "EngineCore/Utilities/UniqueId.h"
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/Assets/Mesh.h"
@@ -14,7 +15,7 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/ProjectSettings.h"
 
-class AssetsDatabase
+class PROJECT_API AssetsDatabase
 {
 public:
 	std::unordered_map<std::string, std::filesystem::path> meshesPaths;
@@ -37,7 +38,7 @@ public:
 	Ref<Material> GetMaterial(const int32_t index);
 	Ref<Texture> GetTexture(const int32_t index);
 	Ref<Texture> GetTexture(const std::filesystem::path& texturePath);
-	
+
 	int32_t AddMesh(Ref<Mesh> mesh);
 	int32_t AddTexture(Ref<Texture> texture);
 	int32_t AddMaterial(Ref<Material> material);

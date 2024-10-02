@@ -1,6 +1,6 @@
 #include "AssetsWindow.h"
 
-AssetsWindow::AssetsWindow(Ref<AssetsDatabase> assetsDatabase, Level* level) : assetsDatabase(assetsDatabase), level(level)
+AssetsWindow::AssetsWindow(Ref<AssetsDatabase> assetsDatabase, Ref<World> world) : assetsDatabase(assetsDatabase), world(world)
 {
 }
 
@@ -14,7 +14,7 @@ void AssetsWindow::Update()
 
     for (auto prefab : assetsDatabase->prefabsPaths)
         if (ImGui::Button(prefab.first.c_str()))
-            level->InstantiatePrefab(prefab.second);
+            world->InstantiatePrefab(prefab.second);
 
     for (auto mesh : assetsDatabase->meshesPaths)
         ImGui::Text(mesh.first.c_str());

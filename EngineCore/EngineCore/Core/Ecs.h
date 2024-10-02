@@ -4,9 +4,10 @@
 #include <entt.hpp>
 
 #include "EngineCore/Core/Ref.h"
+#include "EngineCore/Defines/DllDefines.h"
 #include "Entity.h"
 
-class Ecs
+class PROJECT_API Ecs
 {
 public:
 	Ref<entt::registry> registry;

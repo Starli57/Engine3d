@@ -88,7 +88,7 @@ void ImguiVulkan::Update()
 void ImguiVulkan::CreateRenderPass(VkRenderPass& renderPass)
 {
     VkAttachmentDescription renderPassAttachment = {};
-    renderPassAttachment.format = vulkanApi.swapChainData->imageFormat;
+    renderPassAttachment.format = vulkanApi.rendererConfig->imageFormat;
     renderPassAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
     renderPassAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     renderPassAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;

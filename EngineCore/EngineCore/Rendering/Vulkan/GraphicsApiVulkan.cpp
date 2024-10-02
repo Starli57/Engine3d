@@ -15,6 +15,7 @@ namespace AVulkan
 		this->window = glfwWindow;
 		this->descriptors = CreateRef<Descriptors>();
 		this->pipelinesCollection = CreateRef<PipelinesCollection>(projectSettings);
+		this->rendererConfig = CreateRef<VulkanConfiguration>();
 		this->rollback = CreateRef<Rollback>("GraphicsApiVulkan", *vulkanRollback);
 	}
 
@@ -33,7 +34,6 @@ namespace AVulkan
 			SelectPhysicalRenderingDevice();
 			CreateLogicalDevice();
 			CreateSwapChain();
-			CreateSwapChainImageViews();
 			CreateRenderPass();
 			CreateDescriptorSetLayout();
 			CreateGraphicsPipelines();
@@ -72,7 +72,7 @@ namespace AVulkan
 		{
 			auto& pipeline = pipelines.at(pipelineConfig.first);
 			pipeline = GraphicsPipelineUtility().ReCreate(pipeline, pipelineConfig.second, logicalDevice, renderPass,
-				swapChainData->extent, descriptors->GetDescriptorSetLayout());
+				swapChainData->extent, descriptors->GetDescriptorSetLayout(), rendererConfig->msaa);
 		}
 	}
 
@@ -82,9 +82,9 @@ namespace AVulkan
 
 		auto commandBuffer = commandBuffers[frame];
 
-		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, frameSyncTimeout);
+		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, rendererConfig->frameSyncTimeout);
 
-		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData->swapChain, frameSyncTimeout,
+		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData->swapChain, rendererConfig->frameSyncTimeout,
 			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 		
 		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR) 
@@ -144,7 +144,7 @@ namespace AVulkan
 		
 		CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
 		
-		frame = (frame + 1) % maxFramesInFlight;
+		frame = (frame + 1) % rendererConfig->maxFramesInFlight;
 	}
 
 	void GraphicsApiVulkan::FinanilizeRenderOperations()
@@ -152,7 +152,7 @@ namespace AVulkan
 		vkDeviceWaitIdle(logicalDevice);
 	}
 
-	Ref<Mesh> GraphicsApiVulkan::CreateMesh(const std::filesystem::path& meshPath)
+	Ref<Mesh> GraphicsApiVulkan::LoadMesh(const std::filesystem::path& meshPath)
 	{
 		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, meshPath, rollback);
 	}
@@ -162,12 +162,12 @@ namespace AVulkan
 		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, vertices, indices, rollback);
 	}
 
-	Ref<Texture> GraphicsApiVulkan::CreateTexture(std::filesystem::path& textureFilePath)
+	Ref<Texture> GraphicsApiVulkan::CreateTexture(const std::filesystem::path& textureFilePath)
 	{
-		return CreateRef<TextureVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, textureFilePath, rollback);
+		return CreateRef<TextureVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, rendererConfig, textureFilePath, rollback);
 	}
 
-	Ref<Material> GraphicsApiVulkan::CreateMaterial(std::string& pipelineId)
+	Ref<Material> GraphicsApiVulkan::CreateMaterial(const std::string& pipelineId)
 	{
 		return CreateRef<MaterialVulkan>(pipelineId, assetDatabase, physicalDevice, logicalDevice, descriptors,
 			textureSampler, descriptors->GetDescriptorSetLayout(), rollback);
@@ -188,6 +188,8 @@ namespace AVulkan
 	void GraphicsApiVulkan::SelectPhysicalRenderingDevice()
 	{
 		physicalDevice = VkUtils::GetBestRenderingDevice(instance, windowSurface);
+		rendererConfig->msaa = VkUtils::GetMaxUsableSampleCount(physicalDevice);
+		rendererConfig->depthFormat = VkUtils::FindDepthBufferFormat(physicalDevice);
 		VkUtils::PrintPhysicalDeviceDebugInformation(physicalDevice, windowSurface);
 	}
 
@@ -203,21 +205,20 @@ namespace AVulkan
 	void GraphicsApiVulkan::CreateSwapChain()
 	{
 		swapChainData = CreateRef<SwapChainData>();
-		swapChain = CreateRef<SwapChain>(rollback, *window, physicalDevice, logicalDevice, windowSurface, graphicsQueue, swapChainData);
+		swapChain = CreateRef<SwapChain>(rollback, *window, physicalDevice, logicalDevice, 
+			windowSurface, graphicsQueue, swapChainData, rendererConfig);
 
 		swapChain->CreateSwapchain();
+		swapChain->CreateSwapChainImageViews();
+		swapChain->CreateMSAAColorResources();
+		swapChain->CreateMSAADepthResources();
 
 		rollback->Add([this] {swapChain->Dispose(); });
 	}
 
-	void GraphicsApiVulkan::CreateSwapChainImageViews()
-	{
-		swapChain->CreateSwapChainImageViews();
-	}
-
 	void GraphicsApiVulkan::CreateRenderPass()
 	{
-		renderPass = VkUtils::CreateRenderPass(physicalDevice, logicalDevice, swapChainData->imageFormat);
+		renderPass = VkUtils::CreateRenderPass(physicalDevice, logicalDevice, rendererConfig);
 		rollback->Add([this]() { VkUtils::DisposeRenderPass(logicalDevice, renderPass);; });
 	}
 
@@ -229,7 +230,7 @@ namespace AVulkan
 		{
 			GraphicsPipelineUtility pipelineUtility;
 			auto pipeline = pipelineUtility.Create(config.second, logicalDevice, renderPass, 
-				swapChainData->extent, descriptors->GetDescriptorSetLayout());
+				swapChainData->extent, descriptors->GetDescriptorSetLayout(), rendererConfig->msaa);
 
 			pipelines.emplace(config.first, pipeline);
 		}
@@ -248,7 +249,7 @@ namespace AVulkan
 
 	void GraphicsApiVulkan::CreateCommandBuffer()
 	{
-		VkUtils::AllocateCommandBuffers(logicalDevice, commandPool, commandBuffers, maxFramesInFlight);
+		VkUtils::AllocateCommandBuffers(logicalDevice, commandPool, commandBuffers, rendererConfig->maxFramesInFlight);
 		rollback->Add([this]() { VkUtils::FreeCommandBuffers(logicalDevice, commandPool, commandBuffers); });
 	}
 
@@ -261,7 +262,7 @@ namespace AVulkan
 	void GraphicsApiVulkan::CreateDepthBuffer()
 	{
 		spdlog::info("Create depth buffer");
-		swapChain->CreateDepthBuffer(commandPool);
+		swapChain->CreateDepthBuffer();
 	}
 
 	void GraphicsApiVulkan::CreateTextureSampler()
@@ -297,8 +298,17 @@ namespace AVulkan
 	void GraphicsApiVulkan::UpdateUniformBuffer(uint32_t frame)
 	{
 		//todo: find most relevant camera
-		auto viewProjectionEntries = ecs->registry->view<UboViewProjectionComponent>();
-		auto [viewProjectionComponent] = viewProjectionEntries.get(viewProjectionEntries.front());
+		auto viewProjectionEntries = ecs->registry->view<PositionComponent, RotationComponent, CameraComponent, UboViewProjectionComponent>();
+		if (viewProjectionEntries.begin() == viewProjectionEntries.end())
+		{
+			spdlog::critical("UpdateUniformBuffer failed: No entities with UboViewProjectionComponent found");
+			return;
+		}
+
+		auto firstCamera = viewProjectionEntries.front();
+		auto cameraPosition = viewProjectionEntries.get<PositionComponent>(firstCamera);
+		auto cameraRotation = viewProjectionEntries.get<RotationComponent>(firstCamera);
+		auto viewProjectionComponent = viewProjectionEntries.get<UboViewProjectionComponent>(firstCamera);
 
 		auto materialEntries = ecs->registry->view<MaterialComponent>();
 		auto lightEntries = ecs->registry->view<UboDiffuseLightComponent>();
@@ -314,6 +324,8 @@ namespace AVulkan
 				auto& positionComponent = lightEntries.get<UboDiffuseLightComponent>(entity);
 				memcpy(materialVulkan->uboLights.at(frame)->bufferMapped, &positionComponent, sizeof(UboDiffuseLightComponent));
 			}
+
+			memcpy(materialVulkan->uboCamera.at(frame)->bufferMapped, &cameraPosition, sizeof(PositionComponent));
 
 			materialVulkan->UpdateDescriptors(frame);
 		}
@@ -333,9 +345,9 @@ namespace AVulkan
 
 	void GraphicsApiVulkan::CreateSyncObjects()
 	{
-		imageAvailableSemaphores.resize(maxFramesInFlight);
-		renderFinishedSemaphores.resize(maxFramesInFlight);
-		drawFences.resize(maxFramesInFlight);
+		imageAvailableSemaphores.resize(rendererConfig->maxFramesInFlight);
+		renderFinishedSemaphores.resize(rendererConfig->maxFramesInFlight);
+		drawFences.resize(rendererConfig->maxFramesInFlight);
 
 		VkSemaphoreCreateInfo semaphoreInfo{};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -344,7 +356,7 @@ namespace AVulkan
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-		for (int i = 0; i < maxFramesInFlight; i++) 
+		for (int i = 0; i < rendererConfig->maxFramesInFlight; i++)
 		{
 			VkUtils::CreateVkSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i], rollback);
 			VkUtils::CreateVkSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i], rollback);

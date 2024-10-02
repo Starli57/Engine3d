@@ -1,7 +1,5 @@
 #include "EngineCore/Pch.h"
 
-#include <spdlog/spdlog.h>
-
 #include "Engine.h"
 
 Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSettings)
@@ -30,10 +28,13 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 		throw e;
 	}
 
+	resourcesManager = CreateRef<ResourcesManager>(graphicsApi, assetsDatabase);
+	engineRollback->Add([this]() { resourcesManager.reset(); });
+
 	input = CreateRef<Input>(window);
 
-	level = new Level(ecs, projectSettings, assetsDatabase, graphicsApi, engineRollback);
-	engineRollback->Add([this] { delete level; });
+	world = CreateRef<World>(ecs, projectSettings);
+	engineRollback->Add([this] { world.reset(); });
 
 	spdlog::info("--Engine init finished--");
 }
@@ -70,7 +71,7 @@ void Engine::SetupGlfwHints()
 
 void Engine::CreateAppWindow()
 {
-	window = glfwCreateWindow(1600, 1000, "Engine window", nullptr, nullptr);
+	window = glfwCreateWindow(1600, 1000, projectSettings->projectName.c_str(), nullptr, nullptr);
 	CAssert::Check(window != nullptr, "GLFW window can't be created");
 
 	engineRollback->Add([this]()
@@ -99,12 +100,13 @@ void Engine::Run()
 	auto rotatorSystem = CreateRef<RotatorSystem>(ecs);
 	auto transformSystem = CreateRef<TransformSystem>(ecs);
 	auto cameraSystem = CreateRef<Camera>(ecs, window);
-	auto freeCameraSystem = CreateRef<CameraFreeSystem>(ecs, input);
+	auto freeCameraSystem = CreateRef<CameraFlySystem>(ecs, input);
 	auto orbitCameraSystem = CreateRef<CameraOrbitSystem>(ecs, input);
 
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
+		input->Update();
 
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - cachedTime).count();

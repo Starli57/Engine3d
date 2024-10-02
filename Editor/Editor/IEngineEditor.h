@@ -3,10 +3,11 @@
 #include <iostream>
 #include <vector>
 
+#include "EngineCore/Defines/DllDefines.h"
 #include "EngineCore/Editor/IWindow.h"
 #include "EngineCore/Core/Ref.h"
 
-class IEngineEditor
+class PROJECT_API IEngineEditor
 {
 public:
 	

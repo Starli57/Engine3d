@@ -12,13 +12,9 @@
 #include "Windows/VulkanDebugInfo.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 
-Editor::Editor()
+Editor::Editor(Ref<ProjectSettigns> projectSettings, Ref<Engine> engine) : 
+	projectSettings(projectSettings), engine(engine)
 {
-	projectSettings = CreateRef<ProjectSettigns>("../ExampleProject/");
-
-	game = CreateRef<Game>(projectSettings);
-	engine = game->engine;
-
 	auto graphicsApi = engine->GetGraphicsApi();
 	auto vulkanApi = static_cast<AVulkan::GraphicsApiVulkan*>(graphicsApi);
 
@@ -32,7 +28,6 @@ Editor::Editor()
 	editorUi->AddWindow(CreateRef<AssetsWindow>(engine->GetAssetsDatabase(), engine->GetLevel()));
 
 	engine->BindEditorUpdateFunction([this]() {editorUi->Update(); });
-	game->Run();
 }
 
 Editor::~Editor()
@@ -41,5 +36,4 @@ Editor::~Editor()
 
 	editorUi.reset();
 	engine.reset();
-	game.reset();
 }

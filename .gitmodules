@@ -25,3 +25,9 @@
 [submodule "Externals/Catch2"]
 	path = Externals/Catch2
 	url = git@github.com:catchorg/Catch2.git
+[submodule "Externals/Pybind11"]
+	path = Externals/Pybind11
+	url = git@github.com:pybind/pybind11.git
+[submodule "Externals/TinyGltf"]
+	path = Externals/TinyGltf
+	url = git@github.com:syoyo/tinygltf.git

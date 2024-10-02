@@ -14,6 +14,7 @@
 #include "EngineCore/Rendering/Vulkan/Utilities/FormatUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/MemoryUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/SwapchainUtility.h"
+#include "EngineCore/Rendering/Vulkan/Configs/VulkanConfiguration.h"
 
 namespace AVulkan
 {
@@ -21,23 +22,24 @@ namespace AVulkan
 	{
 	public:
 
-		Ref<ImageModel> depthBufferModel;
-
 		SwapChain(Ref<Rollback> rollback, GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkSurfaceKHR& surface,
-			VkQueue& graphicsQueue, Ref<SwapChainData> swapChainData);
+			VkQueue& graphicsQueue, Ref<SwapChainData> swapChainData, Ref<VulkanConfiguration> rendererConfig);
 		~SwapChain();
 
 		void Recreate();
 		void CreateSwapchain();
 		void CreateSwapChainImageViews();
-		void CreateDepthBuffer(VkCommandPool& commandPool);
+		void CreateDepthBuffer();
 		void CreateFrameBuffers(VkRenderPass& renderPass);
+		void CreateMSAAColorResources();
+		void CreateMSAADepthResources();
 		void Dispose();
 
 	private:
 
 		Ref<Rollback> rollback;
 		Ref<SwapChainData> swapChainData;
+		Ref<VulkanConfiguration> rendererConfig;
 
 		GLFWwindow& window;
 		VkPhysicalDevice& physicalDevice;
@@ -46,7 +48,6 @@ namespace AVulkan
 		VkQueue& graphicsQueue;
 
 		QueueFamilyIndices physicalDeviceQueueIndices;
-		VkCommandPool commandPool;
 		VkRenderPass renderPass;
 
 		VkPresentModeKHR ChoosePresentMode(const std::vector<VkPresentModeKHR>& availableModes) const;

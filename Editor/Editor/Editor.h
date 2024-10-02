@@ -2,18 +2,17 @@
 
 #include "IEngineEditor.h"
 
-#include "ExampleProject/Game.h"
+#include "EngineCore/Defines/DllDefines.h"
 #include "EngineCore/Engine.h"
 #include "EngineCore/Core/Ref.h"
 
-class Editor
+class PROJECT_API Editor
 {
 public:
-	Editor();
+	Editor(Ref<ProjectSettigns> projectSettings, Ref<Engine> engine);
 	~Editor();
 
 private:
-	Ref<Game> game;
 	Ref<Engine> engine;
 	Ref<IEngineEditor> editorUi;
 	Ref<ProjectSettigns> projectSettings;

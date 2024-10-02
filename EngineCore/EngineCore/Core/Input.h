@@ -1,12 +1,15 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
+#include "EngineCore/Defines/DllDefines.h"
 
-class Input
+class PROJECT_API Input
 {
 public: 
 	Input(GLFWwindow* window);
 	~Input();
+
+	void Update();
 
 	GLFWkeyfun SetKeyCallback(GLFWkeyfun callback);
 	GLFWkeyfun SetKeyCallback(GLFWwindow* window, GLFWkeyfun callback);
@@ -35,7 +38,18 @@ public:
 	void GetCursorPosition(double& x, double& y);
 	void GetCursorPosition(GLFWwindow* window, double& x, double& y);
 
+	void GetCursorDelta(double& x, double& y);
+
 private:
 	GLFWwindow* cachedWindow;
+
+	double cursorDeltaX;
+	double cursorDeltaY;
+
+	double prevCursorPosX;
+	double prevCursorPosY;
+
+	void UpdateCursorDelta();
+	void ResetCursorDelta();
 };
 

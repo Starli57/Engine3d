@@ -6,8 +6,9 @@
 
 namespace AVulkan
 {
-	Ref<PipelineVulkan> GraphicsPipelineUtility::Create(Ref<PipelineConfig> pipelineConfig, VkDevice& logicalDevice,
-		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout)
+	Ref<PipelineVulkan> GraphicsPipelineUtility::Create(Ref<VulkanPipelineConfig> pipelineConfig, VkDevice& logicalDevice,
+		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout,
+		VkSampleCountFlagBits msaa)
 	{
 		spdlog::info("Create graphics pipeline");
 		auto pipeline = CreateRef<PipelineVulkan>();
@@ -39,8 +40,8 @@ namespace AVulkan
 			auto createStatus = vkCreatePipelineLayout(logicalDevice, &pipelineLayoutInfo, nullptr, &pipeline->layout);
 			//---> Pipeline layout created
 
-			auto bindingDescription = AVertexBuffer().GetBindingDescription();
-			auto attributeDescriptions = AVertexBuffer().GetAttributeDescriptions();
+			auto bindingDescription = VkUtils::GetVertexInputBindingDescription();
+			auto attributeDescriptions = VkUtils::GetVertexInputAttributeDescriptions();
 
 			VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 			vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
@@ -51,8 +52,8 @@ namespace AVulkan
 
 			auto inputAssembly = SetupInputAssemblyData();
 			auto viewportState = SetupViewportAndScissor(swapChainExtent);
-			auto rasterizer = SetupRasterizer();
-			auto multisample = SetupMultisampling();
+			auto rasterizer = SetupRasterizer(pipelineConfig);
+			auto multisampling = SetupMultisampling(msaa);
 			auto colorBlend = SetupColorsBlending();
 
 			VkPipelineDepthStencilStateCreateInfo depthStencil{};
@@ -71,7 +72,7 @@ namespace AVulkan
 			pipelineInfo.pInputAssemblyState = &inputAssembly;
 			pipelineInfo.pViewportState = &viewportState;
 			pipelineInfo.pRasterizationState = &rasterizer;
-			pipelineInfo.pMultisampleState = &multisample;
+			pipelineInfo.pMultisampleState = &multisampling;
 			pipelineInfo.pColorBlendState = &colorBlend;
 			pipelineInfo.pDynamicState = nullptr;
 			pipelineInfo.layout = pipeline->layout;
@@ -96,11 +97,11 @@ namespace AVulkan
 		return pipeline;
 	}
 
-	Ref<PipelineVulkan> GraphicsPipelineUtility::ReCreate(Ref<PipelineVulkan> pipeline, Ref<PipelineConfig> pipelineConfig, VkDevice& logicalDevice,
-		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout)
+	Ref<PipelineVulkan> GraphicsPipelineUtility::ReCreate(Ref<PipelineVulkan> pipeline, Ref<VulkanPipelineConfig> pipelineConfig, VkDevice& logicalDevice,
+		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout, VkSampleCountFlagBits msaa)
 	{
 		Dispose(pipeline, logicalDevice);
-		return Create(pipelineConfig, logicalDevice, renderpass, swapChainExtent, descriptorSetLayout);
+		return Create(pipelineConfig, logicalDevice, renderpass, swapChainExtent, descriptorSetLayout, msaa);
 	}
 
 	void GraphicsPipelineUtility::Dispose(Ref<PipelineVulkan> pipeline, VkDevice& logicalDevice)
@@ -148,14 +149,15 @@ namespace AVulkan
 		return viewportState;
 	}
 
-	VkPipelineRasterizationStateCreateInfo GraphicsPipelineUtility::SetupRasterizer()
+	VkPipelineRasterizationStateCreateInfo GraphicsPipelineUtility::SetupRasterizer(Ref<VulkanPipelineConfig> pipelineConfig)
 	{
+		spdlog::info("Setup rasterizer");
 		VkPipelineRasterizationStateCreateInfo rasterizer{};
 		rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
 		rasterizer.depthClampEnable = VK_FALSE;
 		rasterizer.rasterizerDiscardEnable = VK_FALSE;
 
-		rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
+		rasterizer.polygonMode = pipelineConfig->polygonMode;
 		rasterizer.lineWidth = 1.0f;
 
 		rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
@@ -169,12 +171,12 @@ namespace AVulkan
 		return rasterizer;
 	}
 
-	VkPipelineMultisampleStateCreateInfo GraphicsPipelineUtility::SetupMultisampling()
+	VkPipelineMultisampleStateCreateInfo GraphicsPipelineUtility::SetupMultisampling(VkSampleCountFlagBits msaa)
 	{
 		VkPipelineMultisampleStateCreateInfo multisampling{};
 		multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
 		multisampling.sampleShadingEnable = VK_FALSE;
-		multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+		multisampling.rasterizationSamples = msaa;
 		multisampling.minSampleShading = 1.0f;
 		multisampling.pSampleMask = nullptr; 
 		multisampling.alphaToCoverageEnable = VK_FALSE;

@@ -146,12 +146,30 @@ namespace VkUtils
 
         for (auto colorFormat : surfaceSettings.formats)
         {
-            spdlog::info("Available color format: {0} color space: {1}", colorFormat.format, colorFormat.colorSpace);
+            spdlog::info("Available color format: {0} color space: {1}", (int)colorFormat.format, (int)colorFormat.colorSpace);
         }
 
         for (auto mode : surfaceSettings.presentModes)
         {
-            spdlog::info("Available present mode: {0}", mode);
+            spdlog::info("Available present mode: {0}", (int)mode);
         }
+
+        spdlog::info("Max MSAA: {0}", (int)VkUtils::GetMaxUsableSampleCount(physicalDevice));
+    }
+
+    VkSampleCountFlagBits GetMaxUsableSampleCount(VkPhysicalDevice& physicalDevice) 
+    {
+        VkPhysicalDeviceProperties physicalDeviceProperties;
+        vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
+
+        VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts & physicalDeviceProperties.limits.framebufferDepthSampleCounts;
+        if (counts & VK_SAMPLE_COUNT_64_BIT) { return VK_SAMPLE_COUNT_64_BIT; }
+        if (counts & VK_SAMPLE_COUNT_32_BIT) { return VK_SAMPLE_COUNT_32_BIT; }
+        if (counts & VK_SAMPLE_COUNT_16_BIT) { return VK_SAMPLE_COUNT_16_BIT; }
+        if (counts & VK_SAMPLE_COUNT_8_BIT) { return VK_SAMPLE_COUNT_8_BIT; }
+        if (counts & VK_SAMPLE_COUNT_4_BIT) { return VK_SAMPLE_COUNT_4_BIT; }
+        if (counts & VK_SAMPLE_COUNT_2_BIT) { return VK_SAMPLE_COUNT_2_BIT; }
+
+        return VK_SAMPLE_COUNT_1_BIT;
     }
 }

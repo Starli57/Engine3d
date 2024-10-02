@@ -1,14 +1,15 @@
 #include "EngineCore/Pch.h"
-#include <stb_image.h>
 #include "TextureVulkan.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
 
 namespace AVulkan
 {
     TextureVulkan::TextureVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue,
-        VkCommandPool& commandPool, std::filesystem::path& textureFilePath, Ref<Rollback> rollback)
+        VkCommandPool& commandPool, Ref<VulkanConfiguration> rendererConfig, const std::filesystem::path& textureFilePath, Ref<Rollback> rollback)
         : Texture(textureFilePath), physicalDevice(physicalDevice), logicalDevice(logicalDevice),
-          graphicsQueue(graphicsQueue), commandPool(commandPool), rollback(rollback)
+          graphicsQueue(graphicsQueue), commandPool(commandPool), rendererConfig(rendererConfig), rollback(rollback)
     {
         imageModel = CreateRef<ImageModel>();
 
@@ -21,7 +22,7 @@ namespace AVulkan
     }
 
     //todo: make async
-    void TextureVulkan::CreateImage(std::filesystem::path& textureFilePath, Ref<Rollback> rollback)
+    void TextureVulkan::CreateImage(const std::filesystem::path& textureFilePath, Ref<Rollback> rollback)
     {
         int width;
         int height;
@@ -58,24 +59,22 @@ namespace AVulkan
 
         stbi_image_free(pixels);
 
-        //todo: find suitable format firstly
-        VkFormat imgFormat = VK_FORMAT_R8G8B8A8_SRGB;
         VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL;
         VkImageUsageFlags usageFlags = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
         VkMemoryPropertyFlags memoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
         
-        AImage imageUtility(physicalDevice, logicalDevice, graphicsQueue, commandPool);
+        AImage imageUtility(physicalDevice, logicalDevice, graphicsQueue);
         
-        imageModel->image = imageUtility.Create(width, height, imgFormat,
-            tiling, usageFlags, memoryFlags, imageModel->imageMemory);
+        imageModel->image = imageUtility.Create(width, height, rendererConfig->imageFormat,
+            tiling, usageFlags, VK_SAMPLE_COUNT_1_BIT, memoryFlags, imageModel->imageMemory);
 
-        imageUtility.TransitionImageLayout(imageModel->image, imgFormat,
-            VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+        imageUtility.TransitionImageLayout(imageModel->image, rendererConfig->imageFormat,
+            VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, commandPool);
 
-        imageUtility.CopyBufferToImage(stagingBuffer, imageModel->image, width, height);
+        imageUtility.CopyBufferToImage(stagingBuffer, imageModel->image, width, height, commandPool);
 
-        imageUtility.TransitionImageLayout(imageModel->image, imgFormat,
-            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        imageUtility.TransitionImageLayout(imageModel->image, rendererConfig->imageFormat,
+            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, commandPool);
 
         vkDestroyBuffer(logicalDevice, stagingBuffer, nullptr);
         vkFreeMemory(logicalDevice, stagingMemory, nullptr);
@@ -86,10 +85,8 @@ namespace AVulkan
 
     void TextureVulkan::CreateImageView()
     {
-        //todo: find suitable format firstly
-        VkFormat imgFormat = VK_FORMAT_R8G8B8A8_SRGB;
         VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
-        AImageView().Create(logicalDevice, imgFormat, aspectFlags, imageModel->image, imageModel->imageView, rollback);
+        AImageView().Create(logicalDevice, rendererConfig->imageFormat, aspectFlags, imageModel->image, imageModel->imageView, rollback);
 
     }
 }

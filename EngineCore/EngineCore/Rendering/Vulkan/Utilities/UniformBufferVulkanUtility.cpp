@@ -1,11 +1,12 @@
 #include "EngineCore/Pch.h"
-#include "AUniformBufferVulkan.h"
+#include "UniformBufferVulkanUtility.h"
 
-namespace AVulkan
+namespace VkUtils
 {
-	Ref<BufferModel> AUniformBufferVulkan::Create(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, VkDeviceSize bufferSize, Ref<Rollback> rollback)
+	Ref<AVulkan::BufferModel> CreateUniformBuffer(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, 
+		VkDeviceSize bufferSize, Ref<Rollback> rollback)
 	{
-		Ref<BufferModel> bufferModel = CreateRef<BufferModel>();
+		Ref<AVulkan::BufferModel> bufferModel = CreateRef<AVulkan::BufferModel>();
 
 		VkBufferUsageFlags stagingUsageFlags = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 		VkMemoryPropertyFlags stagingMemoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;

@@ -3,9 +3,8 @@
 #include "EngineCore/Utilities/IOUtility.h"
 
 AssetsDatabase::AssetsDatabase(Ref<ProjectSettigns> projectSettings)
+	: projectSettings(projectSettings)
 {
-	this->projectSettings = projectSettings;
-
 	FillMeshesPaths();
 	FillTexturesPaths();
 	FillPrefabsPaths();
@@ -112,8 +111,9 @@ void AssetsDatabase::RemoveTexture(Ref<Texture> texture)
 void AssetsDatabase::FillMeshesPaths()
 {
 	auto relevantExtensions = std::vector<std::string>();
-	relevantExtensions.reserve(1);
+	relevantExtensions.reserve(2);
 	relevantExtensions.push_back(".obj");
+	relevantExtensions.push_back(".gltf");
 	IOUtility().FindAndEmplaceResourcesFiles(projectSettings->resourcesPath, relevantExtensions, meshesPaths);
 }
 

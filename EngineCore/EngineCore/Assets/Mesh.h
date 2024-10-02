@@ -20,6 +20,9 @@ public:
 	Mesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices);
 	virtual ~Mesh();
 
+	void LoadAndInitObj(const std::filesystem::path& path);
+	void LoadAndInitGltf(const std::filesystem::path& path);
+
 protected:
 	Ref<std::vector<Vertex>> vertices;
 	Ref<std::vector<uint32_t>> indices;
