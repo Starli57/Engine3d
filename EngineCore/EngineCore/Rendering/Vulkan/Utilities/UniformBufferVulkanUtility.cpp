@@ -3,8 +3,7 @@
 
 namespace VkUtils
 {
-	Ref<AVulkan::BufferModel> CreateUniformBuffer(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, 
-		VkDeviceSize bufferSize, Ref<Rollback> rollback)
+	Ref<AVulkan::BufferModel> CreateUniformBuffer(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, VkDeviceSize bufferSize)
 	{
 		Ref<AVulkan::BufferModel> bufferModel = CreateRef<AVulkan::BufferModel>();
 
@@ -16,8 +15,6 @@ namespace VkUtils
 
 		auto mapStatus = vkMapMemory(logicalDevice, bufferModel->bufferMemory, 0, bufferSize, 0, &bufferModel->bufferMapped);
 		CAssert::Check(mapStatus == VK_SUCCESS, "Uniform buffer can't be created, status: " + mapStatus);
-
-		rollback->Add([&logicalDevice, bufferModel]() {VkUtils::DisposeBuffer(logicalDevice, bufferModel->buffer, bufferModel->bufferMemory); });
 
 		return bufferModel;
 	}

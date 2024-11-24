@@ -19,10 +19,10 @@ namespace AVulkan
 		VkBuffer GetIndexBuffer();
 
 		MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue, 
-			VkCommandPool& commandPool, const std::filesystem::path& path, Ref<Rollback> rollback);
+			VkCommandPool& commandPool, const std::filesystem::path& path);
 
 		MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue, 
-			VkCommandPool& commandPool, Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices, Ref<Rollback> rollback);
+			VkCommandPool& commandPool, Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices);
 
 		virtual ~MeshVulkan() override;
 
@@ -36,7 +36,7 @@ namespace AVulkan
 		VkBuffer indexBuffer;
 		VkDeviceMemory indexBufferMemory;
 
-		void CreateVertexBuffer(VkQueue& graphicsQueue, VkCommandPool& commandPool, Ref<Rollback> rollback);
-		void CreateIndexBuffer(VkQueue& graphicsQueue, VkCommandPool& commandPool, Ref<Rollback> rollback);
+		void CreateVertexBuffer(VkQueue& graphicsQueue, VkCommandPool& commandPool);
+		void CreateIndexBuffer(VkQueue& graphicsQueue, VkCommandPool& commandPool);
 	};
 }

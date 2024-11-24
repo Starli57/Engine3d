@@ -1,7 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "LogicalDeviceUtility.h"
 #include "PhysicalDeviceUtility.h"
-#include "EngineCore/Rendering/Vulkan/Builders/AValidationLayers.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/ValidationLayersUtility.h"
 #include "EngineCore/Rendering/Vulkan/Models/PhysicalDeviceExtensions.h"
 
 namespace VkUtils
@@ -9,8 +9,6 @@ namespace VkUtils
 	VkDevice CreateLogicalDevice(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface, VkQueue& graphicsQueue, VkQueue& presentationQueue)
 	{
 		spdlog::info("Create logical device");
-
-		AVulkan::AValidationLayers validationLayers;
 
 		auto queueFamilies = GetQueueFamilies(physicalDevice, windowSurface);
 
@@ -44,7 +42,7 @@ namespace VkUtils
 		vkGetPhysicalDeviceFeatures(physicalDevice, &deviceFeatures);
 		createInfo.pEnabledFeatures = &deviceFeatures;
 
-		validationLayers.Setup(createInfo);
+		VkUtils::SetupValidationLayers(createInfo);
 
 		VkDevice logicalDevice;
 		auto createStatus = vkCreateDevice(physicalDevice, &createInfo, nullptr, &logicalDevice);

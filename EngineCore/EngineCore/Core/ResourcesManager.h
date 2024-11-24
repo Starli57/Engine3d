@@ -6,7 +6,7 @@
 #include "EngineCore/Rendering/IGraphicsApi.h"
 #include "EngineCore/Core/Ref.h"
 
-class PROJECT_API ResourcesManager
+class ResourcesManager
 {
 public:
 	ResourcesManager(IGraphicsApi* graphicsApi, Ref<AssetsDatabase> assetsDatabase);

@@ -11,19 +11,15 @@ namespace AVulkan
 	class Descriptors
 	{
 	public:
-		VkDescriptorSetLayout& GetDescriptorSetLayout();
+		VkDescriptorSetLayoutBinding DescriptorSetLayoutBinding(uint32_t binding, VkDescriptorType descriptorType, VkShaderStageFlags stageFlags, uint32_t descriptorCount);
 
-		void CreateLayout(VkDevice& logicalDevice);
-		void DisposeLayout(VkDevice& logicalDevice) const;
+		void CreateLayout(VkDevice& logicalDevice, std::vector<VkDescriptorSetLayoutBinding>& bindings, VkDescriptorSetLayout& layout);
+		void DisposeLayout(VkDevice& logicalDevice, VkDescriptorSetLayout& descriptorSetLayout) const;
 
-		VkDescriptorPool& CreateDescriptorPool(VkDevice& logicalDevice, Ref<Rollback> rollback);
+		VkDescriptorPool& CreateDescriptorPool(VkDevice& logicalDevice);
+		void DestroyDescriptorPools(VkDevice& logicalDevice);
 
-		VkDescriptorSet AllocateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSetLayout& descriptorSetLayout, Ref<Rollback> rollback);
-		void UpdateDescriptorSet(VkDevice& logicalDevice, VkDescriptorSet& descriptorSet,
-			VkBuffer& viewProjectionDescriptorBuffer, VkDeviceSize&& viewProjectionDescriptorRange,
-			VkBuffer& lightDescriptorBuffer, VkDeviceSize&& lightDescriptorRange,
-			VkBuffer& cameraDescriptorBuffer, VkDeviceSize&& cameraDescriptorRange,
-			VkImageView& textureImageView, VkSampler& textureSampler) const;
+		void AllocateDescriptorSet(VkDevice& logicalDevice, const VkDescriptorSetLayout& descriptorSetLayout, VkDescriptorSet& descriptorSet);
 
 	private:
 		const uint32_t maxDescriptorSets = 4096;
@@ -31,9 +27,8 @@ namespace AVulkan
 		uint32_t currentSetIndex = 0;
 		uint32_t currentPoolIndex = 0;
 
-		VkDescriptorSetLayout descriptorSetLayout;
 		std::vector<VkDescriptorPool> descriptorPools;
 
-		VkDescriptorPool& GetFreePool(VkDevice& logicalDevice, Ref<Rollback> rollback);
+		VkDescriptorPool& GetFreePool(VkDevice& logicalDevice);
 	};
 }

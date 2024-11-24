@@ -120,7 +120,6 @@ project "ExampleProject"
 		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Shaders $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
 		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Resources\\Meshes $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Meshes" }
 		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Resources\\Textures $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Textures" }
-		postbuildcommands { "copy $(SolutionDir)\\Output\\" .. outputdir .. "\\Editor\\Editor.dll $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\" }
 		
 	filter "not system:windows"
 		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject" }
@@ -131,7 +130,6 @@ project "ExampleProject"
 		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Shaders $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
 		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Resources/Meshes $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Meshes" }
 		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Resources/Textures $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Textures" }
-		postbuildcommands { "copy $(SolutionDir)/Output/" .. outputdir .. "/Editor/Editor.dll $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/" }
 
 	filter "configurations:Debug"
 		defines
@@ -144,7 +142,7 @@ project "ExampleProject"
 
 project "Editor"
 	location "Editor"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "Off"
@@ -198,14 +196,6 @@ project "Editor"
 		"YAML_CPP_STATIC_DEFINE"
 	}    
 	
---	targetextension ".pyd"
-	
-	filter "system:windows"
-		postbuildcommands { "copy $(SolutionDir)\\Output\\" .. outputdir .. "\\Editor\\Editor.dll $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\" }
-		
-	filter "not system:windows"
-		postbuildcommands { "copy $(SolutionDir)/Output/" .. outputdir .. "/Editor/Editor.dll $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/" }
-
 	filter "system:windows"
 		defines
 		{

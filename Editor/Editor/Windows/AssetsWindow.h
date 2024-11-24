@@ -2,7 +2,7 @@
 
 #include <imgui.h>
 #include "EngineCore/Editor/IWindow.h"
-#include "EngineCore/AssetsManagement/AssetsDatabase.h"
+#include "EngineCore/Core/AssetsDatabase.h"
 #include "EngineCore/Core/World.h"
 
 class AssetsWindow : public IWindow

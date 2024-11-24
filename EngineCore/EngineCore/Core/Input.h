@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "EngineCore/Defines/DllDefines.h"
 
-class PROJECT_API Input
+class Input
 {
 public: 
 	Input(GLFWwindow* window);

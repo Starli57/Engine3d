@@ -28,42 +28,17 @@ namespace VkUtils
 		vkFreeCommandBuffers(logicalDevice, commandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
 	}
 
-	void RecordCommandBuffer(Ref<Ecs> ecs, Ref<AssetsDatabase> assetsDatabase, Ref<AVulkan::Descriptors> descriptors, uint16_t frame,
-		VkCommandBuffer& commandBuffer, std::unordered_map<std::string, Ref<PipelineVulkan>>& pipelines)
+	void BindPipeline(VkCommandBuffer& commandBuffer, Ref<PipelineVulkan> pipeline)
 	{
-		auto entities = ecs->registry->view<UboModelComponent, MeshComponent, MaterialComponent>();
-		for (auto entity : entities)
-		{
-			auto [uboModelComponent, meshContainer, materialComponent] = entities.get<UboModelComponent, MeshComponent, MaterialComponent>(entity);
-			
-			if (meshContainer.meshIndex.has_value() == false) continue;
+		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
+	}
 
-			auto material = assetsDatabase->GetMaterial(materialComponent.materialIndex);
-			auto pipeline = pipelines.at(material->pipelineId);
-
-			vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
-
-			auto meshVulkan = static_pointer_cast<AVulkan::MeshVulkan> (assetsDatabase->GetMesh(meshContainer.meshIndex.value()));
-			auto materialVulkan = static_pointer_cast<AVulkan::MaterialVulkan>(material);
-
-			VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };
-			VkDeviceSize offsets[] = { 0 };
-			vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-			vkCmdBindIndexBuffer(commandBuffer, meshVulkan->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
-
-			auto uboModel = uboModelComponent.model;
-			vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT,
-				0, sizeof(UboModelComponent), &uboModel);
-
-			auto descriptorSet = materialVulkan->descriptorSets.at(frame);
-			vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->layout, 0, 1, &descriptorSet, 0, nullptr);
-
-			uint32_t instanceCount = 1;
-			uint32_t firstVertexIndex = 0;
-			uint32_t firstInstanceIndex = 0;
-
-			vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(meshVulkan->GetIndicesCount()), 1, 0, 0, 0);
-		}
+	void BindVertexAndIndexBuffers(VkCommandBuffer& commandBuffer, Ref<AVulkan::MeshVulkan> meshVulkan, Ref<AssetsDatabase> assetsDatabase)
+	{
+		VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };
+		VkDeviceSize offsets[] = { 0 };
+		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+		vkCmdBindIndexBuffer(commandBuffer, meshVulkan->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
 	}
 
 	void BeginCommandBuffer(VkCommandBuffer& commandBuffer) 
@@ -82,26 +57,4 @@ namespace VkUtils
 		CAssert::Check(endStatus == VK_SUCCESS, "Failed to end recording a command buffer, status: " + endStatus);
 	}
 
-	void BeginRenderPass(VkFramebuffer& frameBuffer, VkRenderPass& renderPass, VkCommandBuffer& commandBuffer, VkExtent2D& vkExtent)
-	{
-		std::array<VkClearValue, 2> clearColors{};
-		clearColors[0].color = { 0.015f, 0.015f, 0.04f, 1.0f };
-		clearColors[1].depthStencil.depth = 1.0f;
-
-		VkRenderPassBeginInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = renderPass;
-		renderPassInfo.framebuffer = frameBuffer;
-		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = vkExtent;
-		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearColors.size());
-		renderPassInfo.pClearValues = clearColors.data();
-
-		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-	}
-
-	void EndRenderPass(VkCommandBuffer& commandBuffer)
-	{
-		vkCmdEndRenderPass(commandBuffer);
-	}
 }

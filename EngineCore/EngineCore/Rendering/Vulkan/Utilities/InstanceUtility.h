@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
-#include "EngineCore/Rendering/Vulkan/Builders/AValidationLayers.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/ValidationLayersUtility.h"
 
 namespace VkUtils
 {

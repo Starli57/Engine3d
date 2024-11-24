@@ -11,45 +11,40 @@ namespace AVulkan
 	VkBuffer MeshVulkan::GetIndexBuffer()  { return indexBuffer; }
 
 	MeshVulkan::MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
-		VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::filesystem::path& path, Ref<Rollback> rollback) : Mesh(path),
+		VkQueue& graphicsQueue, VkCommandPool& commandPool, const std::filesystem::path& path) : Mesh(path),
 		physicalDevice(physicalDevice), logicalDevice(logicalDevice)
 	{
-		CreateVertexBuffer(graphicsQueue, commandPool, rollback);
-		CreateIndexBuffer(graphicsQueue, commandPool, rollback);
+		CreateVertexBuffer(graphicsQueue, commandPool);
+		CreateIndexBuffer(graphicsQueue, commandPool);
 	}
 
 	MeshVulkan::MeshVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, 
 		VkQueue& graphicsQueue, VkCommandPool& commandPool, 
-		Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices, Ref<Rollback> rollback) : Mesh(vertices, indices),
+		Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) : Mesh(vertices, indices),
 		physicalDevice(physicalDevice), logicalDevice(logicalDevice)
 	{
-		CreateVertexBuffer(graphicsQueue, commandPool, rollback);
-		CreateIndexBuffer(graphicsQueue, commandPool, rollback);
+		CreateVertexBuffer(graphicsQueue, commandPool);
+		CreateIndexBuffer(graphicsQueue, commandPool);
 	}
 
-	MeshVulkan::~MeshVulkan(){}
+	MeshVulkan::~MeshVulkan()
+	{
+		spdlog::info("Dispose Index Buffer");
+		VkUtils::DisposeIndexBuffer(logicalDevice, indexBuffer, indexBufferMemory);
 
-	void MeshVulkan::CreateVertexBuffer(VkQueue& graphicsQueue, VkCommandPool& commandPool, Ref<Rollback> rollback)
+		spdlog::info("Dispose Vertex Buffer");
+		VkUtils::DisposeVertexBuffer(logicalDevice, vertexBuffer, vertexBufferMemory);
+	}
+
+	void MeshVulkan::CreateVertexBuffer(VkQueue& graphicsQueue, VkCommandPool& commandPool)
 	{
 		VkUtils::CreateVertexBuffer(physicalDevice, logicalDevice,
 			vertices, vertexBuffer, vertexBufferMemory, graphicsQueue, commandPool);
-
-		rollback->Add([this]()
-		{
-			spdlog::info("Dispose Vertex Buffer");
-			VkUtils::DisposeVertexBuffer(logicalDevice, vertexBuffer, vertexBufferMemory);
-		});
 	}
 
-	void MeshVulkan::CreateIndexBuffer(VkQueue& graphicsQueue, VkCommandPool& commandPool, Ref<Rollback> rollback)
+	void MeshVulkan::CreateIndexBuffer(VkQueue& graphicsQueue, VkCommandPool& commandPool)
 	{
 		VkUtils::CreateIndexBuffer(physicalDevice, logicalDevice,
 			indices, indexBuffer, indexBufferMemory, graphicsQueue, commandPool);
-
-		rollback->Add([this]()
-		{
-			spdlog::info("Dispose Index Buffer");
-			VkUtils::DisposeIndexBuffer(logicalDevice, indexBuffer, indexBufferMemory);
-		});
 	}
 }

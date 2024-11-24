@@ -19,6 +19,8 @@ void ComponentsRenderer::Update(Ref<Entity> entity)
 	RenderComponent<CameraComponent>(entity);
 	RenderComponent<CameraFreeComponent>(entity);
 	RenderComponent<UboDiffuseLightComponent>(entity);
+	RenderComponent<UboModelComponent>(entity);
+	RenderComponent<UboViewProjectionComponent>(entity);
 }
 
 void ComponentsRenderer::RenderComponent(Ref<Entity> entity, NameComponent& component)
@@ -62,8 +64,15 @@ void ComponentsRenderer::RenderComponent(Ref<Entity> entity, CameraFreeComponent
 
 void ComponentsRenderer::RenderComponent(Ref<Entity> entity, UboDiffuseLightComponent& component)
 {
-	parametersRenderer->RenderParameter("Position", component.position, 0.25f);
 	//	RenderParameter("Intensity", component->intensity, 0.01f, 0, FLT_MAX);
+}
+
+void ComponentsRenderer::RenderComponent(Ref<Entity> entity, UboModelComponent& component)
+{
+}
+
+void ComponentsRenderer::RenderComponent(Ref<Entity> entity, UboViewProjectionComponent& component)
+{
 }
 
 void ComponentsRenderer::RenderComponent(Ref<Entity> entity, MeshComponent& component)

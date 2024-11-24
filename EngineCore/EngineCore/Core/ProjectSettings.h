@@ -2,7 +2,7 @@
 #include <string>
 #include "EngineCore/Defines/DllDefines.h"
 
-struct PROJECT_API ProjectSettigns
+struct ProjectSettigns
 {
 	const std::string projectName = "Ecosystem";
 	const std::string projectPath = "";

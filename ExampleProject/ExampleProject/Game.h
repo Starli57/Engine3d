@@ -7,6 +7,7 @@
 #include "EngineCore/Components/RotationVelocityComponent.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/ProjectSettings.h"
+#include "EngineCore/Core/ResourcesManager.h"
 
 class Game
 {
@@ -25,6 +26,6 @@ private:
 	Ref<Ecs> ecs;
 	IGraphicsApi* graphicsApi;
 
-	void LoadLevel();
+	void LoadResources();
 };
 

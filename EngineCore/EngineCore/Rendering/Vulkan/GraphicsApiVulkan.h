@@ -10,20 +10,21 @@
 #include "Models/SwapChainData.h"
 #include "Models/ImageModel.h"
 
-#include "EngineCore/AssetsManagement/AssetsDatabase.h"
+#include "EngineCore/Core/AssetsDatabase.h"
 #include "EngineCore/Rendering/IGraphicsApi.h"
 #include "EngineCore/Rendering/PipelinesCollection.h"
 
 #include "EngineCore/Rendering/Vulkan/MeshVulkan.h"
 #include "EngineCore/Rendering/Vulkan/TextureVulkan.h"
-#include "EngineCore/Rendering/Vulkan/MaterialVulkan.h"
 #include "EngineCore/Rendering/Vulkan/PipelineVulkan.h"
 #include "EngineCore/Rendering/Vulkan/Configs/VulkanConfiguration.h"
 
-#include "Builders/AValidationLayers.h"
-#include "Builders/AImage.h"
-#include "Builders/AImageView.h"
-#include "Builders/AShaderModule.h"
+#include "RenderPasses/RenderPassColor.h"
+#include "RenderPasses/RenderPassShadowMaps.h"
+
+#include "Utilities/ValidationLayersUtility.h"
+#include "Utilities/ImageUtility.h"
+#include "Utilities/ShaderModuleUtility.h"
 #include "Utilities/CommandPoolUtility.h"
 #include "Utilities/CommandBufferUtility.h"
 #include "Utilities/FormatUtility.h"
@@ -36,6 +37,7 @@
 #include "Utilities/FrameBufferUtility.h"
 #include "Utilities/SyncObjectsUtility.h"
 #include "Utilities/MemoryUtility.h"
+#include "Utilities/TextureSamplerUtility.h"
 
 #include "EngineCore/Assets/Mesh.h"
 #include "EngineCore/Core/Ref.h"
@@ -50,7 +52,7 @@
 #include "EngineCore/Components/UboDiffuseLightComponent.h"
 
 #include "EngineCore/Systems/TransformSystem.h"
-#include "EngineCore/Systems/Camera.h"
+#include "EngineCore/Systems/ViewProjectionSystem.h"
 
 namespace AVulkan
 {
@@ -68,9 +70,7 @@ namespace AVulkan
 
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;
-
-		VkRenderPass renderPass;
-
+		
 		Ref<SwapChain> swapChain;
 		Ref<SwapChainData> swapChainData;
 		Ref<Descriptors> descriptors;
@@ -88,8 +88,10 @@ namespace AVulkan
 		uint32_t GetImageIndex() { return imageIndex; }
 		uint16_t GetFrame() { return frame; }
 
-		GraphicsApiVulkan(Ref<Ecs> ecs, Ref<AssetsDatabase> assetDatabase, Ref<ProjectSettigns> projectSettings, 
-			GLFWwindow* window, Rollback* vulkanRollback);
+		RenderPassColor* GetRenderPassColor() const { return renderPassColor; }
+		RenderPassShadowMaps* GetRenderPassShadowMap() const { return renderPassShadowMaps; }
+
+		GraphicsApiVulkan(Ref<Ecs> ecs, Ref<AssetsDatabase> assetDatabase, Ref<ProjectSettigns> projectSettings, GLFWwindow* window);
 		virtual ~GraphicsApiVulkan() override;
 
 		void Init() override;
@@ -109,8 +111,10 @@ namespace AVulkan
 		Ref<Rollback> rollback;
 
 		Ref<PipelinesCollection> pipelinesCollection;
-		std::unordered_map<std::string, Ref<PipelineVulkan>> pipelines;
 
+		RenderPassColor* renderPassColor;
+		RenderPassShadowMaps* renderPassShadowMaps;
+		
 		uint32_t imageIndex = 0;
 		uint16_t frame = 0;
 
@@ -119,20 +123,15 @@ namespace AVulkan
 		void CreateLogicalDevice();
 		void CreateWindowSurface();
 		void CreateSwapChain();
-		void CreateRenderPass();
-		void CreateGraphicsPipelines();
+		void CreateRenderPasses();
 		void CreateDepthBuffer();
-		void CreateFrameBuffers();
 		void CreateCommandPool();
 		void CreateCommandBuffer();
 		void CreateSyncObjects();
-		void CreateDescriptorSetLayout();
 		void CreateTextureSampler();
 
 		void RecreateSwapChain();
 
-		void UpdateUniformBuffer(uint32_t frame);
-
-		void DisposePipelines();
+		VkResult AcquireNextImage();
 	};
 }

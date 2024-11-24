@@ -5,7 +5,7 @@
 #include "ParametersRenderer.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Entity.h"
-#include "EngineCore/AssetsManagement/AssetsDatabase.h"
+#include "EngineCore/Core/AssetsDatabase.h"
 #include "EngineCore/Components/NameComponent.h"
 #include "EngineCore/Components/PositionComponent.h"
 #include "EngineCore/Components/RotationComponent.h"
@@ -15,6 +15,8 @@
 #include "EngineCore/Components/CameraFreeComponent.h"
 #include "EngineCore/Components/ScaleComponent.h"
 #include "EngineCore/Components/UboDiffuseLightComponent.h"
+#include "EngineCore/Components/UboModelComponent.h"
+#include "EngineCore/Components/UboViewProjectionComponent.h"
 #include "EngineCore/Components/MeshComponent.h"
 #include "EngineCore/Components/MaterialComponent.h"
 
@@ -48,6 +50,8 @@ private:
 	void RenderComponent(Ref<Entity> entity, CameraComponent& component);
 	void RenderComponent(Ref<Entity> entity, CameraFreeComponent& component);
 	void RenderComponent(Ref<Entity> entity, UboDiffuseLightComponent& component);
+	void RenderComponent(Ref<Entity> entity, UboModelComponent& component);
+	void RenderComponent(Ref<Entity> entity, UboViewProjectionComponent& component);
 	void RenderComponent(Ref<Entity> entity, MeshComponent& component);
 	void RenderComponent(Ref<Entity> entity, MaterialComponent& component);
 };

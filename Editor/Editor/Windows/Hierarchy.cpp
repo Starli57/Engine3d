@@ -57,7 +57,7 @@ void Hierarchy::Update()
     if (ImGui::Button("Create entity"))
         ecs->CreateEntity();
 
-    if (ImGui::Button("Serialize world"))
+    if (ImGui::Button("Save world"))
         serializer->SerializeWorld(ecs, projectSettings->worldsPath + "/1.yaml");
 
     if (ImGui::Button("Load world"))

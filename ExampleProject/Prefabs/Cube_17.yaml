@@ -1,0 +1,14 @@
+NameComponent:
+  name: Cube
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshIndex: 0
+MaterialComponent:
+  materialIndex: 2
+UboModelComponent:
+  {}

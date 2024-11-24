@@ -1,12 +1,12 @@
 #include "EngineCore/Pch.h"
-#include "AShaderModule.h"
+#include "ShaderModuleUtility.h"
 #include "spdlog/spdlog.h"
 
 #include "EngineCore/Utilities/IOUtility.h"
 
-namespace AVulkan
+namespace VkUtils
 {
-	VkShaderModule AShaderModule::CreateModule(const std::string& shaderPath, VkDevice& logicalDevice) const
+	VkShaderModule CreateShaderModule(const std::string& shaderPath, VkDevice& logicalDevice)
 	{
 		spdlog::info("Create shader module: {0}", shaderPath);
 
@@ -24,12 +24,12 @@ namespace AVulkan
 		return shaderModule;
 	}
 
-	void AShaderModule::DisposeModule(VkDevice& logicalDevice, VkShaderModule& shaderModule) const
+	void DisposeShaderModule(VkDevice& logicalDevice, VkShaderModule& shaderModule)
 	{
 		vkDestroyShaderModule(logicalDevice, shaderModule, nullptr);
 	}
 
-	VkPipelineShaderStageCreateInfo AShaderModule::SetupStageInfo(VkShaderModule& shaderModule, VkShaderStageFlagBits stage) const
+	VkPipelineShaderStageCreateInfo SetupShaderStageInfo(VkShaderModule& shaderModule, VkShaderStageFlagBits stage)
 	{
 		VkPipelineShaderStageCreateInfo stateInfo{};
 		stateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;

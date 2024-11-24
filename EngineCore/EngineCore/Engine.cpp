@@ -7,12 +7,8 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 	InitLogger();
 
 	cachedTime = std::chrono::high_resolution_clock::now();
-	engineRollback = new Rollback("Engine");
-
 	ecs = CreateRef<Ecs>();
-
 	assetsDatabase = CreateRef<AssetsDatabase>(projectSettings);
-	engineRollback->Add([this]() { assetsDatabase.reset(); });
 
 	try
 	{
@@ -24,24 +20,31 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 	catch (const std::exception& e)
 	{
 		spdlog::critical("Renderer critical error: {0}", e.what());
-		engineRollback->Dispose();
 		throw e;
 	}
 
+
 	resourcesManager = CreateRef<ResourcesManager>(graphicsApi, assetsDatabase);
-	engineRollback->Add([this]() { resourcesManager.reset(); });
-
 	input = CreateRef<Input>(window);
-
 	world = CreateRef<World>(ecs, projectSettings);
-	engineRollback->Add([this] { world.reset(); });
 
 	spdlog::info("--Engine init finished--");
 }
 
 Engine::~Engine()
 {
-	delete engineRollback;
+	world.reset();
+	resourcesManager.reset();
+
+	assetsDatabase->Dispose(); 
+	assetsDatabase.reset();
+
+	spdlog::info("Dispose graphicsApi");
+	delete graphicsApi;
+
+	spdlog::info("Dispose glfw window");
+	glfwDestroyWindow(window);
+	glfwTerminate();
 }
 
 void Engine::InitLogger()
@@ -74,22 +77,14 @@ void Engine::CreateAppWindow()
 	window = glfwCreateWindow(1600, 1000, projectSettings->projectName.c_str(), nullptr, nullptr);
 	CAssert::Check(window != nullptr, "GLFW window can't be created");
 
-	engineRollback->Add([this]()
-	{
-		spdlog::info("Dispose glfw window");
-		glfwDestroyWindow(window);
-		glfwTerminate();
-	});
-
 	glfwSetWindowUserPointer(window, this);
 }
 
 void Engine::InitGraphicsApi()
 {
 #if GLFW_INCLUDE_VULKAN
-	graphicsApi = new AVulkan::GraphicsApiVulkan(ecs, assetsDatabase, projectSettings, window, engineRollback);
+	graphicsApi = new AVulkan::GraphicsApiVulkan(ecs, assetsDatabase, projectSettings, window);
 	graphicsApi->Init();
-	engineRollback->Add([this] { delete graphicsApi; });
 #else
 	throw std::runtime_error("Rendering api is not selected");
 #endif
@@ -99,7 +94,7 @@ void Engine::Run()
 {
 	auto rotatorSystem = CreateRef<RotatorSystem>(ecs);
 	auto transformSystem = CreateRef<TransformSystem>(ecs);
-	auto cameraSystem = CreateRef<Camera>(ecs, window);
+	auto cameraSystem = CreateRef<ViewProjectionSystem>(ecs, window);
 	auto freeCameraSystem = CreateRef<CameraFlySystem>(ecs, input);
 	auto orbitCameraSystem = CreateRef<CameraOrbitSystem>(ecs, input);
 

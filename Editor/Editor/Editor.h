@@ -6,7 +6,7 @@
 #include "EngineCore/Engine.h"
 #include "EngineCore/Core/Ref.h"
 
-class PROJECT_API Editor
+class Editor
 {
 public:
 	Editor(Ref<ProjectSettigns> projectSettings, Ref<Engine> engine);

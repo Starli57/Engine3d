@@ -6,4 +6,6 @@
 struct VulkanPipelineConfig : public PipelineConfig
 {
 	VkPolygonMode polygonMode;
+	VkCullModeFlags cullMode;
+	VkFrontFace frontFace;
 };

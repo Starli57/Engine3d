@@ -10,6 +10,7 @@
 #include "Windows/ImguiDemo.h"
 #include "Windows/AssetsWindow.h"
 #include "Windows/VulkanDebugInfo.h"
+#include "Windows/VulkanTextureView.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 
 Editor::Editor(Ref<ProjectSettigns> projectSettings, Ref<Engine> engine) : 
@@ -25,6 +26,7 @@ Editor::Editor(Ref<ProjectSettigns> projectSettings, Ref<Engine> engine) :
 	editorUi->AddWindow(CreateRef<Hierarchy>(engine->GetEcs(), inspector, projectSettings));
 	editorUi->AddWindow(CreateRef<ImguiDemo>());
 	editorUi->AddWindow(CreateRef<VulkanDebugInfo>(engine, *vulkanApi));
+	editorUi->AddWindow(CreateRef<VulkanTextureView>(engine, *vulkanApi));
 	editorUi->AddWindow(CreateRef<AssetsWindow>(engine->GetAssetsDatabase(), engine->GetLevel()));
 
 	engine->BindEditorUpdateFunction([this]() {editorUi->Update(); });

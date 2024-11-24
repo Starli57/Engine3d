@@ -29,10 +29,12 @@
 # Folders
 Intermediate/
 Output/
+.idea/
 
 .vs/
 *.vcxproj
 *.vcxproj.user
+*.DotSettings.user
 *.vcxproj.filters
 *.sln
 

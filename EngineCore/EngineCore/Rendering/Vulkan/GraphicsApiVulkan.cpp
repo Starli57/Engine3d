@@ -6,8 +6,7 @@
 
 namespace AVulkan
 {
-	GraphicsApiVulkan::GraphicsApiVulkan(Ref<Ecs> ecs, Ref<AssetsDatabase> assetDatabase, Ref<ProjectSettigns> projectSettings, 
-		GLFWwindow* glfwWindow, Rollback* vulkanRollback)
+	GraphicsApiVulkan::GraphicsApiVulkan(Ref<Ecs> ecs, Ref<AssetsDatabase> assetDatabase, Ref<ProjectSettigns> projectSettings, GLFWwindow* glfwWindow)
 	{
 		this->ecs = ecs;
 		this->assetDatabase = assetDatabase;
@@ -16,12 +15,11 @@ namespace AVulkan
 		this->descriptors = CreateRef<Descriptors>();
 		this->pipelinesCollection = CreateRef<PipelinesCollection>(projectSettings);
 		this->rendererConfig = CreateRef<VulkanConfiguration>();
-		this->rollback = CreateRef<Rollback>("GraphicsApiVulkan", *vulkanRollback);
+		this->rollback = CreateRef<Rollback>("GraphicsApiVulkan");
 	}
 
 	GraphicsApiVulkan::~GraphicsApiVulkan()
 	{
-		DisposePipelines();
 		rollback.reset();
 	}
 
@@ -33,15 +31,12 @@ namespace AVulkan
 			CreateWindowSurface();
 			SelectPhysicalRenderingDevice();
 			CreateLogicalDevice();
+			CreateTextureSampler();
 			CreateSwapChain();
-			CreateRenderPass();
-			CreateDescriptorSetLayout();
-			CreateGraphicsPipelines();
+			CreateRenderPasses();
 			CreateDepthBuffer();
-			CreateFrameBuffers();
 			CreateCommandPool();
 			CreateCommandBuffer();
-			CreateTextureSampler();
 			CreateSyncObjects();
 		}
 		catch (const std::exception& e)
@@ -66,44 +61,38 @@ namespace AVulkan
 		spdlog::info("Recreate swapchain");
 		FinanilizeRenderOperations();
 
+		delete renderPassColor;
+		delete renderPassShadowMaps;
+
 		swapChain->Recreate();
 
-		for (auto pipelineConfig : pipelinesCollection->pipelinesConfigs)
-		{
-			auto& pipeline = pipelines.at(pipelineConfig.first);
-			pipeline = GraphicsPipelineUtility().ReCreate(pipeline, pipelineConfig.second, logicalDevice, renderPass,
-				swapChainData->extent, descriptors->GetDescriptorSetLayout(), rendererConfig->msaa);
-		}
+		renderPassShadowMaps = new RenderPassShadowMaps(physicalDevice, logicalDevice,
+			rendererConfig, ecs, assetDatabase, swapChainData, descriptors);
+		renderPassColor = new RenderPassColor(physicalDevice, logicalDevice,
+			rendererConfig, ecs, assetDatabase, swapChainData, descriptors,
+			textureSampler, pipelinesCollection, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
 	}
 
-	//todo: make refactoring of the function
 	void GraphicsApiVulkan::Render()
 	{
-
 		auto commandBuffer = commandBuffers[frame];
-
-		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, rendererConfig->frameSyncTimeout);
-
-		auto acquireStatus = vkAcquireNextImageKHR(logicalDevice, swapChainData->swapChain, rendererConfig->frameSyncTimeout,
-			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
-		
-		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR) 
-		{
-			RecreateSwapChain();
-			return;
-		}
-		
-		CAssert::Check(acquireStatus == VK_SUCCESS || acquireStatus == VK_SUBOPTIMAL_KHR, "Failed to acquire swap chain image!");
-
-		UpdateUniformBuffer(frame);
+		auto acquireStatus = AcquireNextImage();
+		if (acquireStatus != VK_SUCCESS) return;
 
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(commandBuffer, 0);
 
 		VkUtils::BeginCommandBuffer(commandBuffer);
-		VkUtils::BeginRenderPass(swapChainData->frameBuffers[imageIndex], renderPass, commandBuffer, swapChainData->extent);
-		VkUtils::RecordCommandBuffer(ecs, assetDatabase, descriptors, frame, commandBuffer, pipelines);
-		VkUtils::EndRenderPass(commandBuffer);
+		renderPassShadowMaps->Render(commandBuffer, frame, imageIndex);
+
+		VkUtils::TransitionImageLayout(logicalDevice, commandBuffer, graphicsQueue, renderPassShadowMaps->GetImageBuffer()->image,
+			VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_ASPECT_DEPTH_BIT);
+
+		renderPassColor->Render(commandBuffer, frame, imageIndex);
+
+		VkUtils::TransitionImageLayout(logicalDevice, commandBuffer, graphicsQueue, swapChainData->images.at(imageIndex),
+			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_ASPECT_COLOR_BIT);
+
 		VkUtils::EndCommandBuffer(commandBuffer);
 
 		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -145,8 +134,25 @@ namespace AVulkan
 		CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
 		
 		frame = (frame + 1) % rendererConfig->maxFramesInFlight;
+		vkDeviceWaitIdle(logicalDevice);
 	}
 
+	VkResult GraphicsApiVulkan::AcquireNextImage()
+	{
+		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, rendererConfig->frameSyncTimeout);
+
+		auto acquireStatus = vkAcquireNextImageKHR(
+			logicalDevice, swapChainData->swapChain, rendererConfig->frameSyncTimeout,
+			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
+		
+		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR) 
+		{
+			RecreateSwapChain();
+		}
+
+		return acquireStatus;
+	}
+	
 	void GraphicsApiVulkan::FinanilizeRenderOperations()
 	{
 		vkDeviceWaitIdle(logicalDevice);
@@ -154,23 +160,22 @@ namespace AVulkan
 
 	Ref<Mesh> GraphicsApiVulkan::LoadMesh(const std::filesystem::path& meshPath)
 	{
-		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, meshPath, rollback);
+		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, meshPath);
 	}
 
 	Ref<Mesh> GraphicsApiVulkan::CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices)
 	{
-		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, vertices, indices, rollback);
+		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, vertices, indices);
 	}
 
 	Ref<Texture> GraphicsApiVulkan::CreateTexture(const std::filesystem::path& textureFilePath)
 	{
-		return CreateRef<TextureVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, rendererConfig, textureFilePath, rollback);
+		return CreateRef<TextureVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, rendererConfig, textureFilePath);
 	}
 
 	Ref<Material> GraphicsApiVulkan::CreateMaterial(const std::string& pipelineId)
 	{
-		return CreateRef<MaterialVulkan>(pipelineId, assetDatabase, physicalDevice, logicalDevice, descriptors,
-			textureSampler, descriptors->GetDescriptorSetLayout(), rollback);
+		return CreateRef<Material>(pipelineId);
 	}
 
 	void GraphicsApiVulkan::CreateInstance()
@@ -196,8 +201,9 @@ namespace AVulkan
 	void GraphicsApiVulkan::CreateLogicalDevice()
 	{
 		logicalDevice = VkUtils::CreateLogicalDevice(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
-		rollback->Add([this]() 
+		rollback->Add([this]()
 		{
+			descriptors->DestroyDescriptorPools(logicalDevice);
 			VkUtils::DisposeLogicalDevice(logicalDevice);
 		});
 	}
@@ -205,40 +211,26 @@ namespace AVulkan
 	void GraphicsApiVulkan::CreateSwapChain()
 	{
 		swapChainData = CreateRef<SwapChainData>();
-		swapChain = CreateRef<SwapChain>(rollback, *window, physicalDevice, logicalDevice, 
-			windowSurface, graphicsQueue, swapChainData, rendererConfig);
+		swapChain = CreateRef<SwapChain>(*window, physicalDevice, logicalDevice, windowSurface, graphicsQueue, swapChainData, rendererConfig);
 
 		swapChain->CreateSwapchain();
 		swapChain->CreateSwapChainImageViews();
 		swapChain->CreateMSAAColorResources();
 		swapChain->CreateMSAADepthResources();
 
-		rollback->Add([this] {swapChain->Dispose(); });
+		rollback->Add([this] { swapChain->Dispose(); });
 	}
 
-	void GraphicsApiVulkan::CreateRenderPass()
+	void GraphicsApiVulkan::CreateRenderPasses()
 	{
-		renderPass = VkUtils::CreateRenderPass(physicalDevice, logicalDevice, rendererConfig);
-		rollback->Add([this]() { VkUtils::DisposeRenderPass(logicalDevice, renderPass);; });
-	}
+		renderPassShadowMaps = new RenderPassShadowMaps(physicalDevice, logicalDevice, 
+			rendererConfig, ecs, assetDatabase, swapChainData, descriptors);
+		renderPassColor = new RenderPassColor(physicalDevice, logicalDevice, 
+			rendererConfig, ecs, assetDatabase, swapChainData, descriptors, 
+			textureSampler, pipelinesCollection, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
 
-	void GraphicsApiVulkan::CreateGraphicsPipelines()
-	{
-		pipelines.reserve(pipelinesCollection->pipelinesConfigs.size());
-
-		for (auto config : pipelinesCollection->pipelinesConfigs)
-		{
-			GraphicsPipelineUtility pipelineUtility;
-			auto pipeline = pipelineUtility.Create(config.second, logicalDevice, renderPass, 
-				swapChainData->extent, descriptors->GetDescriptorSetLayout(), rendererConfig->msaa);
-
-			pipelines.emplace(config.first, pipeline);
-		}
-	}
-
-	void GraphicsApiVulkan::CreateFrameBuffers()
-	{
-		swapChain->CreateFrameBuffers(renderPass);
+		rollback->Add([this] { delete renderPassColor; });
+		rollback->Add([this] { delete renderPassShadowMaps; });
 	}
 
 	void GraphicsApiVulkan::CreateCommandPool()
@@ -253,12 +245,6 @@ namespace AVulkan
 		rollback->Add([this]() { VkUtils::FreeCommandBuffers(logicalDevice, commandPool, commandBuffers); });
 	}
 
-	void GraphicsApiVulkan::CreateDescriptorSetLayout()
-	{
-		descriptors->CreateLayout(logicalDevice);
-		rollback->Add([this]() { descriptors->DisposeLayout(logicalDevice); });
-	}
-
 	void GraphicsApiVulkan::CreateDepthBuffer()
 	{
 		spdlog::info("Create depth buffer");
@@ -267,80 +253,8 @@ namespace AVulkan
 
 	void GraphicsApiVulkan::CreateTextureSampler()
 	{
-		//todo: replace logic to helper class
-		VkPhysicalDeviceProperties properties{};
-		vkGetPhysicalDeviceProperties(physicalDevice, &properties);
-
-		VkSamplerCreateInfo samplerInfo{};
-		samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-		samplerInfo.magFilter = VK_FILTER_LINEAR;
-		samplerInfo.minFilter = VK_FILTER_LINEAR;
-		samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-		samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-		samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_REPEAT;
-		samplerInfo.borderColor = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
-		samplerInfo.anisotropyEnable = VK_TRUE;
-		samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
-		samplerInfo.unnormalizedCoordinates = VK_FALSE;
-		samplerInfo.compareEnable = VK_FALSE;
-		samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
-		samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
-		samplerInfo.mipLodBias = 0.0f;
-		samplerInfo.minLod = 0.0f;
-		samplerInfo.maxLod = 0.0f;
-
-		auto createStatus = vkCreateSampler(logicalDevice, &samplerInfo, nullptr, &textureSampler);
-		CAssert::Check(createStatus == VK_SUCCESS, "Textures sampler can't be created");
-
+		VkUtils::CreateTextureSampler(physicalDevice, logicalDevice, textureSampler);
 		rollback->Add([this]() { vkDestroySampler(logicalDevice, textureSampler, nullptr); });
-	}
-
-	void GraphicsApiVulkan::UpdateUniformBuffer(uint32_t frame)
-	{
-		//todo: find most relevant camera
-		auto viewProjectionEntries = ecs->registry->view<PositionComponent, RotationComponent, CameraComponent, UboViewProjectionComponent>();
-		if (viewProjectionEntries.begin() == viewProjectionEntries.end())
-		{
-			spdlog::critical("UpdateUniformBuffer failed: No entities with UboViewProjectionComponent found");
-			return;
-		}
-
-		auto firstCamera = viewProjectionEntries.front();
-		auto cameraPosition = viewProjectionEntries.get<PositionComponent>(firstCamera);
-		auto cameraRotation = viewProjectionEntries.get<RotationComponent>(firstCamera);
-		auto viewProjectionComponent = viewProjectionEntries.get<UboViewProjectionComponent>(firstCamera);
-
-		auto materialEntries = ecs->registry->view<MaterialComponent>();
-		auto lightEntries = ecs->registry->view<UboDiffuseLightComponent>();
-		for (auto materialEntry : materialEntries)
-		{
-			auto materialComponent = materialEntries.get<MaterialComponent>(materialEntry);
-			auto materialVulkan = static_pointer_cast<MaterialVulkan>(assetDatabase->GetMaterial(materialComponent.materialIndex));
-
-			memcpy(materialVulkan->uboViewProjection.at(frame)->bufferMapped, &viewProjectionComponent, sizeof(UboViewProjectionComponent));
-
-			for (auto entity : lightEntries)
-			{
-				auto& positionComponent = lightEntries.get<UboDiffuseLightComponent>(entity);
-				memcpy(materialVulkan->uboLights.at(frame)->bufferMapped, &positionComponent, sizeof(UboDiffuseLightComponent));
-			}
-
-			memcpy(materialVulkan->uboCamera.at(frame)->bufferMapped, &cameraPosition, sizeof(PositionComponent));
-
-			materialVulkan->UpdateDescriptors(frame);
-		}
-	}
-
-	void GraphicsApiVulkan::DisposePipelines()
-	{
-		GraphicsPipelineUtility pipelineUtility;
-		for (auto& pipeline : pipelines)
-		{
-			pipelineUtility.Dispose(pipeline.second, logicalDevice);
-		}
-		pipelines.clear();
-
-		spdlog::info("All graphics pipelines disposed");
 	}
 
 	void GraphicsApiVulkan::CreateSyncObjects()

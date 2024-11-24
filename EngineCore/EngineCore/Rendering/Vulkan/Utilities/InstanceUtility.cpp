@@ -23,8 +23,7 @@ namespace VkUtils
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
 
-		AVulkan::AValidationLayers validation;
-		validation.Setup(createInfo);
+		VkUtils::SetupValidationLayers(createInfo);
 
 		VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
 		CAssert::Check(result == VK_SUCCESS, "vulkan instance can't be created: " + result);

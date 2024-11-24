@@ -11,5 +11,9 @@ public:
 
 	Texture(const std::filesystem::path& textureFilePath);
 	virtual ~Texture();
+
+protected:
+	int width;
+	int height;
 };
 

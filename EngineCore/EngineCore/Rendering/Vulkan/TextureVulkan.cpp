@@ -7,31 +7,29 @@
 namespace AVulkan
 {
     TextureVulkan::TextureVulkan(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkQueue& graphicsQueue,
-        VkCommandPool& commandPool, Ref<VulkanConfiguration> rendererConfig, const std::filesystem::path& textureFilePath, Ref<Rollback> rollback)
+        VkCommandPool& commandPool, Ref<VulkanConfiguration> rendererConfig, const std::filesystem::path& textureFilePath)
         : Texture(textureFilePath), physicalDevice(physicalDevice), logicalDevice(logicalDevice),
-          graphicsQueue(graphicsQueue), commandPool(commandPool), rendererConfig(rendererConfig), rollback(rollback)
+          graphicsQueue(graphicsQueue), commandPool(commandPool), rendererConfig(rendererConfig)
     {
         imageModel = CreateRef<ImageModel>();
 
-        CreateImage(textureFilePath, rollback);
+        LoadImage(textureFilePath);
         CreateImageView();
     }
 
     TextureVulkan::~TextureVulkan()
     {
+        VkUtils::DisposeImageModel(logicalDevice, imageModel);
     }
 
     //todo: make async
-    void TextureVulkan::CreateImage(const std::filesystem::path& textureFilePath, Ref<Rollback> rollback)
+    void TextureVulkan::LoadImage(const std::filesystem::path& textureFilePath)
     {
-        int width;
-        int height;
         int texChannels;
         uint64_t bitesPerPixel = 4;
-        VkDeviceSize imageSize;
 
-        auto pixels = stbi_load(textureFilePath.string().c_str(), &width, &height, &texChannels, STBI_rgb_alpha);
-        imageSize = width * height * bitesPerPixel;
+        const auto pixels = stbi_load(textureFilePath.string().c_str(), &width, &height, &texChannels, STBI_rgb_alpha);
+        const VkDeviceSize imageSize = width * height * bitesPerPixel;
 
         if (pixels == nullptr)
         {
@@ -63,30 +61,38 @@ namespace AVulkan
         VkImageUsageFlags usageFlags = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
         VkMemoryPropertyFlags memoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
         
-        AImage imageUtility(physicalDevice, logicalDevice, graphicsQueue);
-        
-        imageModel->image = imageUtility.Create(width, height, rendererConfig->imageFormat,
+        imageModel->image = VkUtils::CreateImage(physicalDevice, logicalDevice,
+            width, height, rendererConfig->imageFormat,
             tiling, usageFlags, VK_SAMPLE_COUNT_1_BIT, memoryFlags, imageModel->imageMemory);
 
-        imageUtility.TransitionImageLayout(imageModel->image, rendererConfig->imageFormat,
-            VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, commandPool);
+        auto commandBuffer = VkUtils::BeginCommandBuffer(logicalDevice, commandPool);
 
-        imageUtility.CopyBufferToImage(stagingBuffer, imageModel->image, width, height, commandPool);
+        VkUtils::TransitionImageLayout(logicalDevice, commandBuffer, graphicsQueue, imageModel->image,
+            VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_ASPECT_COLOR_BIT);
 
-        imageUtility.TransitionImageLayout(imageModel->image, rendererConfig->imageFormat,
-            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, commandPool);
+        vkEndCommandBuffer(commandBuffer);
+        VkUtils::SubmitCommandBuffer(graphicsQueue, commandBuffer);
+        vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
+
+        VkUtils::CopyBufferToImage(logicalDevice, graphicsQueue, stagingBuffer, imageModel->image, width, height, commandPool);
+
+        commandBuffer = VkUtils::BeginCommandBuffer(logicalDevice, commandPool);
+
+        VkUtils::TransitionImageLayout(logicalDevice, commandBuffer, graphicsQueue,imageModel->image,
+            VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_ASPECT_COLOR_BIT);
+
+        vkEndCommandBuffer(commandBuffer);
+        VkUtils::SubmitCommandBuffer(graphicsQueue, commandBuffer);
+        vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
 
         vkDestroyBuffer(logicalDevice, stagingBuffer, nullptr);
         vkFreeMemory(logicalDevice, stagingMemory, nullptr);
-
-        rollback->Add([this]() { vkDestroyImage(logicalDevice, imageModel->image, nullptr); });
-        rollback->Add([this]() { vkFreeMemory(logicalDevice, imageModel->imageMemory, nullptr); });
     }
 
     void TextureVulkan::CreateImageView()
     {
         VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
-        AImageView().Create(logicalDevice, rendererConfig->imageFormat, aspectFlags, imageModel->image, imageModel->imageView, rollback);
+        VkUtils::CreateImageView(logicalDevice, rendererConfig->imageFormat, aspectFlags, imageModel->image, imageModel->imageView);
 
     }
 }

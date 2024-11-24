@@ -256,9 +256,6 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 {
 	out << YAML::Key << "UboDiffuseLightComponent";
 	out << YAML::BeginMap;
-
-	out << YAML::Key << "position" << YAML::Value << component.position;
-
 	out << YAML::EndMap;
 }
 
@@ -376,7 +373,7 @@ void EntitySerializer::InstantiateComponentUboDiffuseLight(Ref<Entity> entity, Y
 	auto uboDiffuseLightComponent = node["UboDiffuseLightComponent"];
 	if (uboDiffuseLightComponent)
 	{
-		entity->AddComponent<UboDiffuseLightComponent>(uboDiffuseLightComponent["position"].as<glm::vec3>());
+		entity->AddComponent<UboDiffuseLightComponent>();
 	}
 }
 

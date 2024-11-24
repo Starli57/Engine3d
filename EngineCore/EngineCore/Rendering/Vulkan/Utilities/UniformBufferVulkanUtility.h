@@ -11,5 +11,5 @@
 namespace VkUtils
 {
 	Ref<AVulkan::BufferModel> CreateUniformBuffer(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, 
-			VkDeviceSize bufferSize, Ref<Rollback> rollback);
+			VkDeviceSize bufferSize);
 }

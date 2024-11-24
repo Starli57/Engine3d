@@ -7,7 +7,7 @@
 
 #include "EngineCore/Rendering/Vulkan/Configs/VulkanPipelineConfig.h"
 #include "EngineCore/Rendering/Vulkan/PipelineVulkan.h"
-#include "EngineCore/Rendering/Vulkan/Builders/AShaderModule.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/ShaderModuleUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/VertexBufferUtility.h"
 
 #include "EngineCore/Core/ProjectSettings.h"

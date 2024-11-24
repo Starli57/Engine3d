@@ -11,16 +11,16 @@
 #include "EngineCore/Systems/ISystem.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
+#include "EngineCore/Utilities/MathUtility.h"
 
-class Camera : public ISystem
+class ViewProjectionSystem : public ISystem
 {
 public:
-	Camera(Ref<Ecs> ecs, GLFWwindow* window);
-	virtual ~Camera() override;
+	ViewProjectionSystem(Ref<Ecs> ecs, GLFWwindow* window);
+	virtual ~ViewProjectionSystem() override = default;
 
 	virtual void Update(float deltaTime) override;
-
-
+	
 private:
 	Ref<Ecs> ecs;
 	GLFWwindow* window;

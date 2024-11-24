@@ -7,8 +7,7 @@
 namespace AVulkan
 {
 	Ref<PipelineVulkan> GraphicsPipelineUtility::Create(Ref<VulkanPipelineConfig> pipelineConfig, VkDevice& logicalDevice,
-		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout,
-		VkSampleCountFlagBits msaa)
+		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout, VkSampleCountFlagBits msaa)
 	{
 		spdlog::info("Create graphics pipeline");
 		auto pipeline = CreateRef<PipelineVulkan>();
@@ -17,13 +16,12 @@ namespace AVulkan
 		{
 			initializationRollback = CreateUniqueRef<Rollback>("VkPipelineInit");
 
-			AShaderModule shaderModuleUtility;
-			auto vertModule = shaderModuleUtility.CreateModule(pipelineConfig->vertShaderPath, logicalDevice);
-			auto fragModule = shaderModuleUtility.CreateModule(pipelineConfig->fragShaderPath, logicalDevice);
+			auto vertModule = VkUtils::CreateShaderModule(pipelineConfig->vertShaderPath, logicalDevice);
+			auto fragModule = VkUtils::CreateShaderModule(pipelineConfig->fragShaderPath, logicalDevice);
 
 			std::array< VkPipelineShaderStageCreateInfo, 2> shaderStages;
-			shaderStages[0] = shaderModuleUtility.SetupStageInfo(vertModule, VK_SHADER_STAGE_VERTEX_BIT);
-			shaderStages[1] = shaderModuleUtility.SetupStageInfo(fragModule, VK_SHADER_STAGE_FRAGMENT_BIT);
+			shaderStages[0] = VkUtils::SetupShaderStageInfo(vertModule, VK_SHADER_STAGE_VERTEX_BIT);
+			shaderStages[1] = VkUtils::SetupShaderStageInfo(fragModule, VK_SHADER_STAGE_FRAGMENT_BIT);
 
 			VkPushConstantRange pushConstantRange;
 			pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
@@ -82,12 +80,11 @@ namespace AVulkan
 
 			auto createState = vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline->pipeline);
 			CAssert::Check(createState == VK_SUCCESS, "Failed to create graphics pipeline, state" + createState);
-			//---> Pipeline created
 
 			initializationRollback->Dispose();
 
-			shaderModuleUtility.DisposeModule(logicalDevice, fragModule);
-			shaderModuleUtility.DisposeModule(logicalDevice, vertModule);
+			VkUtils::DisposeShaderModule(logicalDevice, fragModule);
+			VkUtils::DisposeShaderModule(logicalDevice, vertModule);
 		}
 		catch (const std::exception& e)
 		{
@@ -160,8 +157,8 @@ namespace AVulkan
 		rasterizer.polygonMode = pipelineConfig->polygonMode;
 		rasterizer.lineWidth = 1.0f;
 
-		rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
-		rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+		rasterizer.cullMode = pipelineConfig->cullMode;
+		rasterizer.frontFace = pipelineConfig->frontFace;
 
 		rasterizer.depthBiasEnable = VK_FALSE;
 		rasterizer.depthBiasConstantFactor = 0.0f;

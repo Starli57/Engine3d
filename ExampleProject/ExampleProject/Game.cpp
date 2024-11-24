@@ -10,7 +10,7 @@ Game::Game(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSettin
 	graphicsApi = engine->GetGraphicsApi();
 	ecs = engine->GetEcs();
 
-	LoadLevel();
+	LoadResources();
 }
 
 Game::~Game()
@@ -24,7 +24,7 @@ void Game::Run()
 	engine->Run();
 }
 
-void Game::LoadLevel()
+void Game::LoadResources()
 {
 	spdlog::info("Load level");
 
@@ -44,41 +44,5 @@ void Game::LoadLevel()
 	//meshes
 	auto formulaMeshIndex = resourcesManager->LoadMeshByName("Formula_1_mesh.obj");
 	auto vikingsRoomMeshIndex = resourcesManager->LoadMeshByName("viking_room.obj");
-	auto porsheMeshIndex = resourcesManager->LoadMeshByName("scene.gltf");
 
-	//auto car = ecs->CreateEntity();
-	//car->AddComponent<IdComponent>();
-	//car->AddComponent<NameComponent>("Car");
-	//car->AddComponent<PositionComponent>(glm::vec3(0, -130, 0));
-	//car->AddComponent<RotationComponent>(glm::vec3(130, 0, 0));
-	//car->AddComponent<ScaleComponent>(glm::vec3(1, 1, 1));
-	//car->AddComponent<UboModelComponent>();
-	//car->AddComponent<MeshComponent>(formulaMeshIndex);
-	//car->AddComponent<MaterialComponent>(colorMaterialIndex);
-
-	//auto vikingsRoom = ecs->CreateEntity();
-	//vikingsRoom->AddComponent<IdComponent>();
-	//vikingsRoom->AddComponent<NameComponent>("Room");
-	//vikingsRoom->AddComponent<PositionComponent>(glm::vec3(0, 70, 7));
-	//vikingsRoom->AddComponent<RotationComponent>(glm::vec3(0, -70, 0));
-	//vikingsRoom->AddComponent<ScaleComponent>(glm::vec3(140, 140, 140));
-	//vikingsRoom->AddComponent<RotationVelocityComponent>(glm::vec3(0, 0, 50));
-	//vikingsRoom->AddComponent<UboModelComponent>();
-	//vikingsRoom->AddComponent<MeshComponent>(vikingsRoomMeshIndex);
-	//vikingsRoom->AddComponent<MaterialComponent>(vikingMaterialIndex);
-
-	//auto cameraEntity = ecs->CreateEntity();
-	//cameraEntity->AddComponent<IdComponent>();
-	//cameraEntity->AddComponent<NameComponent>("Camera");
-	//cameraEntity->AddComponent<PositionComponent>(glm::vec3(0, 0, 500));
-	//cameraEntity->AddComponent<RotationComponent>(glm::vec3(-90, 0, 0));
-	//cameraEntity->AddComponent<UboModelComponent>();
-	//cameraEntity->AddComponent<UboViewProjectionComponent>();
-	//cameraEntity->AddComponent<CameraComponent>();
-	//cameraEntity->AddComponent<CameraFreeComponent>();
-
-	//auto diffuseLight = ecs->CreateEntity();
-	//diffuseLight->AddComponent<IdComponent>();
-	//diffuseLight->AddComponent<NameComponent>("Diffuse Light");
-	//diffuseLight->AddComponent<UboDiffuseLightComponent>();
 }

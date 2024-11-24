@@ -21,10 +21,8 @@ namespace AVulkan
 		std::vector<VkImage> images;
 		std::vector<VkImageView> imageViews;
 
-		std::vector<VkFramebuffer> frameBuffers;
-
-		Ref<ImageModel> depthBufferModel;
-		Ref<ImageModel> msaaColorSample;
-		Ref<ImageModel> msaaDepthSample;
+		Ref<ImageModel> depthBufferModel;//todo: replace to render passes
+		Ref<ImageModel> msaaColorSample;//todo: replace to render passes
+		Ref<ImageModel> msaaDepthSample;//todo: replace to render passes
 	};
 }

@@ -7,7 +7,7 @@
 #include "EngineCore/Defines/DllDefines.h"
 #include "Entity.h"
 
-class PROJECT_API Ecs
+class Ecs
 {
 public:
 	Ref<entt::registry> registry;

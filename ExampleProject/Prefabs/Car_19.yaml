@@ -1,0 +1,14 @@
+NameComponent:
+  name: Car
+PositionComponent:
+  position: [-260, -54, -20]
+RotationComponent:
+  rotation: [90, 0, 0]
+ScaleComponent:
+  scale: [0.100000001, 0.100000001, 0.100000001]
+MeshComponent:
+  meshIndex: 2
+MaterialComponent:
+  materialIndex: 3
+UboModelComponent:
+  {}

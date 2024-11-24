@@ -7,7 +7,7 @@
 #include "EngineCore/Editor/IWindow.h"
 #include "EngineCore/Core/Ref.h"
 
-class PROJECT_API IEngineEditor
+class IEngineEditor
 {
 public:
 	

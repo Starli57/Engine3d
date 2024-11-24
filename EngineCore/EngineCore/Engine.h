@@ -13,12 +13,12 @@
 #include "EngineCore/Systems/CameraFlySystem.h"
 #include "EngineCore/Systems/CameraOrbitSystem.h"
 #include "EngineCore/Systems/RotatorSystem.h"
-#include "EngineCore/AssetsManagement/AssetsDatabase.h"
-#include "EngineCore/AssetsManagement/ResourcesManager.h"
+#include "EngineCore/Core/AssetsDatabase.h"
+#include "EngineCore/Core/ResourcesManager.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 #include "EngineCore/Rollback/Rollback.h"
 
-class PROJECT_API Engine
+class Engine
 {
 public:
 	Engine(Ref<ProjectSettigns> projectSettings);
@@ -49,8 +49,6 @@ private:
 	Ref<Input> input;
 	Ref<AssetsDatabase> assetsDatabase;
 	Ref<ResourcesManager> resourcesManager;
-
-	Rollback* engineRollback;
 
 	float deltaTime;
 

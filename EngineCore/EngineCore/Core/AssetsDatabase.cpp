@@ -1,5 +1,5 @@
 #include "EngineCore/Pch.h"
-#include "EngineCore/AssetsManagement/AssetsDatabase.h"
+#include "EngineCore/Core/AssetsDatabase.h"
 #include "EngineCore/Utilities/IOUtility.h"
 
 AssetsDatabase::AssetsDatabase(Ref<ProjectSettigns> projectSettings)
@@ -12,10 +12,18 @@ AssetsDatabase::AssetsDatabase(Ref<ProjectSettigns> projectSettings)
 	
 AssetsDatabase::~AssetsDatabase()
 {
-	//todo: check which resources need to dispose here
-	for (auto& texture : textures) texture.reset();
+	Dispose();
+}
 
+void AssetsDatabase::Dispose()
+{
+	spdlog::info("Dispose assets database");
+
+	for (auto& texture : textures) texture.reset();
 	textures.clear();
+
+	for (auto& mesh : meshes) mesh.reset();
+	meshes.clear();
 }
 
 int32_t AssetsDatabase::MeshIndex(const UniqueId uniqueId)
@@ -52,9 +60,9 @@ Ref<Mesh> AssetsDatabase::GetMesh(const int32_t index)
 	return meshes[index];
 }
 
-Ref<Material> AssetsDatabase::GetMaterial(const int32_t index)
+Ref<Material> AssetsDatabase::GetMaterial(const uint32_t index)
 {
-	CAssert::Check(index >= 0 && index < materials.size(), "Material index is out of range");
+	CAssert::Check(index < materials.size(), "Material index is out of range");
 	return materials[index];
 }
 

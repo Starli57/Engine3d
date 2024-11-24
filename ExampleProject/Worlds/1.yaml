@@ -1,11 +1,13 @@
 NameComponent:
   name: Car
 PositionComponent:
-  position: [-200, -50, 0]
+  position: [0, 1, 0]
 RotationComponent:
-  rotation: [90, 0, 0]
+  rotation: [-1243.32837, 0, 0]
+RotationVelocityComponent:
+  velocity: [-20, 0, 0]
 ScaleComponent:
-  scale: [1, 1, 1]
+  scale: [0.100000001, 0.100000001, 0.100000001]
 MeshComponent:
   meshIndex: 2
 MaterialComponent:
@@ -15,51 +17,42 @@ UboModelComponent:
 ---
 NameComponent:
   name: Diffuse Light
+PositionComponent:
+  position: [-8.5, 80, 44.5999985]
+RotationComponent:
+  rotation: [-87.9000015, -57.5999985, 40]
+UboViewProjectionComponent:
+  {}
 UboDiffuseLightComponent:
-  position: [-500, 1000, 400]
+  {}
 ---
 NameComponent:
   name: Camera
 PositionComponent:
-  position: [-732.24176, 157.825104, 523.841309]
+  position: [-0.492248982, 28.5133934, 49.7646255]
 RotationComponent:
-  rotation: [-57.8470688, -13.3659267, 0]
+  rotation: [-436.969513, -26.8027706, 40]
 CameraComponent:
   fov: 60
   zNear: 0.100000001
   zFar: 5000
   upAxis: [0, 1, 0]
 CameraFreeComponent:
-  movementSpeed: 250
-  rotationSpeed: 20
+  movementSpeed: 50
+  rotationSpeed: 10
 UboModelComponent:
   {}
 UboViewProjectionComponent:
   {}
 ---
 NameComponent:
-  name: Sphere
+  name: Box
 PositionComponent:
   position: [0, 0, 0]
 RotationComponent:
   rotation: [0, 0, 0]
 ScaleComponent:
-  scale: [50, 50, 50]
-MeshComponent:
-  meshIndex: 1
-MaterialComponent:
-  materialIndex: 2
-UboModelComponent:
-  {}
----
-NameComponent:
-  name: Box
-PositionComponent:
-  position: [0, -75, 7]
-RotationComponent:
-  rotation: [0, 0, 0]
-ScaleComponent:
-  scale: [10000, 1, 10000]
+  scale: [1000, 1, 1000]
 MeshComponent:
   meshIndex: 0
 MaterialComponent:
@@ -70,11 +63,11 @@ UboModelComponent:
 NameComponent:
   name: Sphere
 PositionComponent:
-  position: [150, 0, 0]
+  position: [37, 6, 0]
 RotationComponent:
   rotation: [0, 0, 0]
 ScaleComponent:
-  scale: [50, 50, 50]
+  scale: [5, 5, 5]
 MeshComponent:
   meshIndex: 1
 MaterialComponent:
@@ -85,11 +78,11 @@ UboModelComponent:
 NameComponent:
   name: Sphere
 PositionComponent:
-  position: [300, 0, 1]
+  position: [54, 20, 5]
 RotationComponent:
   rotation: [0, 0, 0]
 ScaleComponent:
-  scale: [50, 50, 50]
+  scale: [5, 5, 5]
 MeshComponent:
   meshIndex: 1
 MaterialComponent:
@@ -100,43 +93,13 @@ UboModelComponent:
 NameComponent:
   name: Sphere
 PositionComponent:
-  position: [150, 0, -150]
+  position: [53, 6, 38.0999985]
 RotationComponent:
   rotation: [0, 0, 0]
 ScaleComponent:
-  scale: [50, 50, 50]
+  scale: [5, 5, 5]
 MeshComponent:
   meshIndex: 1
-MaterialComponent:
-  materialIndex: 2
-UboModelComponent:
-  {}
----
-NameComponent:
-  name: Sphere
-PositionComponent:
-  position: [0, 0, -150]
-RotationComponent:
-  rotation: [0, 0, 0]
-ScaleComponent:
-  scale: [50, 50, 50]
-MeshComponent:
-  meshIndex: 1
-MaterialComponent:
-  materialIndex: 2
-UboModelComponent:
-  {}
----
-NameComponent:
-  name: Box
-PositionComponent:
-  position: [200, -57.5999985, 200]
-RotationComponent:
-  rotation: [0, 0, 0]
-ScaleComponent:
-  scale: [100, 100, 20]
-MeshComponent:
-  meshIndex: 0
 MaterialComponent:
   materialIndex: 2
 UboModelComponent:
@@ -145,11 +108,11 @@ UboModelComponent:
 NameComponent:
   name: Car
 PositionComponent:
-  position: [-450, -50, 0]
+  position: [-34.9000015, 1, -10]
 RotationComponent:
-  rotation: [90, 0, 0]
+  rotation: [76.5, -0.699999988, 0]
 ScaleComponent:
-  scale: [1, 1, 1]
+  scale: [0.100000001, 0.100000001, 0.100000001]
 MeshComponent:
   meshIndex: 2
 MaterialComponent:
@@ -160,11 +123,11 @@ UboModelComponent:
 NameComponent:
   name: Car
 PositionComponent:
-  position: [-700, -50, 0]
+  position: [-60, 1, -20]
 RotationComponent:
   rotation: [90, 0, 0]
 ScaleComponent:
-  scale: [1, 1, 1]
+  scale: [0.100000001, 0.100000001, 0.100000001]
 MeshComponent:
   meshIndex: 2
 MaterialComponent:

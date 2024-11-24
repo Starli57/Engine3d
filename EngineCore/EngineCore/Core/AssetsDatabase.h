@@ -15,7 +15,7 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/ProjectSettings.h"
 
-class PROJECT_API AssetsDatabase
+class AssetsDatabase
 {
 public:
 	std::unordered_map<std::string, std::filesystem::path> meshesPaths;
@@ -24,6 +24,7 @@ public:
 
 	AssetsDatabase(Ref<ProjectSettigns> projectSettings);
 	~AssetsDatabase();
+	void Dispose();
 
 	size_t MeshesCount() { return meshes.size(); }
 	size_t MaterialsCount() { return materials.size(); }
@@ -35,7 +36,7 @@ public:
 	int32_t TextureIndex(const std::filesystem::path& texturePath);
 
 	Ref<Mesh> GetMesh(const int32_t index);
-	Ref<Material> GetMaterial(const int32_t index);
+	Ref<Material> GetMaterial(const uint32_t index);
 	Ref<Texture> GetTexture(const int32_t index);
 	Ref<Texture> GetTexture(const std::filesystem::path& texturePath);
 
