@@ -6,7 +6,7 @@ namespace AVulkan
 {
     RenderPassColor::RenderPassColor(
         VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<AVulkan::VulkanConfiguration> rendererConfig,
-        Ref<Ecs> ecs, Ref<AssetsDatabase> assetsDatabase, Ref<SwapChainData> swapChainData, Ref<Descriptors> descriptors, VkSampler& textureSampler,
+        Ref<Ecs> ecs, Ref<AssetsDatabaseVulkan> assetsDatabase, Ref<SwapChainData> swapChainData, Ref<Descriptors> descriptors, VkSampler& textureSampler,
         Ref<PipelinesCollection> pipelinesCollection, VkImageView& shadowMapImageView, VkSampler& shadowMapSampler) :
         IRenderPass(physicalDevice, logicalDevice, rendererConfig, ecs, assetsDatabase, swapChainData, descriptors), 
         textureSampler(textureSampler), pipelinesCollection(pipelinesCollection), 
@@ -61,21 +61,21 @@ namespace AVulkan
 
             if (meshContainer.meshIndex.has_value() == false) continue;
 
+            int32_t meshIndex = meshContainer.meshIndex.value();
             UpdateUniformBuffer(index, materialComponent, rendererPosition, cameraProjection, lightsProjection);
 
-            auto material = assetsDatabase->GetMaterial(materialComponent.materialIndex);
-            auto meshVulkan = std::static_pointer_cast<AVulkan::MeshVulkan> (assetsDatabase->GetMesh(meshContainer.meshIndex.value()));
+            auto material = assetsDatabase->materials.at(materialComponent.materialIndex);
             auto pipeline = pipelines.at(material->pipelineId);
 
             VkUtils::BindPipeline(commandBuffer, pipeline);
-            VkUtils::BindVertexAndIndexBuffers(commandBuffer, meshVulkan, assetsDatabase);
+            VkUtils::BindVertexAndIndexBuffers(commandBuffer, meshIndex, assetsDatabase);
 
             vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT,
                 0, sizeof(glm::mat4), &uboModelComponent.model);
 
             auto descriptorSet = GetOrCreateDescriptorSet(index)->descriptorSet;
             vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->layout, 0, 1, &descriptorSet, 0, nullptr);
-            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(meshVulkan->GetIndicesCount()), 1, 0, 0, 0);
+            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(assetsDatabase->indexesCount.at(meshIndex)), 1, 0, 0, 0);
             i++;
         }
 
@@ -107,21 +107,38 @@ namespace AVulkan
 
         memcpy(colorDescriptor->uboCamera->bufferMapped, &cameraPosition, sizeof(PositionComponent));
 
-        auto material = assetsDatabase->GetMaterial(materialComponent.materialIndex);
-        VkImageView albedoImageView = nullptr;
-
-        if (material->albedoTexture.has_value())
-        {
-            auto albedo = static_pointer_cast<AVulkan::TextureVulkan>(assetsDatabase->GetTexture(material->albedoTexture.value()));
-            albedoImageView = albedo->imageModel->imageView;
-        }
-
-        UpdateDescriptorSet(colorDescriptor, albedoImageView, textureSampler);
+        UpdateDescriptorSet(colorDescriptor, materialComponent.materialIndex);
     }
 
 #pragma optimize("", off)
-    void RenderPassColor::UpdateDescriptorSet(Ref<ColorDescriptor> colorDescriptor, VkImageView& textureImageView, VkSampler& textureSampler)
+    void RenderPassColor::UpdateDescriptorSet(Ref<ColorDescriptor> colorDescriptor, uint32_t materialIndex)
     {
+        auto material = assetsDatabase->materials.at(materialIndex);
+
+        VkImageView diffuseImageView = nullptr;
+        if (material->diffuse.has_value())
+        {
+            diffuseImageView = assetsDatabase->imagesViews.at(material->diffuse.value());
+        }
+
+        VkImageView specularImageView = nullptr;
+        if (material->specular.has_value())
+        {
+            specularImageView = assetsDatabase->imagesViews.at(material->specular.value());
+        }
+
+        VkImageView normalMapImageView = nullptr;
+        if (material->normalMap.has_value())
+        {
+            normalMapImageView = assetsDatabase->imagesViews.at(material->normalMap.value());
+        }
+
+        VkImageView alphaMapImageView = nullptr;
+        if (material->alphaMap.has_value())
+        {
+            alphaMapImageView = assetsDatabase->imagesViews.at(material->alphaMap.value());
+        }
+
         VkDescriptorBufferInfo viewProjectionDescriptorInfo{};
         viewProjectionDescriptorInfo.buffer = colorDescriptor->uboCameraViewProjection->buffer;
         viewProjectionDescriptorInfo.range = sizeof(UboViewProjectionComponent);
@@ -142,10 +159,29 @@ namespace AVulkan
         shadowMapInfo.imageView = shadowMapImageView;
         shadowMapInfo.sampler = shadowMapSampler;
 
-        std::array<VkWriteDescriptorSet, 5> descriptorWrites{};
-        uint32_t descriptorsCount = 4;
+        VkDescriptorImageInfo diffuseImageInfo{};
+        diffuseImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        diffuseImageInfo.imageView = diffuseImageView;
+        diffuseImageInfo.sampler = textureSampler;
 
-        WriteDescriptorSet(descriptorWrites[0], colorDescriptor->descriptorSet, 0, 0, 1, 
+        VkDescriptorImageInfo specularImageInfo{};
+        specularImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        specularImageInfo.imageView = specularImageView;
+        specularImageInfo.sampler = textureSampler;
+
+        VkDescriptorImageInfo normalImageInfo{};
+        normalImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        normalImageInfo.imageView = normalMapImageView;
+        normalImageInfo.sampler = textureSampler;
+
+        VkDescriptorImageInfo alphaImageInfo{};
+        alphaImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        alphaImageInfo.imageView = alphaMapImageView;
+        alphaImageInfo.sampler = textureSampler;
+
+        std::array<VkWriteDescriptorSet, 8> descriptorWrites{};
+
+        WriteDescriptorSet(descriptorWrites[0], colorDescriptor->descriptorSet, 0, 0, 1,
             VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &viewProjectionDescriptorInfo);
 
         WriteDescriptorSet(descriptorWrites[1], colorDescriptor->descriptorSet, 1, 0, 1,
@@ -157,20 +193,19 @@ namespace AVulkan
         WriteDescriptorSet(descriptorWrites[3], colorDescriptor->descriptorSet, 3, 0, 1,
             VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &shadowMapInfo, nullptr);
 
-        if (textureSampler != VK_NULL_HANDLE && textureImageView != VK_NULL_HANDLE)
-        {
-            VkDescriptorImageInfo imageInfo{};
-            imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfo.imageView = textureImageView;
-            imageInfo.sampler = textureSampler;
+        WriteDescriptorSet(descriptorWrites[4], colorDescriptor->descriptorSet, 4, 0, 1,
+            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &diffuseImageInfo, nullptr);
 
-            WriteDescriptorSet(descriptorWrites[4], colorDescriptor->descriptorSet, 4, 0, 1,
-                VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &imageInfo, nullptr);
+        WriteDescriptorSet(descriptorWrites[5], colorDescriptor->descriptorSet, 5, 0, 1,
+            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &specularImageInfo, nullptr);
 
-            descriptorsCount++;
-        }
+        WriteDescriptorSet(descriptorWrites[6], colorDescriptor->descriptorSet, 6, 0, 1,
+            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &normalImageInfo, nullptr);
 
-        vkUpdateDescriptorSets(logicalDevice, descriptorsCount, descriptorWrites.data(), 0, nullptr);
+        WriteDescriptorSet(descriptorWrites[7], colorDescriptor->descriptorSet, 7, 0, 1,
+            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &alphaImageInfo, nullptr);
+
+        vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
     }
 #pragma optimize("", on)
 
@@ -195,8 +230,8 @@ namespace AVulkan
 
     Ref<ColorDescriptor> RenderPassColor::GetOrCreateDescriptorSet(uint32_t index)
     {
-        int diff = index - passDescriptors.size() + 1;
-        for (int i = 0; i < diff; i++) CreateDescriptorSet();
+        auto diff = static_cast<int32_t>(index) - static_cast<int32_t>(passDescriptors.size()) + 1i32;
+        for (int32_t i = 0; i < diff; i++) CreateDescriptorSet();
         return passDescriptors.at(index);
     }
 
@@ -234,9 +269,12 @@ namespace AVulkan
         auto uboLightLayout = descriptors->DescriptorSetLayoutBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
         auto uboCameraLayout = descriptors->DescriptorSetLayoutBinding(2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
         auto shadowMap = descriptors->DescriptorSetLayoutBinding(3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-        auto albedoLayout = descriptors->DescriptorSetLayoutBinding(4, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        auto diffuseMap = descriptors->DescriptorSetLayoutBinding(4, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        auto specularMap = descriptors->DescriptorSetLayoutBinding(5, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        auto normalMap = descriptors->DescriptorSetLayoutBinding(6, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        auto alphaMap = descriptors->DescriptorSetLayoutBinding(7, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
 
-        std::vector bindings = { uboViewProjectionLayout, uboLightLayout, uboCameraLayout, shadowMap, albedoLayout };
+        std::vector bindings = { uboViewProjectionLayout, uboLightLayout, uboCameraLayout, shadowMap, diffuseMap, specularMap, normalMap, alphaMap };
         descriptors->CreateLayout(logicalDevice, bindings, descriptorSetLayout);
     }
 

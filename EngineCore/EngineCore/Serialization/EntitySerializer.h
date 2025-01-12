@@ -8,6 +8,7 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Entity.h"
 #include "EngineCore/Core/ProjectSettings.h"
+#include "EngineCore/Core/AssetsDatabase.h"
 
 #include "EngineCore/Components/IdComponent.h"
 #include "EngineCore/Components/CameraComponent.h"
@@ -27,7 +28,7 @@ class EntitySerializer
 {
 public:
 
-	EntitySerializer(Ref<ProjectSettigns> projectSettings);
+	EntitySerializer(Ref<ProjectSettings> projectSettings, Ref<AssetsDatabase> assetsDatabase);
 	~EntitySerializer();
 
 	void SerializeWorld(Ref<Ecs> ecs, const std::string& filePath);
@@ -41,7 +42,8 @@ public:
 
 private:
 
-	Ref<ProjectSettigns> projectSettings;
+	Ref<ProjectSettings> projectSettings;
+	Ref<AssetsDatabase> assetsDatabase;
 
 	template <typename T>
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity)

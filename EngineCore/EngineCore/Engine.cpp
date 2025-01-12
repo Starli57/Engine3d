@@ -2,13 +2,18 @@
 
 #include "Engine.h"
 
-Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSettings)
+Engine::Engine(Ref<ProjectSettings> projectSettings) : projectSettings(projectSettings)
 {
 	InitLogger();
 
 	cachedTime = std::chrono::high_resolution_clock::now();
 	ecs = CreateRef<Ecs>();
-	assetsDatabase = CreateRef<AssetsDatabase>(projectSettings);
+
+#if GLFW_INCLUDE_VULKAN
+	assetsDatabase = CreateRef<AssetsDatabaseVulkan>(projectSettings);
+#else
+	throw std::runtime_error("The rendering api is not supported");
+#endif
 
 	try
 	{
@@ -24,7 +29,13 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 	}
 
 
-	resourcesManager = CreateRef<ResourcesManager>(graphicsApi, assetsDatabase);
+#if GLFW_INCLUDE_VULKAN
+	resourcesManager = CreateRef<AssetsLoaderVulkan>(projectSettings, graphicsApi, assetsDatabase);
+#else
+	throw std::runtime_error("The rendering api is not supported");
+#endif
+	resourcesManager->Load();
+
 	input = CreateRef<Input>(window);
 	world = CreateRef<World>(ecs, projectSettings);
 
@@ -34,9 +45,9 @@ Engine::Engine(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSe
 Engine::~Engine()
 {
 	world.reset();
+	resourcesManager->UnLoadAllMeshes();
+	resourcesManager->UnLoadAllTextures();
 	resourcesManager.reset();
-
-	assetsDatabase->Dispose(); 
 	assetsDatabase.reset();
 
 	spdlog::info("Dispose graphicsApi");
@@ -83,10 +94,11 @@ void Engine::CreateAppWindow()
 void Engine::InitGraphicsApi()
 {
 #if GLFW_INCLUDE_VULKAN
-	graphicsApi = new AVulkan::GraphicsApiVulkan(ecs, assetsDatabase, projectSettings, window);
+	Ref<AssetsDatabaseVulkan> databaseVulkan = std::dynamic_pointer_cast<AssetsDatabaseVulkan>(assetsDatabase);
+	graphicsApi = new AVulkan::GraphicsApiVulkan(ecs, databaseVulkan, projectSettings, window);
 	graphicsApi->Init();
 #else
-	throw std::runtime_error("Rendering api is not selected");
+	throw std::runtime_error("The rendering api is not supported");
 #endif
 }
 

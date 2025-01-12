@@ -6,7 +6,7 @@
 
 int main()
 {
-	Ref<ProjectSettigns> projectSettings = CreateRef<ProjectSettigns>(
+	Ref<ProjectSettings> projectSettings = CreateRef<ProjectSettings>(
 		"../ExampleProject/"
 	);
 
@@ -20,5 +20,7 @@ int main()
 		std::cout << "Critical error: " << e.what();
 	}
 
+	int a;
+	std::cin >> a;
 	return 0;
 }

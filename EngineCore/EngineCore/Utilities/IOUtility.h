@@ -17,6 +17,7 @@ public:
     void FindAndEmplaceResourcesFiles(
         const std::string& rootFolderPath,
         const std::vector<std::string>& extensions,
-        std::unordered_map<std::string, std::filesystem::path>& result);
+        std::vector<std::filesystem::path>& paths,
+        std::unordered_map<std::filesystem::path, uint32_t>& indexByPath) const;
 };
 

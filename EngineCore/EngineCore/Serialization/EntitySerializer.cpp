@@ -67,7 +67,8 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& v)
 	return out;
 }
 
-EntitySerializer::EntitySerializer(Ref<ProjectSettigns> projectSettings) : projectSettings(projectSettings)
+EntitySerializer::EntitySerializer(Ref<ProjectSettings> projectSettings, Ref<AssetsDatabase> assetsDatabase) : 
+	projectSettings(projectSettings), assetsDatabase(assetsDatabase)
 {
 }
 
@@ -264,8 +265,8 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 	out << YAML::Key << "MeshComponent";
 	out << YAML::BeginMap;
 
-	auto index = component.meshIndex.has_value() ? component.meshIndex.value() : -1;
-	out << YAML::Key << "meshIndex" << YAML::Value << index;
+	auto path = component.meshIndex.has_value() ? assetsDatabase->meshesPaths.at(component.meshIndex.value()).string() : "";
+	out << YAML::Key << "meshPath" << YAML::Value << path;
 
 	out << YAML::EndMap;
 }
@@ -275,7 +276,8 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 	out << YAML::Key << "MaterialComponent";
 	out << YAML::BeginMap;
 
-	out << YAML::Key << "materialIndex" << YAML::Value << component.materialIndex;
+	auto path = assetsDatabase->materialsPaths.at(component.materialIndex).string();
+	out << YAML::Key << "materialPath" << YAML::Value << path;
 
 	out << YAML::EndMap;
 }
@@ -382,9 +384,23 @@ void EntitySerializer::InstantiateComponentMesh(Ref<Entity> entity, YAML::Node n
 	auto meshComponent = node["MeshComponent"];
 	if (meshComponent)
 	{
-		auto meshIndex = meshComponent["meshIndex"].as<int>();
-		if (meshIndex == -1) entity->AddComponent<MeshComponent>();
-		else entity->AddComponent<MeshComponent>(meshIndex);
+		auto path = meshComponent["meshPath"].as<std::string>();
+		if (path == "")
+		{
+			entity->AddComponent<MeshComponent>();
+			return;
+		}
+
+
+		auto index = assetsDatabase->meshesIndexByPath.find(std::filesystem::path(path));
+		if (index == assetsDatabase->meshesIndexByPath.end())
+		{
+			spdlog::critical("Failed to deserialize mesh component, because mesh by path {} not found", path);
+			entity->AddComponent<MeshComponent>();
+			return;
+		}
+
+		entity->AddComponent<MeshComponent>(index->second);
 	}
 }
 
@@ -393,7 +409,23 @@ void EntitySerializer::InstantiateComponentMaterial(Ref<Entity> entity, YAML::No
 	auto materialComponent = node["MaterialComponent"];
 	if (materialComponent)
 	{
-		entity->AddComponent<MaterialComponent>(materialComponent["materialIndex"].as<uint32_t>());
+		auto path = materialComponent["materialPath"].as<std::string>();
+		if (path == "")
+		{
+			entity->AddComponent<MaterialComponent>();
+			return;
+		}
+
+
+		auto index = assetsDatabase->materialsIndexByPath.find(std::filesystem::path(path));
+		if (index == assetsDatabase->materialsIndexByPath.end())
+		{
+			spdlog::critical("Failed to deserialize material component, because mterial by path {} not found", path);
+			entity->AddComponent<MaterialComponent>();
+			return;
+		}
+
+		entity->AddComponent<MaterialComponent>(index->second);
 	}
 }
 

@@ -10,12 +10,10 @@
 #include "Models/SwapChainData.h"
 #include "Models/ImageModel.h"
 
-#include "EngineCore/Core/AssetsDatabase.h"
+#include "EngineCore/Core/AssetsDatabaseVulkan.h"
 #include "EngineCore/Rendering/IGraphicsApi.h"
 #include "EngineCore/Rendering/PipelinesCollection.h"
 
-#include "EngineCore/Rendering/Vulkan/MeshVulkan.h"
-#include "EngineCore/Rendering/Vulkan/TextureVulkan.h"
 #include "EngineCore/Rendering/Vulkan/PipelineVulkan.h"
 #include "EngineCore/Rendering/Vulkan/Configs/VulkanConfiguration.h"
 
@@ -39,7 +37,6 @@
 #include "Utilities/MemoryUtility.h"
 #include "Utilities/TextureSamplerUtility.h"
 
-#include "EngineCore/Assets/Mesh.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/ProjectSettings.h"
@@ -91,23 +88,17 @@ namespace AVulkan
 		RenderPassColor* GetRenderPassColor() const { return renderPassColor; }
 		RenderPassShadowMaps* GetRenderPassShadowMap() const { return renderPassShadowMaps; }
 
-		GraphicsApiVulkan(Ref<Ecs> ecs, Ref<AssetsDatabase> assetDatabase, Ref<ProjectSettigns> projectSettings, GLFWwindow* window);
+		GraphicsApiVulkan(Ref<Ecs> ecs, Ref<AssetsDatabaseVulkan> assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* window);
 		virtual ~GraphicsApiVulkan() override;
 
 		void Init() override;
 		void Render() override;
 		void FinanilizeRenderOperations() override;
 
-		Ref<Mesh> LoadMesh(const std::filesystem::path& meshPath) override;
-		Ref<Mesh> CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices) override;
-
-		Ref<Texture> CreateTexture(const std::filesystem::path& textureFilePath) override;
-		Ref<Material> CreateMaterial(const std::string& pipelineId) override;
-
 	private:
 		Ref<Ecs> ecs;
-		Ref<AssetsDatabase> assetDatabase;
-		Ref<ProjectSettigns> projectSettings;
+		Ref<AssetsDatabaseVulkan> assetDatabase;
+		Ref<ProjectSettings> projectSettings;
 		Ref<Rollback> rollback;
 
 		Ref<PipelinesCollection> pipelinesCollection;

@@ -9,12 +9,12 @@
 class Editor
 {
 public:
-	Editor(Ref<ProjectSettigns> projectSettings, Ref<Engine> engine);
+	Editor(Ref<ProjectSettings> projectSettings, Ref<Engine> engine);
 	~Editor();
 
 private:
 	Ref<Engine> engine;
 	Ref<IEngineEditor> editorUi;
-	Ref<ProjectSettigns> projectSettings;
+	Ref<ProjectSettings> projectSettings;
 };
 

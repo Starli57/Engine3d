@@ -3,7 +3,8 @@
 
 #include "ImguiVulkan.h"
 
-ImguiVulkan::ImguiVulkan(AVulkan::GraphicsApiVulkan& vulkanApi) : vulkanApi(vulkanApi)
+ImguiVulkan::ImguiVulkan(Ref<ProjectSettings> projectSettings, AVulkan::GraphicsApiVulkan& vulkanApi) :
+    projectSettings(projectSettings), vulkanApi(vulkanApi)
 {
     spdlog::info("Start editor imgui initialization");
 
@@ -23,8 +24,9 @@ ImguiVulkan::ImguiVulkan(AVulkan::GraphicsApiVulkan& vulkanApi) : vulkanApi(vulk
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;        
     io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-   
-    io.Fonts->AddFontFromFileTTF("../Externals/Fonts/Roboto-Medium.ttf", 20);
+
+    auto fontPath = projectSettings->fontsPath + "/Roboto-Medium.ttf";
+    io.Fonts->AddFontFromFileTTF(fontPath.c_str(), 20);
 
     DefaultEditorColors(nullptr);
 

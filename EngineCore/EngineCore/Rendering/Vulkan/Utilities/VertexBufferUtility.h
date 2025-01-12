@@ -8,9 +8,9 @@
 namespace VkUtils
 {
 	VkVertexInputBindingDescription GetVertexInputBindingDescription();
-	std::array<VkVertexInputAttributeDescription, 4> GetVertexInputAttributeDescriptions();
+	std::array<VkVertexInputAttributeDescription, 6> GetVertexInputAttributeDescriptions();
 
-	void CreateVertexBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<std::vector<Vertex>> vertices,
+	void CreateVertexBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, std::vector<Vertex>& vertices,
 		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool);
 
 	void DisposeVertexBuffer(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory);

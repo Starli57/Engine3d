@@ -19,6 +19,6 @@ private:
 	Ref<Engine> engine;
 	AVulkan::GraphicsApiVulkan& vulkanApi;
 
-	std::vector<float>* fpsFrames;
-	int currentFpsIndex = 0;
+	std::vector<float>* frameTimes;
+	int currentIndex = 0;
 };

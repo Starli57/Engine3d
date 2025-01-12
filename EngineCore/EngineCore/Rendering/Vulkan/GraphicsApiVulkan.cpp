@@ -6,7 +6,7 @@
 
 namespace AVulkan
 {
-	GraphicsApiVulkan::GraphicsApiVulkan(Ref<Ecs> ecs, Ref<AssetsDatabase> assetDatabase, Ref<ProjectSettigns> projectSettings, GLFWwindow* glfwWindow)
+	GraphicsApiVulkan::GraphicsApiVulkan(Ref<Ecs> ecs, Ref<AssetsDatabaseVulkan> assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* glfwWindow)
 	{
 		this->ecs = ecs;
 		this->assetDatabase = assetDatabase;
@@ -156,26 +156,6 @@ namespace AVulkan
 	void GraphicsApiVulkan::FinanilizeRenderOperations()
 	{
 		vkDeviceWaitIdle(logicalDevice);
-	}
-
-	Ref<Mesh> GraphicsApiVulkan::LoadMesh(const std::filesystem::path& meshPath)
-	{
-		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, meshPath);
-	}
-
-	Ref<Mesh> GraphicsApiVulkan::CreateMesh(Ref<std::vector<Vertex>> vertices, Ref<std::vector<uint32_t>> indices)
-	{
-		return CreateRef<MeshVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, vertices, indices);
-	}
-
-	Ref<Texture> GraphicsApiVulkan::CreateTexture(const std::filesystem::path& textureFilePath)
-	{
-		return CreateRef<TextureVulkan>(physicalDevice, logicalDevice, graphicsQueue, commandPool, rendererConfig, textureFilePath);
-	}
-
-	Ref<Material> GraphicsApiVulkan::CreateMaterial(const std::string& pipelineId)
-	{
-		return CreateRef<Material>(pipelineId);
 	}
 
 	void GraphicsApiVulkan::CreateInstance()

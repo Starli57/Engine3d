@@ -1,17 +1,17 @@
 NameComponent:
   name: Camera
 PositionComponent:
-  position: [-227.307755, -38.2267952, 30.0347271]
+  position: [-1000, 250, 150]
 RotationComponent:
-  rotation: [-416.653839, -16.631567, 40]
+  rotation: [-40, -5.0210104, 40]
 CameraComponent:
   fov: 60
-  zNear: 0.100000001
-  zFar: 5000
+  zNear: 1
+  zFar: 7500
   upAxis: [0, 1, 0]
 CameraFreeComponent:
-  movementSpeed: 50
-  rotationSpeed: 10
+  movementSpeed: 200
+  rotationSpeed: 12
 UboModelComponent:
   {}
 UboViewProjectionComponent:

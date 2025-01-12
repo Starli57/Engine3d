@@ -2,9 +2,9 @@
 
 #include <glm/glm.hpp>
 #include <numbers>
-#include "MeshDefinition.h"
+#include "EngineCore/Assets/Meta/MeshMeta.h"
 
-struct SphereDefinition : public MeshDefinition
+struct SphereDefinition : public MeshMeta
 {
 	SphereDefinition()
 	{
@@ -13,9 +13,7 @@ struct SphereDefinition : public MeshDefinition
         float radius = 1;
         float pi = std::numbers::pi_v<float>;
 
-        vertices = CreateRef<std::vector<Vertex>>();
-        indices = CreateRef<std::vector<uint32_t>>();
-
+        vertices.reserve(stackCount * sectorCount);
         for (uint32_t stack = 0; stack <= stackCount; ++stack) 
         {
             float stackAngle = pi / 2 - stack * pi / stackCount;
@@ -28,14 +26,19 @@ struct SphereDefinition : public MeshDefinition
 
                 float x = xy * cosf(sectorAngle);
                 float y = xy * sinf(sectorAngle);
-                vertices->emplace_back(
+                //todo: calculate tangent and bitangent
+                vertices.emplace_back(
                     glm::vec3(x, y, z), 
                     glm::vec3(x, y, z),
+                    glm::vec3(0, 0, 0),
+                    glm::vec3(0, 0, 0),
                     glm::vec3(1.0f), 
                     glm::vec2(float(sector) / sectorCount, float(stack) / stackCount));
             }
         }
 
+        //todo: check capacity calculation
+        indices.reserve(stackCount * sectorCount * 6 - stackCount * 2);
         for (uint32_t stack = 0; stack < stackCount; ++stack)
         {
             uint32_t k1 = stack * (sectorCount + 1);
@@ -45,16 +48,16 @@ struct SphereDefinition : public MeshDefinition
             {
                 if (stack != 0)
                 {
-                    indices->push_back(k1);
-                    indices->push_back(k2);
-                    indices->push_back(k1 + 1);
+                    indices.push_back(k1);
+                    indices.push_back(k2);
+                    indices.push_back(k1 + 1);
                 }
 
                 if (stack != (stackCount - 1))
                 {
-                    indices->push_back(k1 + 1);
-                    indices->push_back(k2);
-                    indices->push_back(k2 + 1);
+                    indices.push_back(k1 + 1);
+                    indices.push_back(k2);
+                    indices.push_back(k2 + 1);
                 }
             }
         }

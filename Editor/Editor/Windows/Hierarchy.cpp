@@ -57,19 +57,20 @@ void Hierarchy::Update()
     if (ImGui::Button("Create entity"))
         ecs->CreateEntity();
 
-    if (ImGui::Button("Save world"))
-        serializer->SerializeWorld(ecs, projectSettings->worldsPath + "/1.yaml");
+    const int worldNameLength = 32;
+    static char worldName[worldNameLength] = "main"; 
+    ImGui::InputText("WorldName", worldName, worldNameLength);
 
-    if (ImGui::Button("Load world"))
-        serializer->InstantiateWorld(ecs, projectSettings->worldsPath + "/1.yaml");
+    if (ImGui::Button("Save world"))
+        serializer->SerializeWorld(ecs, projectSettings->worldsPath + "/" + worldName + ".world");
 
     ImGui::End();
 }
 
-Hierarchy::Hierarchy(Ref<Ecs> ecs, Ref<Inspector> inspector, Ref<ProjectSettigns> projectSettings)
+Hierarchy::Hierarchy(Ref<Ecs> ecs, Ref<Inspector> inspector, Ref<ProjectSettings> projectSettings, Ref<AssetsDatabase> assetsDatabase)
     : ecs(ecs), inspector(inspector), projectSettings(projectSettings)
 {
-    serializer = CreateRef<EntitySerializer>(projectSettings);
+    serializer = CreateRef<EntitySerializer>(projectSettings, assetsDatabase);
 }
 
 Hierarchy::~Hierarchy()

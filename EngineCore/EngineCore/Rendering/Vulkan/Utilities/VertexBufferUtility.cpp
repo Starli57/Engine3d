@@ -5,12 +5,12 @@
 
 namespace VkUtils
 {
-	void CreateVertexBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<std::vector<Vertex>> vertices,
+	void CreateVertexBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, std::vector<Vertex>& vertices,
 		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool)
 	{
 		spdlog::info("Create Vertex Buffer");
 
-		uint64_t bufferSize = sizeof(Vertex) * vertices->size();
+		uint64_t bufferSize = sizeof(Vertex) * vertices.size();
 
 		VkBufferUsageFlags stagingUsageFlags = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 		VkBufferUsageFlags distUsageFlags    = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
@@ -26,7 +26,7 @@ namespace VkUtils
 
 		void* data;
 		vkMapMemory(logicalDevice, stagingMemory, 0, bufferSize, 0, &data);
-		memcpy(data, vertices->data(), (size_t)bufferSize);
+		memcpy(data, vertices.data(), (size_t)bufferSize);
 		vkUnmapMemory(logicalDevice, stagingMemory);
 
 		VkUtils::CreateBuffer(physicalDevice, logicalDevice, bufferSize,
@@ -52,9 +52,9 @@ namespace VkUtils
 		return bindingDescription;
 	}
 
-	std::array<VkVertexInputAttributeDescription, 4> GetVertexInputAttributeDescriptions()
+	std::array<VkVertexInputAttributeDescription, 6> GetVertexInputAttributeDescriptions()
 	{
-		std::array<VkVertexInputAttributeDescription, 4> attributeDescriptions{};
+		std::array<VkVertexInputAttributeDescription, 6> attributeDescriptions{};
 
 		attributeDescriptions[0].binding = 0;
 		attributeDescriptions[0].location = 0;
@@ -68,13 +68,23 @@ namespace VkUtils
 
 		attributeDescriptions[2].binding = 0;
 		attributeDescriptions[2].location = 2;
-		attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
-		attributeDescriptions[2].offset = offsetof(Vertex, uv);
+		attributeDescriptions[2].format = VK_FORMAT_R32G32B32_SFLOAT;
+		attributeDescriptions[2].offset = offsetof(Vertex, tangent);
 
 		attributeDescriptions[3].binding = 0;
 		attributeDescriptions[3].location = 3;
 		attributeDescriptions[3].format = VK_FORMAT_R32G32B32_SFLOAT;
-		attributeDescriptions[3].offset = offsetof(Vertex, color);
+		attributeDescriptions[3].offset = offsetof(Vertex, bitangent);
+
+		attributeDescriptions[4].binding = 0;
+		attributeDescriptions[4].location = 4;
+		attributeDescriptions[4].format = VK_FORMAT_R32G32_SFLOAT;
+		attributeDescriptions[4].offset = offsetof(Vertex, uv);
+
+		attributeDescriptions[5].binding = 0;
+		attributeDescriptions[5].location = 5;
+		attributeDescriptions[5].format = VK_FORMAT_R32G32B32_SFLOAT;
+		attributeDescriptions[5].offset = offsetof(Vertex, color);
 
 		return attributeDescriptions;
 	}

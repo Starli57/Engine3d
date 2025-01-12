@@ -6,21 +6,25 @@ precision highp sampler2DShadow;
 layout(location = 0) in vec3 inLocalPosition;
 layout(location = 1) in vec3 inNormal;
 layout(location = 2) in vec2 uv;
-layout(location = 3) in vec3 inColor;
+layout(location = 3) in vec3 inDiffuseColor;
 layout(location = 4) in vec3 inLightPosition;
 layout(location = 5) in vec3 inLightDirection;
 layout(location = 6) in vec3 inViewPos;
 layout(location = 7) in vec4 inFragPosLightSpace;
 layout(location = 8) in mat4 inLightMatrix;
+layout(location = 12) in mat3 inTBN;
 
 layout(location = 0) out vec4 outColor;
 
 layout(binding = 3) uniform sampler2D shadowMapSampler;
-layout(binding = 4) uniform sampler2D texSampler;
+layout(binding = 4) uniform sampler2D diffuseMapSampler;
+layout(binding = 5) uniform sampler2D specularMapSampler;
+layout(binding = 6) uniform sampler2D normalMapSampler;
+layout(binding = 7) uniform sampler2D alphaMapSampler;
 
 const float ambientLevel = 0.05;
 const float diffuseLevel = 0.75;
-const float specularLevel = 0.2;
+const float specularLevel = 0.75;
 
 const float shadowsEffect = 0.5;
 
@@ -59,28 +63,27 @@ float pcf()
 
 void main() 
 {
-	vec3 textureColor = texture(texSampler, uv).rgb;
+	vec3 diffuseMap = texture(diffuseMapSampler, uv).rgb;
+	vec3 specularMap = texture(specularMapSampler, uv).rgb;
+	vec3 normalMap = texture(normalMapSampler, uv).rgb;
+	vec3 alphaMap = texture(alphaMapSampler, uv).rgb;
 
 	vec3 normal = normalize(inNormal);
+	if (normalMap != vec3(0.0))
+	{
+		normal = normalMap * 2.0 - 1.0;
+		normal = normalize(inTBN * normal);
+	}
 
 	vec3 lightDirection = normalize(inLightPosition - inLocalPosition);
 	vec3 reflectLightDir = reflect(-lightDirection, normal); 
-
-	
 	vec3 viewDir = normalize(inViewPos - inLocalPosition);
 
-	//Blinn-Phong specular
-	//	vec3 halfwayDir = normalize(lightDir + viewDir);  
-	//	float specular = pow(max(dot(normal, halfwayDir), 0.0), kShininess);
-
-
-	//phong specular
-	//	float specular = pow(max(dot(viewDir, reflectLightDir), 0.0), kShininess);
-	
-	//energy conservant phong specular variation
+	float diffuse = max(dot(normal, reflectLightDir), 0.0);
 	float specular = kEnergyConservation * pow(max(dot(viewDir, reflectLightDir), 0.0), kShininess);
 	
-	float diffuse = max(dot(normal, reflectLightDir), 0.0);
-	vec3 color = (ambientLevel + diffuse * diffuseLevel + specular * specularLevel) * inColor * textureColor * pcf();
-	outColor = vec4(color.rgb, 1.0);
+	vec3 color = (ambientLevel * diffuseMap + diffuse * diffuseLevel * diffuseMap * inDiffuseColor + specular * specularLevel * specularMap) * pcf();
+	color = vec3(color.r * alphaMap.r, color.g * alphaMap.g, color.b * alphaMap.b);
+
+	outColor = vec4(color.rgb, alphaMap.r);
 }

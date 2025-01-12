@@ -1,7 +1,7 @@
 NameComponent:
   name: Diffuse Light
 PositionComponent:
-  position: [-208.5, 22.7999992, 44.5999985]
+  position: [0, 800, 0]
 RotationComponent:
   rotation: [-87.9000015, -57.5999985, 40]
 UboViewProjectionComponent:

@@ -33,12 +33,12 @@ namespace VkUtils
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
 	}
 
-	void BindVertexAndIndexBuffers(VkCommandBuffer& commandBuffer, Ref<AVulkan::MeshVulkan> meshVulkan, Ref<AssetsDatabase> assetsDatabase)
+	void BindVertexAndIndexBuffers(VkCommandBuffer& commandBuffer, int32_t meshVulkan, Ref<AssetsDatabaseVulkan> assetsDatabase)
 	{
-		VkBuffer vertexBuffers[] = { meshVulkan->GetVertexBuffer() };
+		VkBuffer vertexBuffers[] = { assetsDatabase->vertexBuffers.at(meshVulkan)};
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
-		vkCmdBindIndexBuffer(commandBuffer, meshVulkan->GetIndexBuffer(), 0, VK_INDEX_TYPE_UINT32);
+		vkCmdBindIndexBuffer(commandBuffer, assetsDatabase->indexBuffers.at(meshVulkan), 0, VK_INDEX_TYPE_UINT32);
 	}
 
 	void BeginCommandBuffer(VkCommandBuffer& commandBuffer) 

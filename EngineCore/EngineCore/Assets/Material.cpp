@@ -6,21 +6,22 @@ Material::Material(const std::string pipelineId) : pipelineId(pipelineId)
 {
 }
 
-Material::~Material()
+void Material::SetDiffuseTexture(uint32_t texture)
 {
+	this->diffuse = texture;
 }
 
-void Material::SetAlbedoTexture(int32_t texture)
+void Material::SetSpecular(uint32_t texture)
 {
-	this->albedoTexture = texture;
+	this->specular = texture;
 }
 
-void Material::SetNormalMap(int32_t texture)
+void Material::SetNormalMap(uint32_t texture)
 {
 	this->normalMap = texture;
 }
 
-void Material::SetSpecular(int32_t texture)
+void Material::SetAlphaMap(uint32_t texture)
 {
-	this->specular = texture;
+	this->alphaMap = texture;
 }

@@ -12,7 +12,7 @@ class PipelinesCollection
 public:
 	std::unordered_map<std::string, Ref<VulkanPipelineConfig>> pipelinesConfigs;
 
-	PipelinesCollection(Ref<ProjectSettigns> projectSettings);
+	PipelinesCollection(Ref<ProjectSettings> projectSettings);
 	~PipelinesCollection();
 };
 

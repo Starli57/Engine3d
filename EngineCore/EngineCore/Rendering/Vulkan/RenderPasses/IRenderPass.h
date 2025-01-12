@@ -14,7 +14,7 @@
 #include "EngineCore/Components/MaterialComponent.h"
 #include "EngineCore/Components/UboViewProjectionComponent.h"
 #include "EngineCore/Components/UboDiffuseLightComponent.h"
-#include "EngineCore/Core/AssetsDatabase.h"
+#include "EngineCore/Core/AssetsDatabaseVulkan.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/Ref.h"
 
@@ -25,7 +25,7 @@ namespace AVulkan
     public:
         IRenderPass(
             VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<VulkanConfiguration> rendererConfig,
-            Ref<Ecs> ecs, Ref<AssetsDatabase> assetsDatabase, Ref<SwapChainData> swapChainData, Ref<Descriptors> descriptors)
+            Ref<Ecs> ecs, Ref<AssetsDatabaseVulkan> assetsDatabase, Ref<SwapChainData> swapChainData, Ref<Descriptors> descriptors)
             : physicalDevice(physicalDevice), logicalDevice(logicalDevice), rendererConfig(rendererConfig),
                 ecs(ecs), assetsDatabase(assetsDatabase), swapChainData(swapChainData), descriptors(descriptors)
         {
@@ -44,7 +44,7 @@ namespace AVulkan
         VkDevice& logicalDevice;
 
         Ref<Ecs> ecs;
-        Ref<AssetsDatabase> assetsDatabase;
+        Ref<AssetsDatabaseVulkan> assetsDatabase;
         Ref<VulkanConfiguration> rendererConfig;
         Ref<SwapChainData> swapChainData;
         Ref<Descriptors> descriptors;

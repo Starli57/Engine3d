@@ -1,7 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "PipelinesCollection.h"
 
-PipelinesCollection::PipelinesCollection(Ref<ProjectSettigns> projectSettings)
+PipelinesCollection::PipelinesCollection(Ref<ProjectSettings> projectSettings)
 {
 	auto albedoOpaque = CreateRef<VulkanPipelineConfig>();
 	albedoOpaque->pipelineName = "albedoOpaque";

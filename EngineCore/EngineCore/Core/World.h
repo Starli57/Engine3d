@@ -10,14 +10,12 @@
 class World
 {
 public:
-	World(Ref<Ecs> ecs, Ref<ProjectSettigns> projectSettings);
+	World(Ref<Ecs> ecs, Ref<ProjectSettings> projectSettings);
 	~World();
-
-	void InstantiatePrefab(const std::filesystem::path& path);
 
 private:
 	Ref<Ecs> ecs;
-	Ref<ProjectSettigns> projectSettings;
+	Ref<ProjectSettings> projectSettings;
 
 };
 

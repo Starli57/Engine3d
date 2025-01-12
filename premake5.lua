@@ -1,4 +1,4 @@
-workspace "Engine"
+workspace "EcosystemEngine"
 	configurations { "Debug", "Release" }
 	architecture "x86_64"
 	
@@ -78,8 +78,6 @@ project "ExampleProject"
 		"%{Includes.SpdLog}",
 		"%{Includes.Entt}",
 		"%{Includes.Stb}",
-		"%{Includes.TinyObjLoader}",
-		"%{Includes.TinyGltf}",
 		"%{Includes.Pybind11}",
 
 		"%{Includes.Vulkan}",
@@ -114,23 +112,17 @@ project "ExampleProject"
 
 		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject" }
 		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
-		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Meshes" }
-		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Textures" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Prefabs" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Fonts" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Worlds" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources" }
 
 		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Shaders $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
-		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Resources\\Meshes $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Meshes" }
-		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Resources\\Textures $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources\\Textures" }
-		
-	filter "not system:windows"
-		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject" }
-		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
-		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Meshes" }
-		postbuildcommands { "mkdir $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Textures" }
-
-		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Shaders $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Shaders" }
-		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Resources/Meshes $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Meshes" }
-		postbuildcommands { "copy $(SolutionDir)/ExampleProject/Resources/Textures $(SolutionDir)Output/" .. outputdir .. "/ExampleProject/Resources/Textures" }
-
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Prefabs $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Prefabs" }
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Fonts $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Fonts" }
+		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Worlds $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Worlds" }
+		postbuildcommands { "{COPY} $(SolutionDir)\\ExampleProject\\Resources $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources" }
+	
 	filter "configurations:Debug"
 		defines
 		{
@@ -169,8 +161,6 @@ project "Editor"
 		"%{Includes.SpdLog}",
 		"%{Includes.Entt}",
 		"%{Includes.Stb}",
-		"%{Includes.TinyObjLoader}",
-		"%{Includes.TinyGltf}",
 		"%{Includes.YamlCpp}",
 		"%{Includes.Pybind11}",
 
@@ -241,8 +231,6 @@ project "EngineCore"
 		"%{Includes.SpdLog}",
 		"%{Includes.Entt}",
 		"%{Includes.Stb}",
-		"%{Includes.TinyObjLoader}",
-		"%{Includes.TinyGltf}",
 		"%{Includes.YamlCpp}",
 		"%{Includes.Pybind11}",
 		
@@ -484,3 +472,76 @@ project "Catch2"
 	{
 		"%{Includes.Catch2}"
 	}
+
+		
+project "ResourcesConverter"
+	location "ResourcesConverter"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "Off"
+	systemversion "latest"
+
+	targetdir ("Output/" .. outputdir .. "/%{prj.name}")
+	objdir ("Intermediate/" .. outputdir .. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/**.h",
+		"%{prj.name}/**.cpp"
+	}
+
+	includedirs
+	{
+		"%{prj.name}",
+		"%{Includes.EngineCore}",
+
+		"%{Includes.Glfw}",
+		"%{Includes.Glm}",
+		"%{Includes.SpdLog}",
+		"%{Includes.Entt}",
+		"%{Includes.Stb}",
+		"%{Includes.YamlCpp}",
+		"%{Includes.Pybind11}",
+		"%{Includes.TinyObjLoader}",
+		"%{Includes.TinyGltf}",
+		
+		"%{Includes.Vulkan}",
+		"%{Includes.Python}"
+	}
+
+	links
+	{
+		"EngineCore",
+
+		"Glfw",
+		"Glm",
+		"YamlCpp",
+
+		"%{Libs.Vulkan}",
+		"%{Libs.Python}"
+	}
+	
+	defines
+	{
+		"GLFW_INCLUDE_VULKAN",
+		"GLM_FORCE_RADIANS",
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"YAML_CPP_STATIC_DEFINE"
+	}
+
+	filter "system:windows"
+		defines
+		{
+			"PROJECT_WIN",
+			"PROJECT_DLL_BUILD"
+		}
+
+	filter "configurations:Debug"
+		defines
+		{
+			"DEBUG"
+		}
+
+	filter "configurations:Release"
+		optimize "On"

@@ -10,7 +10,7 @@
 #include "EngineCore/Rendering/Vulkan/Descriptors/ShadowMapsDescriptor.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/UniformBufferVulkanUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/TextureSamplerUtility.h"
-#include "EngineCore/Core/AssetsDatabase.h"
+#include "EngineCore/Core/AssetsDatabaseVulkan.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
 
@@ -20,7 +20,7 @@ namespace AVulkan
     {
     public:
         RenderPassShadowMaps(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<AVulkan::VulkanConfiguration> rendererConfig,
-            Ref<Ecs> ecs, Ref<AssetsDatabase> assetsDatabase, Ref<SwapChainData> swapChainData, Ref<Descriptors> descriptors);
+            Ref<Ecs> ecs, Ref<AssetsDatabaseVulkan> assetsDatabase, Ref<SwapChainData> swapChainData, Ref<Descriptors> descriptors);
         ~RenderPassShadowMaps() override;
 
         void Render(VkCommandBuffer& commandBuffer, uint16_t frame, uint32_t imageIndex) override;

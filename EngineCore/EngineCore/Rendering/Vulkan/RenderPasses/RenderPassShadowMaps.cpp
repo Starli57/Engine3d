@@ -1,11 +1,13 @@
 ﻿#include "EngineCore/Pch.h"
 #include "RenderPassShadowMaps.h"
 
+#include "EngineCore/Rendering/Vulkan/Utilities/ImageUtility.h"
+
 namespace AVulkan
 {
     RenderPassShadowMaps::RenderPassShadowMaps(
         VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<AVulkan::VulkanConfiguration> rendererConfig,
-        Ref<Ecs> ecs, Ref<AssetsDatabase> assetsDatabase, Ref<SwapChainData> swapChainData, Ref<Descriptors> descriptors) :
+        Ref<Ecs> ecs, Ref<AssetsDatabaseVulkan> assetsDatabase, Ref<SwapChainData> swapChainData, Ref<Descriptors> descriptors) :
         IRenderPass(physicalDevice, logicalDevice, rendererConfig, ecs, assetsDatabase, swapChainData, descriptors)
     {
         spdlog::info("Create RenderPass ShadowMaps");
@@ -60,20 +62,20 @@ namespace AVulkan
 
             if (meshContainer.meshIndex.has_value() == false) continue;
 
+            int32_t meshIndex = meshContainer.meshIndex.value();
             UpdateUniformBuffer(index, rendererProjection);
 
-            auto meshVulkan = std::static_pointer_cast<AVulkan::MeshVulkan> (assetsDatabase->GetMesh(meshContainer.meshIndex.value()));
             auto pipeline = pipelines.at("shadowPass");
 
             VkUtils::BindPipeline(commandBuffer, pipeline);
-            VkUtils::BindVertexAndIndexBuffers(commandBuffer, meshVulkan, assetsDatabase);
+            VkUtils::BindVertexAndIndexBuffers(commandBuffer, meshIndex, assetsDatabase);
 
             vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT,
                 0, sizeof(glm::mat4), &uboModelComponent.model);
 
             auto descriptorSet = GetOrCreateDescriptorSet(index)->descriptorSet;
             vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->layout, 0, 1, &descriptorSet, 0, nullptr);
-            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(meshVulkan->GetIndicesCount()), 1, 0, 0, 0);
+            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(assetsDatabase->indexesCount.at(meshIndex)), 1, 0, 0, 0);
             i++;
         }
 
@@ -125,8 +127,8 @@ namespace AVulkan
 
     Ref<ShadowMapsDescriptor> RenderPassShadowMaps::GetOrCreateDescriptorSet(uint32_t index)
     {
-        int diff = index - passDescriptors.size() + 1;
-        for (int i = 0; i < diff; i++) CreateDescriptorSet();
+        auto diff = static_cast<int32_t>(index) - static_cast<int32_t>(passDescriptors.size()) + 1i32;
+        for (int32_t i = 0; i < diff; i++) CreateDescriptorSet();
         return passDescriptors.at(index);
     }
 

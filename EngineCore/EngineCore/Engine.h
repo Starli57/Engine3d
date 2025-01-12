@@ -13,15 +13,19 @@
 #include "EngineCore/Systems/CameraFlySystem.h"
 #include "EngineCore/Systems/CameraOrbitSystem.h"
 #include "EngineCore/Systems/RotatorSystem.h"
-#include "EngineCore/Core/AssetsDatabase.h"
-#include "EngineCore/Core/ResourcesManager.h"
-#include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
+
 #include "EngineCore/Rollback/Rollback.h"
+
+#if GLFW_INCLUDE_VULKAN
+#include "EngineCore/Core/AssetsDatabaseVulkan.h"
+#include "EngineCore/Core/AssetsLoaderVulkan.h"
+#include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
+#endif
 
 class Engine
 {
 public:
-	Engine(Ref<ProjectSettigns> projectSettings);
+	Engine(Ref<ProjectSettings> projectSettings);
 	virtual ~Engine();
 
 	void Run();
@@ -32,14 +36,14 @@ public:
 	Ref<Ecs> GetEcs() { return ecs; }
 	
 	Ref<AssetsDatabase> GetAssetsDatabase() { return assetsDatabase; }
-	Ref<ResourcesManager> GetResourcesManager() { return resourcesManager; }
+	Ref<AssetsLoader> GetResourcesManager() { return resourcesManager; }
 
 	Ref<World> GetLevel() { return world; }
 
 	float GetDeltaTime() { return deltaTime; }
 
 private:
-	const Ref<ProjectSettigns> projectSettings;
+	const Ref<ProjectSettings> projectSettings;
 
 	GLFWwindow* window;
 	IGraphicsApi* graphicsApi;
@@ -48,7 +52,7 @@ private:
 	Ref<Ecs> ecs;
 	Ref<Input> input;
 	Ref<AssetsDatabase> assetsDatabase;
-	Ref<ResourcesManager> resourcesManager;
+	Ref<AssetsLoader> resourcesManager;
 
 	float deltaTime;
 

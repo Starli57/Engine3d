@@ -19,7 +19,6 @@
 #include "EngineCore/Rendering/PipelinesCollection.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/Ref.h"
-#include "EngineCore/Core/AssetsDatabase.h"
 #include "EngineCore/Utilities/MathUtility.h"
 
 namespace AVulkan
@@ -29,7 +28,7 @@ namespace AVulkan
     public:
         RenderPassColor(
             VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<VulkanConfiguration> rendererConfig,
-            Ref<Ecs> ecs, Ref<AssetsDatabase> assetsDatabase, Ref<SwapChainData> swapChainData, Ref<Descriptors> descriptors, VkSampler& textureSampler,
+            Ref<Ecs> ecs, Ref<AssetsDatabaseVulkan> assetsDatabase, Ref<SwapChainData> swapChainData, Ref<Descriptors> descriptors, VkSampler& textureSampler,
             Ref<PipelinesCollection> pipelinesCollection, VkImageView& shadowMapImageView, VkSampler& shadowMapSampler);
         ~RenderPassColor() override;
 
@@ -49,7 +48,7 @@ namespace AVulkan
 
         Ref<ColorDescriptor> GetOrCreateDescriptorSet(uint32_t index);
         void CreateDescriptorSet();
-        void UpdateDescriptorSet(Ref<ColorDescriptor> colorDescriptor, VkImageView& textureImageView, VkSampler& textureSampler);
+        void UpdateDescriptorSet(Ref<ColorDescriptor> colorDescriptor, uint32_t materialIndex);
 
         VkSampler& textureSampler;
         std::vector<Ref<ColorDescriptor>> passDescriptors;

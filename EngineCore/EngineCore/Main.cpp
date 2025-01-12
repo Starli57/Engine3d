@@ -6,7 +6,7 @@
 
 int main()
 {
-	Ref<ProjectSettigns> projectSettings = CreateRef<ProjectSettigns>(
+	Ref<ProjectSettings> projectSettings = CreateRef<ProjectSettings>(
 		"../ExampleProject/"
 	);
 

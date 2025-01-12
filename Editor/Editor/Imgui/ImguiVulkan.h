@@ -18,14 +18,13 @@
 
 #include "EngineCore/Rendering/Vulkan/Utilities/CommandPoolUtility.h"
 
-#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Core/ProjectSettings.h"
 #include "EngineCore/Rollback/Rollback.h"
 
 class ImguiVulkan : public IEngineEditor
 {
 public:
-
-    ImguiVulkan(AVulkan::GraphicsApiVulkan& vulkanApi);
+    ImguiVulkan(Ref<ProjectSettings> projectSettings, AVulkan::GraphicsApiVulkan& vulkanApi);
     ~ImguiVulkan();
 
     void Update() override;
@@ -33,7 +32,7 @@ public:
 	void CreateRenderPass(VkRenderPass& renderPass);
 
 private:
-
+	Ref<ProjectSettings> projectSettings;
 	AVulkan::GraphicsApiVulkan& vulkanApi;
     Ref<Rollback> rollback;
 

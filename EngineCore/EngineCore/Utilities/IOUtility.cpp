@@ -21,23 +21,32 @@ std::vector<char> IOUtility::ReadFile(const std::string& filepath) const
 
 void IOUtility::FindAndEmplaceResourcesFiles(
     const std::string& rootFolderPath, 
-    const std::vector<std::string>& extensions, 
-    std::unordered_map<std::string, std::filesystem::path>& result)
+    const std::vector<std::string>& extensions,
+    std::vector<std::filesystem::path>& paths,
+    std::unordered_map<std::filesystem::path, uint32_t>& indexByPath) const
 {
+    uint32_t i = 0;
     for (const auto& entry : std::filesystem::recursive_directory_iterator(rootFolderPath)) 
     {
         if (!entry.is_regular_file()) continue;
-        
-        auto entryPath = entry.path();
-        auto fileName = entryPath.filename().string();
-        auto extension = entryPath.extension().string();
 
-        for (auto relevantExtension : extensions)
+        auto entryPath = entry.path();
+        auto extension = entryPath.filename().extension().string();
+
+        if (indexByPath.find(entryPath) != indexByPath.end())
+        {
+            spdlog::warn("File with the same path has been added already: {}" + entryPath.string());
+            continue;
+        }
+
+        for (const auto& relevantExtension : extensions)
         {
             if (relevantExtension != extension) continue;
 
-            CAssert::Check(result.find(fileName) == result.end(), "File with the same name was already added: " + fileName);
-            result.emplace(fileName, entryPath);
+            paths.push_back(entryPath);
+            indexByPath.emplace(entryPath, i);
+            
+            i++;
             break;
         }
     }
