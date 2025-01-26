@@ -17,102 +17,102 @@ void Input::Update()
 	UpdateCursorDelta();
 }
 
-GLFWkeyfun Input::SetKeyCallback(GLFWkeyfun callback)
+GLFWkeyfun Input::SetKeyCallback(const GLFWkeyfun callback) const
 {
 	return SetKeyCallback(cachedWindow, callback);
 }
 
-GLFWkeyfun Input::SetKeyCallback(GLFWwindow* window, GLFWkeyfun callback)
+GLFWkeyfun Input::SetKeyCallback(GLFWwindow* window, const GLFWkeyfun callback) const
 {
 	return glfwSetKeyCallback(window, callback);
 }
 
-GLFWcursorposfun Input::SetCursorPosCallback(GLFWcursorposfun callback)
+GLFWcursorposfun Input::SetCursorPosCallback(const GLFWcursorposfun callback) const
 {
 	return SetCursorPosCallback(cachedWindow, callback);
 }
 
-GLFWcursorposfun Input::SetCursorPosCallback(GLFWwindow* window, GLFWcursorposfun callback)
+GLFWcursorposfun Input::SetCursorPosCallback(GLFWwindow* window, const GLFWcursorposfun callback) const
 {
 	return glfwSetCursorPosCallback(window, callback);
 }
 
-GLFWmousebuttonfun Input::SetMouseButtonCallback(GLFWmousebuttonfun callback)
+GLFWmousebuttonfun Input::SetMouseButtonCallback(const GLFWmousebuttonfun callback) const
 {
 	return SetMouseButtonCallback(cachedWindow, callback);
 }
 
-GLFWmousebuttonfun Input::SetMouseButtonCallback(GLFWwindow* window, GLFWmousebuttonfun callback)
+GLFWmousebuttonfun Input::SetMouseButtonCallback(GLFWwindow* window, const GLFWmousebuttonfun callback) const
 {
 	return glfwSetMouseButtonCallback(window, callback);
 }
 
-bool Input::IsKeyPressed(int key)
+bool Input::IsKeyPressed(const int key) const
 {
 	return IsKeyPressed(cachedWindow, key);
 }
 
-bool Input::IsKeyPressed(GLFWwindow* window, int key)
+bool Input::IsKeyPressed(GLFWwindow* window, const int key) const
 {
 	auto state = glfwGetKey(window, key);
 	return state == GLFW_PRESS;
 }
 
-bool Input::IsKeyReleased(int key)
+bool Input::IsKeyReleased(const int key) const
 {
 	return IsKeyReleased(cachedWindow, key);
 }
 
-bool Input::IsKeyReleased(GLFWwindow* window, int key)
+bool Input::IsKeyReleased(GLFWwindow* window, const int key) const
 {
 	auto state = glfwGetKey(window, key);
 	return state == GLFW_RELEASE;
 }
 
 //what exactly the function for?
-bool Input::IsKeyHold(int key)
+bool Input::IsKeyHold(const int key) const
 {
 	return IsKeyHold(cachedWindow, key);
 }
 
 //what exactly the function for?
-bool Input::IsKeyHold(GLFWwindow* window, int key)
+bool Input::IsKeyHold(GLFWwindow* window, const int key) const
 {
 	auto state = glfwGetKey(window, key);
 	return state == GLFW_REPEAT;
 }
 
-bool Input::IsMousePressed(int button)
+bool Input::IsMousePressed(const int button) const
 {
 	return IsMousePressed(cachedWindow, button);
 }
 
-bool Input::IsMouseReleased(int button)
+bool Input::IsMouseReleased(const int button) const
 {
 	return IsMouseReleased(cachedWindow, button);
 }
 
-bool Input::IsMousePressed(GLFWwindow* window, int button)
+bool Input::IsMousePressed(GLFWwindow* window, const int button) const
 {
 	return glfwGetMouseButton(window, button) == GLFW_PRESS;
 }
 
-bool Input::IsMouseReleased(GLFWwindow* window, int button)
+bool Input::IsMouseReleased(GLFWwindow* window, const int button) const
 {
 	return glfwGetMouseButton(window, button) == GLFW_RELEASE;
 }
 
-void Input::GetCursorPosition(double& x, double& y)
+void Input::GetCursorPosition(double& x, double& y) const
 {
 	GetCursorPosition(cachedWindow, x, y);
 }
 
-void Input::GetCursorPosition(GLFWwindow* window, double& x, double& y)
+void Input::GetCursorPosition(GLFWwindow* window, double& x, double& y) const
 {
 	glfwGetCursorPos(window, &x, &y);
 }
 
-void Input::GetCursorDelta(double& x, double& y)
+void Input::GetCursorDelta(double& x, double& y) const
 {
 	x = cursorDeltaX;
 	y = cursorDeltaY;

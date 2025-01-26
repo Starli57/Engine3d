@@ -10,7 +10,7 @@
 class VulkanDebugInfo : public IWindow
 {
 public:
-	VulkanDebugInfo(Ref<Engine> engine, AVulkan::GraphicsApiVulkan& vulkanApi);
+	VulkanDebugInfo(const Ref<Engine>& engine, AVulkan::GraphicsApiVulkan& vulkanApi);
 	~VulkanDebugInfo();
 
 	void Update() override;

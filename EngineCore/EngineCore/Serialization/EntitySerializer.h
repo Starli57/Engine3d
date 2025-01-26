@@ -28,17 +28,17 @@ class EntitySerializer
 {
 public:
 
-	EntitySerializer(Ref<ProjectSettings> projectSettings, Ref<AssetsDatabase> assetsDatabase);
+	EntitySerializer(const Ref<ProjectSettings>& projectSettings, const Ref<AssetsDatabase>& assetsDatabase);
 	~EntitySerializer();
 
-	void SerializeWorld(Ref<Ecs> ecs, const std::string& filePath);
-	bool InstantiateWorld(Ref<Ecs> ecs, const std::filesystem::path& filePath);
+	void SerializeWorld(const Ref<Ecs>& ecs, const std::string& filePath);
+	bool InstantiateWorld(const Ref<Ecs>& ecs, const std::filesystem::path& filePath);
 
-	void SerializePrefab(Ref<Entity> entity, const std::string& filePath);
-	void SerializeEntity(Ref<Entity> entity, YAML::Emitter& emitter);
+	void SerializePrefab(const Ref<Entity>& entity, const std::string& filePath);
+	void SerializeEntity(const Ref<Entity>& entity, YAML::Emitter& emitter);
 
-	bool InstantiatePrefab(Ref<Ecs> ecs, const std::filesystem::path& filePath);
-	bool InstantiatePrefab(Ref<Ecs> ecs, YAML::Node& node);
+	bool InstantiatePrefab(const Ref<Ecs>& ecs, const std::filesystem::path& filePath);
+	bool InstantiatePrefab(const Ref<Ecs>& ecs, YAML::Node& node);
 
 private:
 
@@ -54,31 +54,31 @@ private:
 		SerializeComponent(out, entity, component);
 	}
 
-	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, NameComponent& component);
-	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, PositionComponent& component);
-	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, RotationComponent& component);
-	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, RotationVelocityComponent& component);
-	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, ScaleComponent& component);
-	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, CameraComponent& component);
-	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, CameraFreeComponent& component);
-	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, MeshComponent& component);
-	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, MaterialComponent& component);
-	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboModelComponent& component);
-	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboViewProjectionComponent& component);
-	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboDiffuseLightComponent& component);
-	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, IdComponent& component);
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const NameComponent& component) const;
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const PositionComponent& component) const;
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const RotationComponent& component) const;
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const RotationVelocityComponent& component) const;
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const ScaleComponent& component) const;
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const CameraComponent& component) const;
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const CameraFreeComponent& component) const;
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const MeshComponent& component) const;
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const MaterialComponent& component) const;
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboModelComponent& component) const;
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboViewProjectionComponent& component) const;
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const UboDiffuseLightComponent& component) const;
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, IdComponent& component) const;
 
-	void InstantiateComponentName(Ref<Entity> entity, YAML::Node node);
-	void InstantiateComponentPosition(Ref<Entity> entity, YAML::Node node);
-	void InstantiateComponentRotation(Ref<Entity> entity, YAML::Node node);
-	void InstantiateComponentRotationVelocity(Ref<Entity> entity, YAML::Node node);
-	void InstantiateComponentScale(Ref<Entity> entity, YAML::Node node);
-	void InstantiateComponentCamera(Ref<Entity> entity, YAML::Node node);
-	void InstantiateComponentCameraFree(Ref<Entity> entity, YAML::Node node);
-	void InstantiateComponentMesh(Ref<Entity> entity, YAML::Node node);
-	void InstantiateComponentMaterial(Ref<Entity> entity, YAML::Node node);
-	void InstantiateComponentUboModel(Ref<Entity> entity, YAML::Node node);
-	void InstantiateComponentUboViewProjection(Ref<Entity> entity, YAML::Node node);
-	void InstantiateComponentUboDiffuseLight(Ref<Entity> entity, YAML::Node node);
-	void InstantiateComponentId(Ref<Entity> entity);
+	void InstantiateComponentName(const Ref<Entity>& entity, YAML::Node node) const;
+	void InstantiateComponentPosition(const Ref<Entity>& entity, YAML::Node node) const;
+	void InstantiateComponentRotation(const Ref<Entity>& entity, YAML::Node node) const;
+	void InstantiateComponentRotationVelocity(const Ref<Entity>& entity, YAML::Node node) const;
+	void InstantiateComponentScale(const Ref<Entity>& entity, YAML::Node node) const;
+	void InstantiateComponentCamera(const Ref<Entity>& entity, YAML::Node node) const;
+	void InstantiateComponentCameraFree(const Ref<Entity>& entity, YAML::Node node) const;
+	void InstantiateComponentMesh(const Ref<Entity>& entity, YAML::Node node) const;
+	void InstantiateComponentMaterial(const Ref<Entity>& entity, YAML::Node node) const;
+	void InstantiateComponentUboModel(const Ref<Entity>& entity, YAML::Node node) const;
+	void InstantiateComponentUboViewProjection(const Ref<Entity>& entity, YAML::Node node) const;
+	void InstantiateComponentUboDiffuseLight(const Ref<Entity>& entity, YAML::Node node) const;
+	void InstantiateComponentId(const Ref<Entity>& entity) const;
 };

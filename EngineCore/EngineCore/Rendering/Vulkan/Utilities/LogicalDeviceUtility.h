@@ -5,5 +5,5 @@
 namespace VkUtils
 {
 	VkDevice CreateLogicalDevice(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface, VkQueue& graphicsQueue, VkQueue& presentationQueue);
-	void DisposeLogicalDevice(VkDevice& logicalDevice);
+	void DisposeLogicalDevice(const VkDevice& logicalDevice);
 }

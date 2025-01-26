@@ -19,17 +19,17 @@ namespace VkUtils
 		createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
 		createInfo.pApplicationInfo = &appInfo;
 
-		auto extensions = GetGLFWRequiredExtensions();
+		const auto extensions = GetGLFWRequiredExtensions();
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
 		createInfo.ppEnabledExtensionNames = extensions.data();
 
-		VkUtils::SetupValidationLayers(createInfo);
+		SetupValidationLayers(createInfo);
 
-		VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
+		const VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
 		CAssert::Check(result == VK_SUCCESS, "vulkan instance can't be created: " + result);
 	}
 
-	void DisposeInstance(VkInstance& instance) 
+	void DisposeInstance(const VkInstance& instance) 
 	{
 		spdlog::info("Dispose instance");
 		vkDestroyInstance(instance, nullptr);
@@ -38,16 +38,15 @@ namespace VkUtils
 	std::vector<const char*> GetGLFWRequiredExtensions()
 	{
 		uint32_t glfwExtensionCount = 0;
-		const char** glfwExtensions;
-		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+		const char** glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-		std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+		std::vector extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
 #ifdef DEBUG
 		extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 #endif
 
-		spdlog::info("GLFW extesions included: {0}", extensions.size());
+		spdlog::info("GLFW extensions included: {0}", extensions.size());
 
 		return extensions;
 	}

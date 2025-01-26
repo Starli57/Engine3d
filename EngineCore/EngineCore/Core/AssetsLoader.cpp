@@ -8,8 +8,8 @@
 #include <execution>
 
 
-AssetsLoader::AssetsLoader(Ref<ProjectSettings> projectSettings, IGraphicsApi* graphicsApi, Ref<AssetsDatabase> assetsDatabase):
-	projectSettings(projectSettings), graphicsApi(graphicsApi), assetsDatabase(assetsDatabase)
+AssetsLoader::AssetsLoader(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, const Ref<AssetsDatabase>& assetsDatabase):
+	graphicsApi(graphicsApi), projectSettings(projectSettings), assetsDatabase(assetsDatabase)
 {
 }
 
@@ -42,12 +42,12 @@ void AssetsLoader::Load()
 	//});
 }
 
-uint32_t AssetsLoader::LoadTextureStr(const std::string& path)
+uint32_t AssetsLoader::LoadTextureStr(const std::string& path) const
 {
 	return LoadTexture(std::filesystem::path(path));
 }
 
-uint32_t AssetsLoader::LoadTexture(const std::filesystem::path& path)
+uint32_t AssetsLoader::LoadTexture(const std::filesystem::path& path) const
 {
 	auto textureIndex = assetsDatabase->texturesIndexByPath.find(path);
 	CAssert::Check(textureIndex != assetsDatabase->texturesIndexByPath.end(), "Texture file not found " + path.string());
@@ -83,10 +83,10 @@ void AssetsLoader::PrepareAllMeshesMeta(std::vector<MeshMeta>& meshes)
 		meshMeta.indices.resize(indexCount);
 		inFile.read(reinterpret_cast<char*>(meshMeta.indices.data()), indexCount * sizeof(uint32_t));
 
-		size_t materiaPathSize;
-		inFile.read(reinterpret_cast<char*>(&materiaPathSize), sizeof(materiaPathSize));
-		meshMeta.materialPath.resize(materiaPathSize);
-		inFile.read(reinterpret_cast<char*>(&meshMeta.materialPath[0]), materiaPathSize);
+		size_t materialPathSize;
+		inFile.read(reinterpret_cast<char*>(&materialPathSize), sizeof(materialPathSize));
+		meshMeta.materialPath.resize(materialPathSize);
+		inFile.read(reinterpret_cast<char*>(&meshMeta.materialPath[0]), materialPathSize);
 
 		size_t materialNameSize;
 		inFile.read(reinterpret_cast<char*>(&materialNameSize), sizeof(materialNameSize));

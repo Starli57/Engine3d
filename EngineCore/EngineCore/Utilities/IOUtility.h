@@ -6,9 +6,6 @@
 #include <filesystem>
 #include <unordered_map>
 
-#include "EngineCore/CustomAssert.h"
-#include "EngineCore/Core/Ref.h"
-
 class IOUtility
 {
 public:

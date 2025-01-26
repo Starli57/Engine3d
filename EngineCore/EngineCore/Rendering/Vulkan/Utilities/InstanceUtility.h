@@ -8,7 +8,7 @@
 namespace VkUtils
 {
 	void CreateInstance(VkInstance& instance);
-	void DisposeInstance(VkInstance& instance);
+	void DisposeInstance(const VkInstance& instance);
 
 	std::vector<const char*> GetGLFWRequiredExtensions();
 }

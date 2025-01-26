@@ -6,9 +6,9 @@
 
 namespace VkUtils
 {
-    VkImage CreateImage(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
-        uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
-        VkSampleCountFlagBits msaa, VkMemoryPropertyFlags properties, VkDeviceMemory& imageMemory)
+    VkImage CreateImage(VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice,
+        const uint32_t width, const uint32_t height, const VkFormat format, const VkImageTiling tiling, const VkImageUsageFlags usage,
+        const VkSampleCountFlagBits msaa, VkMemoryPropertyFlags properties, VkDeviceMemory& imageMemory)
     {
         VkImageCreateInfo imageInfo{};
         imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -26,7 +26,7 @@ namespace VkUtils
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         VkImage image = nullptr;
-        auto createStatus = vkCreateImage(logicalDevice, &imageInfo, nullptr, &image);
+        const auto createStatus = vkCreateImage(logicalDevice, &imageInfo, nullptr, &image);
         CAssert::Check(createStatus == VK_SUCCESS, "Failed to create vk image");
 
         VkMemoryRequirements memRequirements;
@@ -35,9 +35,9 @@ namespace VkUtils
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
-        allocInfo.memoryTypeIndex = VkUtils::FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, properties);
+        allocInfo.memoryTypeIndex = FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, properties);
 
-        auto allocateStatus = vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &imageMemory);
+        const auto allocateStatus = vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &imageMemory);
         CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate vk image memory");
 
         vkBindImageMemory(logicalDevice, image, imageMemory, 0);
@@ -45,9 +45,9 @@ namespace VkUtils
     }
 
     void CopyBufferToImage(VkDevice& logicalDevice, VkQueue& graphicsQueue,
-        VkBuffer& buffer, VkImage& image, uint32_t width, uint32_t height, VkCommandPool& commandPool)
+        const VkBuffer& buffer, const VkImage& image, const uint32_t width, const uint32_t height, VkCommandPool& commandPool)
     {
-        auto commandBuffer = VkUtils::BeginCommandBuffer(logicalDevice, commandPool);
+        auto commandBuffer = BeginCommandBuffer(logicalDevice, commandPool);
 
         VkBufferImageCopy imageRegion{};
         imageRegion.bufferOffset = 0;
@@ -65,12 +65,12 @@ namespace VkUtils
         vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageRegion);
 
         vkEndCommandBuffer(commandBuffer);
-        VkUtils::SubmitCommandBuffer(graphicsQueue, commandBuffer);
+        SubmitCommandBuffer(graphicsQueue, commandBuffer);
         vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
     }
 
-    void TransitionImageLayout(VkDevice& logicalDevice, VkCommandBuffer& commandBuffer, VkQueue& graphicsQueue,
-        VkImage& image, VkImageLayout oldLayout, VkImageLayout newLayout, VkImageAspectFlags aspectMask)
+    void TransitionImageLayout(VkDevice& logicalDevice, const VkCommandBuffer& commandBuffer, VkQueue& graphicsQueue,
+        const VkImage& image, const VkImageLayout oldLayout, const VkImageLayout newLayout, const VkImageAspectFlags aspectMask)
     {
         VkImageMemoryBarrier barrier{};
         barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -128,13 +128,13 @@ namespace VkUtils
         vkCmdPipelineBarrier(commandBuffer, sourceStage, destinationStage, 0, 0, nullptr, 0, nullptr, 1, &barrier);
     }
 
-    void DestroyImage(VkDevice& logicalDevice, VkImage& image)
+    void DestroyImage(const VkDevice& logicalDevice, const VkImage& image)
     {
         vkDestroyImage(logicalDevice, image, nullptr);
     }
 
-    void CreateImageView(VkDevice& logicalDevice, VkFormat& imageFormat, VkImageAspectFlags imageAspectFlags,
-        VkImage& image, VkImageView& imageView)
+    void CreateImageView(const VkDevice& logicalDevice, const VkFormat& imageFormat, const VkImageAspectFlags imageAspectFlags,
+        const VkImage& image, VkImageView& imageView)
     {
         spdlog::info("Create image view");
 
@@ -155,11 +155,11 @@ namespace VkUtils
         createInfo.subresourceRange.baseArrayLayer = 0;
         createInfo.subresourceRange.layerCount = 1;
 
-        auto createStatus = vkCreateImageView(logicalDevice, &createInfo, nullptr, &imageView);
+        const auto createStatus = vkCreateImageView(logicalDevice, &createInfo, nullptr, &imageView);
         CAssert::Check(createStatus == VK_SUCCESS, "Image view can't be created, status: " + createStatus);
     }
 
-    void DestroyImageView(VkDevice& logicalDevice, VkImageView& imageView)
+    void DestroyImageView(const VkDevice& logicalDevice, const VkImageView& imageView)
     {
         vkDestroyImageView(logicalDevice, imageView, nullptr);
     }

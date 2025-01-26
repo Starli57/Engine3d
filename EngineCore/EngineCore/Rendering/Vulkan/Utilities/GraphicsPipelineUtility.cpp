@@ -89,25 +89,25 @@ namespace AVulkan
 		catch (const std::exception& e)
 		{
 			initializationRollback->Dispose();
-			throw e;
+			throw;
 		}
 		return pipeline;
 	}
 
-	Ref<PipelineVulkan> GraphicsPipelineUtility::ReCreate(Ref<PipelineVulkan> pipeline, Ref<VulkanPipelineConfig> pipelineConfig, VkDevice& logicalDevice,
+	Ref<PipelineVulkan> GraphicsPipelineUtility::ReCreate(const Ref<PipelineVulkan>& pipeline, const Ref<VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
 		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout, VkSampleCountFlagBits msaa)
 	{
 		Dispose(pipeline, logicalDevice);
 		return Create(pipelineConfig, logicalDevice, renderpass, swapChainExtent, descriptorSetLayout, msaa);
 	}
 
-	void GraphicsPipelineUtility::Dispose(Ref<PipelineVulkan> pipeline, VkDevice& logicalDevice)
+	void GraphicsPipelineUtility::Dispose(const Ref<PipelineVulkan>& pipeline, const VkDevice& logicalDevice) const
 	{
 		vkDestroyPipelineLayout(logicalDevice, pipeline->layout, nullptr);
 		vkDestroyPipeline(logicalDevice, pipeline->pipeline, nullptr);
 	}
 	
-	VkPipelineInputAssemblyStateCreateInfo GraphicsPipelineUtility::SetupInputAssemblyData()
+	VkPipelineInputAssemblyStateCreateInfo GraphicsPipelineUtility::SetupInputAssemblyData() const
 	{
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -116,13 +116,13 @@ namespace AVulkan
 		return inputAssembly;
 	}
 
-	VkPipelineViewportStateCreateInfo GraphicsPipelineUtility::SetupViewportAndScissor(VkExtent2D& swapChainExtent)
+	VkPipelineViewportStateCreateInfo GraphicsPipelineUtility::SetupViewportAndScissor(const VkExtent2D& swapChainExtent) const
 	{
 		auto viewport = new VkViewport();
 		viewport->x = 0.0f;
 		viewport->y = 0.0f;
-		viewport->width = (float)swapChainExtent.width;
-		viewport->height = (float)swapChainExtent.height;
+		viewport->width = static_cast<float>(swapChainExtent.width);
+		viewport->height = static_cast<float>(swapChainExtent.height);
 		viewport->minDepth = 0.0f;
 		viewport->maxDepth = 1.0f;
 
@@ -146,7 +146,7 @@ namespace AVulkan
 		return viewportState;
 	}
 
-	VkPipelineRasterizationStateCreateInfo GraphicsPipelineUtility::SetupRasterizer(Ref<VulkanPipelineConfig> pipelineConfig)
+	VkPipelineRasterizationStateCreateInfo GraphicsPipelineUtility::SetupRasterizer(const Ref<VulkanPipelineConfig>& pipelineConfig) const
 	{
 		spdlog::info("Setup rasterizer");
 		VkPipelineRasterizationStateCreateInfo rasterizer{};
@@ -168,7 +168,7 @@ namespace AVulkan
 		return rasterizer;
 	}
 
-	VkPipelineMultisampleStateCreateInfo GraphicsPipelineUtility::SetupMultisampling(VkSampleCountFlagBits msaa)
+	VkPipelineMultisampleStateCreateInfo GraphicsPipelineUtility::SetupMultisampling(const VkSampleCountFlagBits msaa) const
 	{
 		VkPipelineMultisampleStateCreateInfo multisampling{};
 		multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
@@ -181,7 +181,7 @@ namespace AVulkan
 		return multisampling;
 	}
 
-	VkPipelineColorBlendStateCreateInfo GraphicsPipelineUtility::SetupColorsBlending()
+	VkPipelineColorBlendStateCreateInfo GraphicsPipelineUtility::SetupColorsBlending() const
 	{
 		auto colorBlendAttachment = new VkPipelineColorBlendAttachmentState();
 		colorBlendAttachment->colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |

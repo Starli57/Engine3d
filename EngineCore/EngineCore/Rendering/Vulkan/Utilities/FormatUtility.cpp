@@ -3,30 +3,27 @@
 
 namespace VkUtils
 {
-    VkFormat FindSupportedFormat(VkPhysicalDevice& physicalDevice, std::vector<VkFormat>& formats,
-        VkImageTiling tiling, VkFormatFeatureFlags features)
+    VkFormat FindSupportedFormat(const VkPhysicalDevice& physicalDevice, const std::vector<VkFormat>& formats,
+                                 const VkImageTiling tiling, const VkFormatFeatureFlags features)
     {
-        for (VkFormat format : formats) 
+        for (const VkFormat format : formats) 
         {
             VkFormatProperties properties;
             vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &properties);
 
-            if (tiling == VK_IMAGE_TILING_LINEAR && (properties.linearTilingFeatures & features) == features) 
-            {
+            if (tiling == VK_IMAGE_TILING_LINEAR && (properties.linearTilingFeatures & features) == features)
                 return format;
-            }
-            else if (tiling == VK_IMAGE_TILING_OPTIMAL && (properties.optimalTilingFeatures & features) == features) 
-            {
+            
+            if (tiling == VK_IMAGE_TILING_OPTIMAL && (properties.optimalTilingFeatures & features) == features) 
                 return format;
-            }
         }
 
         throw std::runtime_error("Failed to find supported format!");
     }
 
-    VkFormat FindDepthBufferFormat(VkPhysicalDevice& physicalDevice)
+    VkFormat FindDepthBufferFormat(const VkPhysicalDevice& physicalDevice)
     {
-        std::vector<VkFormat> formats =
+        const std::vector<VkFormat> formats =
         {
             VK_FORMAT_D32_SFLOAT, 
             VK_FORMAT_D32_SFLOAT_S8_UINT, 

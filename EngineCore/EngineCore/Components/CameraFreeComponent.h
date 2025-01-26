@@ -10,7 +10,7 @@ struct CameraFreeComponent : IComponent
 
 	CameraFreeComponent() {}
 
-	CameraFreeComponent(float movementSpeed, float rotationSpeed)
+	CameraFreeComponent(const float movementSpeed, const float rotationSpeed)
 		: movementSpeed(movementSpeed), rotationSpeed(rotationSpeed)
 	{
 	}

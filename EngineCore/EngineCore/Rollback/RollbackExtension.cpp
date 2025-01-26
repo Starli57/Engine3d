@@ -2,17 +2,17 @@
 #include "EngineCore/Pch.h"
 #include "RollbackExtension.h"
 
-void RollbackExtension::Dispose(Rollback rollback)
+void RollbackExtension::Dispose(const Rollback& rollback) const
 {
     Dispose(rollback.disposeStack);
 }
 
-void RollbackExtension::Dispose(Rollback* rollback)
+void RollbackExtension::Dispose(const Rollback* rollback) const
 {
     Dispose(rollback->disposeStack);
 }
 
-void RollbackExtension::Dispose(std::stack<std::function<void()>>* disposeStack)
+void RollbackExtension::Dispose(std::stack<std::function<void()>>* disposeStack) const
 {
     while (disposeStack != nullptr && !disposeStack->empty())
     {

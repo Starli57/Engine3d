@@ -11,34 +11,34 @@ public:
 
 	void Update();
 
-	GLFWkeyfun SetKeyCallback(GLFWkeyfun callback);
-	GLFWkeyfun SetKeyCallback(GLFWwindow* window, GLFWkeyfun callback);
+	GLFWkeyfun SetKeyCallback(GLFWkeyfun callback) const;
+	GLFWkeyfun SetKeyCallback(GLFWwindow* window, GLFWkeyfun callback) const;
 
-	GLFWcursorposfun SetCursorPosCallback(GLFWcursorposfun callback);
-	GLFWcursorposfun SetCursorPosCallback(GLFWwindow* window, GLFWcursorposfun callback);
+	GLFWcursorposfun SetCursorPosCallback(GLFWcursorposfun callback) const;
+	GLFWcursorposfun SetCursorPosCallback(GLFWwindow* window, GLFWcursorposfun callback) const;
 
-	GLFWmousebuttonfun SetMouseButtonCallback(GLFWmousebuttonfun callback);
-	GLFWmousebuttonfun SetMouseButtonCallback(GLFWwindow* window, GLFWmousebuttonfun callback);
+	GLFWmousebuttonfun SetMouseButtonCallback(GLFWmousebuttonfun callback) const;
+	GLFWmousebuttonfun SetMouseButtonCallback(GLFWwindow* window, GLFWmousebuttonfun callback) const;
 
-	bool IsKeyPressed(int key);
-	bool IsKeyPressed(GLFWwindow* window, int key);
+	bool IsKeyPressed(int key) const;
+	bool IsKeyPressed(GLFWwindow* window, int key) const;
 
-	bool IsKeyReleased(int key);
-	bool IsKeyReleased(GLFWwindow* window, int key);
+	bool IsKeyReleased(int key) const;
+	bool IsKeyReleased(GLFWwindow* window, int key) const;
 
-	bool IsKeyHold(int key);
-	bool IsKeyHold(GLFWwindow* window, int key);
+	bool IsKeyHold(int key) const;
+	bool IsKeyHold(GLFWwindow* window, int key) const;
 
-	bool IsMousePressed(int button);
-	bool IsMousePressed(GLFWwindow* window, int button);
+	bool IsMousePressed(int button) const;
+	bool IsMousePressed(GLFWwindow* window, int button) const;
 
-	bool IsMouseReleased(int button);
-	bool IsMouseReleased(GLFWwindow* window, int button);
+	bool IsMouseReleased(int button) const;
+	bool IsMouseReleased(GLFWwindow* window, int button) const;
 
-	void GetCursorPosition(double& x, double& y);
-	void GetCursorPosition(GLFWwindow* window, double& x, double& y);
+	void GetCursorPosition(double& x, double& y) const;
+	void GetCursorPosition(GLFWwindow* window, double& x, double& y) const;
 
-	void GetCursorDelta(double& x, double& y);
+	void GetCursorDelta(double& x, double& y) const;
 
 private:
 	GLFWwindow* cachedWindow;

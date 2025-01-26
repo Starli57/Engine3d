@@ -4,8 +4,8 @@
 
 namespace VkUtils
 {
-	void CreateBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, uint64_t bufferSize, 
-		VkBufferUsageFlags& usageFlags, VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+	void CreateBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const uint64_t bufferSize,
+	                  const VkBufferUsageFlags& usageFlags, VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{
 		VkBufferCreateInfo bufferInfo{};
 		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -19,14 +19,14 @@ namespace VkUtils
 		BindMemory(physicalDevice, logicalDevice, memoryFlags, buffer, bufferMemory);
 	}
 
-	void DisposeBuffer(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+	void DisposeBuffer(const VkDevice& logicalDevice, const VkBuffer& buffer, const VkDeviceMemory& bufferMemory)
 	{
 		vkDestroyBuffer(logicalDevice, buffer, nullptr);
 		vkFreeMemory(logicalDevice, bufferMemory, nullptr);
 	}
 
-	void CopyBuffer(VkDevice& logicalDevice, VkQueue& graphicsQueue, VkBuffer& srcBuffer, VkBuffer& dstBuffer,
-		VkDeviceSize& size, VkCommandPool& commandPool)
+	void CopyBuffer(VkDevice& logicalDevice, VkQueue& graphicsQueue, const VkBuffer& srcBuffer, const VkBuffer& dstBuffer,
+	                const VkDeviceSize& size, VkCommandPool& commandPool)
 	{
 		auto commandBuffer = BeginCommandBuffer(logicalDevice, commandPool);
 
@@ -43,7 +43,7 @@ namespace VkUtils
 		vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
 	}
 
-	VkCommandBuffer BeginCommandBuffer(VkDevice& logicalDevice, VkCommandPool& commandPool)
+	VkCommandBuffer BeginCommandBuffer(const VkDevice& logicalDevice, const VkCommandPool& commandPool)
 	{
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -62,7 +62,7 @@ namespace VkUtils
 		return commandBuffer;
 	}
 
-	void SubmitCommandBuffer(VkQueue& graphicsQueue, VkCommandBuffer& commandBuffer)
+	void SubmitCommandBuffer(const VkQueue& graphicsQueue, const VkCommandBuffer& commandBuffer)
 	{
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -73,8 +73,8 @@ namespace VkUtils
 	}
 
 
-	void BindMemory(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkMemoryPropertyFlags& memoryFlags, 
-		VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+	void BindMemory(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, const VkMemoryPropertyFlags& memoryFlags,
+	                const VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{
 		VkMemoryRequirements memRequirements;
 		vkGetBufferMemoryRequirements(logicalDevice, buffer, &memRequirements);
@@ -84,7 +84,7 @@ namespace VkUtils
 		allocInfo.allocationSize = memRequirements.size;
 		allocInfo.memoryTypeIndex = FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, memoryFlags);
 
-		auto allocateStatus = vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &bufferMemory);
+		const auto allocateStatus = vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &bufferMemory);
 		CAssert::Check(allocateStatus == VK_SUCCESS, "Can't allocate memory for vertex buffer, status: " + allocateStatus);
 
 		vkBindBufferMemory(logicalDevice, buffer, bufferMemory, 0);

@@ -12,7 +12,7 @@ int main()
 
 	try
 	{
-		URef<Engine> engine = CreateUniqueRef<Engine>(projectSettings);
+		const URef<Engine> engine = CreateUniqueRef<Engine>(projectSettings);
 		engine->Run();
 	}
 	catch (const std::exception& e)

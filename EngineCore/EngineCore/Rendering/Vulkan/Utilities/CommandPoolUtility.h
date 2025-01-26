@@ -4,6 +4,6 @@
 
 namespace VkUtils
 {
-	VkCommandPool CreateCommandPool(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface);
-	void DisposeCommandPool(VkDevice& logicalDevice, VkCommandPool& commandPool);
+	VkCommandPool CreateCommandPool(const VkDevice& logicalDevice, const VkPhysicalDevice& physicalDevice, const VkSurfaceKHR& windowSurface);
+	void DisposeCommandPool(const VkDevice& logicalDevice, const VkCommandPool& commandPool);
 }

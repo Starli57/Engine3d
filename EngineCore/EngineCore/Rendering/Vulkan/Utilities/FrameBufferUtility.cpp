@@ -4,8 +4,8 @@
 
 namespace VkUtils
 {
-    void CreateFrameBuffer(VkDevice& logicalDevice, VkRenderPass& renderPass,
-        VkExtent2D& extent, std::vector<VkImageView> attachments, VkFramebuffer& frameBuffer)
+    void CreateFrameBuffer(const VkDevice& logicalDevice, const VkRenderPass& renderPass,
+                           const VkExtent2D& extent, const std::vector<VkImageView>& attachments, VkFramebuffer& frameBuffer)
     {
         spdlog::info("Create frame buffers");
 
@@ -22,17 +22,17 @@ namespace VkUtils
         CAssert::Check(createStatus == VK_SUCCESS, "Failed to create framebuffer, status = " + createStatus);
     }
 
-    void DisposeFrameBuffer(VkDevice& logicalDevice, std::vector<VkFramebuffer>& frameBuffers)
+    void DisposeFrameBuffer(const VkDevice& logicalDevice, std::vector<VkFramebuffer>& frameBuffers)
     {
         spdlog::info("Dispose frame buffers");
-        for (auto framebuffer : frameBuffers)
+        for (const auto framebuffer : frameBuffers)
         {
             vkDestroyFramebuffer(logicalDevice, framebuffer, nullptr);
         }
         frameBuffers.clear();
     }
 
-    void DisposeFrameBuffer(VkDevice& logicalDevice, VkFramebuffer& frameBuffer)
+    void DisposeFrameBuffer(const VkDevice& logicalDevice, const VkFramebuffer& frameBuffer)
     {
         vkDestroyFramebuffer(logicalDevice, frameBuffer, nullptr);
     }

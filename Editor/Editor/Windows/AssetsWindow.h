@@ -9,7 +9,7 @@
 class AssetsWindow : public IWindow
 {
 public:
-	AssetsWindow(Ref<Ecs> ecs, Ref<AssetsDatabase> assetsDatabase, Ref<ProjectSettings> projectSettings);
+	AssetsWindow(const Ref<Ecs>& ecs, const Ref<AssetsDatabase>& assetsDatabase, const Ref<ProjectSettings>& projectSettings);
 	~AssetsWindow();
 
 	void Update() override;

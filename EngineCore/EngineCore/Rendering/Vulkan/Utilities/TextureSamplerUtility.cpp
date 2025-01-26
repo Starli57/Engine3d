@@ -3,7 +3,7 @@
 
 namespace VkUtils
 {
-    void CreateTextureSampler(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkSampler& textureSampler)
+    void CreateTextureSampler(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, VkSampler& textureSampler)
     {
         VkPhysicalDeviceProperties properties{};
         vkGetPhysicalDeviceProperties(physicalDevice, &properties);
@@ -26,7 +26,7 @@ namespace VkUtils
         samplerInfo.minLod = 0.0f;
         samplerInfo.maxLod = 0.0f;
 
-        auto createStatus = vkCreateSampler(logicalDevice, &samplerInfo, nullptr, &textureSampler);
+        const auto createStatus = vkCreateSampler(logicalDevice, &samplerInfo, nullptr, &textureSampler);
         CAssert::Check(createStatus == VK_SUCCESS, "Textures sampler can't be created");
     }
 }

@@ -3,14 +3,14 @@
 
 #include "ImguiVulkan.h"
 
-ImguiVulkan::ImguiVulkan(Ref<ProjectSettings> projectSettings, AVulkan::GraphicsApiVulkan& vulkanApi) :
+ImguiVulkan::ImguiVulkan(const Ref<ProjectSettings>& projectSettings, AVulkan::GraphicsApiVulkan& vulkanApi) :
     projectSettings(projectSettings), vulkanApi(vulkanApi)
 {
     spdlog::info("Start editor imgui initialization");
 
     rollback = CreateRef<Rollback>("Editor");
 
-    descriptorPool = vulkanApi.descriptors->CreateDescriptorPool(vulkanApi.logicalDevice);
+    descriptorPool = vulkanApi.descriptorsManager->CreateDescriptorPool(vulkanApi.logicalDevice);
     queueFamilies = VkUtils::GetQueueFamilies(vulkanApi.physicalDevice, vulkanApi.windowSurface);
     graphicsQueueFamily = queueFamilies.graphicsFamily.value();
 
@@ -87,7 +87,7 @@ void ImguiVulkan::Update()
     ImGui::RenderPlatformWindowsDefault();
 }
 
-void ImguiVulkan::CreateRenderPass(VkRenderPass& renderPass)
+void ImguiVulkan::CreateRenderPass(VkRenderPass& renderPass) const
 {
     VkAttachmentDescription renderPassAttachment = {};
     renderPassAttachment.format = vulkanApi.rendererConfig->imageFormat;
@@ -99,14 +99,14 @@ void ImguiVulkan::CreateRenderPass(VkRenderPass& renderPass)
     renderPassAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
     renderPassAttachment.finalLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
 
-    VkAttachmentReference color_attachment = {};
-    color_attachment.attachment = 0;
-    color_attachment.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    VkAttachmentReference colorAttachment = {};
+    colorAttachment.attachment = 0;
+    colorAttachment.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
     VkSubpassDescription subpass = {};
     subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
     subpass.colorAttachmentCount = 1;
-    subpass.pColorAttachments = &color_attachment;
+    subpass.pColorAttachments = &colorAttachment;
 
     VkSubpassDependency dependency = {};
     dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
@@ -129,7 +129,7 @@ void ImguiVulkan::CreateRenderPass(VkRenderPass& renderPass)
     CAssert::Check(renderPassStatus == VK_SUCCESS, "Failed to create imgui render pass");
 }
 
-void ImguiVulkan::DefaultEditorColors(ImGuiStyle* dst)
+void ImguiVulkan::DefaultEditorColors(ImGuiStyle* dst) const
 {
     ImGuiStyle* style = dst ? dst : &ImGui::GetStyle();
     ImVec4* colors = style->Colors;

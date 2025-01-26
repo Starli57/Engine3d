@@ -5,7 +5,7 @@
 
 namespace VkUtils
 {
-	VkRenderPass CreateRenderPass(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<AVulkan::VulkanConfiguration> rendererConfig,
+	VkRenderPass CreateRenderPass(VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, Ref<AVulkan::VulkanConfiguration> rendererConfig,
 		const std::vector<VkAttachmentDescription>& attachments, const VkSubpassDescription& subpass)
 	{
 		std::array<VkSubpassDependency, 2> subpassDependencies;
@@ -41,14 +41,14 @@ namespace VkUtils
 		return renderPass;
 	}
 
-	void DisposeRenderPass(VkDevice& logicalDevice, VkRenderPass& renderPass)
+	void DisposeRenderPass(const VkDevice& logicalDevice, const VkRenderPass& renderPass)
 	{
 		spdlog::info("Dispose render pass");
 		vkDestroyRenderPass(logicalDevice, renderPass, nullptr);
 	}
 
-	void BeginRenderPass(std::vector<VkClearValue>& clearValues, VkFramebuffer& frameBuffer, VkRenderPass& renderPass, 
-		VkCommandBuffer& commandBuffer, VkExtent2D& vkExtent)
+	void BeginRenderPass(const std::vector<VkClearValue>& clearValues, const VkFramebuffer& frameBuffer, const VkRenderPass& renderPass,
+		const VkCommandBuffer& commandBuffer, const VkExtent2D& vkExtent)
 	{
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -62,7 +62,7 @@ namespace VkUtils
 		vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 	}
 
-	void EndRenderPass(VkCommandBuffer& commandBuffer)
+	void EndRenderPass(const VkCommandBuffer& commandBuffer)
 	{
 		vkCmdEndRenderPass(commandBuffer);
 	}

@@ -6,12 +6,12 @@
 
 namespace VkUtils
 {
-	VkRenderPass CreateRenderPass(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<AVulkan::VulkanConfiguration> rendererConfig,
-	                              const std::vector<VkAttachmentDescription>& attachments, const VkSubpassDescription& subpass);
+	VkRenderPass CreateRenderPass(VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, Ref<AVulkan::VulkanConfiguration> rendererConfig,
+		const std::vector<VkAttachmentDescription>& attachments, const VkSubpassDescription& subpass);
 
-	void DisposeRenderPass(VkDevice& logicalDevice, VkRenderPass& renderPass);
+	void DisposeRenderPass(const VkDevice& logicalDevice, const VkRenderPass& renderPass);
 
-	void BeginRenderPass(std::vector<VkClearValue>& clearValues, VkFramebuffer& frameBuffer, VkRenderPass& renderPass, 
-		VkCommandBuffer& commandBuffer, VkExtent2D& vkExtent);
-	void EndRenderPass(VkCommandBuffer& commandBuffer);
+	void BeginRenderPass(const std::vector<VkClearValue>& clearValues, const VkFramebuffer& frameBuffer, const VkRenderPass& renderPass,
+	                     const VkCommandBuffer& commandBuffer, const VkExtent2D& vkExtent);
+	void EndRenderPass(const VkCommandBuffer& commandBuffer);
 }

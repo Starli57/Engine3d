@@ -1,6 +1,6 @@
 #include "AssetsWindow.h"
 
-AssetsWindow::AssetsWindow(Ref<Ecs> ecs, Ref<AssetsDatabase> assetsDatabase, Ref<ProjectSettings> projectSettings) :
+AssetsWindow::AssetsWindow(const Ref<Ecs>& ecs, const Ref<AssetsDatabase>& assetsDatabase, const Ref<ProjectSettings>& projectSettings) :
     ecs(ecs), assetsDatabase(assetsDatabase), projectSettings(projectSettings)
 {
 }

@@ -1,6 +1,6 @@
 #include "VulkanDebugInfo.h"
 
-VulkanDebugInfo::VulkanDebugInfo(Ref<Engine> engine, AVulkan::GraphicsApiVulkan& vulkanApi) : 
+VulkanDebugInfo::VulkanDebugInfo(const Ref<Engine>& engine, AVulkan::GraphicsApiVulkan& vulkanApi) : 
 	engine(engine), vulkanApi(vulkanApi)
 {
 	frameTimes = new std::vector<float>(100);
@@ -21,7 +21,7 @@ void VulkanDebugInfo::Update()
 
 	float sum = 0;
 	for (auto it = frameTimes->begin(); it != frameTimes->end(); ++it) sum += *it;
-	float average = sum / frameTimes->size();
+	const float average = sum / frameTimes->size();
 
 	ImGui::Text("Delta time %.2fms", average * 1000);
 

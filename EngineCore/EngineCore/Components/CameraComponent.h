@@ -22,7 +22,7 @@ struct CameraComponent : public IComponent
 		upAxis = glm::vec3(0.0f, 1.0f, 0.0f);
 	}
 
-	CameraComponent(float fov, float zNear, float zFar, glm::vec3 upAxis)
+	CameraComponent(const float fov, const float zNear, const float zFar, const glm::vec3 upAxis)
 		: fov(fov), zNear(zNear), zFar(zFar), upAxis(upAxis)
 	{
 	}

@@ -5,16 +5,16 @@ namespace VkUtils
 {
 	AVulkan::SwapChainSurfaceSettings GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface)
 	{
-		AVulkan::SwapChainSurfaceSettings surfaceSettigns;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceSettigns.capabilities);
+		AVulkan::SwapChainSurfaceSettings surfaceSettings;
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceSettings.capabilities);
 
-		GetSwapChainColorFormats(physicalDevice, surface, surfaceSettigns.formats);
-		GetSwapChainPresentModes(physicalDevice, surface, surfaceSettigns.presentModes);
+		GetSwapChainColorFormats(physicalDevice, surface, surfaceSettings.formats);
+		GetSwapChainPresentModes(physicalDevice, surface, surfaceSettings.presentModes);
 
-		return surfaceSettigns;
+		return surfaceSettings;
 	}
 
-	bool DoSupportSwapChain(AVulkan::SwapChainSurfaceSettings& details)
+	bool DoSupportSwapChain(const AVulkan::SwapChainSurfaceSettings& details)
 	{
 		return !details.formats.empty() && !details.presentModes.empty();
 	}
@@ -25,7 +25,7 @@ namespace VkUtils
 		return DoSupportSwapChain(details);
 	}
 
-	void GetSwapChainColorFormats(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkSurfaceFormatKHR>& formats)
+	void GetSwapChainColorFormats(const VkPhysicalDevice& physicalDevice, const VkSurfaceKHR& surface, std::vector<VkSurfaceFormatKHR>& formats)
 	{
 		uint32_t formatCount;
 		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, nullptr);
@@ -34,7 +34,7 @@ namespace VkUtils
 		vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, formats.data());
 	}
 
-	void GetSwapChainPresentModes(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface, std::vector<VkPresentModeKHR>& presentModes)
+	void GetSwapChainPresentModes(const VkPhysicalDevice& physicalDevice, const VkSurfaceKHR& surface, std::vector<VkPresentModeKHR>& presentModes)
 	{
 		uint32_t presentModeCount;
 		vkGetPhysicalDeviceSurfacePresentModesKHR(physicalDevice, surface, &presentModeCount, nullptr);

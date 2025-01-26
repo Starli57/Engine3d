@@ -6,18 +6,18 @@
 
 #include "spdlog/spdlog.h"
 
-Rollback::Rollback(const std::string& name) : name(name)
+Rollback::Rollback(std::string name) : name(std::move(name))
 {
     disposeStack = new std::stack<std::function<void()>>();
 }
 
-Rollback::Rollback(const std::string& name, Rollback& parentRollback) : name(name)
+Rollback::Rollback(std::string name, const Rollback& parentRollback) : name(std::move(name))
 {
     disposeStack = new std::stack<std::function<void()>>();
     parentRollback.Add([this]() { RollbackExtension().Dispose(this); });
 }
 
-Rollback::Rollback(const std::string& name, Ref<Rollback> parentRollback) : name(name)
+Rollback::Rollback(std::string name, const Ref<Rollback>& parentRollback) : name(std::move(name))
 {
     disposeStack = new std::stack<std::function<void()>>();
     parentRollback->Add([this]() { RollbackExtension().Dispose(this); });
@@ -29,12 +29,12 @@ Rollback::~Rollback()
     delete disposeStack;
 }
 
-void Rollback::Add(std::function<void()> function)
+void Rollback::Add(const std::function<void()>& function) const
 {
     disposeStack->push(function);
 }
 
-void Rollback::Dispose()
+void Rollback::Dispose() const
 {
     spdlog::info("Dispose rollback: " + name);
     RollbackExtension().Dispose(disposeStack);

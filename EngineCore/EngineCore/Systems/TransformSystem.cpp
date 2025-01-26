@@ -1,18 +1,18 @@
 #include "EngineCore/Pch.h"
 #include "TransformSystem.h"
 
-TransformSystem::TransformSystem(Ref<Ecs> ecs) : ecs(ecs)
+TransformSystem::TransformSystem(const Ref<Ecs>& ecs) : ecs(ecs)
 {
 }
 
 void TransformSystem::Update(float deltaTime)
 {
-	auto transformComponents = ecs->registry->view<UboModelComponent, PositionComponent, RotationComponent, ScaleComponent>();
-	for (auto entity : transformComponents)
+	const auto transformComponents = ecs->registry->view<UboModelComponent, PositionComponent, RotationComponent, ScaleComponent>();
+	for (const auto entity : transformComponents)
 	{
 		auto& uboComponent = transformComponents.get<UboModelComponent>(entity);
 		auto& position = transformComponents.get<PositionComponent>(entity).position;
-		auto& rotation = transformComponents.get<RotationComponent>(entity).rotation;
+		const auto& rotation = transformComponents.get<RotationComponent>(entity).rotation;
 		auto& scale = transformComponents.get<ScaleComponent>(entity).scale;
 		auto& uboModel = uboComponent.model;
 

@@ -10,13 +10,13 @@ class RollbackExtension;
 class Rollback
 {
 public:
-	Rollback(const std::string& name);
-	Rollback(const std::string& name, Rollback& parentRollback);
-	Rollback(const std::string& name, Ref<Rollback> parentRollback);
+	Rollback(std::string name);
+	Rollback(std::string name, const Rollback& parentRollback);
+	Rollback(std::string name, const Ref<Rollback>& parentRollback);
 	~Rollback();
 
-	void Add(std::function<void()> function);
-	void Dispose();
+	void Add(const std::function<void()>& function) const;
+	void Dispose() const;
 
 	friend class RollbackExtension;
 

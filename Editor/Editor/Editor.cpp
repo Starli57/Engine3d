@@ -13,11 +13,11 @@
 #include "Windows/VulkanTextureView.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 
-Editor::Editor(Ref<ProjectSettings> projectSettings, Ref<Engine> engine) : 
+Editor::Editor(const Ref<ProjectSettings>& projectSettings, const Ref<Engine>& engine) : 
 	projectSettings(projectSettings), engine(engine)
 {
-	auto graphicsApi = engine->GetGraphicsApi();
-	auto vulkanApi = static_cast<AVulkan::GraphicsApiVulkan*>(graphicsApi);
+	const auto graphicsApi = engine->GetGraphicsApi();
+	const auto vulkanApi = dynamic_cast<AVulkan::GraphicsApiVulkan*>(graphicsApi);
 
 	editorUi = CreateRef<ImguiVulkan>(projectSettings, *vulkanApi);
 
@@ -37,5 +37,4 @@ Editor::~Editor()
 	//todo: destroy editor windows
 
 	editorUi.reset();
-	engine.reset();
 }

@@ -8,24 +8,24 @@ struct SphereDefinition : public MeshMeta
 {
 	SphereDefinition()
 	{
-        uint32_t stackCount = 50;
-        uint32_t sectorCount = 50;
-        float radius = 1;
-        float pi = std::numbers::pi_v<float>;
+        const uint32_t stackCount = 50;
+        const uint32_t sectorCount = 50;
+        const float radius = 1;
+        const float pi = std::numbers::pi_v<float>;
 
         vertices.reserve(stackCount * sectorCount);
         for (uint32_t stack = 0; stack <= stackCount; ++stack) 
         {
-            float stackAngle = pi / 2 - stack * pi / stackCount;
-            float xy = radius * cosf(stackAngle);
-            float z = radius * sinf(stackAngle);
+            const float stackAngle = pi / 2 - stack * pi / stackCount;
+            const float xy = radius * cosf(stackAngle);
+            const float z = radius * sinf(stackAngle);
 
             for (uint32_t sector = 0; sector <= sectorCount; ++sector) 
             {
-                float sectorAngle = sector * 2 * pi / sectorCount;
+                const float sectorAngle = sector * 2 * pi / sectorCount;
 
-                float x = xy * cosf(sectorAngle);
-                float y = xy * sinf(sectorAngle);
+                const float x = xy * cosf(sectorAngle);
+                const float y = xy * sinf(sectorAngle);
                 //todo: calculate tangent and bitangent
                 vertices.emplace_back(
                     glm::vec3(x, y, z), 
@@ -33,7 +33,7 @@ struct SphereDefinition : public MeshMeta
                     glm::vec3(0, 0, 0),
                     glm::vec3(0, 0, 0),
                     glm::vec3(1.0f), 
-                    glm::vec2(float(sector) / sectorCount, float(stack) / stackCount));
+                    glm::vec2(static_cast<float>(sector) / sectorCount, static_cast<float>(stack) / stackCount));
             }
         }
 

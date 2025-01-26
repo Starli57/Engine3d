@@ -2,7 +2,7 @@
 
 #include "Engine.h"
 
-Engine::Engine(Ref<ProjectSettings> projectSettings) : projectSettings(projectSettings)
+Engine::Engine(const Ref<ProjectSettings>& projectSettings) : projectSettings(projectSettings)
 {
 	InitLogger();
 
@@ -25,7 +25,7 @@ Engine::Engine(Ref<ProjectSettings> projectSettings) : projectSettings(projectSe
 	catch (const std::exception& e)
 	{
 		spdlog::critical("Renderer critical error: {0}", e.what());
-		throw e;
+		throw;
 	}
 
 
@@ -37,14 +37,12 @@ Engine::Engine(Ref<ProjectSettings> projectSettings) : projectSettings(projectSe
 	resourcesManager->Load();
 
 	input = CreateRef<Input>(window);
-	world = CreateRef<World>(ecs, projectSettings);
 
 	spdlog::info("--Engine init finished--");
 }
 
 Engine::~Engine()
 {
-	world.reset();
 	resourcesManager->UnLoadAllMeshes();
 	resourcesManager->UnLoadAllTextures();
 	resourcesManager.reset();
@@ -58,7 +56,7 @@ Engine::~Engine()
 	glfwTerminate();
 }
 
-void Engine::InitLogger()
+void Engine::InitLogger() const
 {
 #ifdef DEBUG
 	spdlog::set_level(spdlog::level::debug);
@@ -70,13 +68,13 @@ void Engine::InitLogger()
 
 }
 
-void Engine::InitGlfw()
+void Engine::InitGlfw() const
 {
 	auto status = glfwInit();
 	CAssert::Check(status == GLFW_TRUE, "Glfw can't be init");
 }
 
-void Engine::SetupGlfwHints()
+void Engine::SetupGlfwHints() const
 {
 #if GLFW_INCLUDE_VULKAN
 	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -104,11 +102,11 @@ void Engine::InitGraphicsApi()
 
 void Engine::Run()
 {
-	auto rotatorSystem = CreateRef<RotatorSystem>(ecs);
-	auto transformSystem = CreateRef<TransformSystem>(ecs);
-	auto cameraSystem = CreateRef<ViewProjectionSystem>(ecs, window);
-	auto freeCameraSystem = CreateRef<CameraFlySystem>(ecs, input);
-	auto orbitCameraSystem = CreateRef<CameraOrbitSystem>(ecs, input);
+	const auto rotatorSystem = CreateRef<RotatorSystem>(ecs);
+	const auto transformSystem = CreateRef<TransformSystem>(ecs);
+	const auto cameraSystem = CreateRef<ViewProjectionSystem>(ecs, window);
+	const auto freeCameraSystem = CreateRef<CameraFlySystem>(ecs, input);
+	const auto orbitCameraSystem = CreateRef<CameraOrbitSystem>(ecs, input);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -116,7 +114,7 @@ void Engine::Run()
 		input->Update();
 
 		auto currentTime = std::chrono::high_resolution_clock::now();
-		deltaTime = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - cachedTime).count();
+		deltaTime = std::chrono::duration<float>(currentTime - cachedTime).count();
 
 		rotatorSystem->Update(deltaTime);
 		transformSystem->Update(deltaTime);
@@ -131,7 +129,7 @@ void Engine::Run()
 		cachedTime = currentTime;
 	}
 
-	graphicsApi->FinanilizeRenderOperations();
+	graphicsApi->FinalizeRenderOperations();
 	spdlog::info("Window closed");
 }
 

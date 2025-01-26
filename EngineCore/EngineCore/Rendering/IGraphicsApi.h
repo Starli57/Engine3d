@@ -13,6 +13,6 @@ public:
 
     virtual void Init() = 0;
     virtual void Render() = 0;
-    virtual void FinanilizeRenderOperations() = 0;
+    virtual void FinalizeRenderOperations() = 0;
 };
 

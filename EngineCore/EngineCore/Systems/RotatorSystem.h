@@ -9,7 +9,7 @@
 class RotatorSystem : ISystem
 {
 public:
-	RotatorSystem(Ref<Ecs> ecs);
+	RotatorSystem(const Ref<Ecs>& ecs);
 
 	void Update(float deltaTime) override;
 

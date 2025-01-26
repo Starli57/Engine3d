@@ -1,7 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "CameraOrbitSystem.h"
 
-CameraOrbitSystem::CameraOrbitSystem(Ref<Ecs> ecs, Ref<Input> input)
+CameraOrbitSystem::CameraOrbitSystem(const Ref<Ecs>& ecs, const Ref<Input>& input)
 	: ecs(ecs), input(input)
 {
 }
@@ -18,7 +18,7 @@ void CameraOrbitSystem::Update(float deltaTime)
 		auto& position = entities.get<PositionComponent>(entity).position;
 		auto& cam = entities.get<CameraOrbitComponent>(entity);
 
-		position.x = static_cast<float>(glm::cos(glfwGetTime() * (double)cam.angularSpeed)) * cam.radius;
-		position.z = static_cast<float>(glm::sin(glfwGetTime() * (double)cam.angularSpeed)) * cam.radius;
+		position.x = static_cast<float>(glm::cos(glfwGetTime() * static_cast<double>(cam.angularSpeed))) * cam.radius;
+		position.z = static_cast<float>(glm::sin(glfwGetTime() * static_cast<double>(cam.angularSpeed))) * cam.radius;
 	}
 }

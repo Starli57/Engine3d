@@ -24,20 +24,20 @@ namespace AVulkan
 			VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout,
 			VkSampleCountFlagBits msaa);
 
-		Ref<PipelineVulkan> ReCreate(Ref<PipelineVulkan> pipeline, Ref<VulkanPipelineConfig> pipelineConfig, VkDevice& logicalDevice,
-			VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout, VkSampleCountFlagBits msaa);
+		Ref<PipelineVulkan> ReCreate(const Ref<PipelineVulkan>& pipeline, const Ref<VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
+		                             VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout, VkSampleCountFlagBits msaa);
 
-		void Dispose(Ref<PipelineVulkan> pipeline, VkDevice& logicalDevice);
+		void Dispose(const Ref<PipelineVulkan>& pipeline, const VkDevice& logicalDevice) const;
 
 	private:
 
 		URef<Rollback> initializationRollback;
 
-		VkPipelineInputAssemblyStateCreateInfo SetupInputAssemblyData();
-		VkPipelineViewportStateCreateInfo SetupViewportAndScissor(VkExtent2D& swapChainExtent);
-		VkPipelineRasterizationStateCreateInfo SetupRasterizer(Ref<VulkanPipelineConfig> pipelineConfig);
-		VkPipelineMultisampleStateCreateInfo SetupMultisampling(VkSampleCountFlagBits msaa);
-		VkPipelineColorBlendStateCreateInfo SetupColorsBlending();
+		VkPipelineInputAssemblyStateCreateInfo SetupInputAssemblyData() const;
+		VkPipelineViewportStateCreateInfo SetupViewportAndScissor(const VkExtent2D& swapChainExtent) const;
+		VkPipelineRasterizationStateCreateInfo SetupRasterizer(const Ref<VulkanPipelineConfig>& pipelineConfig) const;
+		VkPipelineMultisampleStateCreateInfo SetupMultisampling(VkSampleCountFlagBits msaa) const;
+		VkPipelineColorBlendStateCreateInfo SetupColorsBlending() const;
 
 
 	};

@@ -24,8 +24,8 @@ class ComponentsRenderer
 {
 public:
 
-	ComponentsRenderer(Ref<AssetsDatabase> assetsDatabase);
-	void Update(Ref<Entity> entity);
+	ComponentsRenderer(const Ref<AssetsDatabase>& assetsDatabase);
+	void Update(const Ref<Entity>& entity);
 
 private:
 
@@ -42,16 +42,16 @@ private:
 		RenderComponent(entity, component);
 	}
 
-	void RenderComponent(Ref<Entity> entity, NameComponent& component);
-	void RenderComponent(Ref<Entity> entity, PositionComponent& component);
-	void RenderComponent(Ref<Entity> entity, RotationComponent& component);
-	void RenderComponent(Ref<Entity> entity, RotationVelocityComponent& component);
-	void RenderComponent(Ref<Entity> entity, ScaleComponent& component);
-	void RenderComponent(Ref<Entity> entity, CameraComponent& component);
-	void RenderComponent(Ref<Entity> entity, CameraFreeComponent& component);
-	void RenderComponent(Ref<Entity> entity, UboDiffuseLightComponent& component);
-	void RenderComponent(Ref<Entity> entity, UboModelComponent& component);
-	void RenderComponent(Ref<Entity> entity, UboViewProjectionComponent& component);
-	void RenderComponent(Ref<Entity> entity, MeshComponent& component);
-	void RenderComponent(Ref<Entity> entity, MaterialComponent& component);
+	void RenderComponent(Ref<Entity> entity, NameComponent& component) const;
+	void RenderComponent(Ref<Entity> entity, PositionComponent& component) const;
+	void RenderComponent(Ref<Entity> entity, RotationComponent& component) const;
+	void RenderComponent(Ref<Entity> entity, RotationVelocityComponent& component) const;
+	void RenderComponent(Ref<Entity> entity, ScaleComponent& component) const;
+	void RenderComponent(Ref<Entity> entity, CameraComponent& component) const;
+	void RenderComponent(Ref<Entity> entity, CameraFreeComponent& component) const;
+	void RenderComponent(Ref<Entity> entity, UboDiffuseLightComponent& component) const;
+	void RenderComponent(Ref<Entity> entity, UboModelComponent& component) const;
+	void RenderComponent(Ref<Entity> entity, UboViewProjectionComponent& component) const;
+	void RenderComponent(Ref<Entity> entity, MeshComponent& component) const;
+	void RenderComponent(Ref<Entity> entity, MaterialComponent& component) const;
 };

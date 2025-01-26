@@ -7,6 +7,6 @@ struct MaterialComponent
 	uint32_t materialIndex;
 
 	MaterialComponent() { materialIndex = 0; }
-	MaterialComponent(uint32_t materialIndex) : materialIndex(materialIndex) {};
+	MaterialComponent(const uint32_t materialIndex) : materialIndex(materialIndex) {}
 };
 

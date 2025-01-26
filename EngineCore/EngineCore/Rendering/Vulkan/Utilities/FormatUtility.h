@@ -3,8 +3,8 @@
 
 namespace VkUtils
 {
-	VkFormat FindSupportedFormat(VkPhysicalDevice& physicalDevice, std::vector<VkFormat>& formats,
-			VkImageTiling tiling, VkFormatFeatureFlags features);
+	VkFormat FindSupportedFormat(const VkPhysicalDevice& physicalDevice, const std::vector<VkFormat>& formats,
+	                             VkImageTiling tiling, VkFormatFeatureFlags features);
 
-	VkFormat FindDepthBufferFormat(VkPhysicalDevice& physicalDevice);
+	VkFormat FindDepthBufferFormat(const VkPhysicalDevice& physicalDevice);
 }

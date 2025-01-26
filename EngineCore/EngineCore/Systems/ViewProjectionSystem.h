@@ -16,7 +16,7 @@
 class ViewProjectionSystem : public ISystem
 {
 public:
-	ViewProjectionSystem(Ref<Ecs> ecs, GLFWwindow* window);
+	ViewProjectionSystem(const Ref<Ecs>& ecs, GLFWwindow* window);
 	virtual ~ViewProjectionSystem() override = default;
 
 	virtual void Update(float deltaTime) override;

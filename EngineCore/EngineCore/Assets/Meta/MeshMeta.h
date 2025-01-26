@@ -12,10 +12,10 @@ struct MeshMeta
     std::string materialName;
     int materialIndex;//temp value used only by resources converter
 
-    glm::vec3 ComputeNormal(glm::vec3 v0, glm::vec3 v1, glm::vec3 v2)
+    glm::vec3 ComputeNormal(const glm::vec3 v0, const glm::vec3 v1, const glm::vec3 v2) const
     {
-        glm::vec3 edge1 = v1 - v0;
-        glm::vec3 edge2 = v2 - v0;
-        return glm::normalize(glm::cross(edge1, edge2));
+        const glm::vec3 edge1 = v1 - v0;
+        const glm::vec3 edge2 = v2 - v0;
+        return normalize(cross(edge1, edge2));
     }
 };

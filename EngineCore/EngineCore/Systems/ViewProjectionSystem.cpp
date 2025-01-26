@@ -1,7 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "ViewProjectionSystem.h"
 
-ViewProjectionSystem::ViewProjectionSystem(Ref<Ecs> ecs, GLFWwindow* window)
+ViewProjectionSystem::ViewProjectionSystem(const Ref<Ecs>& ecs, GLFWwindow* window)
 {
 	this->ecs = ecs;
 	this->window = window;
@@ -13,7 +13,7 @@ void ViewProjectionSystem::Update(float deltaTime = 0)
 	glfwGetFramebufferSize(window, &width, &height);
 	if (width == 0 || height == 0) return;
 
-	auto screenAspectRatio = static_cast<float>(width) / static_cast<float>(height);
+	const auto screenAspectRatio = static_cast<float>(width) / static_cast<float>(height);
 
 	const auto cameraEntities = ecs->registry->view<PositionComponent, RotationComponent, UboViewProjectionComponent, CameraComponent>();
 	for (const auto entity : cameraEntities)
@@ -27,7 +27,7 @@ void ViewProjectionSystem::Update(float deltaTime = 0)
 		CalculateDirection(&direction, rotation);
 		Normalize(&direction);
 		
-		uboComponent.view = glm::lookAt(position, position + direction, cameraComponent.upAxis);
+		uboComponent.view = lookAt(position, position + direction, cameraComponent.upAxis);
 		auto projection = glm::perspective(glm::radians(cameraComponent.fov), 
 			screenAspectRatio, cameraComponent.zNear, cameraComponent.zFar);
 		projection[1][1] *= -1;
@@ -46,9 +46,9 @@ void ViewProjectionSystem::Update(float deltaTime = 0)
 		CalculateDirection(&direction, rotation);
 		Normalize(&direction);
 
-		uboComponent.view = glm::lookAt(position, position + direction, glm::vec3(0, 1, 0));
-		auto projection = glm::perspective(glm::radians(60.0f),
-			screenAspectRatio, 50.0f, 200.0f);
+		uboComponent.view = lookAt(position, position + direction, glm::vec3(0, 1, 0));
+		const auto projection = glm::perspective(glm::radians(60.0f),
+		                                         screenAspectRatio, 50.0f, 200.0f);
 		
 		uboComponent.proj = projection;
 	}

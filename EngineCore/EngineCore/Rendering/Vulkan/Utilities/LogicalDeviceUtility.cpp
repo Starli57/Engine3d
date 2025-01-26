@@ -54,7 +54,7 @@ namespace VkUtils
 		return logicalDevice;
 	}
 
-	void DisposeLogicalDevice(VkDevice& logicalDevice)
+	void DisposeLogicalDevice(const VkDevice& logicalDevice)
 	{
 		spdlog::info("Dispose logical device");
 		vkDestroyDevice(logicalDevice, nullptr);

@@ -7,7 +7,7 @@
 #include "EngineCore/Rendering/Vulkan/Utilities/FrameBufferUtility.h"
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
 #include "EngineCore/Rendering/Vulkan/Configs/VulkanConfiguration.h"
-#include "EngineCore/Rendering/Vulkan/Descriptors.h"
+#include "EngineCore/Rendering/Vulkan/DescriptorsManager.h"
 #include "EngineCore/Components/PositionComponent.h"
 #include "EngineCore/Components/RotationComponent.h"
 #include "EngineCore/Components/CameraComponent.h"
@@ -24,10 +24,10 @@ namespace AVulkan
     {
     public:
         IRenderPass(
-            VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<VulkanConfiguration> rendererConfig,
-            Ref<Ecs> ecs, Ref<AssetsDatabaseVulkan> assetsDatabase, Ref<SwapChainData> swapChainData, Ref<Descriptors> descriptors)
-            : physicalDevice(physicalDevice), logicalDevice(logicalDevice), rendererConfig(rendererConfig),
-                ecs(ecs), assetsDatabase(assetsDatabase), swapChainData(swapChainData), descriptors(descriptors)
+            VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<VulkanConfiguration>& rendererConfig,
+            const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetsDatabase, const Ref<SwapChainData>& swapChainData, const Ref<DescriptorsManager>& descriptorsManager)
+            : physicalDevice(physicalDevice), logicalDevice(logicalDevice), ecs(ecs),
+                assetsDatabase(assetsDatabase), rendererConfig(rendererConfig), swapChainData(swapChainData), descriptorsManager(descriptorsManager)
         {
         }
 
@@ -47,7 +47,7 @@ namespace AVulkan
         Ref<AssetsDatabaseVulkan> assetsDatabase;
         Ref<VulkanConfiguration> rendererConfig;
         Ref<SwapChainData> swapChainData;
-        Ref<Descriptors> descriptors;
+        Ref<DescriptorsManager> descriptorsManager;
 
         std::unordered_map<std::string, Ref<PipelineVulkan>> pipelines;
 
@@ -62,7 +62,7 @@ namespace AVulkan
 
         virtual void BeginRenderPass(VkCommandBuffer& commandBuffer, const uint32_t imageIndex) = 0;
 
-        void WriteDescriptorSet(VkWriteDescriptorSet& writeSet, VkDescriptorSet& descriptorSet, uint32_t dstBinding, uint32_t dstArrayElement,
-            uint32_t descriptorCount, VkDescriptorType descriptorType, VkDescriptorImageInfo* pImageInfo, VkDescriptorBufferInfo* pBufferInfo);
+        void WriteDescriptorSet(VkWriteDescriptorSet& writeSet, const VkDescriptorSet& descriptorSet, uint32_t dstBinding, uint32_t dstArrayElement,
+            uint32_t descriptorCount, VkDescriptorType descriptorType, const VkDescriptorImageInfo* pImageInfo, const VkDescriptorBufferInfo* pBufferInfo) const;
     };
 }

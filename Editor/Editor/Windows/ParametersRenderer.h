@@ -13,13 +13,13 @@
 class ParametersRenderer
 {
 public:
-	void RenderParameter(const char* label, int& parameter, int step = 1, int min = 0, int max = INT_MAX);
-	void RenderParameter(const char* label, uint32_t& parameter, uint32_t step = 1, uint32_t min = 0, uint32_t max = UINT32_MAX);
-	void RenderParameter(const char* label, std::optional<int>& parameter, int step = 1, int min = 0, int max = INT_MAX);
-	void RenderParameter(const char* label, float& parameter, float v_speed = 0.1f, float v_min = 0, float v_max = 0);
-	void RenderParameter(const char* label, glm::vec2& parameter, float v_speed = 0.1f, float v_min = 0, float v_max = 0);
-	void RenderParameter(const char* label, glm::vec3& parameter, float v_speed = 0.1f, float v_min = 0, float v_max = 0);
-	void RenderParameter(std::string& parameter);
-	void RenderParameter(const char* label, std::filesystem::path& parameter,
-		std::unordered_map<std::string, std::filesystem::path>& pathes);
+	void RenderParameter(const char* label, int& parameter, int step = 1, int min = 0, int max = INT_MAX) const;
+	void RenderParameter(const char* label, uint32_t& parameter, uint32_t step = 1, uint32_t min = 0, uint32_t max = UINT32_MAX) const;
+	void RenderParameter(const char* label, std::optional<int>& parameter, int step = 1, int min = 0, int max = INT_MAX) const;
+	void RenderParameter(const char* label, float& parameter, float vSpeed = 0.1f, float vMin = 0, float vMax = 0) const;
+	void RenderParameter(const char* label, glm::vec2& parameter, float vSpeed = 0.1f, float vMin = 0, float vMax = 0) const;
+	void RenderParameter(const char* label, glm::vec3& parameter, float vSpeed = 0.1f, float vMin = 0, float vMax = 0) const;
+	void RenderParameter(std::string& parameter) const;
+	void RenderParameter(const char* label, const std::filesystem::path& parameter,
+	                     const std::unordered_map<std::string, std::filesystem::path>& paths) const;
 };

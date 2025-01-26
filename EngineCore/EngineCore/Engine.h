@@ -5,7 +5,6 @@
 #include <entt.hpp>
 
 #include "EngineCore/Defines/DllDefines.h"
-#include "EngineCore/Core/World.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/Input.h"
@@ -25,30 +24,27 @@
 class Engine
 {
 public:
-	Engine(Ref<ProjectSettings> projectSettings);
+	Engine(const Ref<ProjectSettings>& projectSettings);
 	virtual ~Engine();
 
 	void Run();
 
 	void BindEditorUpdateFunction(std::function<void()> editorUpdate);
 
-	IGraphicsApi* GetGraphicsApi() { return graphicsApi; }
+	IGraphicsApi* GetGraphicsApi() const { return graphicsApi; }
 	Ref<Ecs> GetEcs() { return ecs; }
 	
 	Ref<AssetsDatabase> GetAssetsDatabase() { return assetsDatabase; }
 	Ref<AssetsLoader> GetResourcesManager() { return resourcesManager; }
 
-	Ref<World> GetLevel() { return world; }
-
-	float GetDeltaTime() { return deltaTime; }
+	float GetDeltaTime() const { return deltaTime; }
 
 private:
-	const Ref<ProjectSettings> projectSettings;
+	const Ref<ProjectSettings>& projectSettings;
 
 	GLFWwindow* window;
 	IGraphicsApi* graphicsApi;
 
-	Ref<World> world;
 	Ref<Ecs> ecs;
 	Ref<Input> input;
 	Ref<AssetsDatabase> assetsDatabase;
@@ -60,9 +56,9 @@ private:
 
 	std::chrono::steady_clock::time_point cachedTime;
 
-	void InitLogger();
-	void InitGlfw();
-	void SetupGlfwHints();
+	void InitLogger() const;
+	void InitGlfw() const;
+	void SetupGlfwHints() const;
 	void CreateAppWindow();
 	void InitGraphicsApi();
 };

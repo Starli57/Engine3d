@@ -31,7 +31,7 @@ Ref<Entity> Ecs::CreateEntity()
 	return entity;
 }
 
-void Ecs::DestroyEntiy(Ref<Entity> entity)
+void Ecs::DestroyEntity(const Ref<Entity>& entity)
 {
 	allEntities.erase(std::remove(allEntities.begin(), allEntities.end(), entity), allEntities.end());
 	registry->destroy(entity->GetEntity());

@@ -3,7 +3,7 @@
 
 namespace VkUtils
 {
-	uint32_t FindMemoryType(VkPhysicalDevice& physicalDevice, uint32_t& typeFilter, VkMemoryPropertyFlags& properties)
+	uint32_t FindMemoryType(const VkPhysicalDevice& physicalDevice, const uint32_t& typeFilter, const VkMemoryPropertyFlags& properties)
 	{
 		VkPhysicalDeviceMemoryProperties memProperties;
 		vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
@@ -19,7 +19,7 @@ namespace VkUtils
 		throw std::runtime_error("Failed to find suitable memory type!");
 	}
 
-	void FreeDeviceMemory(VkDevice& logicalDevice, VkDeviceMemory& memory)
+	void FreeDeviceMemory(const VkDevice& logicalDevice, const VkDeviceMemory& memory)
 	{
 		vkFreeMemory(logicalDevice, memory, nullptr);
 	}

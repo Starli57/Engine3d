@@ -11,7 +11,7 @@ struct CubeDefinition : public MeshMeta
         auto whiteColor = glm::vec3(1.0f, 1.0f, 1.0f);
         auto vec3zero = glm::vec3(0, 0, 0);
 
-        //todo: calulate normal, tangent and bitangent
+        //todo: calculate normal, tangent and bitangent
         vertices = std::vector<Vertex>
         {
             Vertex(glm::vec3(-1.0f, -1.0f,  1.0f), vec3zero, vec3zero, vec3zero, whiteColor, glm::vec3(1.0f, 0.0f, 0.0f)), // 0: Front-bottom-left

@@ -6,13 +6,13 @@
 
 namespace AVulkan
 {
-	GraphicsApiVulkan::GraphicsApiVulkan(Ref<Ecs> ecs, Ref<AssetsDatabaseVulkan> assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* glfwWindow)
+	GraphicsApiVulkan::GraphicsApiVulkan(const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* glfwWindow)
 	{
 		this->ecs = ecs;
 		this->assetDatabase = assetDatabase;
 		this->projectSettings = projectSettings;
 		this->window = glfwWindow;
-		this->descriptors = CreateRef<Descriptors>();
+		this->descriptorsManager = CreateRef<DescriptorsManager>();
 		this->pipelinesCollection = CreateRef<PipelinesCollection>(projectSettings);
 		this->rendererConfig = CreateRef<VulkanConfiguration>();
 		this->rollback = CreateRef<Rollback>("GraphicsApiVulkan");
@@ -35,8 +35,7 @@ namespace AVulkan
 			CreateSwapChain();
 			CreateRenderPasses();
 			CreateDepthBuffer();
-			CreateCommandPool();
-			CreateCommandBuffer();
+			CreateCommandsManager();
 			CreateSyncObjects();
 		}
 		catch (const std::exception& e)
@@ -59,7 +58,7 @@ namespace AVulkan
 		}
 
 		spdlog::info("Recreate swapchain");
-		FinanilizeRenderOperations();
+		FinalizeRenderOperations();
 
 		delete renderPassColor;
 		delete renderPassShadowMaps;
@@ -67,15 +66,15 @@ namespace AVulkan
 		swapChain->Recreate();
 
 		renderPassShadowMaps = new RenderPassShadowMaps(physicalDevice, logicalDevice,
-			rendererConfig, ecs, assetDatabase, swapChainData, descriptors);
+			rendererConfig, ecs, assetDatabase, swapChainData, descriptorsManager);
 		renderPassColor = new RenderPassColor(physicalDevice, logicalDevice,
-			rendererConfig, ecs, assetDatabase, swapChainData, descriptors,
+			rendererConfig, ecs, assetDatabase, swapChainData, descriptorsManager,
 			textureSampler, pipelinesCollection, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
 	}
 
 	void GraphicsApiVulkan::Render()
 	{
-		auto commandBuffer = commandBuffers[frame];
+		auto commandBuffer = commandsManager->GetCommandBuffer(frame);
 		auto acquireStatus = AcquireNextImage();
 		if (acquireStatus != VK_SUCCESS) return;
 
@@ -95,9 +94,9 @@ namespace AVulkan
 
 		VkUtils::EndCommandBuffer(commandBuffer);
 
-		VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+		const VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
-		std::array<VkCommandBuffer, 1> submitCommandBuffers =
+		const std::array<VkCommandBuffer, 1> submitCommandBuffers =
 		{
 			commandBuffer
 		};
@@ -109,7 +108,7 @@ namespace AVulkan
 		submitInfo.pWaitSemaphores = &imageAvailableSemaphores[frame];
 		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[frame];
 		submitInfo.pWaitDstStageMask = waitStages;
-		submitInfo.commandBufferCount = static_cast<uint32_t>(submitCommandBuffers.size());;
+		submitInfo.commandBufferCount = static_cast<uint32_t>(submitCommandBuffers.size());
 		submitInfo.pCommandBuffers = submitCommandBuffers.data();
 
 		auto submitStatus = vkQueueSubmit(graphicsQueue, 1, &submitInfo, drawFences[frame]);
@@ -153,7 +152,7 @@ namespace AVulkan
 		return acquireStatus;
 	}
 	
-	void GraphicsApiVulkan::FinanilizeRenderOperations()
+	void GraphicsApiVulkan::FinalizeRenderOperations()
 	{
 		vkDeviceWaitIdle(logicalDevice);
 	}
@@ -183,7 +182,7 @@ namespace AVulkan
 		logicalDevice = VkUtils::CreateLogicalDevice(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
 		rollback->Add([this]()
 		{
-			descriptors->DestroyDescriptorPools(logicalDevice);
+			descriptorsManager->DestroyDescriptorPools(logicalDevice);
 			VkUtils::DisposeLogicalDevice(logicalDevice);
 		});
 	}
@@ -204,28 +203,22 @@ namespace AVulkan
 	void GraphicsApiVulkan::CreateRenderPasses()
 	{
 		renderPassShadowMaps = new RenderPassShadowMaps(physicalDevice, logicalDevice, 
-			rendererConfig, ecs, assetDatabase, swapChainData, descriptors);
+			rendererConfig, ecs, assetDatabase, swapChainData, descriptorsManager);
 		renderPassColor = new RenderPassColor(physicalDevice, logicalDevice, 
-			rendererConfig, ecs, assetDatabase, swapChainData, descriptors, 
+			rendererConfig, ecs, assetDatabase, swapChainData, descriptorsManager, 
 			textureSampler, pipelinesCollection, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
 
 		rollback->Add([this] { delete renderPassColor; });
 		rollback->Add([this] { delete renderPassShadowMaps; });
 	}
 
-	void GraphicsApiVulkan::CreateCommandPool()
+	void GraphicsApiVulkan::CreateCommandsManager()
 	{
-		commandPool = VkUtils::CreateCommandPool(logicalDevice, physicalDevice, windowSurface);
-		rollback->Add([this]() { VkUtils::DisposeCommandPool(logicalDevice, commandPool); });
+		commandsManager = new CommandsManager(physicalDevice, logicalDevice, windowSurface, rendererConfig->maxFramesInFlight);
+		rollback->Add([this]() { delete commandsManager; });
 	}
 
-	void GraphicsApiVulkan::CreateCommandBuffer()
-	{
-		VkUtils::AllocateCommandBuffers(logicalDevice, commandPool, commandBuffers, rendererConfig->maxFramesInFlight);
-		rollback->Add([this]() { VkUtils::FreeCommandBuffers(logicalDevice, commandPool, commandBuffers); });
-	}
-
-	void GraphicsApiVulkan::CreateDepthBuffer()
+	void GraphicsApiVulkan::CreateDepthBuffer() const
 	{
 		spdlog::info("Create depth buffer");
 		swapChain->CreateDepthBuffer();

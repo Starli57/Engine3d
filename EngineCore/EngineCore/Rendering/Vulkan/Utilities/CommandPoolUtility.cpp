@@ -5,7 +5,7 @@
 
 namespace VkUtils
 {
-	VkCommandPool CreateCommandPool(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface)
+	VkCommandPool CreateCommandPool(const VkDevice& logicalDevice, const VkPhysicalDevice& physicalDevice, const VkSurfaceKHR& windowSurface)
 	{
 		spdlog::info("Create command pool");
 		AVulkan::QueueFamilyIndices queueFamilyIndices = GetQueueFamilies(physicalDevice, windowSurface);
@@ -22,7 +22,7 @@ namespace VkUtils
 		return commandPool;
 	}
 
-	void DisposeCommandPool(VkDevice& logicalDevice, VkCommandPool& commandPool)
+	void DisposeCommandPool(const VkDevice& logicalDevice, const VkCommandPool& commandPool)
 	{
 		spdlog::info("Dispose command pool");
 		vkDestroyCommandPool(logicalDevice, commandPool, nullptr);

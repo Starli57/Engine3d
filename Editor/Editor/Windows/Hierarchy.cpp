@@ -5,7 +5,7 @@ void Hierarchy::Update()
 {
     ImGui::Begin("Entities");
 
-    auto view = ecs->registry->view<NameComponent, IdComponent>();
+    const auto view = ecs->registry->view<NameComponent, IdComponent>();
 
     for (int i = 0; i < ecs->allEntities.size(); i++)
     {
@@ -14,7 +14,7 @@ void Hierarchy::Update()
 
         if (entityRef->HasComponent<NameComponent>())
         {
-            auto nameComponent = view.get<NameComponent>(entityRef->GetEntity());
+            const auto nameComponent = view.get<NameComponent>(entityRef->GetEntity());
             entityName = nameComponent.name;
         }
 
@@ -26,11 +26,11 @@ void Hierarchy::Update()
 
         if (selectedItemIndex == i) 
         {
-            auto doSave = ImGui::Button("S");
+            const auto doSave = ImGui::Button("S");
             ImGui::SetItemTooltip("Save changes");
 
             ImGui::SameLine();
-            auto doDelete = ImGui::Button("X");
+            const auto doDelete = ImGui::Button("X");
             ImGui::SetItemTooltip("Delete entity");
 
             if (doSave)
@@ -41,7 +41,7 @@ void Hierarchy::Update()
 
             if (doDelete)
             {
-                ecs->DestroyEntiy(entityRef);
+                ecs->DestroyEntity(entityRef);
             }
 
             ImGui::SameLine();
@@ -57,7 +57,7 @@ void Hierarchy::Update()
     if (ImGui::Button("Create entity"))
         ecs->CreateEntity();
 
-    const int worldNameLength = 32;
+    constexpr int worldNameLength = 32;
     static char worldName[worldNameLength] = "main"; 
     ImGui::InputText("WorldName", worldName, worldNameLength);
 
@@ -67,8 +67,9 @@ void Hierarchy::Update()
     ImGui::End();
 }
 
-Hierarchy::Hierarchy(Ref<Ecs> ecs, Ref<Inspector> inspector, Ref<ProjectSettings> projectSettings, Ref<AssetsDatabase> assetsDatabase)
-    : ecs(ecs), inspector(inspector), projectSettings(projectSettings)
+Hierarchy::Hierarchy(const Ref<Ecs>& ecs, const Ref<Inspector>& inspector,
+    const Ref<ProjectSettings>& projectSettings, const Ref<AssetsDatabase>& assetsDatabase)
+    : ecs(ecs), inspector(inspector), projectSettings(projectSettings), selectedItemIndex(0)
 {
     serializer = CreateRef<EntitySerializer>(projectSettings, assetsDatabase);
 }

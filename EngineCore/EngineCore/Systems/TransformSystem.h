@@ -16,7 +16,7 @@
 class TransformSystem : public ISystem
 {
 public:
-	TransformSystem(Ref<Ecs> ecs);
+	TransformSystem(const Ref<Ecs>& ecs);
 	virtual void Update(float deltaTime) override;
 
 private:

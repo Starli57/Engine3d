@@ -7,7 +7,7 @@
 #include "EngineCore/Core/AssetsDatabaseVulkan.h"
 
 #include "EngineCore/Rendering/Vulkan/PipelineVulkan.h"
-#include "EngineCore/Rendering/Vulkan/Descriptors.h"
+#include "EngineCore/Rendering/Vulkan/DescriptorsManager.h"
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/GraphicsPipelineUtility.h"
 
@@ -19,12 +19,12 @@
 
 namespace VkUtils
 {
-	void AllocateCommandBuffers(VkDevice& logicalDevice, VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers, int buffersCount);
-	void FreeCommandBuffers(VkDevice& logicalDevice, VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers);
+	void AllocateCommandBuffers(const VkDevice& logicalDevice, const VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers, int buffersCount);
+	void FreeCommandBuffers(const VkDevice& logicalDevice, const VkCommandPool& commandPool, const std::vector<VkCommandBuffer>& commandBuffers);
 
-	void BeginCommandBuffer(VkCommandBuffer& commandBuffer);
-	void EndCommandBuffer(VkCommandBuffer& commandBuffer);
+	void BeginCommandBuffer(const VkCommandBuffer& commandBuffer);
+	void EndCommandBuffer(const VkCommandBuffer& commandBuffer);
 
-	void BindPipeline(VkCommandBuffer& commandBuffer, Ref<PipelineVulkan> pipeline);
-	void BindVertexAndIndexBuffers(VkCommandBuffer& commandBuffer, int32_t meshVulkan, Ref<AssetsDatabaseVulkan> assetsDatabase);
+	void BindPipeline(const VkCommandBuffer& commandBuffer, const Ref<PipelineVulkan>& pipeline);
+	void BindVertexAndIndexBuffers(const VkCommandBuffer& commandBuffer, int32_t meshVulkan, const Ref<AssetsDatabaseVulkan>& assetsDatabase);
 }

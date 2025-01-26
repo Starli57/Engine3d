@@ -1,25 +1,21 @@
-#pragma once
-
 #include "EngineCore/Pch.h"
 #include "CameraFlySystem.h"
 
-CameraFlySystem::CameraFlySystem(Ref<Ecs> ecs, Ref<Input> input)
+CameraFlySystem::CameraFlySystem(const Ref<Ecs>& ecs, const Ref<Input>& input)
 	: ecs(ecs), input(input)
 {
 }
 
-CameraFlySystem::~CameraFlySystem()
-{
-}
+CameraFlySystem::~CameraFlySystem() = default;
 
-void CameraFlySystem::Update(float deltaTime)
+void CameraFlySystem::Update(const float deltaTime)
 {
-	auto entities = ecs->registry->view<PositionComponent, RotationComponent, CameraFreeComponent>();
-	for (auto entity : entities)
+	const auto entities = ecs->registry->view<PositionComponent, RotationComponent, CameraFreeComponent>();
+	for (const auto entity : entities)
 	{
 		auto& position = entities.get<PositionComponent>(entity).position;
 		auto& rotation = entities.get<RotationComponent>(entity).rotation;
-		auto& freeCamComponent = entities.get<CameraFreeComponent>(entity);
+		const auto& freeCamComponent = entities.get<CameraFreeComponent>(entity);
 		
 		if (input->IsKeyPressed(GLFW_KEY_LEFT_ALT))
 		{
@@ -27,8 +23,8 @@ void CameraFlySystem::Update(float deltaTime)
 			double deltaRotationY;
 			input->GetCursorDelta(deltaRotationX, deltaRotationY);
 
-			rotation.x += (float)deltaRotationX * freeCamComponent.rotationSpeed * deltaTime;
-			rotation.y += (float)-deltaRotationY * freeCamComponent.rotationSpeed * deltaTime;
+			rotation.x += static_cast<float>(deltaRotationX) * freeCamComponent.rotationSpeed * deltaTime;
+			rotation.y += static_cast<float>(-deltaRotationY) * freeCamComponent.rotationSpeed * deltaTime;
 		}
 
 		glm::vec3 direction;

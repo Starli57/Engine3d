@@ -4,5 +4,5 @@
 
 namespace VkUtils
 {
-    void CreateTextureSampler(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkSampler& textureSampler);
+    void CreateTextureSampler(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, VkSampler& textureSampler);
 }

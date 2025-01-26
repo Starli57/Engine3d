@@ -5,8 +5,8 @@
 
 namespace VkUtils
 {
-	VkShaderModule CreateShaderModule(const std::string& shaderPath, VkDevice& logicalDevice);
-	void DisposeShaderModule(VkDevice& logicalDevice, VkShaderModule& shaderModule);
+	VkShaderModule CreateShaderModule(const std::string& shaderPath, const VkDevice& logicalDevice);
+	void DisposeShaderModule(const VkDevice& logicalDevice, const VkShaderModule& shaderModule);
 
-	VkPipelineShaderStageCreateInfo SetupShaderStageInfo(VkShaderModule& shaderModule, VkShaderStageFlagBits stage);;
+	VkPipelineShaderStageCreateInfo SetupShaderStageInfo(const VkShaderModule& shaderModule, VkShaderStageFlagBits stage);;
 }

@@ -16,7 +16,7 @@ public:
 	std::optional<uint32_t> normalMap;
 	std::optional<uint32_t> alphaMap;
 
-	Material(const std::string pipelineId);
+	Material(const std::string& pipelineId);
 
 	void virtual SetDiffuseTexture(uint32_t texture);
 	void virtual SetSpecular(uint32_t texture);

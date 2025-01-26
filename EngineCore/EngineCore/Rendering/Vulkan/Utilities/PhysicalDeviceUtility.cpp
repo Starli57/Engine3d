@@ -11,7 +11,7 @@ namespace VkUtils
 
         auto devices = GetRenderingDevicesList(instance, surface);
 
-        CAssert::Check(devices.size() != 0, "Physical rendering device not found");
+        CAssert::Check(!devices.empty(), "Physical rendering device not found");
         spdlog::info("Physical rendering devices found: {0}", devices.size());
 
         VkPhysicalDevice bestDevice = VK_NULL_HANDLE;
@@ -19,7 +19,7 @@ namespace VkUtils
 
         for (auto& device : devices)
         {
-            auto score = CalculateRenderingScore(device);
+            const auto score = CalculateRenderingScore(device);
             if (score > bestScore)
             {
                 bestScore = score;
@@ -30,7 +30,7 @@ namespace VkUtils
         return bestDevice;
     }
 
-    std::vector<VkPhysicalDevice> GetDevicesList(VkInstance& instance)
+    std::vector<VkPhysicalDevice> GetDevicesList(const VkInstance& instance)
     {
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
@@ -41,7 +41,7 @@ namespace VkUtils
         return devices;
     }
 
-    std::vector<VkPhysicalDevice> GetRenderingDevicesList(VkInstance& instance, VkSurfaceKHR& surface)
+    std::vector<VkPhysicalDevice> GetRenderingDevicesList(const VkInstance& instance, VkSurfaceKHR& surface)
     {
         auto allDevices = GetDevicesList(instance);
 
@@ -59,7 +59,7 @@ namespace VkUtils
     }
 
 
-    AVulkan::QueueFamilyIndices GetQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface)
+    AVulkan::QueueFamilyIndices GetQueueFamilies(const VkPhysicalDevice& device, const VkSurfaceKHR& surface)
     {
         AVulkan::QueueFamilyIndices indices;
 
@@ -84,7 +84,7 @@ namespace VkUtils
         return indices;
     }
 
-    uint64_t CalculateRenderingScore(VkPhysicalDevice& device)
+    uint64_t CalculateRenderingScore(const VkPhysicalDevice& device)
     {
         //todo: make better score calculation
 
@@ -111,12 +111,12 @@ namespace VkUtils
         return discreteMult * totalMemory;
     }
 
-    bool DoSupportQueueFamilies(VkPhysicalDevice& device, VkSurfaceKHR& surface)
+    bool DoSupportQueueFamilies(const VkPhysicalDevice& device, const VkSurfaceKHR& surface)
     {
-        return GetQueueFamilies(device, surface).isComplete();
+        return GetQueueFamilies(device, surface).IsComplete();
     }
 
-    bool DoSupportPhysicalDeviceExtensions(VkPhysicalDevice& device)
+    bool DoSupportPhysicalDeviceExtensions(const VkPhysicalDevice& device)
     {
         uint32_t extensionCount;
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
@@ -146,18 +146,18 @@ namespace VkUtils
 
         for (auto colorFormat : surfaceSettings.formats)
         {
-            spdlog::info("Available color format: {0} color space: {1}", (int)colorFormat.format, (int)colorFormat.colorSpace);
+            spdlog::info("Available color format: {0} color space: {1}", static_cast<int>(colorFormat.format), static_cast<int>(colorFormat.colorSpace));
         }
 
         for (auto mode : surfaceSettings.presentModes)
         {
-            spdlog::info("Available present mode: {0}", (int)mode);
+            spdlog::info("Available present mode: {0}", static_cast<int>(mode));
         }
 
-        spdlog::info("Max MSAA: {0}", (int)VkUtils::GetMaxUsableSampleCount(physicalDevice));
+        spdlog::info("Max MSAA: {0}", static_cast<int>(GetMaxUsableSampleCount(physicalDevice)));
     }
 
-    VkSampleCountFlagBits GetMaxUsableSampleCount(VkPhysicalDevice& physicalDevice) 
+    VkSampleCountFlagBits GetMaxUsableSampleCount(const VkPhysicalDevice& physicalDevice) 
     {
         VkPhysicalDeviceProperties physicalDeviceProperties;
         vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);

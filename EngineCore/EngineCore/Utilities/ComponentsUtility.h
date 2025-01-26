@@ -1,7 +1,6 @@
 
 #pragma once
 #include <string>
-#include <vector>
 #include <stdexcept>
 
 #include "EngineCore/Core/Ref.h"
@@ -28,10 +27,10 @@
 /// Don't make any changes in the file
 /// </summary>
 
-const int componentsLength = 14;
+constexpr int componentsLength = 14;
 extern const char* allComponentsNames[componentsLength];
 
 
-bool HasComponent(Ref<Entity> entity, const std::string& componentName);
-void AddComponent(Ref<Entity> entity, const std::string& componentName);
-void RemoveComponent(Ref<Entity> entity, const std::string& componentName);
+bool HasComponent(const Ref<Entity>& entity, const std::string& componentName);
+void AddComponent(const Ref<Entity>& entity, const std::string& componentName);
+void RemoveComponent(const Ref<Entity>& entity, const std::string& componentName);

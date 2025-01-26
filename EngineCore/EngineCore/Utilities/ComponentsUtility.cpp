@@ -27,7 +27,7 @@ const char* allComponentsNames[componentsLength] =
 };
 
 
-bool HasComponent(Ref<Entity> entity, const std::string& componentName)
+bool HasComponent(const Ref<Entity>& entity, const std::string& componentName)
 {
       if (componentName == "CameraComponent") return entity->HasComponent<CameraComponent>();
       if (componentName == "CameraFreeComponent") return entity->HasComponent<CameraFreeComponent>();
@@ -47,7 +47,7 @@ bool HasComponent(Ref<Entity> entity, const std::string& componentName)
 }
 
 
-void AddComponent(Ref<Entity> entity, const std::string& componentName)
+void AddComponent(const Ref<Entity>& entity, const std::string& componentName)
 {
       if (HasComponent(entity, componentName)) return;
 
@@ -68,7 +68,7 @@ void AddComponent(Ref<Entity> entity, const std::string& componentName)
 }
 
 
-void RemoveComponent(Ref<Entity> entity, const std::string& componentName)
+void RemoveComponent(const Ref<Entity>& entity, const std::string& componentName)
 {
       if (!HasComponent(entity, componentName)) return;
 

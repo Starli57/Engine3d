@@ -10,7 +10,7 @@
 class VulkanTextureView : public IWindow
 {
 public:
-	VulkanTextureView(Ref<Engine> engine, AVulkan::GraphicsApiVulkan& vulkanApi);
+	VulkanTextureView(const Ref<Engine>& engine, AVulkan::GraphicsApiVulkan& vulkanApi);
 	void Update() override;
 
 private:

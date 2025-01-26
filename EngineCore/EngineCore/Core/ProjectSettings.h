@@ -18,5 +18,5 @@ struct ProjectSettings
 		worldsPath(projectPath + "Worlds"), 
 		fontsPath(projectPath + "Fonts")
 	{
-	};
+	}
 };

@@ -6,7 +6,7 @@
 
 namespace VkUtils
 {
-	VkShaderModule CreateShaderModule(const std::string& shaderPath, VkDevice& logicalDevice)
+	VkShaderModule CreateShaderModule(const std::string& shaderPath, const VkDevice& logicalDevice)
 	{
 		spdlog::info("Create shader module: {0}", shaderPath);
 
@@ -24,12 +24,12 @@ namespace VkUtils
 		return shaderModule;
 	}
 
-	void DisposeShaderModule(VkDevice& logicalDevice, VkShaderModule& shaderModule)
+	void DisposeShaderModule(const VkDevice& logicalDevice, const VkShaderModule& shaderModule)
 	{
 		vkDestroyShaderModule(logicalDevice, shaderModule, nullptr);
 	}
 
-	VkPipelineShaderStageCreateInfo SetupShaderStageInfo(VkShaderModule& shaderModule, VkShaderStageFlagBits stage)
+	VkPipelineShaderStageCreateInfo SetupShaderStageInfo(const VkShaderModule& shaderModule, VkShaderStageFlagBits stage)
 	{
 		VkPipelineShaderStageCreateInfo stateInfo{};
 		stateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;

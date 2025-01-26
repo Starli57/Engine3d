@@ -35,9 +35,9 @@ public:
 	AssetsDatabase(const Ref<ProjectSettings>& projectSettings);
 	virtual ~AssetsDatabase() = default;
 
-	size_t MeshesCount() { return meshesPaths.size(); }
-	size_t MaterialsCount() { return materials.size(); }
-	size_t TexturesCount() { return texturesPaths.size(); }
+	size_t MeshesCount() const { return meshesPaths.size(); }
+	size_t MaterialsCount() const { return materials.size(); }
+	size_t TexturesCount() const { return texturesPaths.size(); }
 
 private:
 	Ref<ProjectSettings> projectSettings;

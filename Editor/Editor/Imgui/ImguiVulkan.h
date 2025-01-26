@@ -10,7 +10,7 @@
 
 #include "Editor/IEngineEditor.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
-#include "EngineCore/Rendering/Vulkan/Descriptors.h"
+#include "EngineCore/Rendering/Vulkan/DescriptorsManager.h"
 #include "EngineCore/Rendering/Vulkan/SwapChain.h"
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/PhysicalDeviceUtility.h"
@@ -24,12 +24,12 @@
 class ImguiVulkan : public IEngineEditor
 {
 public:
-    ImguiVulkan(Ref<ProjectSettings> projectSettings, AVulkan::GraphicsApiVulkan& vulkanApi);
+    ImguiVulkan(const Ref<ProjectSettings>& projectSettings, AVulkan::GraphicsApiVulkan& vulkanApi);
     ~ImguiVulkan();
 
     void Update() override;
 
-	void CreateRenderPass(VkRenderPass& renderPass);
+	void CreateRenderPass(VkRenderPass& renderPass) const;
 
 private:
 	Ref<ProjectSettings> projectSettings;
@@ -42,5 +42,5 @@ private:
 	AVulkan::QueueFamilyIndices queueFamilies;
 	uint32_t graphicsQueueFamily;
 
-	void DefaultEditorColors(ImGuiStyle* dst);
+	void DefaultEditorColors(ImGuiStyle* dst) const;
 };

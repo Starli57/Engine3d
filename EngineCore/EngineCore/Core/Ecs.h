@@ -17,7 +17,7 @@ public:
 	~Ecs();
 
 	Ref<Entity> CreateEntity();
-	void DestroyEntiy(Ref<Entity> entity);
+	void DestroyEntity(const Ref<Entity>& entity);
 
 };
 

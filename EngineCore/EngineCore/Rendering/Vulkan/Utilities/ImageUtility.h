@@ -6,19 +6,19 @@
 
 namespace VkUtils
 {
-    VkImage CreateImage(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
+    VkImage CreateImage(VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice,
         uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
         VkSampleCountFlagBits msaa, VkMemoryPropertyFlags properties, VkDeviceMemory& imageMemory);
-    void DestroyImage(VkDevice& logicalDevice, VkImage& image);
+    void DestroyImage(const VkDevice& logicalDevice, const VkImage& image);
     
     void CopyBufferToImage(VkDevice& logicalDevice, VkQueue& graphicsQueue,
-        VkBuffer& buffer, VkImage& image, uint32_t width, uint32_t height, VkCommandPool& commandPool);
-    void TransitionImageLayout(VkDevice& logicalDevice, VkCommandBuffer& commandBuffer, VkQueue& graphicsQueue,
-        VkImage& image, VkImageLayout oldLayout, VkImageLayout newLayout, VkImageAspectFlags aspectMask);
+                           const VkBuffer& buffer, const VkImage& image, uint32_t width, uint32_t height, VkCommandPool& commandPool);
+    void TransitionImageLayout(VkDevice& logicalDevice, const VkCommandBuffer& commandBuffer, VkQueue& graphicsQueue,
+                               const VkImage& image, VkImageLayout oldLayout, VkImageLayout newLayout, VkImageAspectFlags aspectMask);
 
-    void CreateImageView(VkDevice& logicalDevice, VkFormat& imageFormat, VkImageAspectFlags imageAspectFlags,
-        VkImage& image, VkImageView& imageView);
-    void DestroyImageView(VkDevice& logicalDevice, VkImageView& imageView);
+    void CreateImageView(const VkDevice& logicalDevice, const VkFormat& imageFormat, VkImageAspectFlags imageAspectFlags,
+                         const VkImage& image, VkImageView& imageView);
+    void DestroyImageView(const VkDevice& logicalDevice, const VkImageView& imageView);
 
     void DisposeImageModel(VkDevice& logicalDevice, Ref<AVulkan::ImageModel> imageModel);
 }

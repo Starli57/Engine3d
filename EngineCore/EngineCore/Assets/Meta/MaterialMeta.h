@@ -9,7 +9,7 @@ struct MaterialMeta
 	std::string ambientTextureName;
 	std::string diffuseTextureName;
 	std::string specularTextureName;
-	std::string specular_highlightTextureName;
+	std::string specularHighlightTextureName;
 	std::string bumpTextureName;
 	std::string displacementTextureName;
 	std::string alphaTextureName;

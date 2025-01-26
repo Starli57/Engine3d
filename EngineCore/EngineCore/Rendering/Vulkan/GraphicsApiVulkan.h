@@ -5,7 +5,8 @@
 #include <stack>
 #include <vector>
 
-#include "Descriptors.h"
+#include "CommandsManager.h"
+#include "DescriptorsManager.h"
 
 #include "Models/SwapChainData.h"
 #include "Models/ImageModel.h"
@@ -67,14 +68,12 @@ namespace AVulkan
 
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;
+
 		
 		Ref<SwapChain> swapChain;
 		Ref<SwapChainData> swapChainData;
-		Ref<Descriptors> descriptors;
+		Ref<DescriptorsManager> descriptorsManager;
 		Ref<VulkanConfiguration> rendererConfig;
-
-		VkCommandPool commandPool;
-		std::vector<VkCommandBuffer> commandBuffers;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;
@@ -82,18 +81,21 @@ namespace AVulkan
 
 		VkSampler textureSampler;
 
-		uint32_t GetImageIndex() { return imageIndex; }
-		uint16_t GetFrame() { return frame; }
-
+		uint32_t GetImageIndex() const { return imageIndex; }
+		uint16_t GetFrame() const { return frame; }
+		
+		VkCommandPool& GetCommandPool() const { return commandsManager->GetCommandPool(); }
+		VkCommandBuffer& GetCommandBuffer() const { return commandsManager->GetCommandBuffer(frame); }
+		
 		RenderPassColor* GetRenderPassColor() const { return renderPassColor; }
 		RenderPassShadowMaps* GetRenderPassShadowMap() const { return renderPassShadowMaps; }
 
-		GraphicsApiVulkan(Ref<Ecs> ecs, Ref<AssetsDatabaseVulkan> assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* window);
+		GraphicsApiVulkan(const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* window);
 		virtual ~GraphicsApiVulkan() override;
 
 		void Init() override;
 		void Render() override;
-		void FinanilizeRenderOperations() override;
+		void FinalizeRenderOperations() override;
 
 	private:
 		Ref<Ecs> ecs;
@@ -103,6 +105,8 @@ namespace AVulkan
 
 		Ref<PipelinesCollection> pipelinesCollection;
 
+		CommandsManager* commandsManager;
+		
 		RenderPassColor* renderPassColor;
 		RenderPassShadowMaps* renderPassShadowMaps;
 		
@@ -115,9 +119,8 @@ namespace AVulkan
 		void CreateWindowSurface();
 		void CreateSwapChain();
 		void CreateRenderPasses();
-		void CreateDepthBuffer();
-		void CreateCommandPool();
-		void CreateCommandBuffer();
+		void CreateDepthBuffer() const;
+		void CreateCommandsManager();
 		void CreateSyncObjects();
 		void CreateTextureSampler();
 

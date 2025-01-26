@@ -16,7 +16,8 @@
 class Hierarchy : public IWindow
 {
 public:
-	Hierarchy(Ref<Ecs> ecs, Ref<Inspector> inspector, Ref<ProjectSettings> projectSettings, Ref<AssetsDatabase> assetsDatabase);
+	Hierarchy(const Ref<Ecs>& ecs, const Ref<Inspector>& inspector, const Ref<ProjectSettings>& projectSettings, const
+	          Ref<AssetsDatabase>& assetsDatabase);
 	~Hierarchy();
 
 	void Update() override;

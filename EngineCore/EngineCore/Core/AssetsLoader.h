@@ -12,13 +12,13 @@
 class AssetsLoader
 {
 public:
-	AssetsLoader(Ref<ProjectSettings> projectSettings, IGraphicsApi* graphicsApi, Ref<AssetsDatabase> assetsDatabase);
+	AssetsLoader(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, const Ref<AssetsDatabase>& assetsDatabase);
 	virtual ~AssetsLoader() = default;
 
 	void Load();
 
-	uint32_t LoadTextureStr(const std::string& path);
-	uint32_t LoadTexture(const std::filesystem::path& path);
+	uint32_t LoadTextureStr(const std::string& path) const;
+	uint32_t LoadTexture(const std::filesystem::path& path) const;
 
 	void PrepareAllMeshesMeta(std::vector<MeshMeta>& meshes);
 	virtual void LoadAllMeshes(std::vector<MeshMeta>& meshes);

@@ -182,12 +182,12 @@ namespace AVulkan
 		{
 			if (data.format == VK_FORMAT_R8G8B8A8_SRGB && data.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 			{
-				spdlog::info("Choosed color format: {0}", (int)data.format);
+				spdlog::info("Chosen color format: {0}", static_cast<int>(data.format));
 				return data;
 			}
 		}
 
-		spdlog::warn("fallback color format: {0}", (int)availableFormats[0].format);
+		spdlog::warn("Fallback color format: {0}", static_cast<int>(availableFormats[0].format));
 		return availableFormats[0];
 	}
 
@@ -213,8 +213,8 @@ namespace AVulkan
 
 	VkPresentModeKHR SwapChain::ChoosePresentMode(const std::vector<VkPresentModeKHR>& availableModes) const
 	{
-		VkPresentModeKHR highQualityMode = VK_PRESENT_MODE_MAILBOX_KHR;
-		VkPresentModeKHR defaultMode = VK_PRESENT_MODE_FIFO_KHR;
+		constexpr VkPresentModeKHR highQualityMode = VK_PRESENT_MODE_MAILBOX_KHR;
+		constexpr VkPresentModeKHR defaultMode = VK_PRESENT_MODE_FIFO_KHR;
 
 		for (const auto& mode : availableModes)
 		{
@@ -224,7 +224,7 @@ namespace AVulkan
 			}
 		}
 
-		spdlog::warn("Present mode is not available: {0} Default mode will be used {1}", (int)highQualityMode, (int)defaultMode);
+		spdlog::warn("Present mode is not available: {0} Default mode will be used {1}", static_cast<int>(highQualityMode), static_cast<int>(defaultMode));
 		return defaultMode;
 	}
 

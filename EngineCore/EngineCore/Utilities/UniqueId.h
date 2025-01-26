@@ -17,7 +17,7 @@ private:
 struct UniqueId 
 {
 public:
-    uint32_t Get() { return id; }
+    uint32_t Get() const { return id; }
 
     UniqueId() { id = UniqueIdGenerator::Generate(); }
 

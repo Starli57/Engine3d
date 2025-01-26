@@ -11,7 +11,7 @@
 class CameraFlySystem : ISystem
 {
 public:
-	CameraFlySystem(Ref<Ecs> ecs, Ref<Input> input);
+	CameraFlySystem(const Ref<Ecs>& ecs, const Ref<Input>& input);
 	~CameraFlySystem();
 
 	virtual void Update(float deltaTime) override;

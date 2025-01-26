@@ -6,8 +6,7 @@
 class AssetsLoaderVulkan : public AssetsLoader
 {
 public:
-	AssetsLoaderVulkan(Ref<ProjectSettings> projectSettings, IGraphicsApi* graphicsApi, Ref<AssetsDatabase> assetsDatabase);
-	~AssetsLoaderVulkan() override;
+	AssetsLoaderVulkan(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, Ref<AssetsDatabase> assetsDatabase);
 
 	void LoadAllTextures() override;
 	void UnLoadAllTextures() override;

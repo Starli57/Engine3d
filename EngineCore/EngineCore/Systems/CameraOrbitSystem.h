@@ -13,7 +13,7 @@
 class CameraOrbitSystem : ISystem
 {
 public:
-	CameraOrbitSystem(Ref<Ecs> ecs, Ref<Input> input);
+	CameraOrbitSystem(const Ref<Ecs>& ecs, const Ref<Input>& input);
 	~CameraOrbitSystem();
 
 	virtual void Update(float deltaTime) override;

@@ -7,9 +7,9 @@
 
 namespace VkUtils
 {
-	void CreateFrameBuffer(VkDevice& logicalDevice, VkRenderPass& renderPass,
-		VkExtent2D& extent, std::vector<VkImageView> attachments, VkFramebuffer& frameBuffer);
+	void CreateFrameBuffer(const VkDevice& logicalDevice, const VkRenderPass& renderPass,
+	                       const VkExtent2D& extent, const std::vector<VkImageView>& attachments, VkFramebuffer& frameBuffer);
 
-	void DisposeFrameBuffer(VkDevice& logicalDevice, std::vector<VkFramebuffer>& frameBuffers);
-	void DisposeFrameBuffer(VkDevice& logicalDevice, VkFramebuffer& frameBuffer);
+	void DisposeFrameBuffer(const VkDevice& logicalDevice, std::vector<VkFramebuffer>& frameBuffers);
+	void DisposeFrameBuffer(const VkDevice& logicalDevice, const VkFramebuffer& frameBuffer);
 }

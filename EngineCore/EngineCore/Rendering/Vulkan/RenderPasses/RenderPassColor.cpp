@@ -5,19 +5,20 @@
 namespace AVulkan
 {
     RenderPassColor::RenderPassColor(
-        VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, Ref<AVulkan::VulkanConfiguration> rendererConfig,
-        Ref<Ecs> ecs, Ref<AssetsDatabaseVulkan> assetsDatabase, Ref<SwapChainData> swapChainData, Ref<Descriptors> descriptors, VkSampler& textureSampler,
-        Ref<PipelinesCollection> pipelinesCollection, VkImageView& shadowMapImageView, VkSampler& shadowMapSampler) :
-        IRenderPass(physicalDevice, logicalDevice, rendererConfig, ecs, assetsDatabase, swapChainData, descriptors), 
-        textureSampler(textureSampler), pipelinesCollection(pipelinesCollection), 
-        shadowMapImageView(shadowMapImageView), shadowMapSampler(shadowMapSampler)
+        VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<VulkanConfiguration>& rendererConfig,
+        const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetsDatabase, const Ref<SwapChainData>& swapChainData,
+        const Ref<DescriptorsManager>& descriptorsManager, VkSampler& textureSampler,
+        const Ref<PipelinesCollection>& pipelinesCollection, VkImageView& shadowMapImageView, VkSampler& shadowMapSampler) :
+        IRenderPass(physicalDevice, logicalDevice, rendererConfig, ecs, assetsDatabase, swapChainData, descriptorsManager), 
+        textureSampler(textureSampler), shadowMapImageView(shadowMapImageView), 
+        shadowMapSampler(shadowMapSampler), pipelinesCollection(pipelinesCollection)
     {
         spdlog::info("Create RenderPass Color");
 
-        CreateRenderPass(rendererConfig);
-        CreateDescriptorLayout(logicalDevice);
-        CreatePipelines();
-        CreateFrameBuffers();
+        RenderPassColor::CreateRenderPass(rendererConfig);
+        RenderPassColor::CreateDescriptorLayout(logicalDevice);
+        RenderPassColor::CreatePipelines();
+        RenderPassColor::CreateFrameBuffers();
     }
 
     RenderPassColor::~RenderPassColor()
@@ -28,10 +29,10 @@ namespace AVulkan
         frameBuffers.clear();
 
         GraphicsPipelineUtility pipelineUtility;
-        for (auto pipeline : pipelines) pipelineUtility.Dispose(pipeline.second, logicalDevice);
+        for (const auto pipeline : pipelines) pipelineUtility.Dispose(pipeline.second, logicalDevice);
         pipelines.clear();
 
-        for (auto descriptor : passDescriptors)
+        for (const auto& descriptor : passDescriptors)
         {
             VkUtils::DisposeBuffer(logicalDevice, descriptor->uboCamera->buffer, descriptor->uboCamera->bufferMemory);
             VkUtils::DisposeBuffer(logicalDevice, descriptor->uboLights->buffer, descriptor->uboLights->bufferMemory);
@@ -64,8 +65,8 @@ namespace AVulkan
             int32_t meshIndex = meshContainer.meshIndex.value();
             UpdateUniformBuffer(index, materialComponent, rendererPosition, cameraProjection, lightsProjection);
 
-            auto material = assetsDatabase->materials.at(materialComponent.materialIndex);
-            auto pipeline = pipelines.at(material->pipelineId);
+            const auto material = assetsDatabase->materials.at(materialComponent.materialIndex);
+            const auto pipeline = pipelines.at(material->pipelineId);
 
             VkUtils::BindPipeline(commandBuffer, pipeline);
             VkUtils::BindVertexAndIndexBuffers(commandBuffer, meshIndex, assetsDatabase);
@@ -82,15 +83,15 @@ namespace AVulkan
         VkUtils::EndRenderPass(commandBuffer);
     }
 
-    void RenderPassColor::UpdateUniformBuffer(const uint32_t descriptorIndex, MaterialComponent& materialComponent,
-        PositionComponent& cameraPosition, UboViewProjectionComponent& cameraProjection, UboViewProjectionComponent& lightProjection)
+    void RenderPassColor::UpdateUniformBuffer(const uint32_t descriptorIndex, const MaterialComponent& materialComponent,
+            const PositionComponent& cameraPosition, const UboViewProjectionComponent& cameraProjection, const UboViewProjectionComponent& lightProjection)
     {
-        auto colorDescriptor = GetOrCreateDescriptorSet(descriptorIndex);
+        const auto colorDescriptor = GetOrCreateDescriptorSet(descriptorIndex);
 
         memcpy(colorDescriptor->uboCameraViewProjection->bufferMapped, &cameraProjection, sizeof(UboViewProjectionComponent));
 
-        auto lightEntries = ecs->registry->view<PositionComponent, RotationComponent, UboDiffuseLightComponent>();
-        for (auto entity : lightEntries)
+        const auto lightEntries = ecs->registry->view<PositionComponent, RotationComponent, UboDiffuseLightComponent>();
+        for (const auto entity : lightEntries)
         {
             //todo: now color descriptor can handle only 1 light entry, need to extend
             auto& position = lightEntries.get<PositionComponent>(entity).position;
@@ -111,9 +112,9 @@ namespace AVulkan
     }
 
 #pragma optimize("", off)
-    void RenderPassColor::UpdateDescriptorSet(Ref<ColorDescriptor> colorDescriptor, uint32_t materialIndex)
+    void RenderPassColor::UpdateDescriptorSet(const Ref<ColorDescriptor>& colorDescriptor, const uint32_t materialIndex)
     {
-        auto material = assetsDatabase->materials.at(materialIndex);
+        const auto material = assetsDatabase->materials.at(materialIndex);
 
         VkImageView diffuseImageView = nullptr;
         if (material->diffuse.has_value())
@@ -210,7 +211,7 @@ namespace AVulkan
 #pragma optimize("", on)
 
     void RenderPassColor::UpdateRendererPositionAndProjection(PositionComponent& positionComponent,
-        UboViewProjectionComponent& cameraProjection, UboViewProjectionComponent& lightProjection)
+        UboViewProjectionComponent& cameraProjection, UboViewProjectionComponent& lightProjection) const
     {
         auto cameraEntries = ecs->registry->view<PositionComponent, CameraComponent, UboViewProjectionComponent>();
         if (cameraEntries.begin() != cameraEntries.end())
@@ -237,8 +238,8 @@ namespace AVulkan
 
     void RenderPassColor::CreateDescriptorSet()
     {
-        Ref<ColorDescriptor> colorDescriptor = CreateRef<ColorDescriptor>();
-        descriptors->AllocateDescriptorSet(logicalDevice, descriptorSetLayout, colorDescriptor->descriptorSet);
+        const Ref<ColorDescriptor> colorDescriptor = CreateRef<ColorDescriptor>();
+        descriptorsManager->AllocateDescriptorSet(logicalDevice, descriptorSetLayout, colorDescriptor->descriptorSet);
         colorDescriptor->uboCameraViewProjection = VkUtils::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboViewProjectionComponent));
         colorDescriptor->uboLights = VkUtils::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboLight));
         colorDescriptor->uboCamera = VkUtils::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(PositionComponent));
@@ -265,17 +266,17 @@ namespace AVulkan
 
     void RenderPassColor::CreateDescriptorLayout(VkDevice& logicalDevice)
     {
-        auto uboViewProjectionLayout = descriptors->DescriptorSetLayoutBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
-        auto uboLightLayout = descriptors->DescriptorSetLayoutBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
-        auto uboCameraLayout = descriptors->DescriptorSetLayoutBinding(2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
-        auto shadowMap = descriptors->DescriptorSetLayoutBinding(3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-        auto diffuseMap = descriptors->DescriptorSetLayoutBinding(4, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-        auto specularMap = descriptors->DescriptorSetLayoutBinding(5, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-        auto normalMap = descriptors->DescriptorSetLayoutBinding(6, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-        auto alphaMap = descriptors->DescriptorSetLayoutBinding(7, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        const auto uboViewProjectionLayout = descriptorsManager->DescriptorSetLayoutBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
+        const auto uboLightLayout = descriptorsManager->DescriptorSetLayoutBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
+        const auto uboCameraLayout = descriptorsManager->DescriptorSetLayoutBinding(2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
+        const auto shadowMap = descriptorsManager->DescriptorSetLayoutBinding(3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        const auto diffuseMap = descriptorsManager->DescriptorSetLayoutBinding(4, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        const auto specularMap = descriptorsManager->DescriptorSetLayoutBinding(5, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        const auto normalMap = descriptorsManager->DescriptorSetLayoutBinding(6, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        const auto alphaMap = descriptorsManager->DescriptorSetLayoutBinding(7, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
 
         std::vector bindings = { uboViewProjectionLayout, uboLightLayout, uboCameraLayout, shadowMap, diffuseMap, specularMap, normalMap, alphaMap };
-        descriptors->CreateLayout(logicalDevice, bindings, descriptorSetLayout);
+        descriptorsManager->CreateLayout(logicalDevice, bindings, descriptorSetLayout);
     }
 
     void RenderPassColor::CreatePipelines()
@@ -293,7 +294,7 @@ namespace AVulkan
         }
     }
 
-    void RenderPassColor::CreateRenderPass(Ref<AVulkan::VulkanConfiguration> rendererConfig)
+    void RenderPassColor::CreateRenderPass(Ref<VulkanConfiguration> rendererConfig)
     {
         VkAttachmentDescription colorAttachment{};
         colorAttachment.format = rendererConfig->imageFormat;

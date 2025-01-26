@@ -6,9 +6,9 @@
 class Entity
 {
 public:
-	entt::entity GetEntity() { return entity; }
+	entt::entity GetEntity() const { return entity; }
 
-	Entity(Ref<entt::registry> registry)
+	Entity(const Ref<entt::registry>& registry)
 	{
 		this->registry = registry;
 		this->entity = registry->create();
@@ -45,13 +45,13 @@ public:
 	}
 
 	template<typename T>
-	bool HasComponent()
+	bool HasComponent() const
 	{
 		return registry->any_of<T>(entity);
 	}
 
 	template<typename T>
-	void RemoveComponent()
+	void RemoveComponent() const
 	{
 		registry->remove<T>(entity);
 	}

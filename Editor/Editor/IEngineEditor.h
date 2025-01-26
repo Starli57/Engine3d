@@ -15,12 +15,12 @@ public:
 
 	virtual void Update() = 0;
 
-	void AddWindow(Ref<IWindow> window)
+	void AddWindow(const Ref<IWindow>& window)
 	{
 		windows.push_back(window);
 	}
 
-	void RemoveWindow(Ref<IWindow> window)
+	void RemoveWindow(const Ref<IWindow>& window)
 	{
 		windows.erase(std::remove(windows.begin(), windows.end(), window), windows.end());
 	}

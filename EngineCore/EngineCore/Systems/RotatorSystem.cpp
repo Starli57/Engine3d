@@ -2,14 +2,14 @@
 #include "RotatorSystem.h"
 #include "EngineCore/Components/RotationVelocityComponent.h"
 
-RotatorSystem::RotatorSystem(Ref<Ecs> ecs) : ecs(ecs)
+RotatorSystem::RotatorSystem(const Ref<Ecs>& ecs) : ecs(ecs)
 {
 }
 
-void RotatorSystem::Update(float deltaTime)
+void RotatorSystem::Update(const float deltaTime)
 {
-	auto rotationComponents = ecs->registry->view<RotationVelocityComponent, RotationComponent>();
-	for (auto entity : rotationComponents)
+	const auto rotationComponents = ecs->registry->view<RotationVelocityComponent, RotationComponent>();
+	for (const auto entity : rotationComponents)
 	{
 		auto& rotationComponent = rotationComponents.get<RotationComponent>(entity);
 		auto& rotationVelocityComponent = rotationComponents.get<RotationVelocityComponent>(entity);

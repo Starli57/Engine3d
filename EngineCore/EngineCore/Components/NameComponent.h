@@ -8,5 +8,5 @@ struct NameComponent : public IComponent
 	std::string name;
 
 	NameComponent() { name = "<NONE>"; }
-	NameComponent(std::string name) :name(name) {}
+	NameComponent(const std::string& name) :name(name) {}
 };

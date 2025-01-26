@@ -3,6 +3,6 @@
 class ISystem
 {
 public:
-	virtual ~ISystem() {};
-	virtual void Update(float deltaTime = 0) {};
+	virtual ~ISystem() {}
+	virtual void Update(float deltaTime = 0) {}
 };

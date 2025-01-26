@@ -67,7 +67,7 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& v)
 	return out;
 }
 
-EntitySerializer::EntitySerializer(Ref<ProjectSettings> projectSettings, Ref<AssetsDatabase> assetsDatabase) : 
+EntitySerializer::EntitySerializer(const Ref<ProjectSettings>& projectSettings, const Ref<AssetsDatabase>& assetsDatabase) : 
 	projectSettings(projectSettings), assetsDatabase(assetsDatabase)
 {
 }
@@ -76,7 +76,7 @@ EntitySerializer::~EntitySerializer()
 {
 }
 
-void EntitySerializer::SerializeWorld(Ref<Ecs> ecs, const std::string& filePath)
+void EntitySerializer::SerializeWorld(const Ref<Ecs>& ecs, const std::string& filePath)
 {
 	YAML::Emitter out;
 
@@ -91,7 +91,7 @@ void EntitySerializer::SerializeWorld(Ref<Ecs> ecs, const std::string& filePath)
 	fout << out.c_str();
 }
 
-bool EntitySerializer::InstantiateWorld(Ref<Ecs> ecs, const std::filesystem::path& filePath)
+bool EntitySerializer::InstantiateWorld(const Ref<Ecs>& ecs, const std::filesystem::path& filePath)
 {
 	std::vector<YAML::Node> data;
 
@@ -111,7 +111,7 @@ bool EntitySerializer::InstantiateWorld(Ref<Ecs> ecs, const std::filesystem::pat
 	return true;
 }
 
-void EntitySerializer::SerializePrefab(Ref<Entity> entity, const std::string& filePath)
+void EntitySerializer::SerializePrefab(const Ref<Entity>& entity, const std::string& filePath)
 {
 	YAML::Emitter out;
 	out << YAML::BeginMap;
@@ -124,7 +124,7 @@ void EntitySerializer::SerializePrefab(Ref<Entity> entity, const std::string& fi
 	fout << out.c_str();
 }
 
-void EntitySerializer::SerializeEntity(Ref<Entity> entity, YAML::Emitter& emitter)
+void EntitySerializer::SerializeEntity(const Ref<Entity>& entity, YAML::Emitter& emitter)
 {
 	SerializeComponent<IdComponent>(emitter, entity);
 	SerializeComponent<NameComponent>(emitter, entity);
@@ -141,7 +141,7 @@ void EntitySerializer::SerializeEntity(Ref<Entity> entity, YAML::Emitter& emitte
 	SerializeComponent<UboDiffuseLightComponent>(emitter, entity);
 }
 
-bool EntitySerializer::InstantiatePrefab(Ref<Ecs> ecs, const std::filesystem::path& filePath)
+bool EntitySerializer::InstantiatePrefab(const Ref<Ecs>& ecs, const std::filesystem::path& filePath)
 {
 	YAML::Node data;
 
@@ -158,7 +158,7 @@ bool EntitySerializer::InstantiatePrefab(Ref<Ecs> ecs, const std::filesystem::pa
 	return InstantiatePrefab(ecs, data);
 }
 
-bool EntitySerializer::InstantiatePrefab(Ref<Ecs> ecs, YAML::Node& node)
+bool EntitySerializer::InstantiatePrefab(const Ref<Ecs>& ecs, YAML::Node& node)
 {
 	auto entity = ecs->CreateEntity();
 
@@ -179,7 +179,7 @@ bool EntitySerializer::InstantiatePrefab(Ref<Ecs> ecs, YAML::Node& node)
 	return true;
 }
 
-void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, NameComponent& component)
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const NameComponent& component) const
 {
 	out << YAML::Key << "NameComponent";
 	out << YAML::BeginMap;
@@ -189,7 +189,7 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 	out << YAML::EndMap;
 }
 
-void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, PositionComponent& component)
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const PositionComponent& component) const
 {
 	out << YAML::Key << "PositionComponent";
 	out << YAML::BeginMap;
@@ -199,7 +199,7 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 	out << YAML::EndMap;
 }
 
-void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, RotationComponent& component)
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const RotationComponent& component) const
 {
 	out << YAML::Key << "RotationComponent";
 	out << YAML::BeginMap;
@@ -209,7 +209,7 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 	out << YAML::EndMap;
 }
 
-void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, RotationVelocityComponent& component)
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const RotationVelocityComponent& component) const
 {
 	out << YAML::Key << "RotationVelocityComponent";
 	out << YAML::BeginMap;
@@ -219,7 +219,7 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 	out << YAML::EndMap;
 }
 
-void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, ScaleComponent& component)
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const ScaleComponent& component) const
 {
 	out << YAML::Key << "ScaleComponent";
 	out << YAML::BeginMap;
@@ -229,7 +229,7 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 	out << YAML::EndMap;
 }
 
-void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, CameraComponent& component)
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const CameraComponent& component) const
 {
 	out << YAML::Key << "CameraComponent";
 	out << YAML::BeginMap;
@@ -242,7 +242,7 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 	out << YAML::EndMap;
 }
 
-void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, CameraFreeComponent& component)
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const CameraFreeComponent& component) const
 {
 	out << YAML::Key << "CameraFreeComponent";
 	out << YAML::BeginMap;
@@ -253,14 +253,14 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 	out << YAML::EndMap;
 }
 
-void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboDiffuseLightComponent& component)
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const UboDiffuseLightComponent& component) const
 {
 	out << YAML::Key << "UboDiffuseLightComponent";
 	out << YAML::BeginMap;
 	out << YAML::EndMap;
 }
 
-void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, MeshComponent& component)
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const MeshComponent& component) const
 {
 	out << YAML::Key << "MeshComponent";
 	out << YAML::BeginMap;
@@ -271,7 +271,7 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 	out << YAML::EndMap;
 }
 
-void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, MaterialComponent& component)
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const MaterialComponent& component) const
 {
 	out << YAML::Key << "MaterialComponent";
 	out << YAML::BeginMap;
@@ -282,74 +282,68 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 	out << YAML::EndMap;
 }
 
-void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboModelComponent& component)
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboModelComponent& component) const
 {
 	out << YAML::Key << "UboModelComponent";
 	out << YAML::BeginMap;
 	out << YAML::EndMap;
 }
 
-void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboViewProjectionComponent& component)
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboViewProjectionComponent& component) const
 {
 	out << YAML::Key << "UboViewProjectionComponent";
 	out << YAML::BeginMap;
 	out << YAML::EndMap;
 }
 
-void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, IdComponent& component)
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, IdComponent& component) const
 {
 	//don't need to serialize, because ID is unique only inside 1 session
 }
 
-void EntitySerializer::InstantiateComponentName(Ref<Entity> entity, YAML::Node node)
+void EntitySerializer::InstantiateComponentName(const Ref<Entity>& entity, YAML::Node node) const
 {
-	auto nameComponent = node["NameComponent"];
-	if (nameComponent)
+	if (auto nameComponent = node["NameComponent"])
 	{
 		entity->AddComponent<NameComponent>(nameComponent["name"].as<std::string>());
 	}
 }
 
-void EntitySerializer::InstantiateComponentPosition(Ref<Entity> entity, YAML::Node node)
+void EntitySerializer::InstantiateComponentPosition(const Ref<Entity>& entity, YAML::Node node) const
 {
-	auto positionComponent = node["PositionComponent"];
-	if (positionComponent)
+	if (auto positionComponent = node["PositionComponent"])
 	{
 		entity->AddComponent<PositionComponent>(positionComponent["position"].as<glm::vec3>());
 	}
 }
 
-void EntitySerializer::InstantiateComponentRotation(Ref<Entity> entity, YAML::Node node)
+void EntitySerializer::InstantiateComponentRotation(const Ref<Entity>& entity, YAML::Node node) const
 {
-	auto rotationComponent = node["RotationComponent"];
-	if (rotationComponent)
+	if (auto rotationComponent = node["RotationComponent"])
 	{
 		entity->AddComponent<RotationComponent>(rotationComponent["rotation"].as<glm::vec3>());
 	}
 }
 
-void EntitySerializer::InstantiateComponentRotationVelocity(Ref<Entity> entity, YAML::Node node)
+void EntitySerializer::InstantiateComponentRotationVelocity(const Ref<Entity>& entity, YAML::Node node) const
 {
-	auto rotationVelocityComponent = node["RotationVelocityComponent"];
-	if (rotationVelocityComponent)
+	if (auto rotationVelocityComponent = node["RotationVelocityComponent"])
 	{
 		entity->AddComponent<RotationVelocityComponent>(rotationVelocityComponent["velocity"].as<glm::vec3>());
 	}
 }
 
-void EntitySerializer::InstantiateComponentScale(Ref<Entity> entity, YAML::Node node)
+void EntitySerializer::InstantiateComponentScale(const Ref<Entity>& entity, YAML::Node node) const
 {
-	auto scaleComponent = node["ScaleComponent"];
-	if (scaleComponent)
+	if (auto scaleComponent = node["ScaleComponent"])
 	{
 		entity->AddComponent<ScaleComponent>(scaleComponent["scale"].as<glm::vec3>());
 	}
 }
 
-void EntitySerializer::InstantiateComponentCamera(Ref<Entity> entity, YAML::Node node)
+void EntitySerializer::InstantiateComponentCamera(const Ref<Entity>& entity, YAML::Node node) const
 {
-	auto cameraComponent = node["CameraComponent"];
-	if (cameraComponent)
+	if (auto cameraComponent = node["CameraComponent"])
 	{
 		entity->AddComponent<CameraComponent>(
 			cameraComponent["fov"].as<float>(),
@@ -359,10 +353,9 @@ void EntitySerializer::InstantiateComponentCamera(Ref<Entity> entity, YAML::Node
 	}
 }
 
-void EntitySerializer::InstantiateComponentCameraFree(Ref<Entity> entity, YAML::Node node)
+void EntitySerializer::InstantiateComponentCameraFree(const Ref<Entity>& entity, YAML::Node node) const
 {
-	auto cameraFreeComponent = node["CameraFreeComponent"];
-	if (cameraFreeComponent)
+	if (auto cameraFreeComponent = node["CameraFreeComponent"])
 	{
 		entity->AddComponent<CameraFreeComponent>(
 			cameraFreeComponent["movementSpeed"].as<float>(),
@@ -370,22 +363,20 @@ void EntitySerializer::InstantiateComponentCameraFree(Ref<Entity> entity, YAML::
 	}
 }
 
-void EntitySerializer::InstantiateComponentUboDiffuseLight(Ref<Entity> entity, YAML::Node node)
+void EntitySerializer::InstantiateComponentUboDiffuseLight(const Ref<Entity>& entity, YAML::Node node) const
 {
-	auto uboDiffuseLightComponent = node["UboDiffuseLightComponent"];
-	if (uboDiffuseLightComponent)
+	if (auto uboDiffuseLightComponent = node["UboDiffuseLightComponent"])
 	{
 		entity->AddComponent<UboDiffuseLightComponent>();
 	}
 }
 
-void EntitySerializer::InstantiateComponentMesh(Ref<Entity> entity, YAML::Node node)
+void EntitySerializer::InstantiateComponentMesh(const Ref<Entity>& entity, YAML::Node node) const
 {
-	auto meshComponent = node["MeshComponent"];
-	if (meshComponent)
+	if (auto meshComponent = node["MeshComponent"])
 	{
 		auto path = meshComponent["meshPath"].as<std::string>();
-		if (path == "")
+		if (path.empty())
 		{
 			entity->AddComponent<MeshComponent>();
 			return;
@@ -404,20 +395,19 @@ void EntitySerializer::InstantiateComponentMesh(Ref<Entity> entity, YAML::Node n
 	}
 }
 
-void EntitySerializer::InstantiateComponentMaterial(Ref<Entity> entity, YAML::Node node)
+void EntitySerializer::InstantiateComponentMaterial(const Ref<Entity>& entity, YAML::Node node) const
 {
-	auto materialComponent = node["MaterialComponent"];
-	if (materialComponent)
+	if (auto materialComponent = node["MaterialComponent"])
 	{
 		auto path = materialComponent["materialPath"].as<std::string>();
-		if (path == "")
+		if (path.empty())
 		{
 			entity->AddComponent<MaterialComponent>();
 			return;
 		}
 
 
-		auto index = assetsDatabase->materialsIndexByPath.find(std::filesystem::path(path));
+		const auto index = assetsDatabase->materialsIndexByPath.find(std::filesystem::path(path));
 		if (index == assetsDatabase->materialsIndexByPath.end())
 		{
 			spdlog::critical("Failed to deserialize material component, because mterial by path {} not found", path);
@@ -429,25 +419,23 @@ void EntitySerializer::InstantiateComponentMaterial(Ref<Entity> entity, YAML::No
 	}
 }
 
-void EntitySerializer::InstantiateComponentUboModel(Ref<Entity> entity, YAML::Node node)
+void EntitySerializer::InstantiateComponentUboModel(const Ref<Entity>& entity, YAML::Node node) const
 {
-	auto uboModelComponent = node["UboModelComponent"];
-	if (uboModelComponent)
+	if (auto uboModelComponent = node["UboModelComponent"])
 	{
 		entity->AddComponent<UboModelComponent>();
 	}
 }
 
-void EntitySerializer::InstantiateComponentUboViewProjection(Ref<Entity> entity, YAML::Node node)
+void EntitySerializer::InstantiateComponentUboViewProjection(const Ref<Entity>& entity, YAML::Node node) const
 {
-	auto uboViewProjection = node["UboViewProjectionComponent"];
-	if (uboViewProjection)
+	if (auto uboViewProjection = node["UboViewProjectionComponent"])
 	{
 		entity->AddComponent<UboViewProjectionComponent>();
 	}
 }
 
-void EntitySerializer::InstantiateComponentId(Ref<Entity> entity)
+void EntitySerializer::InstantiateComponentId(const Ref<Entity>& entity) const
 {
 	entity->AddComponent<IdComponent>(UniqueIdGenerator::Generate());
 }

@@ -19,16 +19,13 @@ void Inspector::Update()
     ImGui::End();
 }
 
-void Inspector::Observe(Ref<Entity> entity)
+void Inspector::Observe(const Ref<Entity>& entity)
 {
     observingEntity = entity;
 }
 
-void Inspector::ShowAddComponentBtn()
+void Inspector::ShowAddComponentBtn() const
 {
-    static int addComponentSelectdIndex = -1;
-    static int removeComponentSelectdIndex = -1;
-
     ImGui::Spacing();
     ImGui::Separator();
     ImGui::Spacing();
@@ -42,7 +39,6 @@ void Inspector::ShowAddComponentBtn()
         {
             if (ImGui::Selectable(allComponentsNames[i]))
             {
-                addComponentSelectdIndex = i;
                 AddComponent(observingEntity, allComponentsNames[i]);
             }
         }
@@ -61,7 +57,6 @@ void Inspector::ShowAddComponentBtn()
         {
             if (ImGui::Selectable(allComponentsNames[i]))
             {
-                removeComponentSelectdIndex = i;
                 RemoveComponent(observingEntity, allComponentsNames[i]);
             }
         }

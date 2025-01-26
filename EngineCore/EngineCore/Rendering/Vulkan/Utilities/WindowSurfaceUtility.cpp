@@ -3,18 +3,18 @@
 
 namespace VkUtils
 {
-	VkSurfaceKHR CreateSurface(VkInstance& instance, GLFWwindow& window)
+	VkSurfaceKHR CreateSurface(const VkInstance& instance, GLFWwindow& window)
 	{
 		spdlog::info("Create Window Surface");
 
 		VkSurfaceKHR surface;
-		auto createResult = glfwCreateWindowSurface(instance, &window, nullptr, &surface);
-		CAssert::Check(createResult == VK_SUCCESS, "Cant't create vulkan window surface, status: " + createResult);
+		const auto createResult = glfwCreateWindowSurface(instance, &window, nullptr, &surface);
+		CAssert::Check(createResult == VK_SUCCESS, "Can't create vulkan window surface, status: " + createResult);
 
 		return surface;
 	}
 
-	void DisposeSurface(VkInstance& instance, VkSurfaceKHR& surface)
+	void DisposeSurface(const VkInstance& instance, const VkSurfaceKHR& surface)
 	{
 		spdlog::info("Dispose surface");
 		vkDestroySurfaceKHR(instance, surface, nullptr);

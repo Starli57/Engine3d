@@ -12,7 +12,7 @@ int main()
 
 	try
 	{
-		URef<Game> game = CreateUniqueRef<Game>(projectSettings);
+		const URef<Game> game = CreateUniqueRef<Game>(projectSettings);
 		game->Run();
 	}
 	catch (const std::exception& e)

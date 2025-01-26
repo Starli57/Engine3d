@@ -29,6 +29,11 @@
 # Folders
 Intermediate/
 Output/
+ExampleProject/Resources
+ExampleProject/Intel*
+ResourcesConverter/Input/
+ResourcesConverter/ConvertedMeshes/
+ResourcesConverter/Intel*
 .idea/
 
 .vs/

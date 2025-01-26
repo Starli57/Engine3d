@@ -10,7 +10,7 @@ namespace AVulkan
         std::optional<uint32_t> graphicsFamily;
         std::optional<uint32_t> presentationFamily;
 
-        bool isComplete()
+        bool IsComplete() const
         {
             return graphicsFamily.has_value() && presentationFamily.has_value();
         }

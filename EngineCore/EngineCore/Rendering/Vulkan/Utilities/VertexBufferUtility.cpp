@@ -21,7 +21,7 @@ namespace VkUtils
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingMemory;
 
-		VkUtils::CreateBuffer(physicalDevice, logicalDevice, bufferSize,
+		CreateBuffer(physicalDevice, logicalDevice, bufferSize,
 			stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingMemory);
 
 		void* data;
@@ -29,17 +29,17 @@ namespace VkUtils
 		memcpy(data, vertices.data(), (size_t)bufferSize);
 		vkUnmapMemory(logicalDevice, stagingMemory);
 
-		VkUtils::CreateBuffer(physicalDevice, logicalDevice, bufferSize,
+		CreateBuffer(physicalDevice, logicalDevice, bufferSize,
 			distUsageFlags, distMemoryFlags, vertexBuffer, bufferMemory);
 
-		VkUtils::CopyBuffer(logicalDevice, graphicsQueue, stagingBuffer, vertexBuffer, bufferSize, commandPool);
-		VkUtils::DisposeBuffer(logicalDevice, stagingBuffer, stagingMemory);
+		CopyBuffer(logicalDevice, graphicsQueue, stagingBuffer, vertexBuffer, bufferSize, commandPool);
+		DisposeBuffer(logicalDevice, stagingBuffer, stagingMemory);
 	}
 
 	void DisposeVertexBuffer(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{
 		spdlog::info("Dispose Vertex Buffer");
-		VkUtils::DisposeBuffer(logicalDevice, buffer, bufferMemory);
+		DisposeBuffer(logicalDevice, buffer, bufferMemory);
 	}
 
 	VkVertexInputBindingDescription GetVertexInputBindingDescription()

@@ -14,7 +14,7 @@ public:
 	Inspector(Ref<AssetsDatabase> assetsDatabase);
 
 	void Update() override;
-	void Observe(Ref<Entity> entity);
+	void Observe(const Ref<Entity>& entity);
 
 private:
 	URef<ComponentsRenderer> componentsRenderer;
@@ -22,6 +22,6 @@ private:
 	Ref<AssetsDatabase> assetsDatabase;
 	Ref<Entity> observingEntity;
 
-	void ShowAddComponentBtn();
+	void ShowAddComponentBtn() const;
 };
 

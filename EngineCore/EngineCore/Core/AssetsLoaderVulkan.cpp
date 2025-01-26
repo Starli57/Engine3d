@@ -13,20 +13,14 @@
 using namespace AVulkan;
 
 
-AssetsLoaderVulkan::AssetsLoaderVulkan(Ref<ProjectSettings> projectSettings, IGraphicsApi* graphicsApi, Ref<AssetsDatabase> assetsDatabase) : 
+AssetsLoaderVulkan::AssetsLoaderVulkan(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, Ref<AssetsDatabase> assetsDatabase) : 
     AssetsLoader(projectSettings, graphicsApi, assetsDatabase)
 {
 }
 
-AssetsLoaderVulkan::~AssetsLoaderVulkan()
-{
-    UnLoadAllTextures();
-    UnLoadAllMeshes();
-}
-
 void AssetsLoaderVulkan::LoadAllTextures()
 {
-    auto vulkanApi = static_cast<AVulkan::GraphicsApiVulkan*>(graphicsApi);
+    auto vulkanApi = dynamic_cast<GraphicsApiVulkan*>(graphicsApi);
     auto databaseVulkan = std::dynamic_pointer_cast<AssetsDatabaseVulkan>(assetsDatabase);
 
     std::vector<int> texturesWidths;
@@ -61,68 +55,67 @@ void AssetsLoaderVulkan::LoadAllTextures()
         texturesHeights.at(textureIndex) = height;
         texturesChannels.at(textureIndex) = channels;
 
-        if (texturesPixels->at(textureIndex) == nullptr)
-        {
-            spdlog::error("Failed to load texture image: {}", pathStr);
-        }
-        else
-        {
-            spdlog::info("Image loaded: {}", pathStr);
-        }
+        if (texturesPixels->at(textureIndex) == nullptr) spdlog::error("Failed to load texture image: {}", pathStr);
+        else spdlog::info("Image loaded: {}", pathStr);
     });
 
+//    auto threadsCount = std::max(static_cast<unsigned int>(4), std::thread::hardware_concurrency());
+//    std::vector<std::jthread> threads;
+    
     //todo: make parallel
-    for(int textureIndex = 0; textureIndex < databaseVulkan->texturesPaths.size(); textureIndex++)
+    for(uint32_t textureIndex = 0; textureIndex < databaseVulkan->texturesPaths.size(); textureIndex++)
     {
         uint64_t bitesPerPixel = 4;
-        int width = texturesWidths.at(textureIndex);
-        int height = texturesHeights.at(textureIndex);
         const VkDeviceSize imageSize = texturesWidths.at(textureIndex) * texturesHeights.at(textureIndex) * bitesPerPixel;
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingMemory;
 
         VkBufferUsageFlags usageFlagsStaging = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-        VkMemoryPropertyFlags memoryFlagsStaging = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+        constexpr VkMemoryPropertyFlags memoryFlagsStaging = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 
         VkUtils::CreateBuffer(vulkanApi->physicalDevice, vulkanApi->logicalDevice, imageSize,
             usageFlagsStaging, memoryFlagsStaging, stagingBuffer, stagingMemory);
 
         void* data;
         vkMapMemory(vulkanApi->logicalDevice, stagingMemory, 0, imageSize, 0, &data);
-        memcpy(data, texturesPixels->at(textureIndex), static_cast<size_t>(imageSize));
+        memcpy(data, texturesPixels->at(textureIndex), imageSize);
         vkUnmapMemory(vulkanApi->logicalDevice, stagingMemory);
 
         stbi_image_free(texturesPixels->at(textureIndex));
-
-        VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL;
-        VkImageUsageFlags usageFlags = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
-        VkMemoryPropertyFlags memoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+        
+        int width = texturesWidths.at(textureIndex);
+        int height = texturesHeights.at(textureIndex);
+        
+        constexpr VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL;
+        constexpr VkImageUsageFlags usageFlags = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+        constexpr VkMemoryPropertyFlags memoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
         databaseVulkan->images.at(textureIndex) = VkUtils::CreateImage(vulkanApi->physicalDevice, vulkanApi->logicalDevice,
             width, height, vulkanApi->rendererConfig->imageFormat,
             tiling, usageFlags, VK_SAMPLE_COUNT_1_BIT, memoryFlags, databaseVulkan->imagesMemory.at(textureIndex));
 
-        auto commandBuffer = VkUtils::BeginCommandBuffer(vulkanApi->logicalDevice, vulkanApi->commandPool);
+        auto commandPool = vulkanApi->GetCommandPool();
+        auto commandBuffer = VkUtils::BeginCommandBuffer(vulkanApi->logicalDevice, commandPool);
 
         VkUtils::TransitionImageLayout(vulkanApi->logicalDevice, commandBuffer, vulkanApi->graphicsQueue, databaseVulkan->images.at(textureIndex),
             VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_ASPECT_COLOR_BIT);
 
         vkEndCommandBuffer(commandBuffer);
         VkUtils::SubmitCommandBuffer(vulkanApi->graphicsQueue, commandBuffer);
-        vkFreeCommandBuffers(vulkanApi->logicalDevice, vulkanApi->commandPool, 1, &commandBuffer);
+        vkFreeCommandBuffers(vulkanApi->logicalDevice, commandPool, 1, &commandBuffer);
 
         VkUtils::CopyBufferToImage(vulkanApi->logicalDevice, vulkanApi->graphicsQueue, 
-            stagingBuffer, databaseVulkan->images.at(textureIndex), width, height, vulkanApi->commandPool);
+            stagingBuffer, databaseVulkan->images.at(textureIndex), width, height, commandPool);
 
-        commandBuffer = VkUtils::BeginCommandBuffer(vulkanApi->logicalDevice, vulkanApi->commandPool);
+        commandBuffer = VkUtils::BeginCommandBuffer(vulkanApi->logicalDevice, commandPool);
 
         VkUtils::TransitionImageLayout(vulkanApi->logicalDevice, commandBuffer, vulkanApi->graphicsQueue, databaseVulkan->images.at(textureIndex),
             VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_ASPECT_COLOR_BIT);
 
         vkEndCommandBuffer(commandBuffer);
         VkUtils::SubmitCommandBuffer(vulkanApi->graphicsQueue, commandBuffer);
-        vkFreeCommandBuffers(vulkanApi->logicalDevice, vulkanApi->commandPool, 1, &commandBuffer);
+        vkFreeCommandBuffers(vulkanApi->logicalDevice, commandPool, 1, &commandBuffer);
 
         vkDestroyBuffer(vulkanApi->logicalDevice, stagingBuffer, nullptr);
         vkFreeMemory(vulkanApi->logicalDevice, stagingMemory, nullptr);
@@ -137,7 +130,7 @@ void AssetsLoaderVulkan::LoadAllTextures()
 
 void AssetsLoaderVulkan::UnLoadAllTextures()
 {
-    auto vulkanApi = static_cast<AVulkan::GraphicsApiVulkan*>(graphicsApi);
+    auto vulkanApi = dynamic_cast<GraphicsApiVulkan*>(graphicsApi);
     auto databaseVulkan = std::dynamic_pointer_cast<AssetsDatabaseVulkan>(assetsDatabase);
 
     for (auto image : databaseVulkan->images) VkUtils::DestroyImage(vulkanApi->logicalDevice, image);
@@ -151,7 +144,8 @@ void AssetsLoaderVulkan::UnLoadAllTextures()
 
 void AssetsLoaderVulkan::LoadAllMeshes(std::vector<MeshMeta>& meshes)
 {
-    auto vulkanApi = dynamic_cast<AVulkan::GraphicsApiVulkan*>(graphicsApi);
+    auto vulkanApi = dynamic_cast<GraphicsApiVulkan*>(graphicsApi);
+    auto commandPool = vulkanApi->GetCommandPool();
     auto databaseVulkan = std::dynamic_pointer_cast<AssetsDatabaseVulkan>(assetsDatabase);
     auto meshesCount = meshes.size();
 
@@ -166,11 +160,11 @@ void AssetsLoaderVulkan::LoadAllMeshes(std::vector<MeshMeta>& meshes)
     {
         VkUtils::CreateVertexBuffer(vulkanApi->physicalDevice, vulkanApi->logicalDevice,
             meshes.at(i).vertices, databaseVulkan->vertexBuffers.at(i), databaseVulkan->vertexBuffersMemory.at(i), 
-            vulkanApi->graphicsQueue, vulkanApi->commandPool);
+            vulkanApi->graphicsQueue, commandPool);
 
         VkUtils::CreateIndexBuffer(vulkanApi->physicalDevice, vulkanApi->logicalDevice,
             meshes.at(i).indices, databaseVulkan->indexBuffers.at(i), databaseVulkan->indexBuffersMemory.at(i), 
-            vulkanApi->graphicsQueue, vulkanApi->commandPool);
+            vulkanApi->graphicsQueue, commandPool);
 
         databaseVulkan->indexesCount.at(i) = static_cast<uint32_t>(meshes.at(i).indices.size());
 
@@ -187,7 +181,7 @@ void AssetsLoaderVulkan::LoadAllMeshes(std::vector<MeshMeta>& meshes)
 
 void AssetsLoaderVulkan::UnLoadAllMeshes()
 {
-    auto vulkanApi = dynamic_cast<AVulkan::GraphicsApiVulkan*>(graphicsApi);
+    auto vulkanApi = dynamic_cast<GraphicsApiVulkan*>(graphicsApi);
     auto databaseVulkan = std::dynamic_pointer_cast<AssetsDatabaseVulkan>(assetsDatabase);
     for (int i = 0; i < databaseVulkan->vertexBuffers.size(); i++)
         VkUtils::DisposeVertexBuffer(vulkanApi->logicalDevice, databaseVulkan->vertexBuffers.at(i), databaseVulkan->vertexBuffersMemory.at(i));

@@ -4,6 +4,6 @@
 
 namespace VkUtils
 {
-	uint32_t FindMemoryType(VkPhysicalDevice& physicalDevice, uint32_t& typeFilter, VkMemoryPropertyFlags& properties);
-	void FreeDeviceMemory(VkDevice& logicalDevice, VkDeviceMemory& memory);
+	uint32_t FindMemoryType(const VkPhysicalDevice& physicalDevice, const uint32_t& typeFilter, const VkMemoryPropertyFlags& properties);
+	void FreeDeviceMemory(const VkDevice& logicalDevice, const VkDeviceMemory& memory);
 }
