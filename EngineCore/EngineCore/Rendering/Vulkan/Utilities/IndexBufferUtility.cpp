@@ -36,8 +36,9 @@ namespace VkUtils
 	}
 
 
-    void DisposeIndexBuffer(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+    void DisposeIndexBuffer(const VkDevice& logicalDevice, const VkBuffer& buffer, const VkDeviceMemory& bufferMemory)
     {
+		if (buffer == VK_NULL_HANDLE) return;
         spdlog::info("Dispose Index Buffer");
         VkUtils::DisposeBuffer(logicalDevice, buffer, bufferMemory);
     }

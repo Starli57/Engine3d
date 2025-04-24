@@ -7,7 +7,6 @@
 #include "EngineCore/Core/AssetsDatabaseVulkan.h"
 
 #include "EngineCore/Rendering/Vulkan/PipelineVulkan.h"
-#include "EngineCore/Rendering/Vulkan/DescriptorsManager.h"
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/GraphicsPipelineUtility.h"
 

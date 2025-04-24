@@ -137,7 +137,7 @@ void EntitySerializer::SerializeEntity(const Ref<Entity>& entity, YAML::Emitter&
 	SerializeComponent<MeshComponent>(emitter, entity);
 	SerializeComponent<MaterialComponent>(emitter, entity);
 	SerializeComponent<UboModelComponent>(emitter, entity);
-	SerializeComponent<UboViewProjectionComponent>(emitter, entity);
+	SerializeComponent<UboWorldComponent>(emitter, entity);
 	SerializeComponent<UboDiffuseLightComponent>(emitter, entity);
 }
 
@@ -177,6 +177,44 @@ bool EntitySerializer::InstantiatePrefab(const Ref<Ecs>& ecs, YAML::Node& node)
 	InstantiateComponentMaterial(entity, node);
 
 	return true;
+}
+
+void EntitySerializer::InstantiateCombinedMesh(const Ref<Ecs>& ecs, const std::filesystem::path& filePath)
+{
+	std::vector<std::filesystem::path> meshPaths;
+	std::vector<std::filesystem::path> materialPaths;
+
+	std::ifstream file(filePath);
+	if (file.is_open())
+	{
+		std::string meshPath;
+		std::string materialPath;
+		while (std::getline(file, meshPath) && std::getline(file, materialPath))
+		{
+			if (meshPath.empty() || materialPath.empty()) continue;
+			meshPaths.push_back(std::filesystem::path(meshPath));
+			materialPaths.push_back(std::filesystem::path(materialPath));
+		}
+		file.close();
+	}
+
+	for (int i = 0; i < meshPaths.size(); i++)
+	{
+		auto meshIndex = assetsDatabase->meshesIndexByPath.find(meshPaths.at(i));
+		auto materialIndex = assetsDatabase->materialsIndexByPath.find(materialPaths.at(i));
+		auto ent = ecs->CreateEntity();
+		ent->AddComponent<IdComponent>();
+		ent->AddComponent<PositionComponent>();
+		ent->AddComponent<RotationComponent>();
+		ent->AddComponent<ScaleComponent>();
+		ent->AddComponent<MeshComponent>(meshIndex->second);
+		ent->AddComponent<MaterialComponent>(materialIndex->second);
+		ent->AddComponent<UboModelComponent>();
+		ent->AddComponent<NameComponent>(meshPaths.at(i).filename().string());
+
+		assetsDatabase->AddMeshLoadRequest(meshIndex->first);
+		assetsDatabase->AddMaterialLoadRequest(materialIndex->first);
+	}
 }
 
 void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const NameComponent& component) const
@@ -289,9 +327,9 @@ void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity
 	out << YAML::EndMap;
 }
 
-void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboViewProjectionComponent& component) const
+void EntitySerializer::SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboWorldComponent& component) const
 {
-	out << YAML::Key << "UboViewProjectionComponent";
+	out << YAML::Key << "UboWorldComponent";
 	out << YAML::BeginMap;
 	out << YAML::EndMap;
 }
@@ -392,6 +430,7 @@ void EntitySerializer::InstantiateComponentMesh(const Ref<Entity>& entity, YAML:
 		}
 
 		entity->AddComponent<MeshComponent>(index->second);
+		assetsDatabase->AddMeshLoadRequest(index->first);
 	}
 }
 
@@ -416,6 +455,7 @@ void EntitySerializer::InstantiateComponentMaterial(const Ref<Entity>& entity, Y
 		}
 
 		entity->AddComponent<MaterialComponent>(index->second);
+		assetsDatabase->AddMaterialLoadRequest(index->first);
 	}
 }
 
@@ -429,9 +469,9 @@ void EntitySerializer::InstantiateComponentUboModel(const Ref<Entity>& entity, Y
 
 void EntitySerializer::InstantiateComponentUboViewProjection(const Ref<Entity>& entity, YAML::Node node) const
 {
-	if (auto uboViewProjection = node["UboViewProjectionComponent"])
+	if (auto uboViewProjection = node["UboWorldComponent"])
 	{
-		entity->AddComponent<UboViewProjectionComponent>();
+		entity->AddComponent<UboWorldComponent>();
 	}
 }
 

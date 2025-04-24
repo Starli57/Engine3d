@@ -1,13 +1,13 @@
 #include "EngineCore/Pch.h"
 #include "ResourcesConverterObj.h"
 #include "EngineCore/Serialization/EntitySerializer.h"
-
+#include "EngineCore/Utilities/YamlConverters.h"
 #include <execution>
 
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
-void ResourcesConverterObj::Convert(const std::string& inFolder, const std::string& outFolder)
+void ResourcesConverterObj::Convert(const std::string& inFolder, const std::string& outFolder, const std::string& directoryName)
 {
     auto outParentPath = std::filesystem::path(outFolder).parent_path();
 
@@ -40,15 +40,20 @@ void ResourcesConverterObj::Convert(const std::string& inFolder, const std::stri
         std::vector<tinyobj::material_t> materials;
         std::string warn, err;
 
+        auto fileName = meshPath.second.filename();
+        auto meshName = fileName.string().substr(0, fileName.string().find_last_of("."));
         auto pathString = meshPath.second.string();
         auto baseDirectory = pathString.substr(0, pathString.find_last_of("/\\") + 1);
         auto isLoaded = tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, pathString.c_str(), baseDirectory.c_str());
 
         if (!warn.empty()) spdlog::warn(warn);
         if (!err.empty()) spdlog::error(err);
-        if (!isLoaded) spdlog::error("Failed to load obj");
-
-
+        if (!isLoaded)
+        {
+            spdlog::error("Failed to load obj");
+            continue;
+        }
+        
         //format meshes
         std::vector<MeshMeta>* meshes = new std::vector<MeshMeta>();
         meshes->resize(materials.size());
@@ -58,8 +63,6 @@ void ResourcesConverterObj::Convert(const std::string& inFolder, const std::stri
             meshes->at(i).materialIndex = i;
             meshes->at(i).materialPath = outFolder + ToLowerCase(materials.at(i).name);
             meshes->at(i).materialName = ToLowerCase(materials.at(i).name);
-            meshes->at(i).vertices.reserve(10000);
-            meshes->at(i).indices.reserve(10000);
         }
 
         for (const auto& shape : shapes)
@@ -105,57 +108,63 @@ void ResourcesConverterObj::Convert(const std::string& inFolder, const std::stri
             }
         }
 
-        for (auto meshIt = meshes->begin(); meshIt < meshes->end(); meshIt++)
+        std::for_each(std::execution::par, meshes->begin(), meshes->end(), [](MeshMeta meshIt)
         {
-            for (auto index = 0; index < meshIt->indices.size(); index += 3)
+            for (auto index = 0; index < meshIt.indices.size(); index += 3)
             {
-                glm::vec3 edge1 = meshIt->vertices.at(index + 1).position - meshIt->vertices.at(index).position;
-                glm::vec3 edge2 = meshIt->vertices.at(index + 2).position - meshIt->vertices.at(index).position;
-                glm::vec2 deltaUV1 = meshIt->vertices.at(index + 1).uv - meshIt->vertices.at(index).uv;
-                glm::vec2 deltaUV2 = meshIt->vertices.at(index + 2).uv - meshIt->vertices.at(index).uv;
+                glm::vec3 edge1 = meshIt.vertices.at(index + 1).position - meshIt.vertices.at(index).position;
+                glm::vec3 edge2 = meshIt.vertices.at(index + 2).position - meshIt.vertices.at(index).position;
+                glm::vec2 deltaUV1 = meshIt.vertices.at(index + 1).uv - meshIt.vertices.at(index).uv;
+                glm::vec2 deltaUV2 = meshIt.vertices.at(index + 2).uv - meshIt.vertices.at(index).uv;
 
                 float f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
 
-                meshIt->vertices.at(index).tangent += glm::vec3(
+                meshIt.vertices.at(index).tangent += glm::vec3(
                     f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x),
                     f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y),
                     f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z));
 
-                meshIt->vertices.at(index).bitangent += glm::vec3(
+                meshIt.vertices.at(index).bitangent += glm::vec3(
                     f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x),
                     f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y),
                     f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z));
 
-                meshIt->vertices.at(index + 1).tangent += glm::vec3(
+                meshIt.vertices.at(index + 1).tangent += glm::vec3(
                     f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x),
                     f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y),
                     f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z));
 
-                meshIt->vertices.at(index + 1).bitangent += glm::vec3(
+                meshIt.vertices.at(index + 1).bitangent += glm::vec3(
                     f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x),
                     f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y),
                     f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z));
 
-                meshIt->vertices.at(index + 2).tangent += glm::vec3(
+                meshIt.vertices.at(index + 2).tangent += glm::vec3(
                     f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x),
                     f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y),
                     f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z));
 
-                meshIt->vertices.at(index + 2).bitangent += glm::vec3(
+                meshIt.vertices.at(index + 2).bitangent += glm::vec3(
                     f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x),
                     f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y),
                     f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z));
             }
-        }
+        });
+        
         //--format meshes
-
-        std::for_each(std::execution::par, meshes->begin(), meshes->end(), [this, &materials, &meshPath,  &inFolder, &outFolder](MeshMeta& meshIt)
+        std::vector<std::string> serializedMeshNames;
+        std::vector<std::string> serializedMaterialNames;
+        serializedMeshNames.resize(meshes->size());
+        serializedMaterialNames.resize(meshes->size());
+        
+        std::for_each(std::execution::par, meshes->begin(), meshes->end(),
+            [this, &materials, &meshPath,  &inFolder, &outFolder, &serializedMeshNames, &serializedMaterialNames](MeshMeta& meshIt)
         {
             auto material = materials.at(meshIt.materialIndex);
             auto fileNameWithoutExtension = meshPath.first.substr(0, meshPath.first.find_last_of("."));
             auto assetName = ToLowerCase(fileNameWithoutExtension + "_" + meshIt.materialName);
 
-            if (meshIt.vertices.size() == 0 || meshIt.indices.size() == 0)
+            if (meshIt.vertices.empty() || meshIt.indices.empty())
             {
                 spdlog::warn("Mesh {} has {} vertices and {} indices -> it will not be serialized", assetName, meshIt.vertices.size(), meshIt.indices.size());
                 return;
@@ -163,15 +172,31 @@ void ResourcesConverterObj::Convert(const std::string& inFolder, const std::stri
 
             // Serialize mesh to binary
             auto serialized = SerializeMesh(outFolder + assetName + ".mesh", meshIt);
-            if (serialized) spdlog::info("Mesh {} saved to folder {}", assetName, outFolder);
-
+            if (serialized)
+            {
+                serializedMeshNames.at(meshIt.materialIndex) = outFolder + assetName + ".mesh";
+                spdlog::info("Mesh {} saved to folder {}", assetName, outFolder);
+            }
+            
             //serialize material to yaml
             YAML::Node materialNode;
 
             auto materialName = ToLowerCase(material.name);
             materialNode["materialName"] = materialName;
-            materialNode["pipelineName"] = "albedoOpaque";
-
+            materialNode["pipelineName"] = (material.dissolve >= 1.0 && material.alpha_texname.empty()) ? "opaque" : "transparent";
+            
+            materialNode["roughness"] = material.roughness;
+            materialNode["metallic"] = material.metallic;
+            materialNode["sheen"] = material.sheen;
+            materialNode["specularExponent"] = material.shininess;
+            materialNode["indexOfRefraction"] = material.ior;
+            materialNode["transparency"] = material.dissolve;
+            
+            materialNode["ambientColor"] = glm::vec3(material.ambient[0], material.ambient[1], material.ambient[2]);
+            materialNode["diffuseColor"] = glm::vec3(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
+            materialNode["specularColor"] = glm::vec3(material.specular[0], material.specular[1], material.specular[2]);
+            materialNode["emissionColor"] = glm::vec3(material.emission[0], material.emission[1], material.emission[2]);
+            
             BindTextureToMaterial(materialNode, "ambientTextureName", outFolder, material.ambient_texname);
             BindTextureToMaterial(materialNode, "diffuseTextureName", outFolder, material.diffuse_texname);
             BindTextureToMaterial(materialNode, "specularTextureName", outFolder, material.specular_texname);
@@ -184,6 +209,7 @@ void ResourcesConverterObj::Convert(const std::string& inFolder, const std::stri
             std::ofstream fMaterialOut(outFolder + materialName + ".material");
             fMaterialOut << materialNode;
             fMaterialOut.close();
+            serializedMaterialNames.at(meshIt.materialIndex) = outFolder + materialName + ".material";
         });
 
         std::for_each(std::execution::par, texturesPaths.begin(), texturesPaths.end(), [this, &inFolder, &outFolder](const auto& pathIter)
@@ -192,12 +218,14 @@ void ResourcesConverterObj::Convert(const std::string& inFolder, const std::stri
             std::filesystem::copy(pathIter.second.string(), outFolder + textureName, std::filesystem::copy_options::overwrite_existing);
         });
 
+        WriteSerializedMeshNames(outFolder + directoryName + "_" + meshName +  ".combinedmesh", serializedMeshNames, serializedMaterialNames);
+        
         //clean
         delete meshes;
     }
 }
 
-bool ResourcesConverterObj::SerializeMesh(const std::string& filePath, MeshMeta& meshIt)
+bool ResourcesConverterObj::SerializeMesh(const std::string& filePath, const MeshMeta& meshIt) const
 {
     std::ofstream outFile(filePath, std::ios::binary);
     if (!outFile)
@@ -229,8 +257,22 @@ bool ResourcesConverterObj::SerializeMesh(const std::string& filePath, MeshMeta&
     return true;
 }
 
+void ResourcesConverterObj::WriteSerializedMeshNames(const std::string& filePath, const std::vector<std::string>&  meshes, const std::vector<std::string>& materials) const
+{
+    std::ofstream fOut(filePath);
+
+    auto count = meshes.size();
+    for(int i = 0; i < count; i++)
+    {
+        fOut << meshes.at(i) + "\n";
+        fOut << materials.at(i) + "\n";
+    }
+    
+    fOut.close();
+}
+
 void ResourcesConverterObj::FillPaths(std::unordered_map<std::string, std::filesystem::path>& paths, 
-    const std::vector<std::string>& extensions, const std::string& inFolder)
+                                      const std::vector<std::string>& extensions, const std::string& inFolder) const
 {
     for (const auto& entry : std::filesystem::recursive_directory_iterator(inFolder))
     {
@@ -246,7 +288,7 @@ void ResourcesConverterObj::FillPaths(std::unordered_map<std::string, std::files
             continue;
         }
 
-        for (auto relevantExtension : extensions)
+        for (const auto& relevantExtension : extensions)
         {
             if (relevantExtension != extension) continue;
 
@@ -256,17 +298,17 @@ void ResourcesConverterObj::FillPaths(std::unordered_map<std::string, std::files
     }
 }
 
-void ResourcesConverterObj::BindTextureToMaterial(YAML::Node& node, const std::string& materialKey, const std::string& outFolder, std::string& rawTexturePath)
+void ResourcesConverterObj::BindTextureToMaterial(YAML::Node& node, const std::string& materialKey, const std::string& outFolder, std::string& rawTexturePath) const
 {
-    if (rawTexturePath.size() > 0)
+    if (!rawTexturePath.empty())
     {
         node[materialKey] = outFolder + ToLowerCase(rawTexturePath.substr(rawTexturePath.find_last_of("/\\") + 1));
     }
 }
 
-void ResourcesConverterObj::CopyTextureImage(std::string& rawTexturePath, const std::string& inFolder, const std::string& assetFolder)
+void ResourcesConverterObj::CopyTextureImage(std::string& rawTexturePath, const std::string& inFolder, const std::string& assetFolder) const
 {
-    if (rawTexturePath.size() > 0)
+    if (!rawTexturePath.empty())
     {
         auto texturePath = FormatTexturePath(rawTexturePath, inFolder);
         auto textureName = ToLowerCase(FormatTextureName(rawTexturePath, inFolder));
@@ -274,17 +316,17 @@ void ResourcesConverterObj::CopyTextureImage(std::string& rawTexturePath, const 
     }
 }
 
-std::string ResourcesConverterObj::FormatTexturePath(const std::string& texturePath, const std::string& inFolder)
+std::string ResourcesConverterObj::FormatTexturePath(const std::string& texturePath, const std::string& inFolder) const
 {
     return inFolder + texturePath.substr(texturePath.find_first_of("/\\"));
 }
 
-std::string ResourcesConverterObj::FormatTextureName(const std::string& texturePath, const std::string& inFolder)
+std::string ResourcesConverterObj::FormatTextureName(const std::string& texturePath, const std::string& inFolder) const
 {
     return texturePath.substr(texturePath.find_last_of("/\\") + 1);
 }
 
-std::string ResourcesConverterObj::ToLowerCase(const std::string& input)
+std::string ResourcesConverterObj::ToLowerCase(const std::string& input) const
 {
     std::string result = input;
     std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c)

@@ -8,4 +8,6 @@ struct PipelineConfig
 
 	std::string vertShaderPath;
 	std::string fragShaderPath;
+
+	bool transparent;
 };

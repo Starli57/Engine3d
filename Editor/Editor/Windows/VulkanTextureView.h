@@ -17,6 +17,7 @@ private:
 	Ref<Engine> engine;
 	AVulkan::GraphicsApiVulkan& vulkanApi;
 
-	VkDescriptorSet textureDescriptor;
+	std::vector<VkDescriptorSet> textureDescriptors;
+	int frame = 0;
 };
 

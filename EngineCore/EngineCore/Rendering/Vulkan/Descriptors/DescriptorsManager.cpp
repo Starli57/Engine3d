@@ -1,0 +1,75 @@
+﻿#include "EngineCore/Pch.h"
+#include "DescriptorsManager.h"
+
+namespace AVulkan
+{
+    DescriptorsManager::DescriptorsManager(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs,
+            VkSampler& textureSampler, const Ref<AssetsDatabaseVulkan>& assetsDatabase)
+                : logicalDevice(logicalDevice)
+    {
+        descriptorsAllocator = CreateRef<DescriptorsAllocator>();
+        CreateGlobalDescriptorsPool();
+        frameDescriptor = CreateRef<DescriptorFrame>(physicalDevice, logicalDevice, ecs, globalDescriptorPool, descriptorsAllocator);
+        opaqueMaterialDescriptor = CreateRef<DescriptorMaterialOpaque>(physicalDevice, logicalDevice, ecs,
+            descriptorsAllocator, textureSampler, assetsDatabase);
+        shadowMapDescriptor = CreateRef<DescriptorShadowMap>(physicalDevice, logicalDevice, ecs, globalDescriptorPool, descriptorsAllocator);
+    }
+
+    DescriptorsManager::~DescriptorsManager()
+    {
+        shadowMapDescriptor.reset();
+        opaqueMaterialDescriptor.reset();
+        frameDescriptor.reset();
+        vkDestroyDescriptorPool(logicalDevice, globalDescriptorPool, nullptr);
+    }
+
+    void DescriptorsManager::CreateGlobalDescriptorsPool()
+    {
+        descriptorsAllocator->CreateDescriptorPool(logicalDevice, globalDescriptorPool, descriptorsAllocator->maxDescriptorSets);
+    }
+
+    void DescriptorsManager::UpdateFrameDescriptors(const uint32_t frame) const
+    {
+        frameDescriptor->UpdateDescriptorSets(frame);
+    }
+
+    void DescriptorsManager::UpdateMaterialsDescriptors(const uint32_t frame) const
+    {
+        opaqueMaterialDescriptor->UpdateDescriptorSets(frame);
+    }
+
+    void DescriptorsManager::UpdateShadowsMapDescriptors(uint32_t frame, const VkImageView& shadowImageView, const VkSampler& shadowSampler) const
+    {
+        shadowMapDescriptor->UpdateDescriptorSets(frame, shadowImageView, shadowSampler);
+    }
+
+    VkDescriptorSetLayout& DescriptorsManager::GetDescriptorSetLayoutFrame() const
+    {
+        return frameDescriptor->DescriptorSetLayout();
+    }
+
+    VkDescriptorSetLayout& DescriptorsManager::GetDescriptorSetLayoutOpaqueMaterial() const
+    {
+        return opaqueMaterialDescriptor->DescriptorSetLayout();
+    }
+
+    VkDescriptorSetLayout& DescriptorsManager::GetDescriptorSetLayoutShadowMap() const
+    {
+        return shadowMapDescriptor->DescriptorSetLayout();
+    }
+
+    VkDescriptorSet& DescriptorsManager::GetDescriptorSetFrame(const uint32_t frame) const
+    {
+        return frameDescriptor->GetDescriptorSet(frame);
+    }
+
+    VkDescriptorSet& DescriptorsManager::GetDescriptorSetOpaqueMaterial(const uint32_t frame, const uint32_t materialIndex) const
+    {
+        return opaqueMaterialDescriptor->GetDescriptorSet(frame, materialIndex);
+    }
+
+    VkDescriptorSet& DescriptorsManager::GetDescriptorSetShadowMap(uint32_t frame) const
+    {
+        return shadowMapDescriptor->GetDescriptorSet(frame);
+    }
+}

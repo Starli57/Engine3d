@@ -1,19 +1,23 @@
 ﻿#include "EngineCore/Pch.h"
 #include "RenderPassShadowMaps.h"
 
+#include "EngineCore/Profiler/Profiler.h"
+#include "EngineCore/Rendering/Vulkan/Descriptors/DescriptorsManager.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/ImageUtility.h"
+#include "Utility/DrawEntity.h"
 
 namespace AVulkan
 {
     RenderPassShadowMaps::RenderPassShadowMaps(
-        VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<AVulkan::VulkanConfiguration>& rendererConfig,
-        const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetsDatabase, const Ref<SwapChainData>& swapChainData, const Ref<DescriptorsManager>& descriptorsManager) :
-        IRenderPass(physicalDevice, logicalDevice, rendererConfig, ecs, assetsDatabase, swapChainData, descriptorsManager)
+        VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<VulkanConfiguration>& rendererConfig, Ref<DescriptorsManager> descriptorsManager,
+        const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetsDatabase, const Ref<SwapChainData>& swapChainData,
+        const Ref<PipelinesCollection>& pipelinesCollection) :
+        IRenderPass(physicalDevice, logicalDevice, rendererConfig, descriptorsManager, ecs, assetsDatabase, swapChainData),
+        pipelinesCollection(pipelinesCollection)
     {
         spdlog::info("Create RenderPass ShadowMaps");
 
         RenderPassShadowMaps::CreateRenderPass(rendererConfig);
-        RenderPassShadowMaps::CreateDescriptorLayout(logicalDevice);
         RenderPassShadowMaps::CreatePipelines();
         CreateShadowMapBuffer();
         RenderPassShadowMaps::CreateFrameBuffers();
@@ -34,85 +38,55 @@ namespace AVulkan
             GraphicsPipelineUtility().Dispose(pipelinePair.second, logicalDevice);
         pipelines.clear();
 
-        for (const auto& descriptor : passDescriptors)
-        {
-            VkUtils::DisposeBuffer(logicalDevice, descriptor->uboLightsViewProjection->buffer, descriptor->uboLightsViewProjection->bufferMemory);
-        }
-        passDescriptors.clear();
-
-        vkDestroyDescriptorSetLayout(logicalDevice, descriptorSetLayout, nullptr);
-
         VkUtils::DisposeRenderPass(this->logicalDevice, renderPass);
     }
 
     void RenderPassShadowMaps::Render(VkCommandBuffer& commandBuffer, const uint16_t frame, const uint32_t imageIndex)
     {
-        PositionComponent rendererPosition{};
-        UboViewProjectionComponent rendererProjection{};
-        UpdateRendererPositionAndProjection(rendererPosition, rendererProjection);
-
+		Profiler::GetInstance().BeginSample("RenderPassShadowMaps");
         BeginRenderPass(commandBuffer, imageIndex);
 
+        //todo: replace to 1 place for all render passes and call only once for all
+        const auto entities = ecs->registry->view<PositionComponent, UboModelComponent, MeshComponent, MaterialComponent>();
+        std::vector<DrawEntity> drawEntities = std::vector<DrawEntity>();
+        for(const auto entity : entities)
+        {
+            auto [positionComponent, uboModelComponent, meshContainer, materialComponent] =
+                entities.get<PositionComponent, UboModelComponent, MeshComponent, MaterialComponent>(entity);
+
+            if (meshContainer.meshIndex.has_value() == false || assetsDatabase->meshLoadStatuses.at(meshContainer.meshIndex.value()) != 2) continue;
+            if (assetsDatabase->materialLoadStatuses.at(materialComponent.materialIndex) != 2) continue;
+
+            drawEntities.emplace_back(&positionComponent, &uboModelComponent, &meshContainer, &materialComponent);
+        }
+        
+        auto descriptorSets = std::vector<VkDescriptorSet>();
+        descriptorSets.resize(1);
+        descriptorSets.at(0) = descriptorsManager->GetDescriptorSetFrame(frame);
+        
         int i = 0;
-        const auto entities = ecs->registry->view<UboModelComponent, MeshComponent, MaterialComponent>();
-        for (const auto entity : entities)
+        for (const auto drawEntity : drawEntities)
         {
             const int index = i * VulkanConfiguration::maxFramesInFlight + frame;
-            auto [uboModelComponent, meshContainer, materialComponent] = entities.get<UboModelComponent, MeshComponent, MaterialComponent>(entity);
 
-            if (meshContainer.meshIndex.has_value() == false) continue;
-
-            int32_t meshIndex = meshContainer.meshIndex.value();
-            UpdateUniformBuffer(index, rendererProjection);
-
+            if (drawEntity.meshComponent->meshIndex.has_value() == false) continue;
+            
+            const int32_t meshIndex = drawEntity.meshComponent->meshIndex.value();
             auto pipeline = pipelines.at("shadowPass");
 
             VkUtils::BindPipeline(commandBuffer, pipeline);
             VkUtils::BindVertexAndIndexBuffers(commandBuffer, meshIndex, assetsDatabase);
 
-            vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT,
-                0, sizeof(glm::mat4), &uboModelComponent.model);
-
-            auto descriptorSet = GetOrCreateDescriptorSet(index)->descriptorSet;
-            vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->layout, 0, 1, &descriptorSet, 0, nullptr);
-            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(assetsDatabase->indexesCount.at(meshIndex)), 1, 0, 0, 0);
+            vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &drawEntity.uboModelComponent->model);
+            
+            vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->layout, 0,
+                static_cast<uint32_t>(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
+            vkCmdDrawIndexed(commandBuffer, assetsDatabase->indexesCount.at(meshIndex), 1, 0, 0, 0);
             i++;
         }
 
         VkUtils::EndRenderPass(commandBuffer);
-    }
-
-    void RenderPassShadowMaps::UpdateRendererPositionAndProjection(PositionComponent& positionComponent, UboViewProjectionComponent& projectionComponent) const
-    {
-        auto viewProjectionEntries = ecs->registry->view<PositionComponent, UboDiffuseLightComponent, UboViewProjectionComponent>();
-        if (viewProjectionEntries.begin() == viewProjectionEntries.end()) return;
-
-        auto firstLight = viewProjectionEntries.front();
-        positionComponent = viewProjectionEntries.get<PositionComponent>(firstLight);
-        projectionComponent = viewProjectionEntries.get<UboViewProjectionComponent>(firstLight);
-    }
-
-    void RenderPassShadowMaps::UpdateUniformBuffer(const uint32_t descriptorIndex, const UboViewProjectionComponent& projection)
-    {
-        auto colorDescriptor = GetOrCreateDescriptorSet(descriptorIndex);
-
-        memcpy(colorDescriptor->uboLightsViewProjection->bufferMapped, &projection, sizeof(UboViewProjectionComponent));
-
-        UpdateDescriptorSet(colorDescriptor);
-    }
-
-    void RenderPassShadowMaps::UpdateDescriptorSet(const Ref<ShadowMapsDescriptor>& descriptor) const
-    {
-        VkDescriptorBufferInfo viewProjectionDescriptorInfo{};
-        viewProjectionDescriptorInfo.buffer = descriptor->uboLightsViewProjection->buffer;
-        viewProjectionDescriptorInfo.range = sizeof(UboViewProjectionComponent);
-        viewProjectionDescriptorInfo.offset = 0;
-
-        std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
-        WriteDescriptorSet(descriptorWrites[0], descriptor->descriptorSet, 0, 0, 1,
-            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &viewProjectionDescriptorInfo);
-
-        vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+		Profiler::GetInstance().EndSample("RenderPassShadowMaps");
     }
 
     void RenderPassShadowMaps::BeginRenderPass(VkCommandBuffer& commandBuffer, const uint32_t imageIndex)
@@ -123,21 +97,6 @@ namespace AVulkan
         clearValues[0].depthStencil.depth = 1.0f;
 
         VkUtils::BeginRenderPass(clearValues, frameBuffers[0], renderPass, commandBuffer, swapChainData->extent);
-    }
-
-    Ref<ShadowMapsDescriptor> RenderPassShadowMaps::GetOrCreateDescriptorSet(const uint32_t index)
-    {
-        const auto diff = static_cast<int32_t>(index) - static_cast<int32_t>(passDescriptors.size()) + 1i32;
-        for (int32_t i = 0; i < diff; i++) CreateDescriptorSet();
-        return passDescriptors.at(index);
-    }
-
-    void RenderPassShadowMaps::CreateDescriptorSet()
-    {
-        const Ref<ShadowMapsDescriptor> descriptor = CreateRef<ShadowMapsDescriptor>();
-        descriptorsManager->AllocateDescriptorSet(logicalDevice, descriptorSetLayout, descriptor->descriptorSet);
-        descriptor->uboLightsViewProjection = VkUtils::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboViewProjectionComponent));
-        passDescriptors.push_back(descriptor);
     }
 
     void RenderPassShadowMaps::CreateRenderPass(Ref<VulkanConfiguration> rendererConfig)
@@ -151,13 +110,13 @@ namespace AVulkan
         depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
         depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
-        VkAttachmentReference depthAttachmentRef{};
+        VkAttachmentReference depthAttachmentRef = {};
         depthAttachmentRef.attachment = 0;
         depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
 
         std::vector<VkAttachmentDescription> attachments = { depthAttachment };
 
-        VkSubpassDescription subpass{};
+        VkSubpassDescription subpass = {};
         subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
         subpass.colorAttachmentCount = 0;
         subpass.pDepthStencilAttachment = &depthAttachmentRef;
@@ -165,25 +124,17 @@ namespace AVulkan
         renderPass = VkUtils::CreateRenderPass(physicalDevice, logicalDevice, rendererConfig, attachments, subpass);
     }
 
-    void RenderPassShadowMaps::CreateDescriptorLayout(VkDevice& logicalDevice)
-    {
-        const std::vector bindings = { descriptorsManager->DescriptorSetLayoutBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1) };
-        descriptorsManager->CreateLayout(logicalDevice, bindings, descriptorSetLayout);
-    }
-
     void RenderPassShadowMaps::CreatePipelines()
     {
-        const auto shadowPassPipelineConfig = CreateRef<VulkanPipelineConfig>();
-        shadowPassPipelineConfig->pipelineName = "shadowPass";
-        shadowPassPipelineConfig->fragShaderPath = "../ExampleProject/Shaders/ShadowPassFrag.spv";
-        shadowPassPipelineConfig->vertShaderPath = "../ExampleProject/Shaders/ShadowPassVert.spv";
-        shadowPassPipelineConfig->polygonMode = VK_POLYGON_MODE_FILL;
-        shadowPassPipelineConfig->cullMode = VK_CULL_MODE_BACK_BIT;
-        shadowPassPipelineConfig->frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+        const auto shadowPassPipelineConfig = pipelinesCollection->pipelinesConfigs.at("shadowPass");
 
+        auto descriptorSetLayouts = std::vector<VkDescriptorSetLayout>();
+        descriptorSetLayouts.resize(1);
+        descriptorSetLayouts.at(0) = descriptorsManager->GetDescriptorSetLayoutFrame();
+            
         auto shadowPassPipeline = GraphicsPipelineUtility().Create(
             shadowPassPipelineConfig, logicalDevice, renderPass,
-            swapChainData->extent, descriptorSetLayout, VK_SAMPLE_COUNT_1_BIT);
+            swapChainData->extent, descriptorSetLayouts, VK_SAMPLE_COUNT_1_BIT);
         pipelines.emplace(shadowPassPipelineConfig->pipelineName, shadowPassPipeline);
     }
 

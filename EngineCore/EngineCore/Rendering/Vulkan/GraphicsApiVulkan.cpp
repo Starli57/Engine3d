@@ -4,6 +4,8 @@
 
 #include "GraphicsApiVulkan.h"
 
+#include "EngineCore/Profiler/Profiler.h"
+
 namespace AVulkan
 {
 	GraphicsApiVulkan::GraphicsApiVulkan(const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* glfwWindow)
@@ -12,7 +14,6 @@ namespace AVulkan
 		this->assetDatabase = assetDatabase;
 		this->projectSettings = projectSettings;
 		this->window = glfwWindow;
-		this->descriptorsManager = CreateRef<DescriptorsManager>();
 		this->pipelinesCollection = CreateRef<PipelinesCollection>(projectSettings);
 		this->rendererConfig = CreateRef<VulkanConfiguration>();
 		this->rollback = CreateRef<Rollback>("GraphicsApiVulkan");
@@ -33,6 +34,7 @@ namespace AVulkan
 			CreateLogicalDevice();
 			CreateTextureSampler();
 			CreateSwapChain();
+			CreateDescriptorManager();
 			CreateRenderPasses();
 			CreateDepthBuffer();
 			CreateCommandsManager();
@@ -66,37 +68,42 @@ namespace AVulkan
 		swapChain->Recreate();
 
 		renderPassShadowMaps = new RenderPassShadowMaps(physicalDevice, logicalDevice,
-			rendererConfig, ecs, assetDatabase, swapChainData, descriptorsManager);
+			rendererConfig, descriptorsManager, ecs, assetDatabase, swapChainData, pipelinesCollection);
 		renderPassColor = new RenderPassColor(physicalDevice, logicalDevice,
-			rendererConfig, ecs, assetDatabase, swapChainData, descriptorsManager,
+			rendererConfig, descriptorsManager, ecs, assetDatabase, swapChainData,
 			textureSampler, pipelinesCollection, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
 	}
 
 	void GraphicsApiVulkan::Render()
 	{
-		auto commandBuffer = commandsManager->GetCommandBuffer(frame);
-		auto acquireStatus = AcquireNextImage();
+		const auto acquireStatus = AcquireNextImage();
 		if (acquireStatus != VK_SUCCESS) return;
 
+		auto commandBuffer = commandsManager->GetCommandBuffer(frame);
 		vkResetFences(logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(commandBuffer, 0);
 
+		descriptorsManager->UpdateFrameDescriptors(frame);
+		descriptorsManager->UpdateMaterialsDescriptors(frame);
+		
 		VkUtils::BeginCommandBuffer(commandBuffer);
 		renderPassShadowMaps->Render(commandBuffer, frame, imageIndex);
 
-		VkUtils::TransitionImageLayout(logicalDevice, commandBuffer, graphicsQueue, renderPassShadowMaps->GetImageBuffer()->image,
+		VkUtils::TransitionImageLayout(commandBuffer, renderPassShadowMaps->GetImageBuffer()->image,
 			VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_ASPECT_DEPTH_BIT);
 
+		descriptorsManager->UpdateShadowsMapDescriptors(frame, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
+		
 		renderPassColor->Render(commandBuffer, frame, imageIndex);
 
-		VkUtils::TransitionImageLayout(logicalDevice, commandBuffer, graphicsQueue, swapChainData->images.at(imageIndex),
+		VkUtils::TransitionImageLayout(commandBuffer, swapChainData->images.at(imageIndex),
 			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_ASPECT_COLOR_BIT);
 
 		VkUtils::EndCommandBuffer(commandBuffer);
 
 		const VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
-		const std::array<VkCommandBuffer, 1> submitCommandBuffers =
+		const std::array submitCommandBuffers =
 		{
 			commandBuffer
 		};
@@ -111,7 +118,10 @@ namespace AVulkan
 		submitInfo.commandBufferCount = static_cast<uint32_t>(submitCommandBuffers.size());
 		submitInfo.pCommandBuffers = submitCommandBuffers.data();
 
+		Profiler::GetInstance().BeginSample("Renderer Submit");
 		auto submitStatus = vkQueueSubmit(graphicsQueue, 1, &submitInfo, drawFences[frame]);
+		Profiler::GetInstance().EndSample("Renderer Submit");
+		
 		CAssert::Check(submitStatus == VK_SUCCESS, "Failed to submit draw command buffer, status: " + submitStatus);
 
 		VkPresentInfoKHR presentInfo{};
@@ -122,7 +132,9 @@ namespace AVulkan
 		presentInfo.pSwapchains = &swapChainData->swapChain;
 		presentInfo.pImageIndices = &imageIndex;
 
+		Profiler::GetInstance().BeginSample("Renderer Present");
 		auto presentStatus = vkQueuePresentKHR(presentationQueue, &presentInfo);
+		Profiler::GetInstance().EndSample("Renderer Present");
 
 		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR)
 		{
@@ -133,7 +145,6 @@ namespace AVulkan
 		CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
 		
 		frame = (frame + 1) % rendererConfig->maxFramesInFlight;
-		vkDeviceWaitIdle(logicalDevice);
 	}
 
 	VkResult GraphicsApiVulkan::AcquireNextImage()
@@ -182,7 +193,6 @@ namespace AVulkan
 		logicalDevice = VkUtils::CreateLogicalDevice(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
 		rollback->Add([this]()
 		{
-			descriptorsManager->DestroyDescriptorPools(logicalDevice);
 			VkUtils::DisposeLogicalDevice(logicalDevice);
 		});
 	}
@@ -200,12 +210,20 @@ namespace AVulkan
 		rollback->Add([this] { swapChain->Dispose(); });
 	}
 
+	void GraphicsApiVulkan::CreateDescriptorManager()
+	{
+		descriptorsManager = CreateRef<DescriptorsManager>(physicalDevice, logicalDevice, ecs,
+			textureSampler, assetDatabase);
+
+		rollback->Add([this] { descriptorsManager.reset(); });
+	}
+
 	void GraphicsApiVulkan::CreateRenderPasses()
 	{
 		renderPassShadowMaps = new RenderPassShadowMaps(physicalDevice, logicalDevice, 
-			rendererConfig, ecs, assetDatabase, swapChainData, descriptorsManager);
+			rendererConfig, descriptorsManager, ecs, assetDatabase, swapChainData, pipelinesCollection);
 		renderPassColor = new RenderPassColor(physicalDevice, logicalDevice, 
-			rendererConfig, ecs, assetDatabase, swapChainData, descriptorsManager, 
+			rendererConfig, descriptorsManager, ecs, assetDatabase, swapChainData, 
 			textureSampler, pipelinesCollection, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
 
 		rollback->Add([this] { delete renderPassColor; });

@@ -19,6 +19,22 @@ std::vector<char> IOUtility::ReadFile(const std::string& filepath) const
     return buffer;
 }
 
+void IOUtility::FindResourcesFiles(const std::string& rootFolderPath, std::unordered_map<std::filesystem::path, uint32_t>& paths) const
+{
+    for (const auto& entry : std::filesystem::recursive_directory_iterator(rootFolderPath))
+    {
+        if (!entry.is_regular_file()) continue;
+
+        if (paths.find(entry.path()) != paths.end())
+        {
+            spdlog::warn("File with the same path has been added already: {}" + entry.path().string());
+            continue;
+        }
+
+        paths.emplace(entry.path(), 1);
+    }
+}
+
 void IOUtility::FindAndEmplaceResourcesFiles(
     const std::string& rootFolderPath, 
     const std::vector<std::string>& extensions,

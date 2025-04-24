@@ -69,8 +69,8 @@ namespace VkUtils
         vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
     }
 
-    void TransitionImageLayout(VkDevice& logicalDevice, const VkCommandBuffer& commandBuffer, VkQueue& graphicsQueue,
-        const VkImage& image, const VkImageLayout oldLayout, const VkImageLayout newLayout, const VkImageAspectFlags aspectMask)
+    void TransitionImageLayout(const VkCommandBuffer& commandBuffer, const VkImage& image,
+        const VkImageLayout oldLayout, const VkImageLayout newLayout, const VkImageAspectFlags aspectMask)
     {
         VkImageMemoryBarrier barrier{};
         barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;

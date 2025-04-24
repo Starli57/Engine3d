@@ -20,7 +20,7 @@ void ComponentsRenderer::Update(const Ref<Entity>& entity)
 	RenderComponent<CameraFreeComponent>(entity);
 	RenderComponent<UboDiffuseLightComponent>(entity);
 	RenderComponent<UboModelComponent>(entity);
-	RenderComponent<UboViewProjectionComponent>(entity);
+	RenderComponent<UboWorldComponent>(entity);
 }
 
 void ComponentsRenderer::RenderComponent(Ref<Entity> entity, NameComponent& component) const
@@ -71,7 +71,7 @@ void ComponentsRenderer::RenderComponent(Ref<Entity> entity, UboModelComponent& 
 {
 }
 
-void ComponentsRenderer::RenderComponent(Ref<Entity> entity, UboViewProjectionComponent& component) const
+void ComponentsRenderer::RenderComponent(Ref<Entity> entity, UboWorldComponent& component) const
 {
 }
 

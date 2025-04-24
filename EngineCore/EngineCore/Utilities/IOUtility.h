@@ -11,6 +11,10 @@ class IOUtility
 public:
     std::vector<char> ReadFile(const std::string& filepath) const;
 
+    void FindResourcesFiles(
+        const std::string& rootFolderPath,
+        std::unordered_map<std::filesystem::path, uint32_t>& paths) const;
+
     void FindAndEmplaceResourcesFiles(
         const std::string& rootFolderPath,
         const std::vector<std::string>& extensions,

@@ -6,7 +6,7 @@
 #include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rollback/Rollback.h"
-#include "EngineCore/Components/UboViewProjectionComponent.h"
+#include "EngineCore/Components/UboWorldComponent.h"
 
 namespace VkUtils
 {

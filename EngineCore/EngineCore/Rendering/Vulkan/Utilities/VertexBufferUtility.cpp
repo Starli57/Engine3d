@@ -36,8 +36,9 @@ namespace VkUtils
 		DisposeBuffer(logicalDevice, stagingBuffer, stagingMemory);
 	}
 
-	void DisposeVertexBuffer(VkDevice& logicalDevice, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+	void DisposeVertexBuffer(const VkDevice& logicalDevice, const VkBuffer& buffer, const VkDeviceMemory& bufferMemory)
 	{
+		if (buffer == VK_NULL_HANDLE) return;
 		spdlog::info("Dispose Vertex Buffer");
 		DisposeBuffer(logicalDevice, buffer, bufferMemory);
 	}

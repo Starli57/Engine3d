@@ -2,7 +2,7 @@
 #include "EngineCore/Pch.h"
 #include "EngineCore/Assets/Material.h"
 
-Material::Material(const std::string& pipelineId) : pipelineId(pipelineId)
+Material::Material(std::string pipelineId) : pipelineId(std::move(pipelineId))
 {
 }
 

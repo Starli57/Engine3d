@@ -3,7 +3,6 @@
 #include "AssetsDatabase.h"
 #include "EngineCore/Assets/Material.h"
 #include "EngineCore/Assets/Meta/MeshMeta.h"
-#include "EngineCore/Assets/Meta/MaterialMeta.h"
 #include "EngineCore/Defines/DllDefines.h"
 #include "EngineCore/Rendering/IGraphicsApi.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
@@ -17,18 +16,30 @@ public:
 
 	void Load();
 
-	uint32_t LoadTextureStr(const std::string& path) const;
-	uint32_t LoadTexture(const std::filesystem::path& path) const;
-
-	void PrepareAllMeshesMeta(std::vector<MeshMeta>& meshes);
-	virtual void LoadAllMeshes(std::vector<MeshMeta>& meshes);
-	virtual void UnLoadAllMeshes();
-
-	virtual void LoadAllTextures();
-	virtual void UnLoadAllTextures();
-
-	void LoadAllMaterials();
+	uint32_t GetTextureStr(const std::string& path) const;
+	uint32_t GetTexture(const std::filesystem::path& path) const;
 	
+	uint32_t GetOrLoadTextureStr(const std::string& path);
+	uint32_t GetOrLoadTexture(const std::filesystem::path& path);
+
+	void DeserializeMeshMeta(const std::filesystem::path& path, MeshMeta& meshMeta) const;
+
+	virtual void LoadMesh(std::filesystem::path& path) = 0;
+	virtual void SetupMesh(MeshMeta& meshMeta, uint32_t meshIndex) = 0;
+	virtual void LoadAllMeshes() = 0;
+	virtual void UnLoadAllMeshes() = 0;
+
+	virtual void LoadTexture(const std::filesystem::path& path) = 0;
+	virtual void LoadTexture(const std::filesystem::path& path, uint32_t textureIndex) = 0;
+	virtual void LoadAllTextures() = 0;
+	virtual void UnLoadAllTextures() = 0;
+
+	void LoadMaterial(const std::filesystem::path& path, uint32_t index);
+	void LoadAllMaterials();
+
+	void LoadRequestedMeshes();
+	void LoadRequestedMaterials();
+
 protected:
 	IGraphicsApi* graphicsApi;
 	Ref<ProjectSettings> projectSettings;

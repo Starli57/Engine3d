@@ -10,7 +10,6 @@
 
 #include "Editor/IEngineEditor.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
-#include "EngineCore/Rendering/Vulkan/DescriptorsManager.h"
 #include "EngineCore/Rendering/Vulkan/SwapChain.h"
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/PhysicalDeviceUtility.h"
@@ -37,7 +36,6 @@ private:
     Ref<Rollback> rollback;
 
 	VkRenderPass renderPass;
-	VkDescriptorPool descriptorPool;
 
 	AVulkan::QueueFamilyIndices queueFamilies;
 	uint32_t graphicsQueueFamily;
