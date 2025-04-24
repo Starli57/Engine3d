@@ -23,7 +23,7 @@ const char* allComponentsNames[componentsLength] =
       "ScaleComponent",
       "UboDiffuseLightComponent",
       "UboModelComponent",
-      "UboViewProjectionComponent",
+      "UboWorldComponent",
 };
 
 
@@ -42,7 +42,7 @@ bool HasComponent(const Ref<Entity>& entity, const std::string& componentName)
       if (componentName == "ScaleComponent") return entity->HasComponent<ScaleComponent>();
       if (componentName == "UboDiffuseLightComponent") return entity->HasComponent<UboDiffuseLightComponent>();
       if (componentName == "UboModelComponent") return entity->HasComponent<UboModelComponent>();
-      if (componentName == "UboViewProjectionComponent") return entity->HasComponent<UboViewProjectionComponent>();
+      if (componentName == "UboWorldComponent") return entity->HasComponent<UboWorldComponent>();
       throw std::runtime_error("Not supported component type: " + componentName);
 }
 
@@ -64,7 +64,7 @@ void AddComponent(const Ref<Entity>& entity, const std::string& componentName)
       if (componentName == "ScaleComponent") entity->AddComponent<ScaleComponent>();
       if (componentName == "UboDiffuseLightComponent") entity->AddComponent<UboDiffuseLightComponent>();
       if (componentName == "UboModelComponent") entity->AddComponent<UboModelComponent>();
-      if (componentName == "UboViewProjectionComponent") entity->AddComponent<UboViewProjectionComponent>();
+      if (componentName == "UboWorldComponent") entity->AddComponent<UboWorldComponent>();
 }
 
 
@@ -85,6 +85,6 @@ void RemoveComponent(const Ref<Entity>& entity, const std::string& componentName
       if (componentName == "ScaleComponent") entity->RemoveComponent<ScaleComponent>();
       if (componentName == "UboDiffuseLightComponent") entity->RemoveComponent<UboDiffuseLightComponent>();
       if (componentName == "UboModelComponent") entity->RemoveComponent<UboModelComponent>();
-      if (componentName == "UboViewProjectionComponent") entity->RemoveComponent<UboViewProjectionComponent>();
+      if (componentName == "UboWorldComponent") entity->RemoveComponent<UboWorldComponent>();
 }
 

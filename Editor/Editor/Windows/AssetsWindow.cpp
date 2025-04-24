@@ -14,7 +14,6 @@ void AssetsWindow::Update()
     ImGui::Begin("Assets");
     
     ImGui::Text("Prefabs");
-
     for (const auto& prefab : assetsDatabase->prefabsIndexByPath)
     {
         if (ImGui::Button(prefab.first.filename().string().c_str()))
@@ -31,6 +30,16 @@ void AssetsWindow::Update()
         {
             EntitySerializer entitySerializer = EntitySerializer(projectSettings, assetsDatabase);
             entitySerializer.InstantiateWorld(ecs, world.first);
+        }
+    }
+
+    ImGui::Text("Combined Meshes");
+    for (const auto& mesh : assetsDatabase->combinedMeshIndexByPath)
+    {
+        if (ImGui::Button(mesh.first.filename().string().c_str()))
+        {
+            EntitySerializer entitySerializer = EntitySerializer(projectSettings, assetsDatabase);
+            entitySerializer.InstantiateCombinedMesh(ecs, mesh.first);
         }
     }
 

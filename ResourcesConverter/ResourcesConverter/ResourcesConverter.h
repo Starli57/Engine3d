@@ -9,5 +9,5 @@ class ResourcesConverter
 {
 public:
 	virtual ~ResourcesConverter() = default;
-	virtual void Convert(const std::string& inFolder, const std::string& outFolder) = 0;
+	virtual void Convert(const std::string& inFolder, const std::string& outFolder, const std::string& directoryName) = 0;
 };

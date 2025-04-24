@@ -19,6 +19,5 @@ private:
 	Ref<Engine> engine;
 	AVulkan::GraphicsApiVulkan& vulkanApi;
 
-	std::vector<float>* frameTimes;
-	int currentIndex = 0;
+	void ShowDeltaTime(const std::string&& sampleName) const;
 };

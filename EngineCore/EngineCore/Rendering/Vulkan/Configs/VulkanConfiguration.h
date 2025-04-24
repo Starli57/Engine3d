@@ -6,7 +6,7 @@ namespace AVulkan
 {
 	struct VulkanConfiguration
 	{
-		static constexpr uint16_t maxFramesInFlight = 2;
+		static constexpr uint16_t maxFramesInFlight = 3;
 		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
 
 		VkFormat imageFormat;

@@ -13,7 +13,7 @@ namespace VkUtils
     
     void CopyBufferToImage(VkDevice& logicalDevice, VkQueue& graphicsQueue,
                            const VkBuffer& buffer, const VkImage& image, uint32_t width, uint32_t height, VkCommandPool& commandPool);
-    void TransitionImageLayout(VkDevice& logicalDevice, const VkCommandBuffer& commandBuffer, VkQueue& graphicsQueue,
+    void TransitionImageLayout(const VkCommandBuffer& commandBuffer,
                                const VkImage& image, VkImageLayout oldLayout, VkImageLayout newLayout, VkImageAspectFlags aspectMask);
 
     void CreateImageView(const VkDevice& logicalDevice, const VkFormat& imageFormat, VkImageAspectFlags imageAspectFlags,

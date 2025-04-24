@@ -4,13 +4,13 @@
 
 namespace VkUtils
 {
-	void CreateBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, uint64_t bufferSize,
+	void CreateBuffer(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, uint64_t bufferSize,
 	                  const VkBufferUsageFlags& usageFlags, VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
 	void DisposeBuffer(const VkDevice& logicalDevice, const VkBuffer& buffer, const VkDeviceMemory& bufferMemory);
 
-	void CopyBuffer(VkDevice& logicalDevice, VkQueue& graphicsQueue, const VkBuffer& srcBuffer, const VkBuffer& dstBuffer,
-	                const VkDeviceSize& size, VkCommandPool& commandPool);
+	void CopyBuffer(const VkDevice& logicalDevice, const VkQueue& graphicsQueue, const VkBuffer& srcBuffer, const VkBuffer& dstBuffer,
+	                const VkDeviceSize& size, const VkCommandPool& commandPool);
 
 	VkCommandBuffer BeginCommandBuffer(const VkDevice& logicalDevice, const VkCommandPool& commandPool);
 	void SubmitCommandBuffer(const VkQueue& graphicsQueue, const VkCommandBuffer& commandBuffer);

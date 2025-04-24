@@ -10,7 +10,6 @@ ImguiVulkan::ImguiVulkan(const Ref<ProjectSettings>& projectSettings, AVulkan::G
 
     rollback = CreateRef<Rollback>("Editor");
 
-    descriptorPool = vulkanApi.descriptorsManager->CreateDescriptorPool(vulkanApi.logicalDevice);
     queueFamilies = VkUtils::GetQueueFamilies(vulkanApi.physicalDevice, vulkanApi.windowSurface);
     graphicsQueueFamily = queueFamilies.graphicsFamily.value();
 
@@ -47,7 +46,7 @@ ImguiVulkan::ImguiVulkan(const Ref<ProjectSettings>& projectSettings, AVulkan::G
     initInfo.QueueFamily = graphicsQueueFamily;
     initInfo.Queue = vulkanApi.graphicsQueue;
     initInfo.PipelineCache = VK_NULL_HANDLE;
-    initInfo.DescriptorPool = descriptorPool;
+    initInfo.DescriptorPoolSize = 1024;
     initInfo.RenderPass = renderPass;
     initInfo.Subpass = 0;
     initInfo.MinImageCount = 2;

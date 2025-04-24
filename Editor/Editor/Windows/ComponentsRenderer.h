@@ -16,7 +16,7 @@
 #include "EngineCore/Components/ScaleComponent.h"
 #include "EngineCore/Components/UboDiffuseLightComponent.h"
 #include "EngineCore/Components/UboModelComponent.h"
-#include "EngineCore/Components/UboViewProjectionComponent.h"
+#include "EngineCore/Components/UboWorldComponent.h"
 #include "EngineCore/Components/MeshComponent.h"
 #include "EngineCore/Components/MaterialComponent.h"
 
@@ -51,7 +51,7 @@ private:
 	void RenderComponent(Ref<Entity> entity, CameraFreeComponent& component) const;
 	void RenderComponent(Ref<Entity> entity, UboDiffuseLightComponent& component) const;
 	void RenderComponent(Ref<Entity> entity, UboModelComponent& component) const;
-	void RenderComponent(Ref<Entity> entity, UboViewProjectionComponent& component) const;
+	void RenderComponent(Ref<Entity> entity, UboWorldComponent& component) const;
 	void RenderComponent(Ref<Entity> entity, MeshComponent& component) const;
 	void RenderComponent(Ref<Entity> entity, MaterialComponent& component) const;
 };

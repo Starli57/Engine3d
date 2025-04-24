@@ -6,7 +6,7 @@
 
 #include "EngineCore/Components/PositionComponent.h"
 #include "EngineCore/Components/RotationComponent.h"
-#include "EngineCore/Components/UboViewProjectionComponent.h"
+#include "EngineCore/Components/UboWorldComponent.h"
 #include "EngineCore/Components/CameraComponent.h"
 #include "EngineCore/Systems/ISystem.h"
 #include "EngineCore/Core/Ref.h"

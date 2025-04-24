@@ -20,12 +20,12 @@ namespace AVulkan
 	class GraphicsPipelineUtility
 	{
 	public:
-		Ref<PipelineVulkan> Create(Ref<VulkanPipelineConfig> pipelineConfig, VkDevice& logicalDevice,
-			VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout,
+		Ref<PipelineVulkan> Create(const Ref<VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
+			VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts,
 			VkSampleCountFlagBits msaa);
 
 		Ref<PipelineVulkan> ReCreate(const Ref<PipelineVulkan>& pipeline, const Ref<VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
-		                             VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout, VkSampleCountFlagBits msaa);
+			VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa);
 
 		void Dispose(const Ref<PipelineVulkan>& pipeline, const VkDevice& logicalDevice) const;
 
@@ -37,7 +37,7 @@ namespace AVulkan
 		VkPipelineViewportStateCreateInfo SetupViewportAndScissor(const VkExtent2D& swapChainExtent) const;
 		VkPipelineRasterizationStateCreateInfo SetupRasterizer(const Ref<VulkanPipelineConfig>& pipelineConfig) const;
 		VkPipelineMultisampleStateCreateInfo SetupMultisampling(VkSampleCountFlagBits msaa) const;
-		VkPipelineColorBlendStateCreateInfo SetupColorsBlending() const;
+		VkPipelineColorBlendStateCreateInfo SetupColorsBlending(const Ref<VulkanPipelineConfig>& pipelineConfig) const;
 
 
 	};

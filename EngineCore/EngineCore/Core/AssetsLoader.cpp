@@ -2,159 +2,195 @@
 #include "AssetsLoader.h"
 #include "EngineCore/Assets/Meshes/CubeDefinition.h"
 #include "EngineCore/Assets/Meshes/SphereDefinition.h"
-
+#include "EngineCore/Utilities/YamlConverters.h"
 #include <yaml-cpp/yaml.h>
 #include <fstream>
 #include <execution>
 
-
 AssetsLoader::AssetsLoader(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, const Ref<AssetsDatabase>& assetsDatabase):
 	graphicsApi(graphicsApi), projectSettings(projectSettings), assetsDatabase(assetsDatabase)
 {
+	assetsDatabase->textureLoadStatuses.resize(assetsDatabase->texturesPaths.size());
+	assetsDatabase->materialLoadStatuses.resize(assetsDatabase->materialsPaths.size());
+	assetsDatabase->meshLoadStatuses.resize(assetsDatabase->meshesPaths.size());
+
+	assetsDatabase->materials.resize(assetsDatabase->materialsPaths.size());
+
+	//todo: replace out of constructor, because it should be initialized after AssetsLoaderVulkan constructor
+	//SetupMesh(cubeDefinition);
+	//CreateMesh(sphereDefiniton);
 }
 
 void AssetsLoader::Load()
 {
-	LoadAllTextures();
-	LoadAllMaterials();
-
-	std::vector<MeshMeta> meshesMeta;
-	PrepareAllMeshesMeta(meshesMeta);
-	LoadAllMeshes(meshesMeta);
-
-	/*auto cubeDefinition = CubeDefinition();
-	CreateMesh(cubeDefinition);
-
-	auto sphereDefiniton = SphereDefinition();
-	CreateMesh(sphereDefiniton);*/
-
-	//	for (const auto& meshPath : assetsDatabase->meshesPathByName) LoadMeshByPath(meshPath.second);
-
-	//todo: make threads possible
-	//std::for_each(std::execution::par, assetsDatabase->materialsPaths.begin(), assetsDatabase->materialsPaths.end(), [this](const std::pair<std::string, std::filesystem::path>& path)
-	//{
-	//	LoadMaterialByName(path.first);
-	//});
-
-	//std::for_each(std::execution::par, assetsDatabase->meshesPaths.begin(), assetsDatabase->meshesPaths.end(), [this](const std::pair<std::string, std::filesystem::path>& path)
-	//{
-	//	LoadMeshByPath(path.second);
-	//});
+	LoadRequestedMaterials();
+	LoadRequestedMeshes();
 }
 
-uint32_t AssetsLoader::LoadTextureStr(const std::string& path) const
+uint32_t AssetsLoader::GetTextureStr(const std::string& path) const
 {
-	return LoadTexture(std::filesystem::path(path));
+	return GetTexture(std::filesystem::path(path));
 }
 
-uint32_t AssetsLoader::LoadTexture(const std::filesystem::path& path) const
+uint32_t AssetsLoader::GetTexture(const std::filesystem::path& path) const
 {
-	auto textureIndex = assetsDatabase->texturesIndexByPath.find(path);
-	CAssert::Check(textureIndex != assetsDatabase->texturesIndexByPath.end(), "Texture file not found " + path.string());
-	return textureIndex->second;
+	assetsDatabase->AddTextureLoadRequest(path);
+	auto textureIter = assetsDatabase->texturesIndexByPath.find(path);
+	CAssert::Check(textureIter != assetsDatabase->texturesIndexByPath.end(), "Texture file not found " + path.string());
+	return textureIter->second;
 }
 
-void AssetsLoader::PrepareAllMeshesMeta(std::vector<MeshMeta>& meshes)
+uint32_t AssetsLoader::GetOrLoadTextureStr(const std::string& pathStr)
 {
-	auto meshesCount = assetsDatabase->meshesIndexByPath.size();
-	meshes.resize(meshesCount);
+	auto path = std::filesystem::path(pathStr);
+	return GetOrLoadTexture(path);
+}
 
-	std::for_each(std::execution::par, assetsDatabase->meshesIndexByPath.begin(), assetsDatabase->meshesIndexByPath.end(), [this, &meshes](const auto& pair)
+uint32_t AssetsLoader::GetOrLoadTexture(const std::filesystem::path& path)
+{
+	auto textureIter = assetsDatabase->texturesIndexByPath.find(path);
+	if (!assetsDatabase->SetTextureLoadingStatus(path)) return textureIter->second;
+
+	LoadTexture(path);
+	return textureIter->second;
+}
+
+void AssetsLoader::DeserializeMeshMeta(const std::filesystem::path& path, MeshMeta& meshMeta) const
+{
+	std::ifstream inFile(path.string(), std::ios::binary);
+	if (!inFile)
 	{
-		auto path = pair.first;
-		auto index = pair.second;
+		spdlog::critical("Failed to open mesh file for reading by path={}", path.string());
+		return;
+	}
 
-		std::ifstream inFile(path.string(), std::ios::binary);
-		if (!inFile)
-		{
-			spdlog::critical("Failed to open mesh file for reading by path={}", path.string());
-			return;
-		}
+	size_t vertexCount;
+	inFile.read(reinterpret_cast<char*>(&vertexCount), sizeof(size_t));
+	meshMeta.vertices.resize(vertexCount);
+	inFile.read(reinterpret_cast<char*>(meshMeta.vertices.data()), vertexCount * sizeof(Vertex));
 
-		MeshMeta& meshMeta = meshes.at(index);
+	size_t indexCount;
+	inFile.read(reinterpret_cast<char*>(&indexCount), sizeof(size_t));
+	meshMeta.indices.resize(indexCount);
+	inFile.read(reinterpret_cast<char*>(meshMeta.indices.data()), indexCount * sizeof(uint32_t));
 
-		size_t vertexCount;
-		inFile.read(reinterpret_cast<char*>(&vertexCount), sizeof(size_t));
-		meshMeta.vertices.resize(vertexCount);
-		inFile.read(reinterpret_cast<char*>(meshMeta.vertices.data()), vertexCount * sizeof(Vertex));
+	size_t materialPathSize;
+	inFile.read(reinterpret_cast<char*>(&materialPathSize), sizeof(materialPathSize));
+	meshMeta.materialPath.resize(materialPathSize);
+	inFile.read(reinterpret_cast<char*>(&meshMeta.materialPath[0]), materialPathSize);
 
-		size_t indexCount;
-		inFile.read(reinterpret_cast<char*>(&indexCount), sizeof(size_t));
-		meshMeta.indices.resize(indexCount);
-		inFile.read(reinterpret_cast<char*>(meshMeta.indices.data()), indexCount * sizeof(uint32_t));
-
-		size_t materialPathSize;
-		inFile.read(reinterpret_cast<char*>(&materialPathSize), sizeof(materialPathSize));
-		meshMeta.materialPath.resize(materialPathSize);
-		inFile.read(reinterpret_cast<char*>(&meshMeta.materialPath[0]), materialPathSize);
-
-		size_t materialNameSize;
-		inFile.read(reinterpret_cast<char*>(&materialNameSize), sizeof(materialNameSize));
-		meshMeta.materialName.resize(materialNameSize);
-		inFile.read(reinterpret_cast<char*>(&meshMeta.materialName[0]), materialNameSize);
+	size_t materialNameSize;
+	inFile.read(reinterpret_cast<char*>(&materialNameSize), sizeof(materialNameSize));
+	meshMeta.materialName.resize(materialNameSize);
+	inFile.read(reinterpret_cast<char*>(&meshMeta.materialName[0]), materialNameSize);
 		
-		inFile.close();
-	});
+	inFile.close();
 }
 
-void AssetsLoader::LoadAllMeshes(std::vector<MeshMeta>& meshes)
+void AssetsLoader::LoadMaterial(const std::filesystem::path& path, const uint32_t index)
 {
-	throw std::runtime_error("LoadAllMeshes method is not implemented in base AssetsLoader");
-}
+	std::vector<YAML::Node> data;
 
-void AssetsLoader::UnLoadAllMeshes()
-{
-	throw std::runtime_error("UnLoadAllMeshes method is not implemented in base AssetsLoader");
-}
+	try
+	{
+		data = YAML::LoadAllFromFile(path.string());
+	}
+	catch (YAML::ParserException e)
+	{
+		spdlog::critical("Failed to load material by path={0} error={1}", path.string(), e.what());
+		return;
+	}
 
-void AssetsLoader::LoadAllTextures()
-{
-	throw std::runtime_error("LoadAllTextures method is not implemented in base AssetsLoader");
-}
+	if (data.size() > 1) spdlog::warn("Material file has more than 1 material at path={}", path.string());
 
-void AssetsLoader::UnLoadAllTextures()
-{
-	throw std::runtime_error("UnLoadAllTextures method is not implemented in base AssetsLoader");
+	auto node = data[0];
+	auto material = CreateRef<Material>(node["pipelineName"].as<std::string>());
+
+	material->roughness = node["roughness"].as<float>();
+	material->metallic = node["metallic"].as<float>();
+	material->sheen = node["sheen"].as<float>();
+	material->specularExponent = node["specularExponent"].as<float>();
+	material->indexOfRefraction = node["indexOfRefraction"].as<float>();
+	material->transparency = node["transparency"].as<float>();
+
+	material->ambientColor = node["ambientColor"].as<glm::vec3>();
+	material->diffuseColor = node["diffuseColor"].as<glm::vec3>();
+	material->specularColor = node["specularColor"].as<glm::vec3>();
+	material->emissionColor = node["emissionColor"].as<glm::vec3>();
+
+	auto diffuseTexturePath = node["diffuseTextureName"] ? node["diffuseTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
+	auto diffuseTextureIndex = GetOrLoadTextureStr(diffuseTexturePath);
+	material->SetDiffuseTexture(diffuseTextureIndex);
+
+	auto specularTexturePath = node["specularTextureName"] ? node["specularTextureName"].as<std::string>() : projectSettings->resourcesPath + "/black_box.png";
+	auto specularTextureIndex = GetOrLoadTextureStr(specularTexturePath);
+	material->SetSpecular(specularTextureIndex);
+
+	auto normalTexturePath = node["bumpTextureName"] ? node["bumpTextureName"].as<std::string>() : projectSettings->resourcesPath + "/black_box.png";
+	auto normalTextureIndex = GetOrLoadTextureStr(normalTexturePath);
+	material->SetNormalMap(normalTextureIndex);
+
+	auto alphaTexturePath = node["alphaTextureName"] ? node["alphaTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
+	auto alphaTextureIndex = GetOrLoadTextureStr(alphaTexturePath);
+	material->SetAlphaMap(alphaTextureIndex);
+	
+	assetsDatabase->materials.at(index) = material;
+	assetsDatabase->materialLoadStatuses.at(index) = 2;
 }
 
 void AssetsLoader::LoadAllMaterials()
 {
-	assetsDatabase->materials.resize(assetsDatabase->materialsIndexByPath.size());
-	
 	std::for_each(std::execution::par, assetsDatabase->materialsIndexByPath.begin(), assetsDatabase->materialsIndexByPath.end(),
 		[this](const auto& pair)
+		{
+			auto path = pair.first;
+			auto index = pair.second;
+			LoadMaterial(path, index);
+		});
+}
+
+void AssetsLoader::LoadRequestedMeshes()
+{
+	std::vector<uint32_t> loadMeshes;
+	assetsDatabase->meshLoadStatusMutex.lock();
 	{
-		auto path = pair.first;
-		auto index = pair.second;
-		std::vector<YAML::Node> data;
-
-		try
+		loadMeshes.resize(assetsDatabase->meshLoadRequests.size());
+		
+		for (uint32_t i = 0; i < loadMeshes.size(); i++)
 		{
-			data = YAML::LoadAllFromFile(path.string());
+			loadMeshes[i] = assetsDatabase->meshLoadRequests.front();
+			assetsDatabase->meshLoadRequests.pop();
 		}
-		catch (YAML::ParserException e)
-		{
-			spdlog::critical("Failed to load material by path={0} error={1}", path.string(), e.what());
-			return -1;
-		}
+	}
+	assetsDatabase->meshLoadStatusMutex.unlock();
+	if (loadMeshes.empty()) return;
 	
-		if (data.size() > 1) spdlog::warn("Material file has more than 1 material at path={}", path.string());
+	std::for_each(std::execution::par, loadMeshes.begin(), loadMeshes.end(), [this](const auto& meshIndex)
+		{
+			auto path = assetsDatabase->meshesPaths[meshIndex];
+			LoadMesh(path);
+		});
+}
 
-		auto node = data[0];
-		auto material = CreateRef<Material>(node["pipelineName"].as<std::string>());
-
-		if (node["diffuseTextureName"]) material->SetDiffuseTexture(LoadTextureStr(node["diffuseTextureName"].as<std::string>()));
-		else material->SetDiffuseTexture(LoadTextureStr(projectSettings->resourcesPath + "/white_box.png"));
-			
-		if (node["specularTextureName"]) material->SetSpecular(LoadTextureStr(node["specularTextureName"].as<std::string>()));
-		else material->SetSpecular(LoadTextureStr(projectSettings->resourcesPath + "/black_box.png"));
-			
-		if (node["bumpTextureName"]) material->SetNormalMap(LoadTextureStr(node["bumpTextureName"].as<std::string>()));
-		else material->SetNormalMap(LoadTextureStr(projectSettings->resourcesPath + "/black_box.png"));
-			
-		if (node["alphaTextureName"]) material->SetAlphaMap(LoadTextureStr(node["alphaTextureName"].as<std::string>()));
-		else material->SetAlphaMap(LoadTextureStr(projectSettings->resourcesPath + "/white_box.png"));
-			
-		assetsDatabase->materials.at(index) = material;
-	});
+void AssetsLoader::LoadRequestedMaterials()
+{
+	std::vector<uint32_t> loadMaterials;
+	assetsDatabase->materialLoadStatusMutex.lock();
+	{
+		loadMaterials.resize(assetsDatabase->materialLoadRequests.size());
+	
+		for (uint32_t i = 0; i < loadMaterials.size(); i++)
+		{
+			loadMaterials[i] = assetsDatabase->materialLoadRequests.front();
+			assetsDatabase->materialLoadRequests.pop();
+		}
+	}
+	assetsDatabase->materialLoadStatusMutex.unlock();
+	if (loadMaterials.empty()) return;
+	
+	std::for_each(std::execution::par, loadMaterials.begin(), loadMaterials.end(), [this](const auto& materialIndex)
+		{
+			auto path = assetsDatabase->materialsPaths[materialIndex];
+			LoadMaterial(path, materialIndex);
+		});
 }

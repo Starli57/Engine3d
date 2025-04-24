@@ -53,8 +53,7 @@ namespace AVulkan
     VkCommandBuffer& CommandsManager::GetCommandBuffer(const int frame)
     {
         const auto threadId = std::this_thread::get_id();
-        if (!threadsMapping.contains(threadId)) CreateCommandPool();
-        
+        GetCommandPool();
         return commandBuffers.at(threadsMapping.at(threadId)).at(frame);
     }
 }

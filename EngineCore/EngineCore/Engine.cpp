@@ -2,6 +2,8 @@
 
 #include "Engine.h"
 
+#include "Profiler/Profiler.h"
+
 Engine::Engine(const Ref<ProjectSettings>& projectSettings) : projectSettings(projectSettings)
 {
 	InitLogger();
@@ -34,7 +36,6 @@ Engine::Engine(const Ref<ProjectSettings>& projectSettings) : projectSettings(pr
 #else
 	throw std::runtime_error("The rendering api is not supported");
 #endif
-	resourcesManager->Load();
 
 	input = CreateRef<Input>(window);
 
@@ -110,19 +111,29 @@ void Engine::Run()
 
 	while (!glfwWindowShouldClose(window))
 	{
+		Profiler::GetInstance().BeginSample("MainLoop");
+		
 		glfwPollEvents();
 		input->Update();
 
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		deltaTime = std::chrono::duration<float>(currentTime - cachedTime).count();
 
+		resourcesManager->Load();
+		
+		Profiler::GetInstance().BeginSample("Systems");
 		rotatorSystem->Update(deltaTime);
 		transformSystem->Update(deltaTime);
 		freeCameraSystem->Update(deltaTime);
 		orbitCameraSystem->Update(deltaTime);
 		cameraSystem->Update(deltaTime);
+		Profiler::GetInstance().EndSample("Systems");
 
+		Profiler::GetInstance().BeginSample("Rendering");
 		graphicsApi->Render();
+		Profiler::GetInstance().EndSample("Rendering");
+
+		Profiler::GetInstance().EndSample("MainLoop");
 
 		editorUpdate();
 

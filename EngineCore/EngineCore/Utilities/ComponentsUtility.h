@@ -20,7 +20,7 @@
 #include "EngineCore/Components/ScaleComponent.h"
 #include "EngineCore/Components/UboDiffuseLightComponent.h"
 #include "EngineCore/Components/UboModelComponent.h"
-#include "EngineCore/Components/UboViewProjectionComponent.h"
+#include "EngineCore/Components/UboWorldComponent.h"
 
 /// <summary>
 /// This script is autognerated

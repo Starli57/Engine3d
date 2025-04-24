@@ -22,7 +22,7 @@
 #include "EngineCore/Components/ScaleComponent.h"
 #include "EngineCore/Components/UboDiffuseLightComponent.h"
 #include "EngineCore/Components/UboModelComponent.h"
-#include "EngineCore/Components/UboViewProjectionComponent.h"
+#include "EngineCore/Components/UboWorldComponent.h"
 
 class EntitySerializer
 {
@@ -39,6 +39,8 @@ public:
 
 	bool InstantiatePrefab(const Ref<Ecs>& ecs, const std::filesystem::path& filePath);
 	bool InstantiatePrefab(const Ref<Ecs>& ecs, YAML::Node& node);
+
+	void InstantiateCombinedMesh(const Ref<Ecs>& ecs, const std::filesystem::path& filePath);
 
 private:
 
@@ -64,7 +66,7 @@ private:
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const MeshComponent& component) const;
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const MaterialComponent& component) const;
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboModelComponent& component) const;
-	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboViewProjectionComponent& component) const;
+	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, UboWorldComponent& component) const;
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, const UboDiffuseLightComponent& component) const;
 	void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity, IdComponent& component) const;
 

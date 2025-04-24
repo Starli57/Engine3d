@@ -26,7 +26,7 @@ int main()
 				conversionTasks.push_back(std::async(std::launch::async, [inFolder, outFolder, directoryName]()
 					{
 						URef<ResourcesConverterObj> objConverter = CreateUniqueRef<ResourcesConverterObj>();
-						objConverter->Convert(inFolder + directoryName + "/", outFolder + directoryName + "/");
+						objConverter->Convert(inFolder + directoryName + "/", outFolder + directoryName + "/", directoryName);
 					}));
 			}
 			else

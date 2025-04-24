@@ -6,8 +6,8 @@
 
 namespace AVulkan
 {
-	Ref<PipelineVulkan> GraphicsPipelineUtility::Create(Ref<VulkanPipelineConfig> pipelineConfig, VkDevice& logicalDevice,
-		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout, VkSampleCountFlagBits msaa)
+	Ref<PipelineVulkan> GraphicsPipelineUtility::Create(const Ref<VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
+		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa)
 	{
 		spdlog::info("Create graphics pipeline");
 		auto pipeline = CreateRef<PipelineVulkan>();
@@ -30,8 +30,8 @@ namespace AVulkan
 
 			VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
 			pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-			pipelineLayoutInfo.setLayoutCount = 1;
-			pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
+			pipelineLayoutInfo.setLayoutCount = static_cast<uint32_t>(descriptorSetLayouts.size());
+			pipelineLayoutInfo.pSetLayouts = descriptorSetLayouts.data();
 			pipelineLayoutInfo.pushConstantRangeCount = 1;
 			pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
@@ -52,7 +52,7 @@ namespace AVulkan
 			auto viewportState = SetupViewportAndScissor(swapChainExtent);
 			auto rasterizer = SetupRasterizer(pipelineConfig);
 			auto multisampling = SetupMultisampling(msaa);
-			auto colorBlend = SetupColorsBlending();
+			auto colorBlend = SetupColorsBlending(pipelineConfig);
 
 			VkPipelineDepthStencilStateCreateInfo depthStencil{};
 			depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
@@ -95,10 +95,10 @@ namespace AVulkan
 	}
 
 	Ref<PipelineVulkan> GraphicsPipelineUtility::ReCreate(const Ref<PipelineVulkan>& pipeline, const Ref<VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
-		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, VkDescriptorSetLayout& descriptorSetLayout, VkSampleCountFlagBits msaa)
+		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa)
 	{
 		Dispose(pipeline, logicalDevice);
-		return Create(pipelineConfig, logicalDevice, renderpass, swapChainExtent, descriptorSetLayout, msaa);
+		return Create(pipelineConfig, logicalDevice, renderpass, swapChainExtent, descriptorSetLayouts, msaa);
 	}
 
 	void GraphicsPipelineUtility::Dispose(const Ref<PipelineVulkan>& pipeline, const VkDevice& logicalDevice) const
@@ -181,15 +181,15 @@ namespace AVulkan
 		return multisampling;
 	}
 
-	VkPipelineColorBlendStateCreateInfo GraphicsPipelineUtility::SetupColorsBlending() const
+	VkPipelineColorBlendStateCreateInfo GraphicsPipelineUtility::SetupColorsBlending(const Ref<VulkanPipelineConfig>& pipelineConfig) const
 	{
 		auto colorBlendAttachment = new VkPipelineColorBlendAttachmentState();
 		colorBlendAttachment->colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |
 			VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-		colorBlendAttachment->blendEnable = VK_TRUE;
+		colorBlendAttachment->blendEnable = pipelineConfig->transparent ? VK_TRUE : VK_FALSE;
 
-		colorBlendAttachment->srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
-		colorBlendAttachment->dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+		colorBlendAttachment->srcColorBlendFactor = pipelineConfig->transparent ? VK_BLEND_FACTOR_SRC_ALPHA : VK_BLEND_FACTOR_ONE;
+		colorBlendAttachment->dstColorBlendFactor = pipelineConfig->transparent ? VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA : VK_BLEND_FACTOR_ZERO;
 		colorBlendAttachment->colorBlendOp = VK_BLEND_OP_ADD;
 
 		colorBlendAttachment->srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;

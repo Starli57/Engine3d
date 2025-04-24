@@ -4,8 +4,8 @@
 
 namespace VkUtils
 {
-	void CreateBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const uint64_t bufferSize,
-	                  const VkBufferUsageFlags& usageFlags, VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
+	void CreateBuffer(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, const uint64_t bufferSize,
+	                  const VkBufferUsageFlags& usageFlags, const VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{
 		VkBufferCreateInfo bufferInfo{};
 		bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -25,8 +25,8 @@ namespace VkUtils
 		vkFreeMemory(logicalDevice, bufferMemory, nullptr);
 	}
 
-	void CopyBuffer(VkDevice& logicalDevice, VkQueue& graphicsQueue, const VkBuffer& srcBuffer, const VkBuffer& dstBuffer,
-	                const VkDeviceSize& size, VkCommandPool& commandPool)
+	void CopyBuffer(const VkDevice& logicalDevice, const VkQueue& graphicsQueue, const VkBuffer& srcBuffer, const VkBuffer& dstBuffer,
+	                const VkDeviceSize& size, const VkCommandPool& commandPool)
 	{
 		auto commandBuffer = BeginCommandBuffer(logicalDevice, commandPool);
 

@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "CommandsManager.h"
-#include "DescriptorsManager.h"
+#include "Descriptors/DescriptorsManager.h"
 
 #include "Models/SwapChainData.h"
 #include "Models/ImageModel.h"
@@ -46,7 +46,7 @@
 #include "EngineCore/Components/RotationComponent.h"
 #include "EngineCore/Components/MaterialComponent.h"
 #include "EngineCore/Components/MeshComponent.h"
-#include "EngineCore/Components/UboViewProjectionComponent.h"
+#include "EngineCore/Components/UboWorldComponent.h"
 #include "EngineCore/Components/UboDiffuseLightComponent.h"
 
 #include "EngineCore/Systems/TransformSystem.h"
@@ -69,10 +69,9 @@ namespace AVulkan
 		VkQueue graphicsQueue;
 		VkQueue presentationQueue;
 
-		
+		Ref<DescriptorsManager> descriptorsManager;
 		Ref<SwapChain> swapChain;
 		Ref<SwapChainData> swapChainData;
-		Ref<DescriptorsManager> descriptorsManager;
 		Ref<VulkanConfiguration> rendererConfig;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;
@@ -118,6 +117,7 @@ namespace AVulkan
 		void CreateLogicalDevice();
 		void CreateWindowSurface();
 		void CreateSwapChain();
+		void CreateDescriptorManager();
 		void CreateRenderPasses();
 		void CreateDepthBuffer() const;
 		void CreateCommandsManager();
