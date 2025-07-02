@@ -2,6 +2,7 @@
 My data driven realtime 3d rendering engine / sandbox powered by vulkan graphics api for windows platform. 
 
 # Dependecies
+* Vulkan
 * Catch2
 * DearImgui
 * Entt
