@@ -40,6 +40,16 @@ void AssetsWindow::Update()
         }
     }
 
+    ImGui::Text("Combined Meshes");
+    for (const auto& mesh : assetsDatabase->combinedMeshIndexByPath)
+    {
+        if (ImGui::Button(mesh.first.filename().string().c_str()))
+        {
+            EntitySerializer entitySerializer = EntitySerializer(projectSettings, assetsDatabase);
+            entitySerializer.InstantiateCombinedMesh(ecs, mesh.first);
+        }
+    }
+
     /*
      for (auto mesh : assetsDatabase->meshesPaths)
          ImGui::Text(mesh.first.c_str());
