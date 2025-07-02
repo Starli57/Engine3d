@@ -7,10 +7,8 @@ My data driven realtime 3d rendering engine / sandbox powered by vulkan graphics
 * Entt
 * GLFW
 * Glm
-* Pybind11
 * SpdLog
 * Stb
-* TinyGltf
 * TinyObjLoader
 * YamlCpp
 
