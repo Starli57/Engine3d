@@ -1,5 +1,5 @@
 # 3d Engine / Renderer
-My data driven 3d sandbox engine powered by vulkan graphics api for windows platform. 
+My data driven realtime 3d rendering engine / sandbox powered by vulkan graphics api for windows platform. 
 
 # Dependecies
 * Catch2
