@@ -115,7 +115,7 @@ void ResourcesConverterObj::ConvertMesh(const std::string& meshPathStr, const st
         }
     }
 
-    CalculateNormalsTangents(meshes);
+    //CalculateNormalsTangents(meshes);
         
     //--format meshes
     std::vector<std::string> serializedMeshNames;

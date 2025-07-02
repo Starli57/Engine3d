@@ -12,7 +12,6 @@
 #include "Windows/ProfilerWindow.h"
 #include "Windows/VulkanTextureView.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
-#include "Windows/BuildingsMenu.h"
 #include "Windows/MainWindow.h"
 #include "Windows/SystemsStateWindow.h"
 
@@ -32,7 +31,6 @@ Editor::Editor(const Ref<ProjectSettings>& projectSettings, const Ref<Engine>& e
 	editorUi->AddWindow(CreateRef<VulkanTextureView>(engine, *graphicsApi));
 	editorUi->AddWindow(CreateRef<AssetsWindow>(engine->GetSerializer(), engine->GetEcs(), engine->GetAssetsDatabase(), projectSettings));
 	editorUi->AddWindow(CreateRef<SystemsStateWindow>(engine->GetSystemsState()));
-	editorUi->AddWindow(CreateRef<BuildingsMenu>());
 	
 	engine->BindEditorUpdateFunction([this]() { editorUi->Update(); });
 }

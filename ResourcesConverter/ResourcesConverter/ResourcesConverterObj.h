@@ -5,9 +5,9 @@
 class ResourcesConverterObj : public ResourcesConverter
 {
 public:
-	void ConvertFolder(const std::string& inFolder, const std::string& outFolder, const std::string& directoryName) override;
+	void ConvertFolder(const std::string& inFolder, const std::string& outFolder, const std::string& directoryName);
 	void ConvertMesh(const std::string& meshPathStr, const std::filesystem::path& meshPath, const std::string& inFolder, 
-		const std::string& outFolder, const std::string& directoryName, std::unordered_map<std::string, std::filesystem::path>& texturesPaths) override;
+		const std::string& outFolder, const std::string& directoryName, std::unordered_map<std::string, std::filesystem::path>& texturesPaths);
 
 	void FillPaths(std::unordered_map<std::string, std::filesystem::path>& paths, const std::vector<std::string>& extensions, const std::string& inFolder) const;
 

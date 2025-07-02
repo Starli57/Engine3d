@@ -1,8 +1,6 @@
 #include "EngineCore/Pch.h"
 #include "WindowSurfaceUtility.h"
 
-#include <pybind11/detail/common.h>
-
 #include "EngineCore/CustomAssert.h"
 
 namespace VkUtils
