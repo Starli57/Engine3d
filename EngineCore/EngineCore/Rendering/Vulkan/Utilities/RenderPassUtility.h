@@ -1,12 +1,12 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include "EngineCore/Rendering/Vulkan/Configs/VulkanConfiguration.h"
 #include "EngineCore/Core/Ref.h"
+#include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 
 namespace VkUtils
 {
-	VkRenderPass CreateRenderPass(VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, Ref<AVulkan::VulkanConfiguration> rendererConfig,
+	VkRenderPass CreateRenderPass(Ref<AVulkan::VulkanContext> vulkanContext,
 		const std::vector<VkAttachmentDescription>& attachments, const VkSubpassDescription& subpass);
 
 	void DisposeRenderPass(const VkDevice& logicalDevice, const VkRenderPass& renderPass);

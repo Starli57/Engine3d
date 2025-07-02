@@ -31,6 +31,16 @@ Ref<Entity> Ecs::CreateEntity()
 	return entity;
 }
 
+Ref<Entity> Ecs::FindEntity(entt::entity entity)
+{
+	for (auto entityRef : allEntities)
+	{
+		if (entityRef->GetEntity() == entity)
+			return entityRef;
+	}
+	return nullptr;
+}
+
 void Ecs::DestroyEntity(const Ref<Entity>& entity)
 {
 	allEntities.erase(std::remove(allEntities.begin(), allEntities.end(), entity), allEntities.end());

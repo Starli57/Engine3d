@@ -2,28 +2,31 @@
 
 #include <atomic>
 
-class UniqueIdGenerator
+namespace EngineCore
 {
-public:
+    class UniqueIdGenerator
+    {
+    public:
 
-    static uint32_t Generate();
+        static uint32_t Generate();
 
-private:
+    private:
 
-    static std::atomic<uint32_t> globalId;
+        static std::atomic<uint32_t> globalId;
 
-};
+    };
 
-struct UniqueId 
-{
-public:
-    uint32_t Get() const { return id; }
+    struct UniqueId 
+    {
+    public:
+        uint32_t Get() const { return id; }
 
-    UniqueId() { id = UniqueIdGenerator::Generate(); }
+        UniqueId() { id = UniqueIdGenerator::Generate(); }
 
-    bool operator==(const UniqueId& other)  const { return id == other.id; }
-    bool equals(const UniqueId& other)      const { return id == other.id; }
+        bool operator==(const UniqueId& other)  const { return id == other.id; }
+        bool equals(const UniqueId& other)      const { return id == other.id; }
 
-private:
-    uint32_t id;
-};
+    private:
+        uint32_t id;
+    };
+}

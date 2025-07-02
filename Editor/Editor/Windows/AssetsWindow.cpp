@@ -1,7 +1,7 @@
 #include "AssetsWindow.h"
 
-AssetsWindow::AssetsWindow(const Ref<Ecs>& ecs, const Ref<AssetsDatabase>& assetsDatabase, const Ref<ProjectSettings>& projectSettings) :
-    ecs(ecs), assetsDatabase(assetsDatabase), projectSettings(projectSettings)
+AssetsWindow::AssetsWindow(Ref<EngineCore::EntitySerializer> serializer, const Ref<Ecs>& ecs, const Ref<AssetsDatabase>& assetsDatabase, const Ref<ProjectSettings>& projectSettings) :
+    serializer(serializer), ecs(ecs), assetsDatabase(assetsDatabase), projectSettings(projectSettings)
 {
 }
 
@@ -18,8 +18,7 @@ void AssetsWindow::Update()
     {
         if (ImGui::Button(prefab.first.filename().string().c_str()))
         {
-            EntitySerializer entitySerializer = EntitySerializer(projectSettings, assetsDatabase);
-            entitySerializer.InstantiatePrefab(ecs, prefab.first);
+            serializer->InstantiatePrefab(ecs, prefab.first);
         }
     }
 
@@ -28,8 +27,7 @@ void AssetsWindow::Update()
     {
         if (ImGui::Button(world.first.filename().string().c_str()))
         {
-            EntitySerializer entitySerializer = EntitySerializer(projectSettings, assetsDatabase);
-            entitySerializer.InstantiateWorld(ecs, world.first);
+            serializer->InstantiateWorld(ecs, world.first);
         }
     }
 
@@ -38,8 +36,7 @@ void AssetsWindow::Update()
     {
         if (ImGui::Button(mesh.first.filename().string().c_str()))
         {
-            EntitySerializer entitySerializer = EntitySerializer(projectSettings, assetsDatabase);
-            entitySerializer.InstantiateCombinedMesh(ecs, mesh.first);
+            serializer->InstantiateCombinedMesh(ecs, mesh.first);
         }
     }
 

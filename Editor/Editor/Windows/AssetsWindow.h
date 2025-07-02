@@ -9,7 +9,7 @@
 class AssetsWindow : public IWindow
 {
 public:
-	AssetsWindow(const Ref<Ecs>& ecs, const Ref<AssetsDatabase>& assetsDatabase, const Ref<ProjectSettings>& projectSettings);
+	AssetsWindow(Ref<EngineCore::EntitySerializer> serializer, const Ref<Ecs>& ecs, const Ref<AssetsDatabase>& assetsDatabase, const Ref<ProjectSettings>& projectSettings);
 	~AssetsWindow();
 
 	void Update() override;
@@ -18,5 +18,6 @@ private:
 	Ref<Ecs> ecs;
 	Ref<AssetsDatabase> assetsDatabase;
 	Ref<ProjectSettings> projectSettings;
+	Ref<EngineCore::EntitySerializer> serializer;
 };
 

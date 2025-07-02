@@ -39,6 +39,14 @@ public:
 	}
 
 	template<typename T>
+	bool TryGetComponent(T& component)
+	{
+		if (!HasComponent<T>()) return false;
+		component = GetComponent<T>();
+		return true;
+	}
+	
+	template<typename T>
 	T& GetComponent()
 	{
 		return registry->get<T>(entity);

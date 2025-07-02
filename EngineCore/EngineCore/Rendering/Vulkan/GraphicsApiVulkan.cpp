@@ -5,17 +5,25 @@
 #include "GraphicsApiVulkan.h"
 
 #include "EngineCore/Profiler/Profiler.h"
+#include "Utilities/FormatUtility.h"
+#include "Utilities/ImageUtility.h"
+#include "Utilities/InstanceUtility.h"
+#include "Utilities/LogicalDeviceUtility.h"
+#include "Utilities/SyncObjectsUtility.h"
+#include "Utilities/TextureSamplerUtility.h"
+#include "Utilities/WindowSurfaceUtility.h"
 
 namespace AVulkan
 {
-	GraphicsApiVulkan::GraphicsApiVulkan(const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* glfwWindow)
+	GraphicsApiVulkan::GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<InputManager> inputManager, const Ref<AssetsDatabaseVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* glfwWindow)
 	{
+		this->context = CreateRef<VulkanContext>();
 		this->ecs = ecs;
+		this->inputManager = inputManager;
 		this->assetDatabase = assetDatabase;
 		this->projectSettings = projectSettings;
-		this->window = glfwWindow;
-		this->pipelinesCollection = CreateRef<PipelinesCollection>(projectSettings);
-		this->rendererConfig = CreateRef<VulkanConfiguration>();
+		this->context->window = glfwWindow;
+		this->context->pipelinesCollection = CreateRef<PipelinesCollection>(projectSettings);
 		this->rollback = CreateRef<Rollback>("GraphicsApiVulkan");
 	}
 
@@ -51,27 +59,20 @@ namespace AVulkan
 	void GraphicsApiVulkan::RecreateSwapChain()
 	{
 		int width = 0, height = 0;
-		glfwGetFramebufferSize(window, &width, &height);
+		glfwGetFramebufferSize(context->window, &width, &height);
 
 		while (width == 0 || height == 0)
 		{
-			glfwGetFramebufferSize(window, &width, &height);
+			glfwGetFramebufferSize(context->window, &width, &height);
 			glfwWaitEvents();
 		}
 
 		spdlog::info("Recreate swapchain");
 		FinalizeRenderOperations();
 
-		delete renderPassColor;
-		delete renderPassShadowMaps;
-
+		onRenderPassesDispose();
 		swapChain->Recreate();
-
-		renderPassShadowMaps = new RenderPassShadowMaps(physicalDevice, logicalDevice,
-			rendererConfig, descriptorsManager, ecs, assetDatabase, swapChainData, pipelinesCollection);
-		renderPassColor = new RenderPassColor(physicalDevice, logicalDevice,
-			rendererConfig, descriptorsManager, ecs, assetDatabase, swapChainData,
-			textureSampler, pipelinesCollection, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
+		onRenderPassesCreate();
 	}
 
 	void GraphicsApiVulkan::Render()
@@ -80,27 +81,11 @@ namespace AVulkan
 		if (acquireStatus != VK_SUCCESS) return;
 
 		auto commandBuffer = commandsManager->GetCommandBuffer(frame);
-		vkResetFences(logicalDevice, 1, &drawFences[frame]);
+		vkResetFences(context->logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(commandBuffer, 0);
 
-		descriptorsManager->UpdateFrameDescriptors(frame);
-		descriptorsManager->UpdateMaterialsDescriptors(frame);
+		onClientRender();
 		
-		VkUtils::BeginCommandBuffer(commandBuffer);
-		renderPassShadowMaps->Render(commandBuffer, frame, imageIndex);
-
-		VkUtils::TransitionImageLayout(commandBuffer, renderPassShadowMaps->GetImageBuffer()->image,
-			VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_ASPECT_DEPTH_BIT);
-
-		descriptorsManager->UpdateShadowsMapDescriptors(frame, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
-		
-		renderPassColor->Render(commandBuffer, frame, imageIndex);
-
-		VkUtils::TransitionImageLayout(commandBuffer, swapChainData->images.at(imageIndex),
-			VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_ASPECT_COLOR_BIT);
-
-		VkUtils::EndCommandBuffer(commandBuffer);
-
 		const VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
 		const std::array submitCommandBuffers =
@@ -119,8 +104,8 @@ namespace AVulkan
 		submitInfo.pCommandBuffers = submitCommandBuffers.data();
 
 		Profiler::GetInstance().BeginSample("Renderer Submit");
-		auto submitStatus = vkQueueSubmit(graphicsQueue, 1, &submitInfo, drawFences[frame]);
-		Profiler::GetInstance().EndSample("Renderer Submit");
+		auto submitStatus = vkQueueSubmit(context->graphicsQueue, 1, &submitInfo, drawFences[frame]);
+		Profiler::GetInstance().EndSample();
 		
 		CAssert::Check(submitStatus == VK_SUCCESS, "Failed to submit draw command buffer, status: " + submitStatus);
 
@@ -132,9 +117,9 @@ namespace AVulkan
 		presentInfo.pSwapchains = &swapChainData->swapChain;
 		presentInfo.pImageIndices = &imageIndex;
 
-		Profiler::GetInstance().BeginSample("Renderer Present");
-		auto presentStatus = vkQueuePresentKHR(presentationQueue, &presentInfo);
-		Profiler::GetInstance().EndSample("Renderer Present");
+		Profiler::GetInstance().BeginSample("vkQueuePresentKHR");
+		auto presentStatus = vkQueuePresentKHR(context->presentationQueue, &presentInfo);
+		Profiler::GetInstance().EndSample();
 
 		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR)
 		{
@@ -144,15 +129,15 @@ namespace AVulkan
 		
 		CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
 		
-		frame = (frame + 1) % rendererConfig->maxFramesInFlight;
+		frame = (frame + 1) % context->maxFramesInFlight;
 	}
 
 	VkResult GraphicsApiVulkan::AcquireNextImage()
 	{
-		vkWaitForFences(logicalDevice, 1, &drawFences[frame], VK_TRUE, rendererConfig->frameSyncTimeout);
+		vkWaitForFences(context->logicalDevice, 1, &drawFences[frame], VK_TRUE, context->frameSyncTimeout);
 
 		auto acquireStatus = vkAcquireNextImageKHR(
-			logicalDevice, swapChainData->swapChain, rendererConfig->frameSyncTimeout,
+			context->logicalDevice, swapChainData->swapChain, context->frameSyncTimeout,
 			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 		
 		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR) 
@@ -165,42 +150,49 @@ namespace AVulkan
 	
 	void GraphicsApiVulkan::FinalizeRenderOperations()
 	{
-		vkDeviceWaitIdle(logicalDevice);
+		vkDeviceWaitIdle(context->logicalDevice);
 	}
 
-	void GraphicsApiVulkan::CreateInstance()
+	void GraphicsApiVulkan::BindClientFunctions(std::function<void()> onClientRender, std::function<void()> onRenderPassesCreate, std::function<void()> onRenderPassesDispose)
 	{
-		VkUtils::CreateInstance(instance);
-		rollback->Add([this]() { VkUtils::DisposeInstance(instance); });
+		this->onClientRender = onClientRender;
+		this->onRenderPassesCreate = onRenderPassesCreate;
+		this->onRenderPassesDispose = onRenderPassesDispose;
 	}
 
-	void GraphicsApiVulkan::CreateWindowSurface()
+	void GraphicsApiVulkan::CreateInstance() const
 	{
-		windowSurface = VkUtils::CreateSurface(instance, *window);
-		rollback->Add([this]() { VkUtils::DisposeSurface(instance, windowSurface); });
+		VkUtils::CreateInstance(context->instance);
+		rollback->Add([this]() { VkUtils::DisposeInstance(context->instance); });
 	}
 
-	void GraphicsApiVulkan::SelectPhysicalRenderingDevice()
+	void GraphicsApiVulkan::CreateWindowSurface() const
 	{
-		physicalDevice = VkUtils::GetBestRenderingDevice(instance, windowSurface);
-		rendererConfig->msaa = VkUtils::GetMaxUsableSampleCount(physicalDevice);
-		rendererConfig->depthFormat = VkUtils::FindDepthBufferFormat(physicalDevice);
-		VkUtils::PrintPhysicalDeviceDebugInformation(physicalDevice, windowSurface);
+		context->windowSurface = VkUtils::CreateSurface(context);
+		rollback->Add([this]() { VkUtils::DisposeSurface(context); });
 	}
 
-	void GraphicsApiVulkan::CreateLogicalDevice()
+	void GraphicsApiVulkan::SelectPhysicalRenderingDevice() const
 	{
-		logicalDevice = VkUtils::CreateLogicalDevice(physicalDevice, windowSurface, graphicsQueue, presentationQueue);
+		context->physicalDevice = VkUtils::GetBestRenderingDevice(context->instance, context->windowSurface);
+		context->msaa = VkUtils::GetMaxUsableSampleCount(context->physicalDevice);
+		context->depthFormat = VkUtils::FindDepthBufferFormat(context->physicalDevice);
+		VkUtils::PrintPhysicalDeviceDebugInformation(context->physicalDevice, context->windowSurface);
+	}
+
+	void GraphicsApiVulkan::CreateLogicalDevice() const
+	{
+		context->logicalDevice = VkUtils::CreateLogicalDevice(context);
 		rollback->Add([this]()
 		{
-			VkUtils::DisposeLogicalDevice(logicalDevice);
+			VkUtils::DisposeLogicalDevice(context->logicalDevice);
 		});
 	}
 
 	void GraphicsApiVulkan::CreateSwapChain()
 	{
 		swapChainData = CreateRef<SwapChainData>();
-		swapChain = CreateRef<SwapChain>(*window, physicalDevice, logicalDevice, windowSurface, graphicsQueue, swapChainData, rendererConfig);
+		swapChain = CreateRef<SwapChain>(context, swapChainData);
 
 		swapChain->CreateSwapchain();
 		swapChain->CreateSwapChainImageViews();
@@ -212,27 +204,21 @@ namespace AVulkan
 
 	void GraphicsApiVulkan::CreateDescriptorManager()
 	{
-		descriptorsManager = CreateRef<DescriptorsManager>(physicalDevice, logicalDevice, ecs,
+		descriptorsManager = CreateRef<DescriptorsManager>(context->physicalDevice, context->logicalDevice, ecs, inputManager,
 			textureSampler, assetDatabase);
 
 		rollback->Add([this] { descriptorsManager.reset(); });
 	}
 
-	void GraphicsApiVulkan::CreateRenderPasses()
+	void GraphicsApiVulkan::CreateRenderPasses() const
 	{
-		renderPassShadowMaps = new RenderPassShadowMaps(physicalDevice, logicalDevice, 
-			rendererConfig, descriptorsManager, ecs, assetDatabase, swapChainData, pipelinesCollection);
-		renderPassColor = new RenderPassColor(physicalDevice, logicalDevice, 
-			rendererConfig, descriptorsManager, ecs, assetDatabase, swapChainData, 
-			textureSampler, pipelinesCollection, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
-
-		rollback->Add([this] { delete renderPassColor; });
-		rollback->Add([this] { delete renderPassShadowMaps; });
+		onRenderPassesCreate();
+		rollback->Add([this] { onRenderPassesDispose(); });
 	}
 
 	void GraphicsApiVulkan::CreateCommandsManager()
 	{
-		commandsManager = new CommandsManager(physicalDevice, logicalDevice, windowSurface, rendererConfig->maxFramesInFlight);
+		commandsManager = new CommandsManager(context, context->maxFramesInFlight);
 		rollback->Add([this]() { delete commandsManager; });
 	}
 
@@ -244,15 +230,15 @@ namespace AVulkan
 
 	void GraphicsApiVulkan::CreateTextureSampler()
 	{
-		VkUtils::CreateTextureSampler(physicalDevice, logicalDevice, textureSampler);
-		rollback->Add([this]() { vkDestroySampler(logicalDevice, textureSampler, nullptr); });
+		VkUtils::CreateTextureSampler(context->physicalDevice, context->logicalDevice, textureSampler);
+		rollback->Add([this]() { vkDestroySampler(context->logicalDevice, textureSampler, nullptr); });
 	}
 
 	void GraphicsApiVulkan::CreateSyncObjects()
 	{
-		imageAvailableSemaphores.resize(rendererConfig->maxFramesInFlight);
-		renderFinishedSemaphores.resize(rendererConfig->maxFramesInFlight);
-		drawFences.resize(rendererConfig->maxFramesInFlight);
+		imageAvailableSemaphores.resize(context->maxFramesInFlight);
+		renderFinishedSemaphores.resize(context->maxFramesInFlight);
+		drawFences.resize(context->maxFramesInFlight);
 
 		VkSemaphoreCreateInfo semaphoreInfo{};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -261,11 +247,11 @@ namespace AVulkan
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-		for (int i = 0; i < rendererConfig->maxFramesInFlight; i++)
+		for (int i = 0; i < context->maxFramesInFlight; i++)
 		{
-			VkUtils::CreateVkSemaphore(logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i], rollback);
-			VkUtils::CreateVkSemaphore(logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i], rollback);
-			VkUtils::CreateVkFence(logicalDevice, &fenceInfo, nullptr, &drawFences[i], rollback);
+			VkUtils::CreateVkSemaphore(context->logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i], rollback);
+			VkUtils::CreateVkSemaphore(context->logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i], rollback);
+			VkUtils::CreateVkFence(context->logicalDevice, &fenceInfo, nullptr, &drawFences[i], rollback);
 		}
 	}
 }

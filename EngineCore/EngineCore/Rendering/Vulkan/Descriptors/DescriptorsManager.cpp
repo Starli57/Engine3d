@@ -3,13 +3,13 @@
 
 namespace AVulkan
 {
-    DescriptorsManager::DescriptorsManager(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs,
+    DescriptorsManager::DescriptorsManager(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<InputManager> inputManager,
             VkSampler& textureSampler, const Ref<AssetsDatabaseVulkan>& assetsDatabase)
-                : logicalDevice(logicalDevice)
+                : logicalDevice(logicalDevice), inputManager(inputManager)
     {
         descriptorsAllocator = CreateRef<DescriptorsAllocator>();
         CreateGlobalDescriptorsPool();
-        frameDescriptor = CreateRef<DescriptorFrame>(physicalDevice, logicalDevice, ecs, globalDescriptorPool, descriptorsAllocator);
+        frameDescriptor = CreateRef<DescriptorFrame>(physicalDevice, logicalDevice, ecs, inputManager, globalDescriptorPool, descriptorsAllocator);
         opaqueMaterialDescriptor = CreateRef<DescriptorMaterialOpaque>(physicalDevice, logicalDevice, ecs,
             descriptorsAllocator, textureSampler, assetsDatabase);
         shadowMapDescriptor = CreateRef<DescriptorShadowMap>(physicalDevice, logicalDevice, ecs, globalDescriptorPool, descriptorsAllocator);
@@ -30,17 +30,17 @@ namespace AVulkan
 
     void DescriptorsManager::UpdateFrameDescriptors(const uint32_t frame) const
     {
-        frameDescriptor->UpdateDescriptorSets(frame);
+        frameDescriptor->UpdateDescriptorSets(static_cast<uint16_t>(frame));
     }
 
     void DescriptorsManager::UpdateMaterialsDescriptors(const uint32_t frame) const
     {
-        opaqueMaterialDescriptor->UpdateDescriptorSets(frame);
+        opaqueMaterialDescriptor->UpdateDescriptorSets(static_cast<uint16_t>(frame));
     }
 
-    void DescriptorsManager::UpdateShadowsMapDescriptors(uint32_t frame, const VkImageView& shadowImageView, const VkSampler& shadowSampler) const
+    void DescriptorsManager::UpdateShadowsMapDescriptors(const uint32_t frame, const VkImageView& shadowImageView, const VkSampler& shadowSampler) const
     {
-        shadowMapDescriptor->UpdateDescriptorSets(frame, shadowImageView, shadowSampler);
+        shadowMapDescriptor->UpdateDescriptorSets(static_cast<uint16_t>(frame), shadowImageView, shadowSampler);
     }
 
     VkDescriptorSetLayout& DescriptorsManager::GetDescriptorSetLayoutFrame() const

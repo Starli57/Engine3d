@@ -1,14 +1,16 @@
 #include "EngineCore/Pch.h"
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/ImageUtility.h"
+
+#include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/MemoryUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
 
 namespace VkUtils
 {
-    VkImage CreateImage(VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice,
-        const uint32_t width, const uint32_t height, const VkFormat format, const VkImageTiling tiling, const VkImageUsageFlags usage,
-        const VkSampleCountFlagBits msaa, VkMemoryPropertyFlags properties, VkDeviceMemory& imageMemory)
+    VkImage CreateImage(const Ref<AVulkan::VulkanContext>& vulkanContext,
+                        const uint32_t width, const uint32_t height, const VkFormat format, const VkImageTiling tiling, const VkImageUsageFlags usage,
+                        const VkSampleCountFlagBits msaa, VkMemoryPropertyFlags properties, VkDeviceMemory& imageMemory)
     {
         VkImageCreateInfo imageInfo{};
         imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -26,28 +28,27 @@ namespace VkUtils
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         VkImage image = nullptr;
-        const auto createStatus = vkCreateImage(logicalDevice, &imageInfo, nullptr, &image);
+        const auto createStatus = vkCreateImage(vulkanContext->logicalDevice, &imageInfo, nullptr, &image);
         CAssert::Check(createStatus == VK_SUCCESS, "Failed to create vk image");
 
         VkMemoryRequirements memRequirements;
-        vkGetImageMemoryRequirements(logicalDevice, image, &memRequirements);
+        vkGetImageMemoryRequirements(vulkanContext->logicalDevice, image, &memRequirements);
 
         VkMemoryAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
         allocInfo.allocationSize = memRequirements.size;
-        allocInfo.memoryTypeIndex = FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, properties);
+        allocInfo.memoryTypeIndex = FindMemoryType(vulkanContext->physicalDevice, memRequirements.memoryTypeBits, properties);
 
-        const auto allocateStatus = vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &imageMemory);
+        const auto allocateStatus = vkAllocateMemory(vulkanContext->logicalDevice, &allocInfo, nullptr, &imageMemory);
         CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate vk image memory");
 
-        vkBindImageMemory(logicalDevice, image, imageMemory, 0);
+        vkBindImageMemory(vulkanContext->logicalDevice, image, imageMemory, 0);
         return image;
     }
 
-    void CopyBufferToImage(VkDevice& logicalDevice, VkQueue& graphicsQueue,
-        const VkBuffer& buffer, const VkImage& image, const uint32_t width, const uint32_t height, VkCommandPool& commandPool)
+    void CopyBufferToImage(const Ref<AVulkan::VulkanContext>& vulkanContext, const VkBuffer& buffer, const VkImage& image, const uint32_t width, const uint32_t height, VkCommandPool& commandPool)
     {
-        auto commandBuffer = BeginCommandBuffer(logicalDevice, commandPool);
+        auto commandBuffer = BeginCommandBuffer(vulkanContext->logicalDevice, commandPool);
 
         VkBufferImageCopy imageRegion{};
         imageRegion.bufferOffset = 0;
@@ -65,8 +66,8 @@ namespace VkUtils
         vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &imageRegion);
 
         vkEndCommandBuffer(commandBuffer);
-        SubmitCommandBuffer(graphicsQueue, commandBuffer);
-        vkFreeCommandBuffers(logicalDevice, commandPool, 1, &commandBuffer);
+        SubmitCommandBuffer(vulkanContext->graphicsQueue, commandBuffer);
+        vkFreeCommandBuffers(vulkanContext->logicalDevice, commandPool, 1, &commandBuffer);
     }
 
     void TransitionImageLayout(const VkCommandBuffer& commandBuffer, const VkImage& image,
@@ -136,8 +137,6 @@ namespace VkUtils
     void CreateImageView(const VkDevice& logicalDevice, const VkFormat& imageFormat, const VkImageAspectFlags imageAspectFlags,
         const VkImage& image, VkImageView& imageView)
     {
-        spdlog::info("Create image view");
-
         VkImageViewCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         createInfo.image = image;

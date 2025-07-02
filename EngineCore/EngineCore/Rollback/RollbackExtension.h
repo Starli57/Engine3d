@@ -5,13 +5,15 @@
 
 #include "Rollback.h"
 
-class RollbackExtension
+namespace EngineCore
 {
-public:
-	void Dispose(const Rollback& rollback) const;
-	void Dispose(const Rollback* rollback) const;
-	void Dispose(std::stack<std::function<void()>>* disposeStack) const;
+	class RollbackExtension
+	{
+	public:
+		void Dispose(const Rollback& rollback) const;
+		void Dispose(const Rollback* rollback) const;
+		void Dispose(std::stack<std::function<void()>>* disposeStack) const;
 
-	friend class Rollback;
-};
-
+		friend class Rollback;
+	};
+}

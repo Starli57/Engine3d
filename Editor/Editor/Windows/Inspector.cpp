@@ -1,5 +1,5 @@
 #include "Inspector.h"
-#include "EngineCore/Utilities/ComponentsUtility.h"
+#include "Editor/Utilities/ComponentsUtility.h"
 
 Inspector::Inspector(Ref<AssetsDatabase> assetsDatabase) : assetsDatabase(assetsDatabase)
 {

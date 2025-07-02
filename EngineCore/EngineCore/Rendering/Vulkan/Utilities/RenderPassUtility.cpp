@@ -1,11 +1,13 @@
 #include "EngineCore/Pch.h"
 #include "RenderPassUtility.h"
+
+#include "EngineCore/CustomAssert.h"
 #include "spdlog/spdlog.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/FormatUtility.h"
 
 namespace VkUtils
 {
-	VkRenderPass CreateRenderPass(VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, Ref<AVulkan::VulkanConfiguration> rendererConfig,
+	VkRenderPass CreateRenderPass(Ref<AVulkan::VulkanContext> vulkanContext,
 		const std::vector<VkAttachmentDescription>& attachments, const VkSubpassDescription& subpass)
 	{
 		std::array<VkSubpassDependency, 2> subpassDependencies;
@@ -35,7 +37,7 @@ namespace VkUtils
 		renderPassInfo.pDependencies = subpassDependencies.data();
 
 		VkRenderPass renderPass;
-		auto createStatus = vkCreateRenderPass(logicalDevice, &renderPassInfo, nullptr, &renderPass);
+		auto createStatus = vkCreateRenderPass(vulkanContext->logicalDevice, &renderPassInfo, nullptr, &renderPass);
 		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create render pass, status: " + createStatus);
 
 		return renderPass;

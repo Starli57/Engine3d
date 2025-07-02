@@ -3,6 +3,7 @@
 #include "EngineCore/Assets/Meta/MeshMeta.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/Vertex.h"
+using namespace EngineCore;
 
 struct CubeDefinition : public MeshMeta
 {

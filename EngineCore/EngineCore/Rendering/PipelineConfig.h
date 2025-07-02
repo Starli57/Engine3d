@@ -2,12 +2,15 @@
 
 #include <string>
 
-struct PipelineConfig
+namespace EngineCore
 {
-	std::string pipelineName;
+	struct PipelineConfig
+	{
+		std::string pipelineName;
 
-	std::string vertShaderPath;
-	std::string fragShaderPath;
+		std::string vertShaderPath;
+		std::string fragShaderPath;
 
-	bool transparent;
-};
+		bool transparent;
+	};
+}

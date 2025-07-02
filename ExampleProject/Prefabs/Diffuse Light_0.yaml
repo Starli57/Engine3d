@@ -1,0 +1,10 @@
+NameComponent:
+  name: Diffuse Light
+PositionComponent:
+  position: [-400, 2000, 200]
+RotationComponent:
+  rotation: [0, 0, 0]
+UboWorldComponent:
+  {}
+UboDiffuseLightComponent:
+  {}

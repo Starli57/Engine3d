@@ -3,9 +3,13 @@
 #include <GLFW/glfw3.h>
 #include "EngineCore/Rendering/PipelineConfig.h"
 
-struct VulkanPipelineConfig : public PipelineConfig
+namespace EngineCore
 {
-	VkPolygonMode polygonMode;
-	VkCullModeFlags cullMode;
-	VkFrontFace frontFace;
-};
+	struct VulkanPipelineConfig : public PipelineConfig
+	{
+		VkPolygonMode polygonMode;
+		VkCullModeFlags cullMode;
+		VkFrontFace frontFace;
+		bool useVertices;
+	};
+}

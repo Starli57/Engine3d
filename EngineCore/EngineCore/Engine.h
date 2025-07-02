@@ -4,16 +4,15 @@
 #include <chrono>
 #include <entt.hpp>
 
+#include "Core/SystemsState.h"
 #include "EngineCore/Defines/DllDefines.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
-#include "EngineCore/Core/Input.h"
+#include "EngineCore/Managers/InputManager.h"
 #include "EngineCore/Core/ProjectSettings.h"
-#include "EngineCore/Systems/CameraFlySystem.h"
-#include "EngineCore/Systems/CameraOrbitSystem.h"
-#include "EngineCore/Systems/RotatorSystem.h"
 
 #include "EngineCore/Rollback/Rollback.h"
+#include "Serialization/EntitySerializer.h"
 
 #if GLFW_INCLUDE_VULKAN
 #include "EngineCore/Core/AssetsDatabaseVulkan.h"
@@ -21,45 +20,71 @@
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 #endif
 
-class Engine
+namespace EngineCore
 {
-public:
-	Engine(const Ref<ProjectSettings>& projectSettings);
-	virtual ~Engine();
-
-	void Run();
-
-	void BindEditorUpdateFunction(std::function<void()> editorUpdate);
-
-	IGraphicsApi* GetGraphicsApi() const { return graphicsApi; }
-	Ref<Ecs> GetEcs() { return ecs; }
+	class Engine
+	{
+	public:
+		Engine(const Ref<ProjectSettings>& projectSettings);
+		virtual ~Engine();
 	
-	Ref<AssetsDatabase> GetAssetsDatabase() { return assetsDatabase; }
-	Ref<AssetsLoader> GetResourcesManager() { return resourcesManager; }
+		void InitLogger() const;
+		void InitGlfw() const;
+		void SetupGlfwHints() const;
+		void CreateAppWindow();
+		void DefineInput();
+		void DefineGraphicsApi();
+		void DefineResourcesManager();
+	
+		void Run();
 
-	float GetDeltaTime() const { return deltaTime; }
+		void BindGameSystemsUpdateFunction(std::function<void()> gameSystemsUpdate);
+		void BindEditorUpdateFunction(std::function<void()> editorUpdate);
 
-private:
-	const Ref<ProjectSettings>& projectSettings;
+#if GLFW_INCLUDE_VULKAN
+		AVulkan::GraphicsApiVulkan* GetGraphicsApi() const { return graphicsApi; }
+		Ref<AssetsDatabaseVulkan> GetAssetsDatabase() { return assetsDatabase; }
+		Ref<AssetsLoaderVulkan> GetResourcesManager() { return resourcesManager; }
+#else
+		IGraphicsApi* GetGraphicsApi() const { return graphicsApi; }
+		Ref<AssetsDatabase> GetAssetsDatabase() { return assetsDatabase; }
+		Ref<AssetsLoader> GetResourcesManager() { return resourcesManager; }
+#endif
 
-	GLFWwindow* window;
-	IGraphicsApi* graphicsApi;
+		GLFWwindow* GetWindow() const { return window; }
+		Ref<Ecs> GetEcs() { return ecs; }
+		Ref<InputManager> GetInput() { return input; }
+		Ref<EngineCore::EntitySerializer> GetSerializer() { return entitySerializer; }
+		Ref<SystemsState> GetSystemsState() { return systemsState; }
+	
+		float GetDeltaTime() const { return deltaTime; }
 
-	Ref<Ecs> ecs;
-	Ref<Input> input;
-	Ref<AssetsDatabase> assetsDatabase;
-	Ref<AssetsLoader> resourcesManager;
+	private:
+		const Ref<ProjectSettings>& projectSettings;
 
-	float deltaTime;
+		GLFWwindow* window;
 
-	std::function<void()> editorUpdate;
+#if GLFW_INCLUDE_VULKAN
+		AVulkan::GraphicsApiVulkan* graphicsApi;
+		Ref<AssetsDatabaseVulkan> assetsDatabase;
+		Ref<AssetsLoaderVulkan> resourcesManager;
+#else
+		IGraphicsApi* graphicsApi;
+		Ref<AssetsDatabase> assetsDatabase;
+		Ref<AssetsLoader> resourcesManager;
+#endif
+	
+		Ref<Ecs> ecs;
+		Ref<InputManager> input;
+		Ref<SystemsState> systemsState;
+		Ref<EngineCore::EntitySerializer> entitySerializer;
+	
+		float deltaTime;
 
-	std::chrono::steady_clock::time_point cachedTime;
+		std::function<void()> gameSystemsUpdate;
+		std::function<void()> editorUpdate;
 
-	void InitLogger() const;
-	void InitGlfw() const;
-	void SetupGlfwHints() const;
-	void CreateAppWindow();
-	void InitGraphicsApi();
-};
+		std::chrono::steady_clock::time_point cachedTime;
 
+	};
+}

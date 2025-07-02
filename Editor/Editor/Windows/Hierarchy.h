@@ -16,7 +16,7 @@
 class Hierarchy : public IWindow
 {
 public:
-	Hierarchy(const Ref<Ecs>& ecs, const Ref<Inspector>& inspector, const Ref<ProjectSettings>& projectSettings, const
+	Hierarchy(const Ref<EngineCore::EntitySerializer>& serializer, const Ref<Ecs>& ecs, const Ref<Inspector>& inspector, const Ref<ProjectSettings>& projectSettings, const
 	          Ref<AssetsDatabase>& assetsDatabase);
 	~Hierarchy();
 
@@ -25,7 +25,7 @@ public:
 private:
 	Ref<Ecs> ecs;
 	Ref<Inspector> inspector;
-	Ref<EntitySerializer> serializer;
+	Ref<EngineCore::EntitySerializer> serializer;
 	Ref<ProjectSettings> projectSettings;
 	Ref<AssetsDatabase> assetsDatabase;
 

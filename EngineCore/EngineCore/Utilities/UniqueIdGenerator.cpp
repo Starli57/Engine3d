@@ -2,9 +2,12 @@
 #include "EngineCore/Pch.h"
 #include "EngineCore/Utilities/UniqueId.h"
 
-std::atomic<uint32_t> UniqueIdGenerator::globalId{ 0 };
-
-uint32_t UniqueIdGenerator::Generate()
+namespace EngineCore
 {
-    return globalId.fetch_add(1, std::memory_order_relaxed);
+    std::atomic<uint32_t> UniqueIdGenerator::globalId{ 0 };
+
+    uint32_t UniqueIdGenerator::Generate()
+    {
+        return globalId.fetch_add(1, std::memory_order_relaxed);
+    }
 }

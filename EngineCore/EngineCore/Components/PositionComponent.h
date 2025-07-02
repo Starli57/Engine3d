@@ -9,4 +9,5 @@ struct PositionComponent : public IComponent
 
 	PositionComponent() { position = glm::vec3(0, 0, 0); }
 	PositionComponent(glm::vec3 position) :position(position) {}
+	//todo: use move constructor
 };

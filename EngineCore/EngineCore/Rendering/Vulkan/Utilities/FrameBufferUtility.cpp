@@ -1,11 +1,13 @@
 #include "EngineCore/Pch.h"
 #include "FrameBufferUtility.h"
+
+#include "EngineCore/CustomAssert.h"
 #include "spdlog/spdlog.h"
 
 namespace VkUtils
 {
     void CreateFrameBuffer(const VkDevice& logicalDevice, const VkRenderPass& renderPass,
-                           const VkExtent2D& extent, const std::vector<VkImageView>& attachments, VkFramebuffer& frameBuffer)
+                           int width, int height, const std::vector<VkImageView>& attachments, VkFramebuffer& frameBuffer)
     {
         spdlog::info("Create frame buffers");
 
@@ -14,12 +16,12 @@ namespace VkUtils
         framebufferInfo.renderPass = renderPass;
         framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
         framebufferInfo.pAttachments = attachments.data();
-        framebufferInfo.width = extent.width;
-        framebufferInfo.height = extent.height;
+        framebufferInfo.width = width;
+        framebufferInfo.height = height;
         framebufferInfo.layers = 1;
 
         auto createStatus = vkCreateFramebuffer(logicalDevice, &framebufferInfo, nullptr, &frameBuffer);
-        CAssert::Check(createStatus == VK_SUCCESS, "Failed to create framebuffer, status = " + createStatus);
+        EngineCore::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create framebuffer, status = " + createStatus);
     }
 
     void DisposeFrameBuffer(const VkDevice& logicalDevice, std::vector<VkFramebuffer>& frameBuffers)

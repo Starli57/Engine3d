@@ -1,5 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "BufferUtility.h"
+
+#include "EngineCore/Engine.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/MemoryUtility.h"
 
 namespace VkUtils
@@ -14,7 +16,7 @@ namespace VkUtils
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 		auto createStatus = vkCreateBuffer(logicalDevice, &bufferInfo, nullptr, &buffer);
-		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create buffer, status: " + createStatus);
+		EngineCore::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create buffer, status: " + createStatus);
 	
 		BindMemory(physicalDevice, logicalDevice, memoryFlags, buffer, bufferMemory);
 	}

@@ -1,7 +1,11 @@
 #pragma once
 
-class IWindow
+namespace EngineCore
 {
-public:
-	virtual void Update() = 0;
-};
+	class IWindow
+	{
+	public:
+		virtual ~IWindow() = default;
+		virtual void Update() = 0;
+	};
+}

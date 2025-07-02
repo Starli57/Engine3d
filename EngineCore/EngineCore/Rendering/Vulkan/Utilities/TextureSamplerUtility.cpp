@@ -1,6 +1,8 @@
 ﻿#include "EngineCore/Pch.h"
 #include "TextureSamplerUtility.h"
 
+#include "EngineCore/Engine.h"
+
 namespace VkUtils
 {
     void CreateTextureSampler(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, VkSampler& textureSampler)
@@ -27,6 +29,6 @@ namespace VkUtils
         samplerInfo.maxLod = 0.0f;
 
         const auto createStatus = vkCreateSampler(logicalDevice, &samplerInfo, nullptr, &textureSampler);
-        CAssert::Check(createStatus == VK_SUCCESS, "Textures sampler can't be created");
+        EngineCore::CAssert::Check(createStatus == VK_SUCCESS, "Textures sampler can't be created");
     }
 }

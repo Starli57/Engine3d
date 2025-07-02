@@ -15,6 +15,8 @@
 #include "EngineCore/Rollback/Rollback.h"
 #include "EngineCore/Components/UboModelComponent.h"
 
+using namespace EngineCore;
+
 namespace AVulkan
 {
 	class GraphicsPipelineUtility

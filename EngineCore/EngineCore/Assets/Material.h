@@ -7,34 +7,37 @@
 #include "EngineCore/Utilities/UniqueId.h"
 #include "glm/vec3.hpp"
 
-class Material
+namespace EngineCore
 {
-public:
-	std::string pipelineId;
+	class Material
+	{
+	public:
+		std::string pipelineId;
 	
-	float roughness = 1.0f;
-	float metallic = 0.0f;
-	float sheen = 0.5f;
-	float specularExponent = 8.0f;
-	float indexOfRefraction = 1.0f;
-	float transparency = 1.0f;
+		float roughness = 1.0f;
+		float metallic = 0.0f;
+		float sheen = 0.5f;
+		float specularExponent = 8.0f;
+		float indexOfRefraction = 1.0f;
+		float transparency = 1.0f;
             
-	glm::vec3 ambientColor = glm::vec3(1.0f);
-	glm::vec3 diffuseColor = glm::vec3(1.0f);
-	glm::vec3 specularColor = glm::vec3(1.0f);
-	glm::vec3 emissionColor = glm::vec3(0.0f);
+		glm::vec3 ambientColor = glm::vec3(1.0f);
+		glm::vec3 diffuseColor = glm::vec3(1.0f);
+		glm::vec3 specularColor = glm::vec3(1.0f);
+		glm::vec3 emissionColor = glm::vec3(0.0f);
 	
-	std::optional<uint32_t> diffuse;
-	std::optional<uint32_t> specular;
-	std::optional<uint32_t> normalMap;
-	std::optional<uint32_t> alphaMap;
+		std::optional<uint32_t> diffuse;
+		std::optional<uint32_t> specular;
+		std::optional<uint32_t> normalMap;
+		std::optional<uint32_t> alphaMap;
 
-	bool opaque = true;
+		bool opaque = true;
 	
-	Material(std::string pipelineId);
+		Material(std::string pipelineId);
 
-	void SetDiffuseTexture(uint32_t texture);
-	void SetSpecular(uint32_t texture);
-	void SetNormalMap(uint32_t texture);
-	void SetAlphaMap(uint32_t texture);
-};
+		void SetDiffuseTexture(uint32_t texture);
+		void SetSpecular(uint32_t texture);
+		void SetNormalMap(uint32_t texture);
+		void SetAlphaMap(uint32_t texture);
+	};
+}

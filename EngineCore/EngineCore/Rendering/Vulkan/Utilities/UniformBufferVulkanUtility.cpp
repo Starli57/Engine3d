@@ -1,6 +1,8 @@
 #include "EngineCore/Pch.h"
 #include "UniformBufferVulkanUtility.h"
 
+#include "EngineCore/CustomAssert.h"
+
 namespace VkUtils
 {
 	Ref<AVulkan::BufferModel> CreateUniformBuffer(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, const VkDeviceSize bufferSize)
@@ -14,7 +16,7 @@ namespace VkUtils
 			stagingUsageFlags, stagingMemoryFlags, bufferModel->buffer, bufferModel->bufferMemory);
 
 		const auto mapStatus = vkMapMemory(logicalDevice, bufferModel->bufferMemory, 0, bufferSize, 0, &bufferModel->bufferMapped);
-		CAssert::Check(mapStatus == VK_SUCCESS, "Uniform buffer can't be created, status: " + mapStatus);
+		EngineCore::CAssert::Check(mapStatus == VK_SUCCESS, "Uniform buffer can't be created, status: " + mapStatus);
 
 		return bufferModel;
 	}

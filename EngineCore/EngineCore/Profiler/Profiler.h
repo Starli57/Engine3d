@@ -1,16 +1,22 @@
 ﻿#pragma once
+#include "ProfilerSample.h"
 
-class Profiler
+namespace EngineCore
 {
-public:
-    static Profiler& GetInstance();
+    class Profiler
+    {
+    public:
+        static Profiler& GetInstance();
     
-    void BeginSample(const std::string& sampleName);
-    void EndSample(const std::string& sampleName);
+        std::vector<ProfilerSample> samples;
+        ProfilerSample* currentSample;
+
+        Profiler();
     
-    float GetDeltaTime(const std::string& sampleName);
+        void BeginSample(std::string&& sampleName);
+        void EndSample();
+        void Reset();
     
-private:
-    std::unordered_map<std::string, std::chrono::steady_clock::time_point> begins;
-    std::unordered_map<std::string, std::chrono::steady_clock::time_point> ends;
-};
+        float GetDeltaTime(const ProfilerSample& sample) const;
+    };
+}

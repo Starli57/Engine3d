@@ -9,4 +9,5 @@ struct RotationVelocityComponent : public IComponent
 
 	RotationVelocityComponent() { velocity = glm::vec3(0, 0, 0); }
 	RotationVelocityComponent(glm::vec3 velocity) :velocity(velocity) {}
+	//todo: use move constructor
 };
