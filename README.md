@@ -1,8 +1,20 @@
-Realtime renderer supporting Vulkan for Windows platform.
+# 3d Engine / Renderer
+My data driven 3d sandbox engine powered by vulkan graphics api for windows platform. 
 
-It's used as a sandbox \ learning project focused on performance and rendering techniques, provides easy to use editor.
+# Dependecies
+* Catch2
+* DearImgui
+* Entt
+* GLFW
+* Glm
+* Pybind11
+* SpdLog
+* Stb
+* TinyGltf
+* TinyObjLoader
+* YamlCpp
 
-
+# Render examples
 Formula 1 for shadow maps testing
 ![image](https://github.com/user-attachments/assets/689d2aba-7c0d-4b45-9077-a9036ad226bc)
 
