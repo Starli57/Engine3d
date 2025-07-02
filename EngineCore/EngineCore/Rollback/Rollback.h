@@ -5,24 +5,26 @@
 #include <functional>
 #include "EngineCore/Core/Ref.h"
 
-class RollbackExtension;
-
-class Rollback
+namespace EngineCore
 {
-public:
-	Rollback(std::string name);
-	Rollback(std::string name, const Rollback& parentRollback);
-	Rollback(std::string name, const Ref<Rollback>& parentRollback);
-	~Rollback();
+	class RollbackExtension;
 
-	void Add(const std::function<void()>& function) const;
-	void Dispose() const;
+	class Rollback
+	{
+	public:
+		Rollback(std::string name);
+		Rollback(std::string name, const Rollback& parentRollback);
+		Rollback(std::string name, const Ref<Rollback>& parentRollback);
+		~Rollback();
 
-	friend class RollbackExtension;
+		void Add(const std::function<void()>& function) const;
+		void Dispose() const;
 
-private:
-	std::stack<std::function<void()>>* disposeStack;
+		friend class RollbackExtension;
 
-	std::string name;
-};
+	private:
+		std::stack<std::function<void()>>* disposeStack;
 
+		std::string name;
+	};
+}

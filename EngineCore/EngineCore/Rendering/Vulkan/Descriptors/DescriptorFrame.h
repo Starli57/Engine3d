@@ -7,20 +7,22 @@
 #include "EngineCore/Components/CameraComponent.h"
 #include "EngineCore/Components/UboWorldComponent.h"
 #include "EngineCore/Components/UboDiffuseLightComponent.h"
+#include "EngineCore/Managers/InputManager.h"
 #include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
 
+using namespace EngineCore;
 namespace AVulkan
 {
     class DescriptorFrame : public IDescriptor
     {
     public:
-        DescriptorFrame(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs,
+        DescriptorFrame(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<InputManager> inputManager,
             VkDescriptorPool& descriptorPool, const Ref<DescriptorsAllocator>& descriptorsAllocator);
         ~DescriptorFrame() override;
 
         void CreateLayout() override;
         void CreateDescriptorSets() override;
-        void UpdateDescriptorSets(uint16_t frame);
+        void UpdateDescriptorSets(uint16_t frame) const;
 
         VkDescriptorSet& GetDescriptorSet(const uint32_t frame) { return descriptorSets.at(frame); }
         
@@ -33,5 +35,8 @@ namespace AVulkan
         std::vector<VkDescriptorSet> descriptorSets;
         std::vector<Ref<BufferModel>> cameraUniformBuffers;
         std::vector<Ref<BufferModel>> lightUniformBuffers;
+        std::vector<Ref<BufferModel>> cursorUniformBuffers;
+        
+        Ref<InputManager> inputManager;
     };
 }

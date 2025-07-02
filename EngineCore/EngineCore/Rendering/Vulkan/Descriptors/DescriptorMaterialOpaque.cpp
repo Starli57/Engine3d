@@ -1,7 +1,8 @@
 ﻿#include "EngineCore/Pch.h"
 #include "DescriptorMaterialOpaque.h"
 
-#include "EngineCore/Rendering/Vulkan/Configs/VulkanConfiguration.h"
+#include "EngineCore/Profiler/Profiler.h"
+#include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 
 namespace AVulkan
 {
@@ -11,8 +12,8 @@ namespace AVulkan
         const Ref<DescriptorsAllocator>& descriptorsAllocator, VkSampler& textureSampler, const Ref<AssetsDatabaseVulkan>& assetsDatabase)
         : IDescriptor(physicalDevice, logicalDevice, ecs, descriptorsAllocator), textureSampler(textureSampler), assetsDatabase(assetsDatabase)
     {
-        descriptorPools.resize(VulkanConfiguration::maxFramesInFlight);
-        for(int i = 0; i < VulkanConfiguration::maxFramesInFlight; i++)
+        descriptorPools.resize(VulkanContext::maxFramesInFlight);
+        for(int i = 0; i < VulkanContext::maxFramesInFlight; i++)
         {
             descriptorsAllocator->CreateDescriptorPool(logicalDevice, descriptorPools.at(i), descriptorsAllocator->maxDescriptorSets);
         }
@@ -45,8 +46,8 @@ namespace AVulkan
 
     void DescriptorMaterialOpaque::CreateDescriptorSets()
     {
-        descriptorSets.resize(VulkanConfiguration::maxFramesInFlight);
-        for(int i = 0; i < VulkanConfiguration::maxFramesInFlight; i++)
+        descriptorSets.resize(VulkanContext::maxFramesInFlight);
+        for(int i = 0; i < VulkanContext::maxFramesInFlight; i++)
         {
             descriptorsAllocator->AllocateDescriptorSets(logicalDevice, descriptorSetLayout, 
                 descriptorPools.at(i), descriptorSets.at(i), descriptorsAllocator->maxDescriptorSets);
@@ -55,6 +56,7 @@ namespace AVulkan
     
     void DescriptorMaterialOpaque::UpdateDescriptorSets(const uint16_t frame) const
     {
+        Profiler::GetInstance().BeginSample("Update Opaque Material Descriptors");
         for(int i = 0; i < assetsDatabase->materials.size(); i++)
         {
             const auto material = assetsDatabase->materials.at(i);
@@ -122,6 +124,7 @@ namespace AVulkan
 
             vkUpdateDescriptorSets(logicalDevice, descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
         }
+        Profiler::GetInstance().EndSample();
     }
     #pragma optimize("", on)
 }

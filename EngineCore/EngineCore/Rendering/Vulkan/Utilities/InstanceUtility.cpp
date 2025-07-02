@@ -1,6 +1,8 @@
 #include "EngineCore/Pch.h"
 #include "InstanceUtility.h"
 
+#include "EngineCore/CustomAssert.h"
+
 namespace VkUtils
 {
 	void CreateInstance(VkInstance& instance)
@@ -26,7 +28,7 @@ namespace VkUtils
 		SetupValidationLayers(createInfo);
 
 		const VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
-		CAssert::Check(result == VK_SUCCESS, "vulkan instance can't be created: " + result);
+		EngineCore::CAssert::Check(result == VK_SUCCESS, "vulkan instance can't be created: " + result);
 	}
 
 	void DisposeInstance(const VkInstance& instance) 

@@ -9,26 +9,29 @@
 #include "Windows/Inspector.h"
 #include "Windows/ImguiDemo.h"
 #include "Windows/AssetsWindow.h"
-#include "Windows/VulkanDebugInfo.h"
+#include "Windows/ProfilerWindow.h"
 #include "Windows/VulkanTextureView.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
+#include "Windows/MainWindow.h"
+#include "Windows/SystemsStateWindow.h"
 
 Editor::Editor(const Ref<ProjectSettings>& projectSettings, const Ref<Engine>& engine) : 
 	projectSettings(projectSettings), engine(engine)
 {
 	const auto graphicsApi = engine->GetGraphicsApi();
-	const auto vulkanApi = dynamic_cast<AVulkan::GraphicsApiVulkan*>(graphicsApi);
 
-	editorUi = CreateRef<ImguiVulkan>(projectSettings, *vulkanApi);
+	editorUi = CreateRef<ImguiVulkan>(projectSettings, *graphicsApi);
 
 	auto inspector = CreateRef<Inspector>(engine->GetAssetsDatabase());
 	editorUi->AddWindow(inspector);
-	editorUi->AddWindow(CreateRef<Hierarchy>(engine->GetEcs(), inspector, projectSettings, engine->GetAssetsDatabase()));
+	editorUi->AddWindow(CreateRef<MainWindow>());
+	editorUi->AddWindow(CreateRef<Hierarchy>(engine->GetSerializer(), engine->GetEcs(), inspector, projectSettings, engine->GetAssetsDatabase()));
 	editorUi->AddWindow(CreateRef<ImguiDemo>());
-	editorUi->AddWindow(CreateRef<VulkanDebugInfo>(engine, *vulkanApi));
-	editorUi->AddWindow(CreateRef<VulkanTextureView>(engine, *vulkanApi));
-	editorUi->AddWindow(CreateRef<AssetsWindow>(engine->GetEcs(), engine->GetAssetsDatabase(), projectSettings));
-
+	editorUi->AddWindow(CreateRef<ProfilerWindow>(engine, *graphicsApi));
+	editorUi->AddWindow(CreateRef<VulkanTextureView>(engine, *graphicsApi));
+	editorUi->AddWindow(CreateRef<AssetsWindow>(engine->GetSerializer(), engine->GetEcs(), engine->GetAssetsDatabase(), projectSettings));
+	editorUi->AddWindow(CreateRef<SystemsStateWindow>(engine->GetSystemsState()));
+	
 	engine->BindEditorUpdateFunction([this]() { editorUi->Update(); });
 }
 

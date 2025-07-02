@@ -1,5 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "PhysicalDeviceUtility.h"
+
+#include "EngineCore/CustomAssert.h"
 #include "EngineCore/Rendering/Vulkan/Models/PhysicalDeviceExtensions.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/SwapchainUtility.h"
 

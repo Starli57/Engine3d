@@ -7,6 +7,8 @@
 #include "EngineCore/Editor/IWindow.h"
 #include "EngineCore/Core/Ref.h"
 
+using namespace EngineCore;
+
 class IEngineEditor
 {
 public:

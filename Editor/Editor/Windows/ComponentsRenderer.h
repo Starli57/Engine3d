@@ -12,13 +12,15 @@
 #include "EngineCore/Components/ScaleComponent.h"
 #include "EngineCore/Components/RotationVelocityComponent.h"
 #include "EngineCore/Components/CameraComponent.h"
-#include "EngineCore/Components/CameraFreeComponent.h"
 #include "EngineCore/Components/ScaleComponent.h"
 #include "EngineCore/Components/UboDiffuseLightComponent.h"
 #include "EngineCore/Components/UboModelComponent.h"
 #include "EngineCore/Components/UboWorldComponent.h"
 #include "EngineCore/Components/MeshComponent.h"
 #include "EngineCore/Components/MaterialComponent.h"
+#include "EngineCore/Components/ShadowMapComponent.h"
+#include "ExampleProject/Components/CameraFreeComponent.h"
+using namespace EngineCore;
 
 class ComponentsRenderer
 {
@@ -42,16 +44,17 @@ private:
 		RenderComponent(entity, component);
 	}
 
-	void RenderComponent(Ref<Entity> entity, NameComponent& component) const;
-	void RenderComponent(Ref<Entity> entity, PositionComponent& component) const;
-	void RenderComponent(Ref<Entity> entity, RotationComponent& component) const;
-	void RenderComponent(Ref<Entity> entity, RotationVelocityComponent& component) const;
-	void RenderComponent(Ref<Entity> entity, ScaleComponent& component) const;
-	void RenderComponent(Ref<Entity> entity, CameraComponent& component) const;
-	void RenderComponent(Ref<Entity> entity, CameraFreeComponent& component) const;
-	void RenderComponent(Ref<Entity> entity, UboDiffuseLightComponent& component) const;
-	void RenderComponent(Ref<Entity> entity, UboModelComponent& component) const;
-	void RenderComponent(Ref<Entity> entity, UboWorldComponent& component) const;
-	void RenderComponent(Ref<Entity> entity, MeshComponent& component) const;
-	void RenderComponent(Ref<Entity> entity, MaterialComponent& component) const;
+	void RenderComponent(const Ref<Entity>&, NameComponent& component) const;
+	void RenderComponent(const Ref<Entity>&, PositionComponent& component) const;
+	void RenderComponent(const Ref<Entity>&, RotationComponent& component) const;
+	void RenderComponent(const Ref<Entity>&, RotationVelocityComponent& component) const;
+	void RenderComponent(const Ref<Entity>&, ScaleComponent& component) const;
+	void RenderComponent(const Ref<Entity>&, CameraComponent& component) const;
+	void RenderComponent(const Ref<Entity>&, CameraFreeComponent& component) const;
+	void RenderComponent(const Ref<Entity>&, UboDiffuseLightComponent& component) const;
+	void RenderComponent(const Ref<Entity>&, UboModelComponent& component) const;
+	void RenderComponent(const Ref<Entity>&, UboWorldComponent& component) const;
+	void RenderComponent(const Ref<Entity>&, MeshComponent& component) const;
+	void RenderComponent(const Ref<Entity>&, MaterialComponent& component) const;
+	void RenderComponent(const Ref<Entity>&, ShadowMapComponent& component) const;
 };

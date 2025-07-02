@@ -16,5 +16,3 @@
 #include <optional>
 
 #include "spdlog/spdlog.h"
-
-#include "EngineCore/CustomAssert.h"

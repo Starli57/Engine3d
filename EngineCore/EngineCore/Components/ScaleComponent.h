@@ -9,4 +9,5 @@ struct ScaleComponent : public IComponent
 
 	ScaleComponent() { scale = glm::vec3(1, 1, 1); }
 	ScaleComponent(glm::vec3 scale) :scale(scale) {}
+	//todo: use move constructor
 };

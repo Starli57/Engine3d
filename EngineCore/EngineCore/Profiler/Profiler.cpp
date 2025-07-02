@@ -1,27 +1,51 @@
 ﻿#include "EngineCore/Pch.h"
 #include "Profiler.h"
 
-Profiler& Profiler::GetInstance()
+namespace EngineCore
 {
-    static Profiler instance;
-    return instance;
-}
+    Profiler& Profiler::GetInstance()
+    {
+        static Profiler instance;
+        return instance;
+    }
 
-void Profiler::BeginSample(const std::string& sampleName)
-{
-    begins.insert_or_assign(sampleName, std::chrono::high_resolution_clock::now());
-}
+    Profiler::Profiler()
+    {
+        samples = std::vector<ProfilerSample>();
+        currentSample = nullptr;
+    }
 
-void Profiler::EndSample(const std::string& sampleName)
-{
-    ends.insert_or_assign(sampleName, std::chrono::high_resolution_clock::now());
-}
+    void Profiler::BeginSample(std::string&& sampleName)
+    {
+        if (currentSample == nullptr)
+        {
+            auto newSample = ProfilerSample(std::move(sampleName), std::chrono::high_resolution_clock::now(), nullptr);
+            samples.emplace_back(std::move(newSample));
+            currentSample = &samples.back();
+        }
+        else
+        {
+            auto newSample = ProfilerSample(std::move(sampleName), std::chrono::high_resolution_clock::now(), currentSample);
+            currentSample->childrenSamples.emplace_back(std::move(newSample));
+            currentSample = &currentSample->childrenSamples.back();
+        }
+    }
 
-float Profiler::GetDeltaTime(const std::string& sampleName)
-{
-    const auto begin = begins.find(sampleName);
-    const auto end = ends.find(sampleName);
-    if (begin == begins.end() || end == ends.end()) return -1;
+    void Profiler::EndSample()
+    {
+        if (currentSample == nullptr) throw std::runtime_error("Profiler::EndSample: No sample found");
+        currentSample->endTime = std::chrono::high_resolution_clock::now();
+        currentSample = currentSample->parentSample;
+    }
 
-    return std::chrono::duration<float>(end->second - begin->second).count();
+    void Profiler::Reset()
+    {
+        samples.clear();
+        currentSample = nullptr;
+    }
+
+    float Profiler::GetDeltaTime(const ProfilerSample& sample) const
+    {
+        return std::chrono::duration<float>(sample.endTime - sample.beginTime).count();
+    }
 }

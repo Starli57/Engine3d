@@ -9,4 +9,5 @@ struct RotationComponent : public IComponent
 
 	RotationComponent() { rotation = glm::vec3(0, 0, 0); }
 	RotationComponent(const glm::vec3 rotation) :rotation(rotation) {}
+	//todo: use move constructor
 };

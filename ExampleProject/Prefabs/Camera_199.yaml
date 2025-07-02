@@ -14,5 +14,5 @@ CameraFreeComponent:
   rotationSpeed: 12
 UboModelComponent:
   {}
-UboViewProjectionComponent:
+UboWorldComponent:
   {}

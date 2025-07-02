@@ -3,14 +3,17 @@
 #include <iostream>
 #include <string>
 
-class CAssert
+namespace EngineCore
 {
-public:
-    static void Check(const bool condition, const std::string& message)
+    class CAssert
     {
-        if (!condition)
+    public:
+        static void Check(const bool condition, const std::string& message)
         {
-            throw std::runtime_error(message);
+            if (!condition)
+            {
+                throw std::runtime_error(message);
+            }
         }
-    }
-};
+    };
+}

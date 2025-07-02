@@ -2,8 +2,11 @@
 
 #include <GLFW/glfw3.h>
 
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Rendering/Vulkan/VulkanContext.h"
+
 namespace VkUtils
 {
-	VkDevice CreateLogicalDevice(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface, VkQueue& graphicsQueue, VkQueue& presentationQueue);
+	VkDevice CreateLogicalDevice(const Ref<AVulkan::VulkanContext>& context);
 	void DisposeLogicalDevice(const VkDevice& logicalDevice);
 }

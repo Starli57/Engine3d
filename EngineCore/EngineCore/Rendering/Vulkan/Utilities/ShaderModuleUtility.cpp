@@ -1,5 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "ShaderModuleUtility.h"
+
+#include "EngineCore/CustomAssert.h"
 #include "spdlog/spdlog.h"
 
 #include "EngineCore/Utilities/IOUtility.h"
@@ -10,7 +12,7 @@ namespace VkUtils
 	{
 		spdlog::info("Create shader module: {0}", shaderPath);
 
-		const std::vector<char>& shaderCode = IOUtility().ReadFile(shaderPath);
+		const std::vector<char>& shaderCode = EngineCore::IOUtility().ReadFile(shaderPath);
 
 		VkShaderModuleCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -19,7 +21,7 @@ namespace VkUtils
 
 		VkShaderModule shaderModule;
 		auto createStatus = vkCreateShaderModule(logicalDevice, &createInfo, nullptr, &shaderModule);
-		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create shader module, statuc: " + createStatus);
+		EngineCore::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create shader module, statuc: " + createStatus);
 
 		return shaderModule;
 	}

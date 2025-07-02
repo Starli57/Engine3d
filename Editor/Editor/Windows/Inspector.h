@@ -7,6 +7,7 @@
 #include "EngineCore/Core/Entity.h"
 #include "EngineCore/Editor/IWindow.h"
 #include "EngineCore/Core/AssetsDatabase.h"
+using namespace EngineCore;
 
 class Inspector : public IWindow
 {

@@ -6,8 +6,6 @@ namespace VkUtils
 {
 	void AllocateCommandBuffers(const VkDevice& logicalDevice, const VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers, int buffersCount)
 	{
-		spdlog::info("Create command buffer");
-
 		commandBuffers.resize(buffersCount);
 
 		VkCommandBufferAllocateInfo allocInfo{};
@@ -23,8 +21,6 @@ namespace VkUtils
 	void FreeCommandBuffers(const VkDevice& logicalDevice, const VkCommandPool& commandPool, const std::vector<VkCommandBuffer>& commandBuffers)
 	{
 		if (commandBuffers.size() == 0) return;
-		spdlog::info("Free command buffers {0}", commandBuffers.size());
-
 		vkFreeCommandBuffers(logicalDevice, commandPool, static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
 	}
 

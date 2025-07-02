@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <numbers>
 #include "EngineCore/Assets/Meta/MeshMeta.h"
+using namespace EngineCore;
 
 struct SphereDefinition : public MeshMeta
 {

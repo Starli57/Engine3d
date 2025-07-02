@@ -5,7 +5,9 @@
 class ResourcesConverterObj : public ResourcesConverter
 {
 public:
-	void Convert(const std::string& inFolder, const std::string& outFolder, const std::string& directoryName) override;
+	void ConvertFolder(const std::string& inFolder, const std::string& outFolder, const std::string& directoryName);
+	void ConvertMesh(const std::string& meshPathStr, const std::filesystem::path& meshPath, const std::string& inFolder, 
+		const std::string& outFolder, const std::string& directoryName, std::unordered_map<std::string, std::filesystem::path>& texturesPaths);
 
 	void FillPaths(std::unordered_map<std::string, std::filesystem::path>& paths, const std::vector<std::string>& extensions, const std::string& inFolder) const;
 
@@ -15,7 +17,7 @@ public:
 	std::string FormatTexturePath(const std::string& texturePath, const std::string& inFolder) const;
 	std::string FormatTextureName(const std::string& texturePath, const std::string& inFolder) const;
 
-	bool SerializeMesh(const std::string& filePath, const MeshMeta& meshIt) const;
+	bool SerializeMesh(const std::string& filePath, const EngineCore::MeshMeta& meshIt) const;
 	void WriteSerializedMeshNames(const std::string& filePath, const std::vector<std::string>& meshes, const std::vector<std::string>& materials) const;
 	std::string ToLowerCase(const std::string& input) const;
 

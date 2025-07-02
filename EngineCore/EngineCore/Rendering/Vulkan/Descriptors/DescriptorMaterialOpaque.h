@@ -3,6 +3,8 @@
 #include "EngineCore/Core/AssetsDatabaseVulkan.h"
 #include "EngineCore/Core/Ref.h"
 
+using namespace EngineCore;
+
 namespace AVulkan
 {
     class DescriptorMaterialOpaque : public IDescriptor

@@ -3,6 +3,7 @@
 #include "DescriptorMaterialOpaque.h"
 #include "DescriptorsAllocator.h"
 #include "DescriptorShadowMap.h"
+#include "EngineCore/Managers/InputManager.h"
 #include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
 
 namespace AVulkan
@@ -10,7 +11,7 @@ namespace AVulkan
     class DescriptorsManager
     {
     public:
-        DescriptorsManager(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs,
+        DescriptorsManager(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<InputManager> inputManager,
             VkSampler& textureSampler, const Ref<AssetsDatabaseVulkan>& assetsDatabase);
         ~DescriptorsManager();
 
@@ -36,5 +37,7 @@ namespace AVulkan
         Ref<DescriptorMaterialOpaque> opaqueMaterialDescriptor;
         Ref<DescriptorShadowMap> shadowMapDescriptor;
         VkDescriptorPool globalDescriptorPool;
+
+        Ref<InputManager> inputManager;
     };
 }

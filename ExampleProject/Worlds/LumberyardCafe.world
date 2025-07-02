@@ -1,17 +1,18 @@
 NameComponent:
-  name: exterior_antenna_metal.mesh
+  name: Diffuse Light
 PositionComponent:
-  position: [0, 0, 0]
+  position: [-2000, 2000, -1000]
 RotationComponent:
-  rotation: [0, 0, 0]
-ScaleComponent:
-  scale: [1, 1, 1]
-MeshComponent:
-  meshPath: ../ExampleProject/Resources\LumberyardCafe\exterior_antenna_metal.mesh
-MaterialComponent:
-  materialPath: ../ExampleProject/Resources\LumberyardCafe\antenna_metal.material
-UboModelComponent:
+  rotation: [30, -45, 40]
+UboWorldComponent:
   {}
+UboDiffuseLightComponent:
+  {}
+ShadowMapComponent:
+  fov: 60
+  zNear: 1
+  zFar: 10000
+  upAxis: [0, 1, 0]
 ---
 NameComponent:
   name: exterior_antenna_plastic.mesh
@@ -2969,31 +2970,35 @@ UboModelComponent:
   {}
 ---
 NameComponent:
-  name: Diffuse Light
+  name: exterior_antenna_metal.mesh
 PositionComponent:
-  position: [0, 800, 0]
+  position: [0, 0, 0]
 RotationComponent:
-  rotation: [-87.9000015, -57.5999985, 40]
-UboViewProjectionComponent:
-  {}
-UboDiffuseLightComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafe\exterior_antenna_metal.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafe\antenna_metal.material
+UboModelComponent:
   {}
 ---
 NameComponent:
   name: Camera
 PositionComponent:
-  position: [-1000, 250, 150]
+  position: [-916.114563, 343.409302, 82.8337021]
 RotationComponent:
-  rotation: [-40, -5.0210104, 40]
+  rotation: [2.35683775, -14.5318823, 40]
 CameraComponent:
   fov: 60
   zNear: 1
   zFar: 7500
   upAxis: [0, 1, 0]
-CameraFreeComponent:
-  movementSpeed: 200
-  rotationSpeed: 12
 UboModelComponent:
   {}
-UboViewProjectionComponent:
+UboWorldComponent:
   {}
+CameraFreeComponent:
+  movementSpeed: 405
+  rotationSpeed: 12

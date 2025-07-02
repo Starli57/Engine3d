@@ -2,6 +2,7 @@
 
 #include "GraphicsPipelineUtility.h"
 
+#include "EngineCore/CustomAssert.h"
 #include "spdlog/spdlog.h"
 
 namespace AVulkan
@@ -38,16 +39,18 @@ namespace AVulkan
 			auto createStatus = vkCreatePipelineLayout(logicalDevice, &pipelineLayoutInfo, nullptr, &pipeline->layout);
 			//---> Pipeline layout created
 
-			auto bindingDescription = VkUtils::GetVertexInputBindingDescription();
-			auto attributeDescriptions = VkUtils::GetVertexInputAttributeDescriptions();
-
 			VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 			vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-			vertexInputInfo.vertexBindingDescriptionCount = 1;
-			vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
-			vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
-			vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
-
+			if (pipelineConfig->useVertices)
+			{
+				auto bindingDescription = VkUtils::GetVertexInputBindingDescription();
+				auto attributeDescriptions = VkUtils::GetVertexInputAttributeDescriptions();
+				vertexInputInfo.vertexBindingDescriptionCount = 1;
+				vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
+				vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
+				vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+			}
+			
 			auto inputAssembly = SetupInputAssemblyData();
 			auto viewportState = SetupViewportAndScissor(swapChainExtent);
 			auto rasterizer = SetupRasterizer(pipelineConfig);

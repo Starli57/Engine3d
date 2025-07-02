@@ -5,11 +5,9 @@
 
 namespace VkUtils
 {
-	void CreateVertexBuffer(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, std::vector<Vertex>& vertices,
-		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkQueue& graphicsQueue, VkCommandPool& commandPool)
+	void CreateVertexBuffer(const Ref<AVulkan::VulkanContext>& context, std::vector<Vertex>& vertices,
+		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
 	{
-		spdlog::info("Create Vertex Buffer");
-
 		uint64_t bufferSize = sizeof(Vertex) * vertices.size();
 
 		VkBufferUsageFlags stagingUsageFlags = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
@@ -21,25 +19,24 @@ namespace VkUtils
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingMemory;
 
-		CreateBuffer(physicalDevice, logicalDevice, bufferSize,
+		CreateBuffer(context->physicalDevice, context->logicalDevice, bufferSize,
 			stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingMemory);
 
 		void* data;
-		vkMapMemory(logicalDevice, stagingMemory, 0, bufferSize, 0, &data);
+		vkMapMemory(context->logicalDevice, stagingMemory, 0, bufferSize, 0, &data);
 		memcpy(data, vertices.data(), (size_t)bufferSize);
-		vkUnmapMemory(logicalDevice, stagingMemory);
+		vkUnmapMemory(context->logicalDevice, stagingMemory);
 
-		CreateBuffer(physicalDevice, logicalDevice, bufferSize,
+		CreateBuffer(context->physicalDevice, context->logicalDevice, bufferSize,
 			distUsageFlags, distMemoryFlags, vertexBuffer, bufferMemory);
 
-		CopyBuffer(logicalDevice, graphicsQueue, stagingBuffer, vertexBuffer, bufferSize, commandPool);
-		DisposeBuffer(logicalDevice, stagingBuffer, stagingMemory);
+		CopyBuffer(context->logicalDevice, context->graphicsQueue, stagingBuffer, vertexBuffer, bufferSize, commandPool);
+		DisposeBuffer(context->logicalDevice, stagingBuffer, stagingMemory);
 	}
 
 	void DisposeVertexBuffer(const VkDevice& logicalDevice, const VkBuffer& buffer, const VkDeviceMemory& bufferMemory)
 	{
 		if (buffer == VK_NULL_HANDLE) return;
-		spdlog::info("Dispose Vertex Buffer");
 		DisposeBuffer(logicalDevice, buffer, bufferMemory);
 	}
 

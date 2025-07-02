@@ -67,11 +67,10 @@ void Hierarchy::Update()
     ImGui::End();
 }
 
-Hierarchy::Hierarchy(const Ref<Ecs>& ecs, const Ref<Inspector>& inspector,
-    const Ref<ProjectSettings>& projectSettings, const Ref<AssetsDatabase>& assetsDatabase)
-    : ecs(ecs), inspector(inspector), projectSettings(projectSettings), selectedItemIndex(0)
+Hierarchy::Hierarchy(const Ref<EngineCore::EntitySerializer>& serializer, const Ref<Ecs>& ecs, const Ref<Inspector>& inspector,
+                     const Ref<ProjectSettings>& projectSettings, const Ref<AssetsDatabase>& assetsDatabase)
+    : serializer(serializer), ecs(ecs), inspector(inspector), projectSettings(projectSettings), selectedItemIndex(0)
 {
-    serializer = CreateRef<EntitySerializer>(projectSettings, assetsDatabase);
 }
 
 Hierarchy::~Hierarchy()

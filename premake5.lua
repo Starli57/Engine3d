@@ -79,6 +79,7 @@ project "ExampleProject"
 		"%{Includes.Entt}",
 		"%{Includes.Stb}",
 		"%{Includes.Pybind11}",
+		"%{Includes.YamlCpp}",
 
 		"%{Includes.Vulkan}",
 		"%{Includes.Python}"
@@ -91,6 +92,7 @@ project "ExampleProject"
 
 		"Glfw",
 		"Glm",
+		"YamlCpp",
 
 		"%{Libs.Vulkan}",
 		"%{Libs.Python}"
@@ -100,7 +102,8 @@ project "ExampleProject"
 	{
 		"GLFW_INCLUDE_VULKAN",
 		"GLM_FORCE_RADIANS",
-		"GLM_FORCE_DEPTH_ZERO_TO_ONE"
+		"GLM_FORCE_DEPTH_ZERO_TO_ONE",
+		"YAML_CPP_STATIC_DEFINE"
 	}
 
 	filter "system:windows"
@@ -153,6 +156,7 @@ project "Editor"
 	{
 		"%{prj.name}",
 		"%{Includes.EngineCore}",
+		"%{Includes.ExampleProject}",
 		
 		"%{Includes.DearImgui}",
 		"%{Includes.DearImgui}/backends",
@@ -170,8 +174,6 @@ project "Editor"
 	
 	links
 	{
-		"EngineCore",
-
 		"DearImgui",
 		"YamlCpp",
 		

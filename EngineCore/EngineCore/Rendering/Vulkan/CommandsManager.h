@@ -4,6 +4,7 @@
 #include <thread>
 #include <mutex>
 
+#include "VulkanContext.h"
 #include "EngineCore/Core/Ref.h"
 
 namespace AVulkan
@@ -11,7 +12,7 @@ namespace AVulkan
     class CommandsManager
     {
     public:
-        CommandsManager(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, const VkSurfaceKHR& windowSurface, const int frameInFight);
+        CommandsManager(const Ref<VulkanContext>& context, const int frameInFight);
         ~CommandsManager();
 
         void CreateCommandPool();
@@ -19,9 +20,7 @@ namespace AVulkan
         VkCommandBuffer& GetCommandBuffer(int frame);
         
     private:
-        const VkPhysicalDevice& physicalDevice;
-        const VkDevice& logicalDevice;
-        const VkSurfaceKHR& windowSurface;
+        Ref<VulkanContext> context;
         const int frameInFight;
         
         std::unordered_map<std::thread::id, uint32_t> threadsMapping;

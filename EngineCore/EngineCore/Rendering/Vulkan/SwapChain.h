@@ -3,18 +3,10 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
+#include "VulkanContext.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
-#include "EngineCore/Rendering/Vulkan/Models/SwapChainSurfaceSettings.h"
 #include "EngineCore/Rendering/Vulkan/Models/QueueFamilyIndices.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/ImageUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/FrameBufferUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/FormatUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/MemoryUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/SwapchainUtility.h"
-#include "EngineCore/Rendering/Vulkan/Configs/VulkanConfiguration.h"
-#include "EngineCore/Rendering/Vulkan/RenderPasses/RenderPassColor.h"
-#include "EngineCore/Rendering/Vulkan/RenderPasses/RenderPassShadowMaps.h"
 
 namespace AVulkan
 {
@@ -22,29 +14,21 @@ namespace AVulkan
 	{
 	public:
 
-		SwapChain(
-			GLFWwindow& window, VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, VkSurfaceKHR& surface,
-			VkQueue& graphicsQueue, Ref<SwapChainData> swapChainData, Ref<VulkanConfiguration> rendererConfig);
+		SwapChain(const Ref<VulkanContext>& context, Ref<SwapChainData> swapChainData);
 		~SwapChain();
 
 		void Recreate();
 		void CreateSwapchain();
-		void CreateSwapChainImageViews();
-		void CreateDepthBuffer();
-		void CreateMSAAColorResources();
-		void CreateMSAADepthResources();
-		void Dispose();
+		void CreateSwapChainImageViews() const;
+		void CreateDepthBuffer() const;
+		void CreateMSAAColorResources() const;
+		void CreateMSAADepthResources() const;
+		void Dispose() const;
 
 	private:
 
 		Ref<SwapChainData> swapChainData;
-		Ref<VulkanConfiguration> rendererConfig;
-		
-		GLFWwindow& window;
-		VkPhysicalDevice& physicalDevice;
-		VkDevice& logicalDevice;
-		VkSurfaceKHR& surface;
-		VkQueue& graphicsQueue;
+		Ref<VulkanContext> vulkanContext;
 		
 		QueueFamilyIndices physicalDeviceQueueIndices;
 

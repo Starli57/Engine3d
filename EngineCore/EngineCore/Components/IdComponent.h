@@ -4,6 +4,8 @@
 #include "EngineCore/Core/IComponent.h"
 #include "EngineCore/Utilities/UniqueId.h"
 
+using namespace EngineCore;
+
 struct IdComponent : public IComponent
 {
 	const uint32_t id;

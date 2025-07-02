@@ -26,5 +26,6 @@ struct CameraComponent : public IComponent
 		: fov(fov), zNear(zNear), zFar(zFar), upAxis(upAxis)
 	{
 	}
+	//todo: use move constructor
 };
 

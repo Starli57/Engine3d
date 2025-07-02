@@ -17,6 +17,8 @@ public:
 	~Ecs();
 
 	Ref<Entity> CreateEntity();
+	Ref<Entity> FindEntity(entt::entity entity);
+	
 	void DestroyEntity(const Ref<Entity>& entity);
 
 };
