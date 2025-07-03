@@ -21,13 +21,13 @@ void ResourcesConverterObj::ConvertFolder(const std::string& inFolder, const std
 
     auto meshesExtensions = std::vector<std::string>();
     meshesExtensions.reserve(1);
-    meshesExtensions.push_back(".obj");
+    meshesExtensions.emplace_back(".obj");
 
     auto texturesExtensions = std::vector<std::string>();
     texturesExtensions.reserve(3);
-    texturesExtensions.push_back(".png");
-    texturesExtensions.push_back(".jpg");
-    texturesExtensions.push_back(".JPG");
+    texturesExtensions.emplace_back(".png");
+    texturesExtensions.emplace_back(".jpg");
+    texturesExtensions.emplace_back(".JPG");
 
     FillPaths(meshesPaths, meshesExtensions, inFolder);
     FillPaths(texturesPaths, texturesExtensions, inFolder);

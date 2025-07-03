@@ -7,7 +7,8 @@
 int main()
 {
 	Ref<ProjectSettings> projectSettings = CreateRef<ProjectSettings>(
-		"../ExampleProject/"
+		"../ExampleProject/",
+		"../Externals/"
 	);
 
 	try
