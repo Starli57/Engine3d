@@ -7,14 +7,12 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
-void ResourcesConverterObj::ConvertFolder(const std::string& inFolder, const std::string& outFolder, const std::string& directoryName)
+#include "ConvertingMeshData.h"
+
+void ResourcesConverterObj::ImportFolder(const std::string& inFolder, const std::string& outFolder, const std::string& directoryName)
 {
     auto outParentPath = std::filesystem::path(outFolder).parent_path();
-
-    if (!std::filesystem::exists(outParentPath))
-    {
-        std::filesystem::create_directories(outParentPath);
-    }
+    CreateFolder(outParentPath);
     
     std::unordered_map<std::string, std::filesystem::path> meshesPaths;
     std::unordered_map<std::string, std::filesystem::path> texturesPaths;
@@ -34,11 +32,13 @@ void ResourcesConverterObj::ConvertFolder(const std::string& inFolder, const std
 
     for (const auto& meshPath : meshesPaths)
     {
-        ConvertMesh(meshPath.first, meshPath.second, inFolder, outFolder, directoryName, texturesPaths);
+        ImportMesh(meshPath.first, meshPath.second, inFolder, outFolder, directoryName, texturesPaths);
     }
+
+    spdlog::info("Imported mesh: {}", inFolder);
 }
 
-void ResourcesConverterObj::ConvertMesh(const std::string& meshPathStr, const std::filesystem::path& meshPath, const std::string& inFolder, 
+void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std::filesystem::path& meshPath, const std::string& inFolder, 
     const std::string& outFolder, const std::string& directoryName, std::unordered_map<std::string, std::filesystem::path>& texturesPaths)
 {
     //parse mesh
@@ -62,23 +62,21 @@ void ResourcesConverterObj::ConvertMesh(const std::string& meshPathStr, const st
     }
         
     //format meshes
-    std::vector<MeshMeta>* meshes = new std::vector<MeshMeta>();
-    meshes->resize(materials.size());
+    auto meshesMap = new std::unordered_map<uint16_t, std::unordered_map<uint16_t, ConvertingMeshData>>();
 
-    for (int i = 0; i < materials.size(); i++)
+    for(uint16_t shapeIndex = 0; shapeIndex < shapes.size(); shapeIndex++)
     {
-        meshes->at(i).materialIndex = i;
-        meshes->at(i).materialPath = outFolder + ToLowerCase(materials.at(i).name);
-        meshes->at(i).materialName = ToLowerCase(materials.at(i).name);
-    }
-
-    for (const auto& shape : shapes)
-    {
-        uint32_t i = 0;
+        if (!meshesMap->contains(shapeIndex)) meshesMap->emplace(shapeIndex, std::unordered_map<uint16_t, ConvertingMeshData>());
+        
+        auto shape = shapes[shapeIndex];
+        uint16_t i = 0;
+        
         for (const auto& index : shape.mesh.indices)
         {
-            auto materialId = shape.mesh.material_ids[i / 3];
-            MeshMeta& meshMeta = meshes->at(materialId);
+            auto materialIndex = shape.mesh.material_ids[i / 3];
+            if (!meshesMap->at(shapeIndex).contains(materialIndex)) meshesMap->at(shapeIndex).emplace(materialIndex, ConvertingMeshData());
+            
+            ConvertingMeshData& meshMeta = meshesMap->at(shapeIndex).at(materialIndex);
 
             Vertex vertex;
             vertex.position =
@@ -115,6 +113,21 @@ void ResourcesConverterObj::ConvertMesh(const std::string& meshPathStr, const st
         }
     }
 
+    auto meshes = new std::vector<ConvertingMeshData>();
+    uint16_t meshIndexCounter = 0;
+    for(const auto& meshesByShape : *meshesMap)
+    {
+        for(const auto& meshesByMaterial : meshesByShape.second)
+        {
+            ConvertingMeshData mesh = meshesByMaterial.second;
+            mesh.meshIndex = meshIndexCounter++;
+            mesh.materialIndex = meshesByMaterial.first;
+            mesh.materialPath = outFolder + ToLowerCase(materials.at(mesh.materialIndex).name);
+            mesh.materialName = ToLowerCase(materials.at(mesh.materialIndex).name);
+            meshes->push_back(mesh);
+        }
+    }
+    
     //CalculateNormalsTangents(meshes);
         
     //--format meshes
@@ -124,11 +137,11 @@ void ResourcesConverterObj::ConvertMesh(const std::string& meshPathStr, const st
     serializedMaterialNames.resize(meshes->size());
         
     std::for_each(std::execution::par, meshes->begin(), meshes->end(),
-        [this, &materials, &meshPathStr,  &inFolder, &outFolder, &serializedMeshNames, &serializedMaterialNames](MeshMeta& meshIt)
+        [this, &materials, &meshPathStr,  &inFolder, &outFolder, &serializedMeshNames, &serializedMaterialNames](ConvertingMeshData& meshIt)
     {
         auto material = materials.at(meshIt.materialIndex);
         auto fileNameWithoutExtension = meshPathStr.substr(0, meshPathStr.find_last_of("."));
-        auto assetName = ToLowerCase(fileNameWithoutExtension + "_" + meshIt.materialName);
+        auto assetName = ToLowerCase(fileNameWithoutExtension + "_" + meshIt.materialName + std::to_string(meshIt.meshIndex));
 
         if (meshIt.vertices.empty() || meshIt.indices.empty())
         {
@@ -140,13 +153,16 @@ void ResourcesConverterObj::ConvertMesh(const std::string& meshPathStr, const st
         auto serialized = SerializeMesh(outFolder + assetName + ".mesh", meshIt);
         if (serialized)
         {
-            serializedMeshNames.at(meshIt.materialIndex) = outFolder + assetName + ".mesh";
+            serializedMeshNames.at(meshIt.meshIndex) = outFolder + assetName + ".mesh";
             spdlog::info("Mesh {} saved to folder {}", assetName, outFolder);
         }
-            
+    });
+
+    for(int i = 0; i < materials.size(); i++)
+    {
         //serialize material to yaml
         YAML::Node materialNode;
-
+        auto material = materials.at(i);
         auto materialName = ToLowerCase(material.name);
         materialNode["materialName"] = materialName;
         materialNode["pipelineName"] = (material.dissolve >= 1.0 && material.alpha_texname.empty()) ? "opaque" : "transparent";
@@ -175,9 +191,15 @@ void ResourcesConverterObj::ConvertMesh(const std::string& meshPathStr, const st
         std::ofstream fMaterialOut(outFolder + materialName + ".material");
         fMaterialOut << materialNode;
         fMaterialOut.close();
-        serializedMaterialNames.at(meshIt.materialIndex) = outFolder + materialName + ".material";
-    });
+    }
 
+    for(int i = 0; i < meshes->size(); i++)
+    {
+        auto material = materials.at(meshes->at(i).materialIndex);
+        auto materialName = ToLowerCase(material.name);
+        serializedMaterialNames.at(i) = outFolder + materialName + ".material";
+    }
+    
     std::for_each(std::execution::par, texturesPaths.begin(), texturesPaths.end(), [this, &inFolder, &outFolder](const auto& pathIter)
     {
         auto textureName = ToLowerCase(FormatTextureName(pathIter.second.string(), inFolder));
@@ -191,7 +213,7 @@ void ResourcesConverterObj::ConvertMesh(const std::string& meshPathStr, const st
 }
 
 
-bool ResourcesConverterObj::SerializeMesh(const std::string& filePath, const MeshMeta& meshIt) const
+bool ResourcesConverterObj::SerializeMesh(const std::string& filePath, const ConvertingMeshData& meshIt) const
 {
     std::ofstream outFile(filePath, std::ios::binary);
     if (!outFile)
@@ -295,9 +317,17 @@ std::string ResourcesConverterObj::FormatTextureName(const std::string& textureP
 std::string ResourcesConverterObj::ToLowerCase(const std::string& input) const
 {
     std::string result = input;
-    std::transform(result.begin(), result.end(), result.begin(), [](unsigned char c)
+    std::ranges::transform(result, result.begin(), [](const unsigned char c)
     {
         return std::tolower(c);
     });
     return result;
+}
+
+void ResourcesConverterObj::CreateFolder(const std::filesystem::path& path) const
+{
+    if (!std::filesystem::exists(path))
+    {
+        std::filesystem::create_directories(path);
+    }
 }

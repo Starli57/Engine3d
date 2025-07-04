@@ -13,7 +13,6 @@ namespace EngineCore
         std::string materialPath;
         std::string materialName;
         std::string meshName;
-        int materialIndex;//temp value used only by resources converter
 
         glm::vec3 ComputeNormal(const glm::vec3 v0, const glm::vec3 v1, const glm::vec3 v2) const
         {

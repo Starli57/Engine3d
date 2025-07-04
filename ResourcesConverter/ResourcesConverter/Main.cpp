@@ -1,8 +1,9 @@
 
 #include <iostream>
 #include <execution>
-#include <vector>>
+#include <vector>
 #include <future>
+#include <spdlog/spdlog.h>
 
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/ProjectSettings.h"
@@ -26,7 +27,7 @@ int main()
 				conversionTasks.push_back(std::async(std::launch::async, [inFolder, outFolder, directoryName]()
 					{
 						URef<ResourcesConverterObj> objConverter = CreateUniqueRef<ResourcesConverterObj>();
-						objConverter->ConvertFolder(inFolder + directoryName + "/", outFolder + directoryName + "/", directoryName);
+						objConverter->ImportFolder(inFolder + directoryName + "/", outFolder + directoryName + "/", directoryName);
 					}));
 			}
 			else
@@ -45,5 +46,6 @@ int main()
 		std::cout << "Critical error: " << e.what();
 	}
 
+	spdlog::info("Finished");
 	return 0;
 }
