@@ -69,6 +69,7 @@ namespace AVulkan
             vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &uboModelComponent.model);
             
             vkCmdDrawIndexed(commandBuffer, assetsDatabase->indexesCount.at(meshIndex), 1, 0, 0, 0);
+		    Profiler::GetInstance().AddDrawCall();
         }
 
         VkUtils::EndRenderPass(commandBuffer);

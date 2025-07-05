@@ -38,10 +38,21 @@ namespace EngineCore
         currentSample = currentSample->parentSample;
     }
 
+    void Profiler::AddDrawCall()
+    {
+        drawCalls++;
+    }
+
+    uint16_t Profiler::GetDrawCalls() const
+    {
+        return drawCalls;
+    }
+
     void Profiler::Reset()
     {
         samples.clear();
         currentSample = nullptr;
+        drawCalls = 0;
     }
 
     float Profiler::GetDeltaTime(const ProfilerSample& sample) const
