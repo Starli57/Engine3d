@@ -13,9 +13,11 @@ void ProfilerWindow::Update()
 {
 	ImGui::Begin("Vulkan debug info");
 
-	auto samples = Profiler::GetInstance().samples;
+	auto profiler = Profiler::GetInstance();
+	auto samples = profiler.samples;
 	for (size_t i = 0; i < samples.size(); i++) ShowRecursive(samples[i]);
 
+	ImGui::Text("Draw Calls: %d", profiler.GetDrawCalls());
 	ImGui::Text("Swapchain extent width=%d height=%d", vulkanApi.swapChainData->extent.width, vulkanApi.swapChainData->extent.height);
 
 	double screenPositionX;

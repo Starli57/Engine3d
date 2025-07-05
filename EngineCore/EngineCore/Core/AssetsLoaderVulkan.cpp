@@ -31,7 +31,10 @@ namespace EngineCore
         assetsDatabaseVulkan->indexBuffersMemory.resize(meshesCount);
         assetsDatabaseVulkan->indexesCount.resize(meshesCount);
         assetsDatabaseVulkan->meshMaterialBinding.resize(meshesCount);
-
+        assetsDatabaseVulkan->boundingBoxMin.resize(meshesCount);
+        assetsDatabaseVulkan->boundingBoxMax.resize(meshesCount);
+        assetsDatabaseVulkan->boundingBoxCenter.resize(meshesCount);
+        
         auto texturesCount = assetsDatabaseVulkan->texturesIndexByPath.size();
         assetsDatabaseVulkan->images.resize(texturesCount);
         assetsDatabaseVulkan->imagesViews.resize(texturesCount);
@@ -165,6 +168,11 @@ namespace EngineCore
 
         assetsDatabaseVulkan->indexesCount.at(meshIndex) = static_cast<uint32_t>(meshMeta.indices.size());
 
+        meshMeta.CalculateBoundingBox(
+            assetsDatabaseVulkan->boundingBoxMin.at(meshIndex),
+            assetsDatabaseVulkan->boundingBoxMax.at(meshIndex),
+            assetsDatabaseVulkan->boundingBoxCenter.at(meshIndex));
+        
         auto parsedMaterialPath = std::filesystem::path(meshMeta.materialPath);
         auto materialIndex = assetsDatabaseVulkan->materialsIndexByPath.find(parsedMaterialPath);
         if (materialIndex == assetsDatabaseVulkan->materialsIndexByPath.end())

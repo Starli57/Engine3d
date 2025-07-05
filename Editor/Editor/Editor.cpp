@@ -13,6 +13,7 @@
 #include "Windows/VulkanTextureView.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 #include "Windows/MainWindow.h"
+#include "Windows/ResourcesConverterWindow.h"
 #include "Windows/SystemsStateWindow.h"
 
 Editor::Editor(const Ref<ProjectSettings>& projectSettings, const Ref<Engine>& engine) : 
