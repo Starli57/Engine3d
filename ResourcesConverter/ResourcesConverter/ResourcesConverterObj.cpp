@@ -127,7 +127,8 @@ void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std
             meshes->push_back(mesh);
         }
     }
-    
+
+    //todo: fix tangents calculation
     //CalculateNormalsTangents(meshes);
         
     //--format meshes
@@ -193,6 +194,7 @@ void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std
         fMaterialOut.close();
     }
 
+    //todo:don't need to serialize materials names as it exist in meshes already
     for(int i = 0; i < meshes->size(); i++)
     {
         auto material = materials.at(meshes->at(i).materialIndex);
@@ -211,7 +213,6 @@ void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std
     //clean
     delete meshes;
 }
-
 
 bool ResourcesConverterObj::SerializeMesh(const std::string& filePath, const ConvertingMeshData& meshIt) const
 {
@@ -245,6 +246,7 @@ bool ResourcesConverterObj::SerializeMesh(const std::string& filePath, const Con
     return true;
 }
 
+//todo:don't need to serialize materials names as it exist in meshes already
 void ResourcesConverterObj::WriteSerializedMeshNames(const std::string& filePath, const std::vector<std::string>&  meshes, const std::vector<std::string>& materials) const
 {
     std::ofstream fOut(filePath);

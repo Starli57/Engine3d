@@ -19,6 +19,9 @@ namespace EngineCore
 
 		std::vector<uint32_t> indexesCount;
 
+		std::vector<glm::vec3> boundingBoxMin;
+		std::vector<glm::vec3> boundingBoxMax;
+		std::vector<glm::vec3> boundingBoxCenter;
 	
 		AssetsDatabaseVulkan(const Ref<ProjectSettings>& projectSettings);
 		~AssetsDatabaseVulkan() override;

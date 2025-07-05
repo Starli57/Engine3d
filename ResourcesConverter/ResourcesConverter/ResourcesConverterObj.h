@@ -22,5 +22,4 @@ public:
 	bool SerializeMesh(const std::string& filePath, const ConvertingMeshData& meshIt) const;
 	void WriteSerializedMeshNames(const std::string& filePath, const std::vector<std::string>& meshes, const std::vector<std::string>& materials) const;
 	std::string ToLowerCase(const std::string& input) const;
-
 };

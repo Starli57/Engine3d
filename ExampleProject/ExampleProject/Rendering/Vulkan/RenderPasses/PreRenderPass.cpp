@@ -3,6 +3,7 @@
 
 #include "EngineCore/Components/CameraComponent.h"
 #include "EngineCore/Components/UboWorldComponent.h"
+#include "EngineCore/Profiler/Profiler.h"
 
 namespace AVulkan
 {
@@ -20,16 +21,22 @@ namespace AVulkan
             auto firstCamera = cameraEntries.front();
             rendererPosition = cameraEntries.get<PositionComponent>(firstCamera).position;
         }
-        
-        std::ranges::sort(ecs->allEntities, [rendererPosition](const Ref<Entity>& a, const Ref<Entity>& b)
+
+        Profiler::GetInstance().BeginSample("Prepass: Sort");
+        std::ranges::sort(ecs->allEntities, [this, rendererPosition](const Ref<Entity>& a, const Ref<Entity>& b)
         {
             PositionComponent positionComponentA;
             PositionComponent positionComponentB;
-            const auto gotA = a->TryGetComponent(positionComponentA);
-            const auto gotB = b->TryGetComponent(positionComponentB);
-            if (gotA == false || gotB == false) return false;
+            if (a->TryGetComponent(positionComponentA) == false ||  b->TryGetComponent(positionComponentB) == false) return false;
+
+            MeshComponent meshComponentA;
+            MeshComponent meshComponentB;
+            if (a->TryGetComponent(meshComponentA) == false ||  b->TryGetComponent(meshComponentB) == false) return false;
+            if (meshComponentA.meshIndex.has_value() == false || meshComponentB.meshIndex.has_value() == false) return false;
             
-            return distance(positionComponentA.position, rendererPosition) > distance(positionComponentB.position, rendererPosition);
+            return distance(positionComponentA.position + assetsDatabase->boundingBoxCenter.at(meshComponentA.meshIndex.value()), rendererPosition)
+                > distance(positionComponentB.position + assetsDatabase->boundingBoxCenter.at(meshComponentB.meshIndex.value()), rendererPosition);
         });
+        Profiler::GetInstance().EndSample();
     }
 }
