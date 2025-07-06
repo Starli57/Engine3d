@@ -27,10 +27,9 @@ namespace AVulkan
 	class GraphicsApiVulkan : public IGraphicsApi
 	{
 	public:
-
 		Ref<VulkanContext> context;
 
-		Ref<DescriptorsManager> descriptorsManager;
+		URef<DescriptorsManager> descriptorsManager;
 		Ref<SwapChain> swapChain;
 		Ref<SwapChainData> swapChainData;
 

@@ -33,9 +33,9 @@ namespace AVulkan
         VkDevice& logicalDevice;
         
         Ref<DescriptorsAllocator> descriptorsAllocator;
-        Ref<DescriptorFrame> frameDescriptor;
-        Ref<DescriptorMaterialOpaque> opaqueMaterialDescriptor;
-        Ref<DescriptorShadowMap> shadowMapDescriptor;
+        URef<DescriptorFrame> frameDescriptor;
+        URef<DescriptorMaterialOpaque> opaqueMaterialDescriptor;
+        URef<DescriptorShadowMap> shadowMapDescriptor;
         VkDescriptorPool globalDescriptorPool;
 
         Ref<InputManager> inputManager;

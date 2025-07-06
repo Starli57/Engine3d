@@ -20,15 +20,14 @@ namespace AVulkan
 
     void RendererVulkan::Render() const
     {
-        auto descriptorsManager = graphicsApi->descriptorsManager;
         auto swapChainData = graphicsApi->swapChainData;
         auto vulkanContext = graphicsApi->context;
         const auto frame = graphicsApi->GetFrame();
         const auto imageIndex = graphicsApi->GetImageIndex();
         auto commandBuffer = graphicsApi->GetCommandBuffer();
     
-        descriptorsManager->UpdateFrameDescriptors(frame);
-        descriptorsManager->UpdateMaterialsDescriptors(frame);
+        graphicsApi->descriptorsManager->UpdateFrameDescriptors(frame);
+        graphicsApi->descriptorsManager->UpdateMaterialsDescriptors(frame);
         preRenderPass->UpdateDrawingEntities();
 		
         VkUtils::BeginCommandBuffer(commandBuffer);
@@ -38,7 +37,7 @@ namespace AVulkan
         VkUtils::TransitionImageLayout(commandBuffer, renderPassShadowMaps->GetImageBuffer()->image,
             VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_ASPECT_DEPTH_BIT);
 
-        descriptorsManager->UpdateShadowsMapDescriptors(frame, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
+        graphicsApi->descriptorsManager->UpdateShadowsMapDescriptors(frame, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
         renderPassOpaque->Render(commandBuffer, frame, imageIndex, [this](const Ref<Entity>& entity) { return true; });
 		
         VkUtils::TransitionImageLayout(commandBuffer, swapChainData->images.at(imageIndex),
@@ -49,11 +48,10 @@ namespace AVulkan
 
     void RendererVulkan::CreateRenderPasses()
     {
-        auto descriptorsManager = graphicsApi->descriptorsManager;
         auto swapChainData = graphicsApi->swapChainData;
         auto vulkanContext = graphicsApi->context;
 
-        renderPassContext = CreateRef<RenderPassContext>(descriptorsManager, ecs, assetsDatabase, swapChainData);
+        renderPassContext = CreateRef<RenderPassContext>(graphicsApi->descriptorsManager.get(), ecs, assetsDatabase, swapChainData);
         
         preRenderPass = CreateRef<PreRenderPass>(renderPassContext);
         renderPassClean = new RenderPassClean(vulkanContext, renderPassContext);

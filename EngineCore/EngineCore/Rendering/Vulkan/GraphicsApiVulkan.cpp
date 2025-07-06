@@ -204,7 +204,7 @@ namespace AVulkan
 
 	void GraphicsApiVulkan::CreateDescriptorManager()
 	{
-		descriptorsManager = CreateRef<DescriptorsManager>(context->physicalDevice, context->logicalDevice, ecs, inputManager,
+		descriptorsManager = CreateUniqueRef<DescriptorsManager>(context->physicalDevice, context->logicalDevice, ecs, inputManager,
 			textureSampler, assetDatabase);
 
 		rollback->Add([this] { descriptorsManager.reset(); });

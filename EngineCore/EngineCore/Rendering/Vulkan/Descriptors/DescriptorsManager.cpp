@@ -9,10 +9,10 @@ namespace AVulkan
     {
         descriptorsAllocator = CreateRef<DescriptorsAllocator>();
         CreateGlobalDescriptorsPool();
-        frameDescriptor = CreateRef<DescriptorFrame>(physicalDevice, logicalDevice, ecs, inputManager, globalDescriptorPool, descriptorsAllocator);
-        opaqueMaterialDescriptor = CreateRef<DescriptorMaterialOpaque>(physicalDevice, logicalDevice, ecs,
+        frameDescriptor = CreateUniqueRef<DescriptorFrame>(physicalDevice, logicalDevice, ecs, inputManager, globalDescriptorPool, descriptorsAllocator);
+        opaqueMaterialDescriptor = CreateUniqueRef<DescriptorMaterialOpaque>(physicalDevice, logicalDevice, ecs,
             descriptorsAllocator, textureSampler, assetsDatabase);
-        shadowMapDescriptor = CreateRef<DescriptorShadowMap>(physicalDevice, logicalDevice, ecs, globalDescriptorPool, descriptorsAllocator);
+        shadowMapDescriptor = CreateUniqueRef<DescriptorShadowMap>(physicalDevice, logicalDevice, ecs, globalDescriptorPool, descriptorsAllocator);
     }
 
     DescriptorsManager::~DescriptorsManager()

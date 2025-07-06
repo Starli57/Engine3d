@@ -10,7 +10,7 @@ namespace AVulkan
     class RenderPassContext
     {
     public:
-        Ref<DescriptorsManager> descriptorsManager;
+        DescriptorsManager* descriptorsManager;
         Ref<Ecs> ecs;
         Ref<AssetsDatabaseVulkan> assetsDatabase;
         Ref<SwapChainData> swapChainData;
@@ -18,7 +18,7 @@ namespace AVulkan
         std::vector<DrawEntity> transparentEntities;
         std::vector<DrawEntity> opaqueEntities;
 
-        RenderPassContext(const Ref<DescriptorsManager>& descriptorsManager, const Ref<Ecs>& ecs,
+        RenderPassContext(DescriptorsManager* descriptorsManager, const Ref<Ecs>& ecs,
             const Ref<AssetsDatabaseVulkan>& assetsDatabase, const Ref<SwapChainData>& swapChainData)
             : descriptorsManager(descriptorsManager), ecs(ecs), assetsDatabase(assetsDatabase), swapChainData(swapChainData) {}
     };
