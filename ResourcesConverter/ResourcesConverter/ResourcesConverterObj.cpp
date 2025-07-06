@@ -165,8 +165,10 @@ void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std
         YAML::Node materialNode;
         auto material = materials.at(i);
         auto materialName = ToLowerCase(material.name);
+        auto isOpaque = material.dissolve >= 1.0 && material.alpha_texname.empty();
+        
         materialNode["materialName"] = materialName;
-        materialNode["pipelineName"] = (material.dissolve >= 1.0 && material.alpha_texname.empty()) ? "opaque" : "transparent";
+        materialNode["pipelineName"] = isOpaque ? "opaque" : "transparent";
             
         materialNode["roughness"] = material.roughness;
         materialNode["metallic"] = material.metallic;
@@ -174,7 +176,8 @@ void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std
         materialNode["specularExponent"] = material.shininess;
         materialNode["indexOfRefraction"] = material.ior;
         materialNode["transparency"] = material.dissolve;
-            
+        materialNode["isOpaque"] = isOpaque;
+        
         materialNode["ambientColor"] = glm::vec3(material.ambient[0], material.ambient[1], material.ambient[2]);
         materialNode["diffuseColor"] = glm::vec3(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
         materialNode["specularColor"] = glm::vec3(material.specular[0], material.specular[1], material.specular[2]);

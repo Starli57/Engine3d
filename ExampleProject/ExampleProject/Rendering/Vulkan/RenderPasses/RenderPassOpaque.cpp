@@ -5,14 +5,11 @@
 #include "EngineCore/Rendering/Vulkan/UniformBufferModel/UboLight.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/FrameBufferUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/RenderPassUtility.h"
-#include "Utility/DrawEntity.h"
 
 namespace AVulkan
 {
-    RenderPassOpaque::RenderPassOpaque(
-        Ref<VulkanContext> vulkanContext, const Ref<DescriptorsManager>& descriptorsManager,
-        const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetsDatabase, const Ref<SwapChainData>& swapChainData) :
-        IRenderPass(vulkanContext, descriptorsManager, ecs, assetsDatabase, swapChainData)
+    RenderPassOpaque::RenderPassOpaque(const Ref<VulkanContext>& vulkanContext, const Ref<RenderPassContext>& renderPassContext) :
+        IRenderPass(vulkanContext, renderPassContext)
     {
         spdlog::info("Create RenderPass Opaque");
         RenderPassOpaque::CreateRenderPass();
@@ -39,60 +36,62 @@ namespace AVulkan
 		Profiler::GetInstance().BeginSample("RenderPassOpaque");
         BeginRenderPass(commandBuffer, imageIndex, 2, 1);
         
-        for (const auto& drawEntity : ecs->allEntities)
+        for (const auto& drawEntity : renderPassContext->opaqueEntities)
         {
-            if (!filter(drawEntity)) continue;
-            
-            MeshComponent meshComponent;
-            MaterialComponent materialComponent;
-            UboModelComponent uboModelComponent;
-            if (!drawEntity->TryGetComponent(meshComponent)) continue;
-            if (!drawEntity->TryGetComponent(materialComponent)) continue;
-            if (!drawEntity->TryGetComponent(uboModelComponent)) continue;;
-            if (meshComponent.meshIndex.has_value() == false) continue;
-
-            const auto material = assetsDatabase->materials.at(materialComponent.materialIndex);
-                
-            const int32_t meshIndex = meshComponent.meshIndex.value();
-
-            const auto pipeline = pipelines.at(material->pipelineId);
-            VkUtils::BindPipeline(commandBuffer, pipeline);
-            VkUtils::BindVertexAndIndexBuffers(commandBuffer, meshIndex, assetsDatabase);
-
-            vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT,
-                0, sizeof(glm::mat4), &uboModelComponent.model);
-
-            auto descriptorSets = std::vector<VkDescriptorSet>();
-            descriptorSets.resize(3);
-            descriptorSets.at(0) = descriptorsManager->GetDescriptorSetFrame(frame);
-            descriptorSets.at(1) = descriptorsManager->GetDescriptorSetOpaqueMaterial(frame, materialComponent.materialIndex);
-            descriptorSets.at(2) = descriptorsManager->GetDescriptorSetShadowMap(frame);
-            
-            vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->layout, 0,
-                static_cast<uint32_t>(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
-            vkCmdDrawIndexed(commandBuffer, assetsDatabase->indexesCount.at(meshIndex), 1, 0, 0, 0);
-		    Profiler::GetInstance().AddDrawCall();
+            RenderEntity(drawEntity, commandBuffer, frame);
+        }
+        
+        for (int16_t i = static_cast<int16_t>(renderPassContext->transparentEntities.size() - 1); i >= 0; i--)
+        {
+            RenderEntity(renderPassContext->transparentEntities.at(i), commandBuffer, frame);
         }
         
         VkUtils::EndRenderPass(commandBuffer);
 		Profiler::GetInstance().EndSample();
     }
 
+    void RenderPassOpaque::RenderEntity(const DrawEntity& drawEntity, const VkCommandBuffer& commandBuffer, const uint16_t frame) const
+    {
+        if (drawEntity.meshComponent->meshIndex.has_value() == false) return;
+
+        const auto material = renderPassContext->assetsDatabase->materials.at(drawEntity.materialComponent->materialIndex);
+                
+        const int32_t meshIndex = drawEntity.meshComponent->meshIndex.value();
+
+        const auto pipeline = pipelines.at(material->pipelineId);
+        VkUtils::BindPipeline(commandBuffer, pipeline);
+        VkUtils::BindVertexAndIndexBuffers(commandBuffer, meshIndex, renderPassContext->assetsDatabase);
+
+        vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT,
+            0, sizeof(glm::mat4), &drawEntity.uboModelComponent->model);
+
+        auto descriptorSets = std::vector<VkDescriptorSet>();
+        descriptorSets.resize(3);
+        descriptorSets.at(0) = renderPassContext->descriptorsManager->GetDescriptorSetFrame(frame);
+        descriptorSets.at(1) = renderPassContext->descriptorsManager->GetDescriptorSetOpaqueMaterial(frame, drawEntity.materialComponent->materialIndex);
+        descriptorSets.at(2) = renderPassContext->descriptorsManager->GetDescriptorSetShadowMap(frame);
+            
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->layout, 0,
+            static_cast<uint32_t>(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
+        vkCmdDrawIndexed(commandBuffer, renderPassContext->assetsDatabase->indexesCount.at(meshIndex), 1, 0, 0, 0);
+        Profiler::GetInstance().AddDrawCall();
+    }
+
     void RenderPassOpaque::CreateFrameBuffers()
     {
-        frameBuffers.resize(swapChainData->imagesCount);
+        frameBuffers.resize(renderPassContext->swapChainData->imagesCount);
 
-        for (size_t i = 0; i < swapChainData->imagesCount; i++)
+        for (size_t i = 0; i < renderPassContext->swapChainData->imagesCount; i++)
         {
             std::vector<VkImageView> attachments =
             {
-                swapChainData->msaaColorSample->imageView,
-                swapChainData->imageViews[i],
-                swapChainData->msaaDepthSample->imageView
-
+                renderPassContext->swapChainData->msaaColorSample->imageView,
+                renderPassContext->swapChainData->imageViews[i],
+                renderPassContext->swapChainData->msaaDepthSample->imageView
             };
 
-            VkUtils::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass, swapChainData->extent.width, swapChainData->extent.height,
+            VkUtils::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass,
+                renderPassContext->swapChainData->extent.width, renderPassContext->swapChainData->extent.height,
                 attachments, frameBuffers[i]);
         }
     }
@@ -103,15 +102,15 @@ namespace AVulkan
 
         auto descriptorSetLayouts = std::vector<VkDescriptorSetLayout>();
         descriptorSetLayouts.resize(3);
-        descriptorSetLayouts.at(0) = descriptorsManager->GetDescriptorSetLayoutFrame();
-        descriptorSetLayouts.at(1) = descriptorsManager->GetDescriptorSetLayoutOpaqueMaterial();
-        descriptorSetLayouts.at(2) = descriptorsManager->GetDescriptorSetLayoutShadowMap();
+        descriptorSetLayouts.at(0) = renderPassContext->descriptorsManager->GetDescriptorSetLayoutFrame();
+        descriptorSetLayouts.at(1) = renderPassContext->descriptorsManager->GetDescriptorSetLayoutOpaqueMaterial();
+        descriptorSetLayouts.at(2) = renderPassContext->descriptorsManager->GetDescriptorSetLayoutShadowMap();
         
         for (const auto& config : vulkanContext->pipelinesCollection->pipelinesConfigs)
         {
             GraphicsPipelineUtility pipelineUtility;
             auto pipeline = pipelineUtility.Create(config.second, vulkanContext->logicalDevice, renderPass,
-                swapChainData->extent, descriptorSetLayouts, vulkanContext->msaa);
+                renderPassContext->swapChainData->extent, descriptorSetLayouts, vulkanContext->msaa);
 
             pipelines.emplace(config.first, pipeline);
         }

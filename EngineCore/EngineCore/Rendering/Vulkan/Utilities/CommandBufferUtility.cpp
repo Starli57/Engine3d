@@ -1,5 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "CommandBufferUtility.h"
+
+#include "EngineCore/Profiler/Profiler.h"
 #include "spdlog/spdlog.h"
 
 namespace VkUtils
@@ -26,15 +28,19 @@ namespace VkUtils
 
 	void BindPipeline(const VkCommandBuffer& commandBuffer, const Ref<PipelineVulkan>& pipeline)
 	{
+		Profiler::GetInstance().BeginSample("BindPipelines");
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
+		Profiler::GetInstance().EndSample();
 	}
 
 	void BindVertexAndIndexBuffers(const VkCommandBuffer& commandBuffer, const int32_t meshVulkan, const Ref<AssetsDatabaseVulkan>& assetsDatabase)
 	{
+		Profiler::GetInstance().BeginSample("BindVertexAndIndexBuffers");
 		VkBuffer vertexBuffers[] = { assetsDatabase->vertexBuffers.at(meshVulkan)};
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 		vkCmdBindIndexBuffer(commandBuffer, assetsDatabase->indexBuffers.at(meshVulkan), 0, VK_INDEX_TYPE_UINT32);
+		Profiler::GetInstance().EndSample();
 	}
 
 	void BeginCommandBuffer(const VkCommandBuffer& commandBuffer) 

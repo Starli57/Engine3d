@@ -7,36 +7,70 @@
 
 namespace AVulkan
 {
-    PreRenderPass::PreRenderPass(const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetsDatabase)
-        : ecs(ecs), assetsDatabase(assetsDatabase)
+    PreRenderPass::PreRenderPass(const Ref<RenderPassContext>& renderPassContext) : renderPassContext(renderPassContext)
     {
     }
 
     void PreRenderPass::UpdateDrawingEntities() const
     {
         glm::vec3 rendererPosition;
-        auto cameraEntries = ecs->registry->view<PositionComponent, CameraComponent, UboWorldComponent>();
+        auto cameraEntries = renderPassContext->ecs->registry->view<PositionComponent, CameraComponent, UboWorldComponent>();
         if (cameraEntries.begin() != cameraEntries.end())
         {
             auto firstCamera = cameraEntries.front();
             rendererPosition = cameraEntries.get<PositionComponent>(firstCamera).position;
         }
 
-        Profiler::GetInstance().BeginSample("Prepass: Sort");
-        std::ranges::sort(ecs->allEntities, [this, rendererPosition](const Ref<Entity>& a, const Ref<Entity>& b)
+        uint16_t transparentCount = 0;
+        uint16_t opaqueCount = 0;
+        auto renderEntities = renderPassContext->ecs->registry->view<PositionComponent, MaterialComponent, MeshComponent, UboModelComponent>();
+        for (const auto& entity : renderEntities)
         {
-            PositionComponent positionComponentA;
-            PositionComponent positionComponentB;
-            if (a->TryGetComponent(positionComponentA) == false ||  b->TryGetComponent(positionComponentB) == false) return false;
+            MaterialComponent& materialComponent = renderEntities.get<MaterialComponent>(entity);
+            auto material = renderPassContext->assetsDatabase->materials.at(materialComponent.materialIndex);
 
-            MeshComponent meshComponentA;
-            MeshComponent meshComponentB;
-            if (a->TryGetComponent(meshComponentA) == false ||  b->TryGetComponent(meshComponentB) == false) return false;
-            if (meshComponentA.meshIndex.has_value() == false || meshComponentB.meshIndex.has_value() == false) return false;
+            if (material->opaque) opaqueCount++;
+            else transparentCount++;
+        }
+
+        renderPassContext->opaqueEntities.resize(opaqueCount);
+        renderPassContext->transparentEntities.resize(transparentCount);
+        opaqueCount = 0;
+        transparentCount = 0;
+        for (const auto& entity : renderEntities)
+        {
+            PositionComponent& positionComponent = renderEntities.get<PositionComponent>(entity);
+            MaterialComponent& materialComponent = renderEntities.get<MaterialComponent>(entity);
+            MeshComponent& meshComponent = renderEntities.get<MeshComponent>(entity);
+            UboModelComponent& uboModel = renderEntities.get<UboModelComponent>(entity);
             
-            return distance(positionComponentA.position + assetsDatabase->boundingBoxCenter.at(meshComponentA.meshIndex.value()), rendererPosition)
-                > distance(positionComponentB.position + assetsDatabase->boundingBoxCenter.at(meshComponentB.meshIndex.value()), rendererPosition);
-        });
+            auto material = renderPassContext->assetsDatabase->materials.at(materialComponent.materialIndex);
+            auto isOpaque = material->opaque;
+            
+            DrawEntity drawEntity = DrawEntity(&positionComponent, &uboModel, &meshComponent, &materialComponent);
+            if (isOpaque) renderPassContext->opaqueEntities[opaqueCount++] = drawEntity;
+            else renderPassContext->transparentEntities[transparentCount++] = drawEntity;
+        }
+        
+        Profiler::GetInstance().BeginSample("Prepass: Sort Opaque");
+        Sort(renderPassContext->opaqueEntities, rendererPosition);
         Profiler::GetInstance().EndSample();
+
+        Profiler::GetInstance().BeginSample("Prepass: Sort Transparent");
+        Sort(renderPassContext->transparentEntities, rendererPosition);
+        Profiler::GetInstance().EndSample();
+    }
+
+    void PreRenderPass::Sort(std::vector<DrawEntity>& entities, const glm::vec3& rendererPosition) const
+    {
+        std::ranges::sort(entities, [this, rendererPosition](const DrawEntity& a, const DrawEntity& b)
+        {
+            if (a.meshComponent->meshIndex.has_value() == false) return false;
+            if (b.meshComponent->meshIndex.has_value() == false) return true;
+            
+            auto distanceA = distance(a.positionComponent->position + renderPassContext->assetsDatabase->boundingBoxCenter.at(a.meshComponent->meshIndex.value()), rendererPosition);
+            auto distanceB = distance(b.positionComponent->position + renderPassContext->assetsDatabase->boundingBoxCenter.at(b.meshComponent->meshIndex.value()), rendererPosition);
+            return distanceB > distanceA;
+        });
     }
 }

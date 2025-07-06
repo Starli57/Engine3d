@@ -114,7 +114,8 @@ namespace EngineCore
 		material->specularExponent = node["specularExponent"].as<float>();
 		material->indexOfRefraction = node["indexOfRefraction"].as<float>();
 		material->transparency = node["transparency"].as<float>();
-
+		material->opaque = node["isOpaque"].as<bool>();
+		
 		material->ambientColor = node["ambientColor"].as<glm::vec3>();
 		material->diffuseColor = node["diffuseColor"].as<glm::vec3>();
 		material->specularColor = node["specularColor"].as<glm::vec3>();

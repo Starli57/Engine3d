@@ -65,6 +65,7 @@ namespace AVulkan
 	void DescriptorsAllocator::AllocateDescriptorSets(const VkDevice& logicalDevice, const VkDescriptorSetLayout& descriptorSetLayout,
 		const VkDescriptorPool& pool, std::vector<VkDescriptorSet>& setsReference, const uint32_t count) const
 	{
+		spdlog::info("Allocate Descriptor Sets {}", count);
 		std::vector<VkDescriptorSetLayout> layouts(count, descriptorSetLayout);
 
 		VkDescriptorSetAllocateInfo allocInfo{};

@@ -5,14 +5,11 @@
 #include "EngineCore/Rendering/Vulkan/Descriptors/DescriptorsManager.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/FrameBufferUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/ImageUtility.h"
-#include "Utility/DrawEntity.h"
 
 namespace AVulkan
 {
-    RenderPassShadowMaps::RenderPassShadowMaps(
-        Ref<VulkanContext> vulkanContext, Ref<DescriptorsManager> descriptorsManager,
-        const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetsDatabase, const Ref<SwapChainData>& swapChainData) :
-        IRenderPass(vulkanContext, descriptorsManager, ecs, assetsDatabase, swapChainData)
+    RenderPassShadowMaps::RenderPassShadowMaps(Ref<VulkanContext> vulkanContext, const Ref<RenderPassContext>& renderPassContext) :
+        IRenderPass(vulkanContext, renderPassContext)
     {
         spdlog::info("Create RenderPass ShadowMaps");
 
@@ -50,30 +47,36 @@ namespace AVulkan
         
         auto descriptorSets = std::vector<VkDescriptorSet>();
         descriptorSets.resize(1);
-        descriptorSets.at(0) = descriptorsManager->GetDescriptorSetFrame(frame);
+        descriptorSets.at(0) = renderPassContext->descriptorsManager->GetDescriptorSetFrame(frame);
         
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->layout, 0,
             static_cast<uint32_t>(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
         
-        for (const auto& drawEntity : ecs->allEntities)
+        for (const auto& drawEntity : renderPassContext->opaqueEntities)
         {
-            MeshComponent meshComponent;
-            UboModelComponent uboModelComponent;
-            if (!drawEntity->TryGetComponent(meshComponent)) continue;
-            if (!drawEntity->TryGetComponent(uboModelComponent)) continue;
-            if (meshComponent.meshIndex.has_value() == false) continue;
-            
-            const int32_t meshIndex = meshComponent.meshIndex.value();
-            VkUtils::BindVertexAndIndexBuffers(commandBuffer, meshIndex, assetsDatabase);
+            RenderEntity(drawEntity, commandBuffer, pipeline);
+        }
 
-            vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &uboModelComponent.model);
-            
-            vkCmdDrawIndexed(commandBuffer, assetsDatabase->indexesCount.at(meshIndex), 1, 0, 0, 0);
-		    Profiler::GetInstance().AddDrawCall();
+        for (const auto& drawEntity : renderPassContext->transparentEntities)
+        {
+            RenderEntity(drawEntity, commandBuffer, pipeline);
         }
 
         VkUtils::EndRenderPass(commandBuffer);
 		Profiler::GetInstance().EndSample();
+    }
+
+    void RenderPassShadowMaps::RenderEntity(const DrawEntity& drawEntity, const VkCommandBuffer& commandBuffer, const Ref<PipelineVulkan>& pipeline) const
+    {
+        if (drawEntity.meshComponent->meshIndex.has_value() == false) return;
+        
+        const int32_t meshIndex = drawEntity.meshComponent->meshIndex.value();
+        VkUtils::BindVertexAndIndexBuffers(commandBuffer, meshIndex, renderPassContext->assetsDatabase);
+
+        vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &drawEntity.uboModelComponent->model);
+            
+        vkCmdDrawIndexed(commandBuffer, renderPassContext->assetsDatabase->indexesCount.at(meshIndex), 1, 0, 0, 0);
+        Profiler::GetInstance().AddDrawCall();
     }
 
     void RenderPassShadowMaps::CreateRenderPass()
@@ -107,11 +110,11 @@ namespace AVulkan
 
         auto descriptorSetLayouts = std::vector<VkDescriptorSetLayout>();
         descriptorSetLayouts.resize(1);
-        descriptorSetLayouts.at(0) = descriptorsManager->GetDescriptorSetLayoutFrame();
+        descriptorSetLayouts.at(0) = renderPassContext->descriptorsManager->GetDescriptorSetLayoutFrame();
             
         auto shadowPassPipeline = GraphicsPipelineUtility().Create(
             shadowPassPipelineConfig, vulkanContext->logicalDevice, renderPass,
-            swapChainData->extent, descriptorSetLayouts, VK_SAMPLE_COUNT_1_BIT);
+            renderPassContext->swapChainData->extent, descriptorSetLayouts, VK_SAMPLE_COUNT_1_BIT);
         pipelines.emplace(shadowPassPipelineConfig->pipelineName, shadowPassPipeline);
     }
 
@@ -122,7 +125,7 @@ namespace AVulkan
         shadowMapBufferModel = CreateRef<ImageModel>();
 
         shadowMapBufferModel->image = VkUtils::CreateImage(
-            vulkanContext, swapChainData->extent.width, swapChainData->extent.height, vulkanContext->depthFormat,
+            vulkanContext, renderPassContext->swapChainData->extent.width, renderPassContext->swapChainData->extent.height, vulkanContext->depthFormat,
             VK_IMAGE_TILING_OPTIMAL,
             VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
             VK_SAMPLE_COUNT_1_BIT,
@@ -142,7 +145,7 @@ namespace AVulkan
 
         frameBuffers.resize(1);
         VkUtils::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass,
-            swapChainData->extent.width, swapChainData->extent.height, attachments, frameBuffers[0]);
+            renderPassContext->swapChainData->extent.width, renderPassContext->swapChainData->extent.height, attachments, frameBuffers[0]);
     }
 
     void RenderPassShadowMaps::CreateSampler()

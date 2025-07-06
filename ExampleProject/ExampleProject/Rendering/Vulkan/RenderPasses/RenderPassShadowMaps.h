@@ -2,8 +2,8 @@
 
 #include <GLFW/glfw3.h>
 
-#include "IRenderPass.h"
 #include "PreRenderPass.h"
+#include "Core/IRenderPass.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/RenderPassUtility.h"
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/UniformBufferVulkanUtility.h"
@@ -18,12 +18,12 @@ namespace AVulkan
     class RenderPassShadowMaps : public IRenderPass
     {
     public:
-        RenderPassShadowMaps(Ref<VulkanContext> vulkanContext, Ref<DescriptorsManager> descriptorsManager,
-            const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetsDatabase, const Ref<SwapChainData>& swapChainData);
+        RenderPassShadowMaps(Ref<VulkanContext> vulkanContext, const Ref<RenderPassContext>& renderPassContext);
         ~RenderPassShadowMaps() override;
 
         void Render(VkCommandBuffer& commandBuffer, uint16_t frame, uint32_t imageIndex, std::function<bool(const Ref<Entity>& entity)> filter) override;
-
+        void RenderEntity(const DrawEntity& drawEntity, const VkCommandBuffer& commandBuffer, const Ref<PipelineVulkan>& pipeline) const;
+        
         Ref<ImageModel> GetImageBuffer() { return shadowMapBufferModel; }
         VkSampler& GetSampler() { return sampler; }
 

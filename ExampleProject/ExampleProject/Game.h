@@ -33,7 +33,7 @@ private:
 	URef<CameraFlySystem> freeCameraSystem;\
 
 #if GLFW_INCLUDE_VULKAN
-	Ref<RendererVulkan> renderer;
+	Ref<AVulkan::RendererVulkan> renderer;
 #endif
 	
 	void InitializeGameSystems();

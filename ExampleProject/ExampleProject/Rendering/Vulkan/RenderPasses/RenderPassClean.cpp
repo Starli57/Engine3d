@@ -6,9 +6,8 @@
 
 namespace AVulkan
 {
-    RenderPassClean::RenderPassClean(Ref<VulkanContext> vulkanContext, const Ref<DescriptorsManager>& descriptorsManager,
-        const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetsDatabase, const Ref<SwapChainData>& swapChainData)
-        : IRenderPass(vulkanContext, descriptorsManager, ecs, assetsDatabase, swapChainData)
+    RenderPassClean::RenderPassClean(Ref<VulkanContext> vulkanContext, const Ref<RenderPassContext>& renderPassContext)
+        : IRenderPass(vulkanContext, renderPassContext)
     {
         RenderPassClean::CreateRenderPass();
         RenderPassClean::CreateFrameBuffers();
@@ -78,18 +77,18 @@ namespace AVulkan
 
     void RenderPassClean::CreateFrameBuffers()
     {
-        frameBuffers.resize(swapChainData->imagesCount);
+        frameBuffers.resize(renderPassContext->swapChainData->imagesCount);
 
-        for (size_t i = 0; i < swapChainData->imagesCount; i++)
+        for (size_t i = 0; i < renderPassContext->swapChainData->imagesCount; i++)
         {
             std::vector<VkImageView> attachments =
             {
-                swapChainData->msaaColorSample->imageView,
-                swapChainData->imageViews[i]
+                renderPassContext->swapChainData->msaaColorSample->imageView,
+                renderPassContext->swapChainData->imageViews[i]
             };
 
-            VkUtils::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass, swapChainData->extent.width, swapChainData->extent.height,
-                attachments, frameBuffers[i]);
+            VkUtils::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass, renderPassContext->swapChainData->extent.width,
+                renderPassContext->swapChainData->extent.height, attachments, frameBuffers[i]);
         }
     }
 }
