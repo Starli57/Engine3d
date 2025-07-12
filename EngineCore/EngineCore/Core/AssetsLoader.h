@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AssetsDatabase.h"
+#include "ResourcesStorage.h"
 #include "EngineCore/Assets/Material.h"
 #include "EngineCore/Assets/Meta/MeshMeta.h"
 #include "EngineCore/Defines/DllDefines.h"
@@ -13,7 +13,7 @@ namespace EngineCore
 	class AssetsLoader
 	{
 	public:
-		AssetsLoader(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, const Ref<AssetsDatabase>& assetsDatabase);
+		AssetsLoader(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, const Ref<ResourcesStorage>& assetsDatabase);
 		virtual ~AssetsLoader() = default;
 
 		void Load();
@@ -24,19 +24,17 @@ namespace EngineCore
 		uint32_t GetOrLoadTextureStr(const std::string& path);
 		uint32_t GetOrLoadTexture(const std::filesystem::path& path);
 
-		void DeserializeMeshMeta(const std::filesystem::path& path, MeshMeta& meshMeta) const;
-
+		void LoadAndDeserializeMesh(const std::filesystem::path& path, MeshMeta& meshMeta) const;
 		virtual void LoadMesh(std::filesystem::path& path) = 0;
-		virtual void SetupMesh(MeshMeta& meshMeta, uint32_t meshIndex) = 0;
-		virtual void LoadAllMeshes() = 0;
+		virtual void SetupMeshBuffers(MeshMeta& meshMeta, uint32_t meshIndex) = 0;
 		virtual void UnLoadAllMeshes() = 0;
 
 		virtual void LoadTexture(const std::filesystem::path& path) = 0;
 		virtual void LoadTexture(const std::filesystem::path& path, uint32_t textureIndex) = 0;
-		virtual void LoadAllTextures() = 0;
 		virtual void UnLoadAllTextures() = 0;
 
-		void LoadMaterial(const std::filesystem::path& path, uint32_t index);
+		void LoadAndDeserializeMaterial(const std::filesystem::path& path, uint32_t index);
+		virtual void LoadMaterial(std::filesystem::path& path) = 0;
 		void LoadAllMaterials();
 
 		void LoadRequestedMeshes();
@@ -45,6 +43,6 @@ namespace EngineCore
 	protected:
 		IGraphicsApi* graphicsApi;
 		Ref<ProjectSettings> projectSettings;
-		Ref<AssetsDatabase> assetsDatabase;
+		Ref<ResourcesStorage> assetsDatabase;
 	};
 }

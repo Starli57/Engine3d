@@ -80,7 +80,7 @@ namespace EngineCore
 		return out;
 	}
 
-	EntitySerializer::EntitySerializer(const Ref<ProjectSettings>& projectSettings, const Ref<AssetsDatabase>& assetsDatabase) : 
+	EntitySerializer::EntitySerializer(const Ref<ProjectSettings>& projectSettings, const Ref<ResourcesStorage>& assetsDatabase) : 
 		projectSettings(projectSettings), assetsDatabase(assetsDatabase)
 	{
 	}

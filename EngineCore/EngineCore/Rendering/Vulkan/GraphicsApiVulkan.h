@@ -11,7 +11,7 @@
 
 #include "Models/SwapChainData.h"
 
-#include "EngineCore/Core/AssetsDatabaseVulkan.h"
+#include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/ProjectSettings.h"
@@ -49,7 +49,7 @@ namespace AVulkan
 		VkCommandPool& GetCommandPool() const { return commandsManager->GetCommandPool(); }
 		VkCommandBuffer& GetCommandBuffer() const { return commandsManager->GetCommandBuffer(frame); }
 		
-		GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<InputManager> inputManager, const Ref<AssetsDatabaseVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* window);
+		GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<InputManager> inputManager, const Ref<ResourcesStorageVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* window);
 		virtual ~GraphicsApiVulkan() override;
 
 		void Init() override;
@@ -60,7 +60,7 @@ namespace AVulkan
 	private:
 		Ref<Ecs> ecs;
 		Ref<InputManager> inputManager;
-		Ref<AssetsDatabaseVulkan> assetDatabase;
+		Ref<ResourcesStorageVulkan> assetDatabase;
 		Ref<ProjectSettings> projectSettings;
 		Ref<Rollback> rollback;
 		

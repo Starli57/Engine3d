@@ -33,7 +33,7 @@ namespace VkUtils
 		Profiler::GetInstance().EndSample();
 	}
 
-	void BindVertexAndIndexBuffers(const VkCommandBuffer& commandBuffer, const int32_t meshVulkan, const Ref<AssetsDatabaseVulkan>& assetsDatabase)
+	void BindVertexAndIndexBuffers(const VkCommandBuffer& commandBuffer, const int32_t meshVulkan, const Ref<ResourcesStorageVulkan>& assetsDatabase)
 	{
 		Profiler::GetInstance().BeginSample("BindVertexAndIndexBuffers");
 		VkBuffer vertexBuffers[] = { assetsDatabase->vertexBuffers.at(meshVulkan)};

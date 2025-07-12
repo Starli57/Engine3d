@@ -1,12 +1,12 @@
 #include "EngineCore/Pch.h"
-#include "EngineCore/Core/AssetsDatabase.h"
+#include "EngineCore/Core/ResourcesStorage.h"
 
 #include "EngineCore/Assets/Meshes/CubeDefinition.h"
 #include "EngineCore/Utilities/IOUtility.h"
 
 namespace EngineCore
 {
-	AssetsDatabase::AssetsDatabase(const Ref<ProjectSettings>& projectSettings)
+	ResourcesStorage::ResourcesStorage(const Ref<ProjectSettings>& projectSettings)
 		: projectSettings(projectSettings)
 	{
 		FillAssetsPaths();
@@ -15,7 +15,7 @@ namespace EngineCore
 		FillCustomMeshes();
 	}
 
-	bool AssetsDatabase::SetMeshLoadingStatus(const std::filesystem::path& path)
+	bool ResourcesStorage::SetMeshLoadingStatus(const std::filesystem::path& path)
 	{
 		const auto iter = meshesIndexByPath.find(path);
 		std::lock_guard<std::mutex> lock(meshLoadStatusMutex);
@@ -26,7 +26,7 @@ namespace EngineCore
 		return true;
 	}
 
-	bool AssetsDatabase::SetMaterialLoadingStatus(const std::filesystem::path& path)
+	bool ResourcesStorage::SetMaterialLoadingStatus(const std::filesystem::path& path)
 	{
 		const auto iter = materialsIndexByPath.find(path);
 		std::lock_guard<std::mutex> lock(materialLoadStatusMutex);
@@ -37,7 +37,7 @@ namespace EngineCore
 		return true;
 	}
 
-	bool AssetsDatabase::SetTextureLoadingStatus(const std::filesystem::path& path)
+	bool ResourcesStorage::SetTextureLoadingStatus(const std::filesystem::path& path)
 	{
 		const auto iter = texturesIndexByPath.find(path);
 		std::lock_guard<std::mutex> lock(textureLoadStatusMutex);
@@ -48,7 +48,7 @@ namespace EngineCore
 		return true;
 	}
 
-	void AssetsDatabase::AddMeshLoadRequest(const std::filesystem::path& path)
+	void ResourcesStorage::AddMeshLoadRequest(const std::filesystem::path& path)
 	{
 		const auto iter = meshesIndexByPath.find(path);
 		std::lock_guard<std::mutex> lock(meshLoadStatusMutex);
@@ -59,7 +59,7 @@ namespace EngineCore
 		meshLoadRequests.emplace(iter->second);
 	}
 
-	void AssetsDatabase::AddMaterialLoadRequest(const std::filesystem::path& path)
+	void ResourcesStorage::AddMaterialLoadRequest(const std::filesystem::path& path)
 	{
 		const auto iter = materialsIndexByPath.find(path);
 		std::lock_guard<std::mutex> lock(materialLoadStatusMutex);
@@ -70,7 +70,7 @@ namespace EngineCore
 		materialLoadRequests.emplace(iter->second);
 	}
 
-	void AssetsDatabase::AddTextureLoadRequest(const std::filesystem::path& path)
+	void ResourcesStorage::AddTextureLoadRequest(const std::filesystem::path& path)
 	{
 		const auto iter = texturesIndexByPath.find(path);
 		std::lock_guard<std::mutex> lock(textureLoadStatusMutex);
@@ -81,7 +81,7 @@ namespace EngineCore
 		textureLoadRequests.emplace(iter->second);
 	}
 
-	void AssetsDatabase::FillAssetsPaths()
+	void ResourcesStorage::FillAssetsPaths()
 	{
 		spdlog::info("Fill Assets Paths");
 
@@ -132,7 +132,7 @@ namespace EngineCore
 		}
 	}
 
-	void AssetsDatabase::FillMeshesPaths()
+	void ResourcesStorage::FillMeshesPaths()
 	{
 		spdlog::info("FillMeshesPaths");
 		auto relevantExtensions = std::vector<std::string>();
@@ -143,7 +143,7 @@ namespace EngineCore
 		meshLoadStatuses.resize(meshesPaths.size(), 0);
 	}
 
-	void AssetsDatabase::FillMaterialsPaths()
+	void ResourcesStorage::FillMaterialsPaths()
 	{
 		spdlog::info("FillMaterialsPaths");
 		auto relevantExtensions = std::vector<std::string>();
@@ -154,7 +154,7 @@ namespace EngineCore
 		meshLoadStatuses.resize(materialsPaths.size(), 0);
 	}
 
-	void AssetsDatabase::FillPrefabsPaths()
+	void ResourcesStorage::FillPrefabsPaths()
 	{
 		spdlog::info("FillPrefabsPaths");
 		auto relevantExtensions = std::vector<std::string>();
@@ -164,7 +164,7 @@ namespace EngineCore
 		IOUtility().FindAndEmplaceResourcesFiles(projectSettings->prefabsPath, relevantExtensions, prefabsPaths, prefabsIndexByPath);
 	}
 
-	void AssetsDatabase::FillTexturesPaths()
+	void ResourcesStorage::FillTexturesPaths()
 	{
 		spdlog::info("FillTexturesPaths");
 		auto relevantExtensions = std::vector<std::string>();
@@ -176,7 +176,7 @@ namespace EngineCore
 		meshLoadStatuses.resize(texturesPaths.size(), 0);
 	}
 
-	void AssetsDatabase::FillWorldsPaths()
+	void ResourcesStorage::FillWorldsPaths()
 	{
 		spdlog::info("FillWorldsPaths");
 		auto relevantExtensions = std::vector<std::string>();
@@ -186,7 +186,7 @@ namespace EngineCore
 		IOUtility().FindAndEmplaceResourcesFiles(projectSettings->worldsPath, relevantExtensions, worldsPaths, worldsIndexByPath);
 	}
 
-	void AssetsDatabase::FillCustomMeshes()
+	void ResourcesStorage::FillCustomMeshes()
 	{
 		auto cubeDefinition = CubeDefinition();
 		customMeshes.emplace(meshesPaths.size() + 0, cubeDefinition);

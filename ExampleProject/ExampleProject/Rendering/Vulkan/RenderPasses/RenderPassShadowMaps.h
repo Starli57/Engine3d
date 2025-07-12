@@ -8,7 +8,7 @@
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/UniformBufferVulkanUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/TextureSamplerUtility.h"
-#include "EngineCore/Core/AssetsDatabaseVulkan.h"
+#include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Rendering/PipelinesCollection.h"

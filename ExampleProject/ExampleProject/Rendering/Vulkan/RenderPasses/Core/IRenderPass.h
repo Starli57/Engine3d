@@ -5,7 +5,7 @@
 #include "RenderPassContext.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/CommandBufferUtility.h"
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
-#include "EngineCore/Core/AssetsDatabaseVulkan.h"
+#include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/PipelinesCollection.h"

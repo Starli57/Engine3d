@@ -5,7 +5,7 @@
 
 namespace AVulkan
 {
-    RendererVulkan::RendererVulkan(AVulkan::GraphicsApiVulkan* graphicsApiVulkan, const Ref<AssetsDatabaseVulkan>& assetsDatabase, const Ref<Ecs>& ecs)
+    RendererVulkan::RendererVulkan(AVulkan::GraphicsApiVulkan* graphicsApiVulkan, const Ref<ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs)
         : graphicsApi(graphicsApiVulkan), assetsDatabase(assetsDatabase), ecs(ecs)
     {
         graphicsApi->BindClientFunctions(

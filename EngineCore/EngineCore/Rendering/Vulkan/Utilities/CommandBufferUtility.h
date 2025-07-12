@@ -4,7 +4,7 @@
 
 #include <unordered_map>
 
-#include "EngineCore/Core/AssetsDatabaseVulkan.h"
+#include "EngineCore/Core/ResourcesStorageVulkan.h"
 
 #include "EngineCore/Rendering/Vulkan/PipelineVulkan.h"
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
@@ -25,5 +25,5 @@ namespace VkUtils
 	void EndCommandBuffer(const VkCommandBuffer& commandBuffer);
 
 	void BindPipeline(const VkCommandBuffer& commandBuffer, const Ref<PipelineVulkan>& pipeline);
-	void BindVertexAndIndexBuffers(const VkCommandBuffer& commandBuffer, int32_t meshVulkan, const Ref<AssetsDatabaseVulkan>& assetsDatabase);
+	void BindVertexAndIndexBuffers(const VkCommandBuffer& commandBuffer, int32_t meshVulkan, const Ref<ResourcesStorageVulkan>& assetsDatabase);
 }

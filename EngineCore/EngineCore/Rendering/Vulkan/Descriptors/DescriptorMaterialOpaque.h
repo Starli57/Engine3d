@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "IDescriptor.h"
-#include "EngineCore/Core/AssetsDatabaseVulkan.h"
+#include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/Ref.h"
 
 using namespace EngineCore;
@@ -11,7 +11,7 @@ namespace AVulkan
     {
     public:
         DescriptorMaterialOpaque(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs,
-            const Ref<DescriptorsAllocator>& descriptorsAllocator, VkSampler& textureSampler, const Ref<AssetsDatabaseVulkan>& assetsDatabase);
+            const Ref<DescriptorsAllocator>& descriptorsAllocator, VkSampler& textureSampler, const Ref<ResourcesStorageVulkan>& resourcesStorage);
 
         ~DescriptorMaterialOpaque() override;
         void CreateLayout() override;
@@ -21,7 +21,7 @@ namespace AVulkan
         VkDescriptorSet& GetDescriptorSet(const uint32_t frame, const uint32_t materialIndex) { return descriptorSets.at(frame).at(materialIndex); }
 
     private:
-        Ref<AssetsDatabaseVulkan> assetsDatabase;
+        Ref<ResourcesStorageVulkan> resourcesStorage;
         
         std::vector<VkDescriptorPool> descriptorPools;
         std::vector<std::vector<VkDescriptorSet>> descriptorSets;

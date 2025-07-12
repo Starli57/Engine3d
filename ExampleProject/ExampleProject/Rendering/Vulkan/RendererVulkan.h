@@ -11,11 +11,11 @@ namespace AVulkan
     class RendererVulkan
     {
     public:
-        RendererVulkan(GraphicsApiVulkan* graphicsApiVulkan, const Ref<AssetsDatabaseVulkan>& assetsDatabase, const Ref<Ecs>& ecs);
+        RendererVulkan(GraphicsApiVulkan* graphicsApiVulkan, const Ref<ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs);
     
     private:
         GraphicsApiVulkan* graphicsApi;
-        Ref<AssetsDatabaseVulkan> assetsDatabase;
+        Ref<ResourcesStorageVulkan> assetsDatabase;
         Ref<Ecs> ecs;
 
         Ref<RenderPassContext> renderPassContext;

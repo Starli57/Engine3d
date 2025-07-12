@@ -1,7 +1,7 @@
 #include "Inspector.h"
 #include "Editor/Utilities/ComponentsUtility.h"
 
-Inspector::Inspector(Ref<AssetsDatabase> assetsDatabase) : assetsDatabase(assetsDatabase)
+Inspector::Inspector(Ref<ResourcesStorage> assetsDatabase) : assetsDatabase(assetsDatabase)
 {
     componentsRenderer = CreateUniqueRef<ComponentsRenderer>(assetsDatabase);
 }

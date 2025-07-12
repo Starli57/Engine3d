@@ -1,6 +1,6 @@
 #include "AssetsWindow.h"
 
-AssetsWindow::AssetsWindow(Ref<EngineCore::EntitySerializer> serializer, const Ref<Ecs>& ecs, const Ref<AssetsDatabase>& assetsDatabase, const Ref<ProjectSettings>& projectSettings) :
+AssetsWindow::AssetsWindow(Ref<EngineCore::EntitySerializer> serializer, const Ref<Ecs>& ecs, const Ref<ResourcesStorage>& assetsDatabase, const Ref<ProjectSettings>& projectSettings) :
     serializer(serializer), ecs(ecs), assetsDatabase(assetsDatabase), projectSettings(projectSettings)
 {
 }

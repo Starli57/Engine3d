@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineCore/Core/AssetsDatabase.h"
+#include "EngineCore/Core/ResourcesStorage.h"
 #include "EngineCore/Assets/Material.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/EventHandler.h"

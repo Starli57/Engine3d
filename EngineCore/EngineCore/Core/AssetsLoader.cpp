@@ -9,7 +9,7 @@
 
 namespace EngineCore
 {
-	AssetsLoader::AssetsLoader(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, const Ref<AssetsDatabase>& assetsDatabase):
+	AssetsLoader::AssetsLoader(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, const Ref<ResourcesStorage>& assetsDatabase):
 		graphicsApi(graphicsApi), projectSettings(projectSettings), assetsDatabase(assetsDatabase)
 	{
 		assetsDatabase->textureLoadStatuses.resize(assetsDatabase->texturesPaths.size());
@@ -19,7 +19,7 @@ namespace EngineCore
 		assetsDatabase->materials.resize(assetsDatabase->materialsPaths.size());
 
 		//todo: replace out of constructor, because it should be initialized after AssetsLoaderVulkan constructor
-		//SetupMesh(cubeDefinition);
+		//SetupMeshBuffers(cubeDefinition);
 		//CreateMesh(sphereDefiniton);
 	}
 
@@ -57,7 +57,7 @@ namespace EngineCore
 		return textureIter->second;
 	}
 
-	void AssetsLoader::DeserializeMeshMeta(const std::filesystem::path& path, MeshMeta& meshMeta) const
+	void AssetsLoader::LoadAndDeserializeMesh(const std::filesystem::path& path, MeshMeta& meshMeta) const
 	{
 		std::ifstream inFile(path.string(), std::ios::binary);
 		if (!inFile)
@@ -89,7 +89,7 @@ namespace EngineCore
 		inFile.close();
 	}
 
-	void AssetsLoader::LoadMaterial(const std::filesystem::path& path, const uint32_t index)
+	void AssetsLoader::LoadAndDeserializeMaterial(const std::filesystem::path& path, const uint32_t index)
 	{
 		std::vector<YAML::Node> data;
 

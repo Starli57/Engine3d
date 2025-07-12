@@ -43,7 +43,7 @@ layout(push_constant) uniform Model{
 layout(location = 0) out vec3 outWorldPosition;
 layout(location = 1) out vec3 outNormal;
 layout(location = 2) out vec2 outUv;
-layout(location = 3) out vec3 outColor;
+layout(location = 3) out vec3 outVertexColor;
 layout(location = 4) out vec3 outLightPosition;
 layout(location = 5) out vec3 outLightDirection;
 layout(location = 6) out vec3 outViewPosition;
@@ -58,7 +58,7 @@ void main()
 
     outNormal = mat3(transpose(inverse(uboM.model))) * inNormal;
     outUv = inUv;
-    outColor = inColor;
+    outVertexColor = inColor;
     outLightPosition = lights.inLightPosition;
     outLightDirection = lights.inLightDirection;
     outViewPosition = world.cameraPosition;

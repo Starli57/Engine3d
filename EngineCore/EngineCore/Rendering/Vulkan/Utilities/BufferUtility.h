@@ -2,8 +2,14 @@
 
 #include <GLFW/glfw3.h>
 
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Rendering/Vulkan/VulkanContext.h"
+
 namespace VkUtils
 {
+	void CreateDeviceLocalBuffer(VkDeviceSize bufferSize, void const* sourceData, VkBufferUsageFlags distUsageFlags,
+		const Ref<AVulkan::VulkanContext>& context, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
+	
 	void CreateBuffer(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, uint64_t bufferSize,
 	                  const VkBufferUsageFlags& usageFlags, VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
