@@ -1,7 +1,7 @@
 
 #include "ComponentsRenderer.h"
 
-ComponentsRenderer::ComponentsRenderer(const Ref<AssetsDatabase>& assetsDatabase)
+ComponentsRenderer::ComponentsRenderer(const Ref<ResourcesStorage>& assetsDatabase)
 {
 	this->assetsDatabase = assetsDatabase;
 	parametersRenderer = CreateRef<ParametersRenderer>();

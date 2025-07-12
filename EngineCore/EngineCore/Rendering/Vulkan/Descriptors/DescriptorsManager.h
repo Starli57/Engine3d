@@ -12,7 +12,7 @@ namespace AVulkan
     {
     public:
         DescriptorsManager(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<InputManager> inputManager,
-            VkSampler& textureSampler, const Ref<AssetsDatabaseVulkan>& assetsDatabase);
+            VkSampler& textureSampler, const Ref<ResourcesStorageVulkan>& assetsDatabase);
         ~DescriptorsManager();
 
         void CreateGlobalDescriptorsPool();
@@ -33,9 +33,9 @@ namespace AVulkan
         VkDevice& logicalDevice;
         
         Ref<DescriptorsAllocator> descriptorsAllocator;
-        Ref<DescriptorFrame> frameDescriptor;
-        Ref<DescriptorMaterialOpaque> opaqueMaterialDescriptor;
-        Ref<DescriptorShadowMap> shadowMapDescriptor;
+        URef<DescriptorFrame> frameDescriptor;
+        URef<DescriptorMaterialOpaque> opaqueMaterialDescriptor;
+        URef<DescriptorShadowMap> shadowMapDescriptor;
         VkDescriptorPool globalDescriptorPool;
 
         Ref<InputManager> inputManager;

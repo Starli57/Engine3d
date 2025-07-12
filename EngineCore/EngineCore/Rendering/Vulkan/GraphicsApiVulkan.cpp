@@ -15,7 +15,7 @@
 
 namespace AVulkan
 {
-	GraphicsApiVulkan::GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<InputManager> inputManager, const Ref<AssetsDatabaseVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* glfwWindow)
+	GraphicsApiVulkan::GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<InputManager> inputManager, const Ref<ResourcesStorageVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* glfwWindow)
 	{
 		this->context = CreateRef<VulkanContext>();
 		this->ecs = ecs;
@@ -204,7 +204,7 @@ namespace AVulkan
 
 	void GraphicsApiVulkan::CreateDescriptorManager()
 	{
-		descriptorsManager = CreateRef<DescriptorsManager>(context->physicalDevice, context->logicalDevice, ecs, inputManager,
+		descriptorsManager = CreateUniqueRef<DescriptorsManager>(context->physicalDevice, context->logicalDevice, ecs, inputManager,
 			textureSampler, assetDatabase);
 
 		rollback->Add([this] { descriptorsManager.reset(); });

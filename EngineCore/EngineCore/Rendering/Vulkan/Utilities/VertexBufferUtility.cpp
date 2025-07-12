@@ -8,6 +8,7 @@ namespace VkUtils
 	void CreateVertexBuffer(const Ref<AVulkan::VulkanContext>& context, std::vector<Vertex>& vertices,
 		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
 	{
+		//todo: use BufferUtility::CreateDeviceLocalBuffer instead of code below
 		uint64_t bufferSize = sizeof(Vertex) * vertices.size();
 
 		VkBufferUsageFlags stagingUsageFlags = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;

@@ -19,7 +19,7 @@
 
 namespace EngineCore
 {
-	class AssetsDatabase
+	class ResourcesStorage
 	{
 	public:
 		// 0 - unloaded, 1 - in progress, 2 - ready
@@ -54,8 +54,8 @@ namespace EngineCore
 		std::vector<Ref<Material>> materials;
 		std::vector<uint32_t> meshMaterialBinding;
 	
-		AssetsDatabase(const Ref<ProjectSettings>& projectSettings);
-		virtual ~AssetsDatabase() = default;
+		ResourcesStorage(const Ref<ProjectSettings>& projectSettings);
+		virtual ~ResourcesStorage() = default;
 
 		size_t MeshesCount() const { return meshesPaths.size(); }
 		size_t MaterialsCount() const { return materials.size(); }

@@ -17,7 +17,7 @@ using namespace AVulkan;
 
 namespace EngineCore
 {
-    AssetsLoaderVulkan::AssetsLoaderVulkan(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, Ref<AssetsDatabaseVulkan> assetsDatabase) : 
+    AssetsLoaderVulkan::AssetsLoaderVulkan(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, Ref<ResourcesStorageVulkan> assetsDatabase) : 
         AssetsLoader(projectSettings, graphicsApi, assetsDatabase), assetsDatabaseVulkan(assetsDatabase)
     {
         graphicsQueueMutex = CreateUniqueRef<std::mutex>();
@@ -125,16 +125,6 @@ namespace EngineCore
         assetsDatabaseVulkan->textureLoadStatuses.at(textureIndex) = 2;
     }
 
-    void AssetsLoaderVulkan::LoadAllTextures()
-    {
-        std::for_each(std::execution::par, assetsDatabaseVulkan->texturesIndexByPath.begin(), assetsDatabaseVulkan->texturesIndexByPath.end(),
-            [this](const auto& pair)
-            {
-                auto path = pair.first;
-                LoadTexture(path, pair.second);
-            });
-    }
-
     void AssetsLoaderVulkan::UnLoadAllTextures()
     {
         for (auto image : assetsDatabaseVulkan->images) VkUtils::DestroyImage(vulkanApi->context->logicalDevice, image);
@@ -150,11 +140,11 @@ namespace EngineCore
     {
         MeshMeta meshMeta;
         auto meshIter = assetsDatabase->meshesIndexByPath.find(path);
-        DeserializeMeshMeta(meshIter->first, meshMeta);
-        SetupMesh(meshMeta, meshIter->second);
+        LoadAndDeserializeMesh(meshIter->first, meshMeta);
+        SetupMeshBuffers(meshMeta, meshIter->second);
     }
 
-    void AssetsLoaderVulkan::SetupMesh(MeshMeta& meshMeta, uint32_t meshIndex)
+    void AssetsLoaderVulkan::SetupMeshBuffers(MeshMeta& meshMeta, uint32_t meshIndex)
     {
         auto commandPool = vulkanApi->GetCommandPool();
 
@@ -184,21 +174,26 @@ namespace EngineCore
         assetsDatabaseVulkan->meshLoadStatuses.at(meshIndex) = 2;
     }
 
-    void AssetsLoaderVulkan::LoadAllMeshes()
-    {
-        std::for_each(std::execution::par, assetsDatabase->meshesIndexByPath.begin(), assetsDatabase->meshesIndexByPath.end(), [this](const auto& pair)
-        {
-            MeshMeta meshMeta;
-            DeserializeMeshMeta(pair.first, meshMeta);
-            SetupMesh(meshMeta, pair.second);
-        });
-    }
-
     void AssetsLoaderVulkan::UnLoadAllMeshes()
     {
         for (int i = 0; i < assetsDatabaseVulkan->vertexBuffers.size(); i++)
             VkUtils::DisposeVertexBuffer(vulkanApi->context->logicalDevice, assetsDatabaseVulkan->vertexBuffers.at(i), assetsDatabaseVulkan->vertexBuffersMemory.at(i));
         for (int i = 0; i < assetsDatabaseVulkan->indexBuffers.size(); i++)
             VkUtils::DisposeIndexBuffer(vulkanApi->context->logicalDevice, assetsDatabaseVulkan->indexBuffers.at(i), assetsDatabaseVulkan->indexBuffersMemory.at(i));
+    }
+
+    void AssetsLoaderVulkan::LoadMaterial(std::filesystem::path& path)
+    {
+        Ref<Material> material = CreateRef<Material>();
+        auto materialIterator = assetsDatabase->materialsIndexByPath.find(path);
+        auto index = materialIterator->second;
+        LoadAndDeserializeMaterial(materialIterator->first, material);
+
+        assetsDatabase->materials.at(index) = material;
+        assetsDatabase->materialLoadStatuses.at(index) = 2;
+    }
+
+    void AssetsLoaderVulkan::UnLoadAllMaterial()
+    {
     }
 }

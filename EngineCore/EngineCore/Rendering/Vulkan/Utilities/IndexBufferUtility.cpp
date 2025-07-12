@@ -10,6 +10,7 @@ namespace VkUtils
 	void CreateIndexBuffer(const Ref<AVulkan::VulkanContext>& context, std::vector<uint32_t>& indices,
         VkBuffer& indexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
 	{
+		//todo: use BufferUtility::CreateDeviceLocalBuffer instead of code below
         VkDeviceSize bufferSize = sizeof(indices.at(0)) * indices.size();
 
         VkBuffer stagingBuffer;

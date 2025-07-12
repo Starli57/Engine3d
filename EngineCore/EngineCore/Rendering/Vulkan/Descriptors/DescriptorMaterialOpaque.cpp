@@ -3,14 +3,17 @@
 
 #include "EngineCore/Profiler/Profiler.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
+#include "EngineCore/Rendering/Vulkan/UniformBufferModel/UboMaterial.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/UniformBufferVulkanUtility.h"
 
 namespace AVulkan
 {
     #pragma optimize("", off)
     DescriptorMaterialOpaque::DescriptorMaterialOpaque(
         VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs,
-        const Ref<DescriptorsAllocator>& descriptorsAllocator, VkSampler& textureSampler, const Ref<AssetsDatabaseVulkan>& assetsDatabase)
-        : IDescriptor(physicalDevice, logicalDevice, ecs, descriptorsAllocator), textureSampler(textureSampler), assetsDatabase(assetsDatabase)
+        const Ref<DescriptorsAllocator>& descriptorsAllocator, VkSampler& textureSampler, const Ref<ResourcesStorageVulkan>& resourcesStorage)
+        : IDescriptor(physicalDevice, logicalDevice, ecs, descriptorsAllocator), textureSampler(textureSampler), resourcesStorage(resourcesStorage)
     {
         descriptorPools.resize(VulkanContext::maxFramesInFlight);
         for(int i = 0; i < VulkanContext::maxFramesInFlight; i++)
@@ -24,6 +27,9 @@ namespace AVulkan
 
     DescriptorMaterialOpaque::~DescriptorMaterialOpaque()
     {
+        for(const auto& uniformBuffer : materialsUniformBuffers)
+            VkUtils::DisposeBuffer(logicalDevice, uniformBuffer->buffer, uniformBuffer->bufferMemory);
+        
         vkDestroyDescriptorSetLayout(logicalDevice, descriptorSetLayout, nullptr);
 
         for(auto pool : descriptorPools)
@@ -39,8 +45,8 @@ namespace AVulkan
         const auto specularMap = descriptorsAllocator->DescriptorSetLayoutBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
         const auto normalMap = descriptorsAllocator->DescriptorSetLayoutBinding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
         const auto alphaMap = descriptorsAllocator->DescriptorSetLayoutBinding(3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-
-        std::vector bindings = { diffuseMap, specularMap, normalMap, alphaMap };
+        const auto transparency = descriptorsAllocator->DescriptorSetLayoutBinding(4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        std::vector bindings = { diffuseMap, specularMap, normalMap, alphaMap, transparency };
         descriptorsAllocator->CreateLayout(logicalDevice, bindings, descriptorSetLayout);
     }
 
@@ -52,38 +58,44 @@ namespace AVulkan
             descriptorsAllocator->AllocateDescriptorSets(logicalDevice, descriptorSetLayout, 
                 descriptorPools.at(i), descriptorSets.at(i), descriptorsAllocator->maxDescriptorSets);
         }
+
+        materialsUniformBuffers.resize(resourcesStorage->materialsPaths.size());
+        for(int i = 0; i < resourcesStorage->materialsPaths.size(); i++)
+        {
+            materialsUniformBuffers.at(i) = VkUtils::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboMaterial));
+        }
     }
     
     void DescriptorMaterialOpaque::UpdateDescriptorSets(const uint16_t frame) const
     {
         Profiler::GetInstance().BeginSample("Update Opaque Material Descriptors");
-        for(int i = 0; i < assetsDatabase->materials.size(); i++)
+        for(int i = 0; i < resourcesStorage->materials.size(); i++)
         {
-            const auto material = assetsDatabase->materials.at(i);
+            const auto material = resourcesStorage->materials.at(i);
             if (material == nullptr) continue;
             
             VkImageView diffuseImageView = nullptr;
             if (material->diffuse.has_value())
             {
-                diffuseImageView = assetsDatabase->imagesViews.at(material->diffuse.value());
+                diffuseImageView = resourcesStorage->imagesViews.at(material->diffuse.value());
             }
 
             VkImageView specularImageView = nullptr;
             if (material->specular.has_value())
             {
-                specularImageView = assetsDatabase->imagesViews.at(material->specular.value());
+                specularImageView = resourcesStorage->imagesViews.at(material->specular.value());
             }
 
             VkImageView normalMapImageView = nullptr;
             if (material->normalMap.has_value())
             {
-                normalMapImageView = assetsDatabase->imagesViews.at(material->normalMap.value());
+                normalMapImageView = resourcesStorage->imagesViews.at(material->normalMap.value());
             }
 
             VkImageView alphaMapImageView = nullptr;
             if (material->alphaMap.has_value())
             {
-                alphaMapImageView = assetsDatabase->imagesViews.at(material->alphaMap.value());
+                alphaMapImageView = resourcesStorage->imagesViews.at(material->alphaMap.value());
             }
 
             VkDescriptorImageInfo diffuseImageInfo{};
@@ -106,7 +118,15 @@ namespace AVulkan
             alphaImageInfo.imageView = alphaMapImageView;
             alphaImageInfo.sampler = textureSampler;
 
-            std::array<VkWriteDescriptorSet, 4> descriptorWrites{};
+            UboMaterial uboMaterial = UboMaterial(resourcesStorage->materials.at(i));
+            memcpy(materialsUniformBuffers.at(i)->bufferMapped, &uboMaterial, sizeof(UboMaterial));
+            
+            VkDescriptorBufferInfo transparencyBufferInfo {};
+            transparencyBufferInfo.buffer = materialsUniformBuffers.at(i)->buffer;
+            transparencyBufferInfo.range = sizeof(UboMaterial);
+            transparencyBufferInfo.offset = 0;
+            
+            std::array<VkWriteDescriptorSet, 5> descriptorWrites{};
 
             auto descriptorSet = descriptorSets.at(frame).at(i);
 
@@ -122,6 +142,9 @@ namespace AVulkan
             descriptorsAllocator->WriteDescriptorSet(descriptorWrites[3], descriptorSet, 3, 0, 1,
                 VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &alphaImageInfo, nullptr);
 
+            descriptorsAllocator->WriteDescriptorSet(descriptorWrites[4], descriptorSet, 4, 0, 1,
+                VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &transparencyBufferInfo);
+            
             vkUpdateDescriptorSets(logicalDevice, descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
         }
         Profiler::GetInstance().EndSample();

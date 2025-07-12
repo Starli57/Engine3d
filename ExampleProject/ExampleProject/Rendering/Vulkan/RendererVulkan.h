@@ -6,23 +6,27 @@
 #include "RenderPasses/RenderPassOpaque.h"
 #include "RenderPasses/RenderPassShadowMaps.h"
 
-class RendererVulkan
+namespace AVulkan
 {
-public:
-    RendererVulkan(AVulkan::GraphicsApiVulkan* graphicsApiVulkan, const Ref<AssetsDatabaseVulkan>& assetsDatabase, const Ref<Ecs>& ecs);
+    class RendererVulkan
+    {
+    public:
+        RendererVulkan(GraphicsApiVulkan* graphicsApiVulkan, const Ref<ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs);
     
-private:
-    AVulkan::GraphicsApiVulkan* graphicsApi;
-    Ref<AssetsDatabaseVulkan> assetsDatabase;
-    Ref<Ecs> ecs;
+    private:
+        GraphicsApiVulkan* graphicsApi;
+        Ref<ResourcesStorageVulkan> assetsDatabase;
+        Ref<Ecs> ecs;
+
+        Ref<RenderPassContext> renderPassContext;
+        Ref<PreRenderPass> preRenderPass;
+        RenderPassClean* renderPassClean;
+        RenderPassOpaque* renderPassOpaque;
+        RenderPassShadowMaps* renderPassShadowMaps;
     
-    Ref<AVulkan::PreRenderPass> preRenderPass;
-    AVulkan::RenderPassClean* renderPassClean;
-    AVulkan::RenderPassOpaque* renderPassOpaque;
-    AVulkan::RenderPassShadowMaps* renderPassShadowMaps;
+        void Render() const;
     
-    void Render() const;
-    
-    void CreateRenderPasses();
-    void DisposeRenderPasses() const;
-};
+        void CreateRenderPasses();
+        void DisposeRenderPasses() const;
+    };
+}

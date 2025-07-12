@@ -15,7 +15,7 @@
 #include "Serialization/EntitySerializer.h"
 
 #if GLFW_INCLUDE_VULKAN
-#include "EngineCore/Core/AssetsDatabaseVulkan.h"
+#include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/AssetsLoaderVulkan.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 #endif
@@ -43,11 +43,11 @@ namespace EngineCore
 
 #if GLFW_INCLUDE_VULKAN
 		AVulkan::GraphicsApiVulkan* GetGraphicsApi() const { return graphicsApi; }
-		Ref<AssetsDatabaseVulkan> GetAssetsDatabase() { return assetsDatabase; }
+		Ref<ResourcesStorageVulkan> GetAssetsDatabase() { return assetsDatabase; }
 		Ref<AssetsLoaderVulkan> GetResourcesManager() { return resourcesManager; }
 #else
 		IGraphicsApi* GetGraphicsApi() const { return graphicsApi; }
-		Ref<AssetsDatabase> GetAssetsDatabase() { return assetsDatabase; }
+		Ref<ResourcesStorage> GetAssetsDatabase() { return resourcesStorage; }
 		Ref<AssetsLoader> GetResourcesManager() { return resourcesManager; }
 #endif
 
@@ -66,11 +66,11 @@ namespace EngineCore
 
 #if GLFW_INCLUDE_VULKAN
 		AVulkan::GraphicsApiVulkan* graphicsApi;
-		Ref<AssetsDatabaseVulkan> assetsDatabase;
+		Ref<ResourcesStorageVulkan> assetsDatabase;
 		Ref<AssetsLoaderVulkan> resourcesManager;
 #else
 		IGraphicsApi* graphicsApi;
-		Ref<AssetsDatabase> assetsDatabase;
+		Ref<ResourcesStorage> resourcesStorage;
 		Ref<AssetsLoader> resourcesManager;
 #endif
 	

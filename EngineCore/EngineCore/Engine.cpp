@@ -14,7 +14,7 @@ namespace EngineCore
 		systemsState = CreateRef<SystemsState>();
 	
 #if GLFW_INCLUDE_VULKAN
-		assetsDatabase = CreateRef<AssetsDatabaseVulkan>(projectSettings);
+		assetsDatabase = CreateRef<ResourcesStorageVulkan>(projectSettings);
 #else
 		throw std::runtime_error("The rendering api is not supported");
 #endif
@@ -26,6 +26,7 @@ namespace EngineCore
 
 	Engine::~Engine()
 	{
+		resourcesManager->UnLoadAllMaterial();
 		resourcesManager->UnLoadAllMeshes();
 		resourcesManager->UnLoadAllTextures();
 		resourcesManager.reset();

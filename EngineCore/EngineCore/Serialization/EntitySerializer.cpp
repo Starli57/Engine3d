@@ -80,7 +80,7 @@ namespace EngineCore
 		return out;
 	}
 
-	EntitySerializer::EntitySerializer(const Ref<ProjectSettings>& projectSettings, const Ref<AssetsDatabase>& assetsDatabase) : 
+	EntitySerializer::EntitySerializer(const Ref<ProjectSettings>& projectSettings, const Ref<ResourcesStorage>& assetsDatabase) : 
 		projectSettings(projectSettings), assetsDatabase(assetsDatabase)
 	{
 	}
@@ -206,8 +206,8 @@ namespace EngineCore
 			while (std::getline(file, meshPath) && std::getline(file, materialPath))
 			{
 				if (meshPath.empty() || materialPath.empty()) continue;
-				meshPaths.push_back(std::filesystem::path(meshPath));
-				materialPaths.push_back(std::filesystem::path(materialPath));
+				meshPaths.emplace_back(meshPath);
+				materialPaths.emplace_back(materialPath);
 			}
 			file.close();
 		}

@@ -9,7 +9,7 @@
 
 namespace EngineCore
 {
-	AssetsLoader::AssetsLoader(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, const Ref<AssetsDatabase>& assetsDatabase):
+	AssetsLoader::AssetsLoader(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, const Ref<ResourcesStorage>& assetsDatabase):
 		graphicsApi(graphicsApi), projectSettings(projectSettings), assetsDatabase(assetsDatabase)
 	{
 		assetsDatabase->textureLoadStatuses.resize(assetsDatabase->texturesPaths.size());
@@ -19,7 +19,7 @@ namespace EngineCore
 		assetsDatabase->materials.resize(assetsDatabase->materialsPaths.size());
 
 		//todo: replace out of constructor, because it should be initialized after AssetsLoaderVulkan constructor
-		//SetupMesh(cubeDefinition);
+		//SetupMeshBuffers(cubeDefinition);
 		//CreateMesh(sphereDefiniton);
 	}
 
@@ -57,7 +57,7 @@ namespace EngineCore
 		return textureIter->second;
 	}
 
-	void AssetsLoader::DeserializeMeshMeta(const std::filesystem::path& path, MeshMeta& meshMeta) const
+	void AssetsLoader::LoadAndDeserializeMesh(const std::filesystem::path& path, MeshMeta& meshMeta) const
 	{
 		std::ifstream inFile(path.string(), std::ios::binary);
 		if (!inFile)
@@ -89,7 +89,7 @@ namespace EngineCore
 		inFile.close();
 	}
 
-	void AssetsLoader::LoadMaterial(const std::filesystem::path& path, const uint32_t index)
+	void AssetsLoader::LoadAndDeserializeMaterial(const std::filesystem::path& path, const Ref<Material>& material)
 	{
 		std::vector<YAML::Node> data;
 
@@ -106,7 +106,7 @@ namespace EngineCore
 		if (data.size() > 1) spdlog::warn("Material file has more than 1 material at path={}", path.string());
 
 		auto node = data[0];
-		auto material = CreateRef<Material>(node["pipelineName"].as<std::string>());
+		material->pipelineId = node["pipelineName"].as<std::string>();
 
 		material->roughness = node["roughness"].as<float>();
 		material->metallic = node["metallic"].as<float>();
@@ -114,7 +114,8 @@ namespace EngineCore
 		material->specularExponent = node["specularExponent"].as<float>();
 		material->indexOfRefraction = node["indexOfRefraction"].as<float>();
 		material->transparency = node["transparency"].as<float>();
-
+		material->opaque = node["isOpaque"].as<bool>();
+		
 		material->ambientColor = node["ambientColor"].as<glm::vec3>();
 		material->diffuseColor = node["diffuseColor"].as<glm::vec3>();
 		material->specularColor = node["specularColor"].as<glm::vec3>();
@@ -135,20 +136,6 @@ namespace EngineCore
 		auto alphaTexturePath = node["alphaTextureName"] ? node["alphaTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
 		auto alphaTextureIndex = GetOrLoadTextureStr(alphaTexturePath);
 		material->SetAlphaMap(alphaTextureIndex);
-	
-		assetsDatabase->materials.at(index) = material;
-		assetsDatabase->materialLoadStatuses.at(index) = 2;
-	}
-
-	void AssetsLoader::LoadAllMaterials()
-	{
-		std::for_each(std::execution::par, assetsDatabase->materialsIndexByPath.begin(), assetsDatabase->materialsIndexByPath.end(),
-			[this](const auto& pair)
-			{
-				auto path = pair.first;
-				auto index = pair.second;
-				LoadMaterial(path, index);
-			});
 	}
 
 	void AssetsLoader::LoadRequestedMeshes()
@@ -193,7 +180,7 @@ namespace EngineCore
 		std::for_each(std::execution::par, loadMaterials.begin(), loadMaterials.end(), [this](const auto& materialIndex)
 			{
 				auto path = assetsDatabase->materialsPaths[materialIndex];
-				LoadMaterial(path, materialIndex);
+				LoadMaterial(path);
 			});
 	}
 }

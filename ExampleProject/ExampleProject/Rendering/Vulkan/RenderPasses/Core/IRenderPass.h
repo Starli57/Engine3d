@@ -2,9 +2,10 @@
 
 #include <GLFW/glfw3.h>
 
+#include "RenderPassContext.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/CommandBufferUtility.h"
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
-#include "EngineCore/Core/AssetsDatabaseVulkan.h"
+#include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/PipelinesCollection.h"
@@ -17,10 +18,8 @@ namespace AVulkan
     {
     public:
         IRenderPass(
-            Ref<VulkanContext> vulkanContext, const Ref<DescriptorsManager>& descriptorsManager,
-            const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetsDatabase, const Ref<SwapChainData>& swapChainData)
-            : vulkanContext(vulkanContext), ecs(ecs), assetsDatabase(assetsDatabase),
-                swapChainData(swapChainData), descriptorsManager(descriptorsManager)
+            Ref<VulkanContext> vulkanContext, const Ref<RenderPassContext>& renderPassContext)
+            : vulkanContext(vulkanContext), renderPassContext(renderPassContext)
         {
             renderPass = VK_NULL_HANDLE;
         }
@@ -33,10 +32,7 @@ namespace AVulkan
 
     protected:
         Ref<VulkanContext> vulkanContext;
-        Ref<Ecs> ecs;
-        Ref<AssetsDatabaseVulkan> assetsDatabase;
-        Ref<SwapChainData> swapChainData;
-        Ref<DescriptorsManager> descriptorsManager;
+        Ref<RenderPassContext> renderPassContext;
         
         VkRenderPass renderPass;
         std::vector<VkFramebuffer> frameBuffers;

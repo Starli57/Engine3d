@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 
-#include "IRenderPass.h"
+#include "Core/IRenderPass.h"
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/UniformBufferVulkanUtility.h"
 #include "EngineCore/Rendering/PipelinesCollection.h"
@@ -21,12 +21,11 @@ namespace AVulkan
     class RenderPassOpaque : public IRenderPass
     {
     public:
-        RenderPassOpaque(
-            Ref<VulkanContext> vulkanContext, const Ref<DescriptorsManager>& descriptorsManager,
-            const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetsDatabase, const Ref<SwapChainData>& swapChainData);
+        RenderPassOpaque(const Ref<VulkanContext>& vulkanContext, const Ref<RenderPassContext>& renderPassContext);
         ~RenderPassOpaque() override;
 
         void Render(VkCommandBuffer& commandBuffer, uint16_t frame, uint32_t imageIndex, std::function<bool(const Ref<Entity>& entity)> filter) override;
+        void RenderEntity(const DrawEntity& drawEntity, const VkCommandBuffer& commandBuffer, const uint16_t frame) const;
 
     protected:
         void CreateRenderPass() override;

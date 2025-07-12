@@ -1,8 +1,8 @@
 ﻿#pragma once
-#include "EngineCore/Core/AssetsDatabaseVulkan.h"
+#include "Core/RenderPassContext.h"
+#include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/Ref.h"
-#include "Utility/DrawEntity.h"
 using namespace EngineCore;
 
 namespace AVulkan
@@ -10,10 +10,10 @@ namespace AVulkan
     class PreRenderPass
     {
     public:
-        PreRenderPass(const Ref<Ecs>& ecs, const Ref<AssetsDatabaseVulkan>& assetsDatabase);
+        PreRenderPass(const Ref<RenderPassContext>& renderPassContext);
         void UpdateDrawingEntities() const;
     private:
-        Ref<Ecs> ecs;
-        Ref<AssetsDatabaseVulkan> assetsDatabase;
+        Ref<RenderPassContext> renderPassContext;
+        void Sort(std::vector<DrawEntity>& entities, const glm::vec3& rendererPosition) const;
     };
 }

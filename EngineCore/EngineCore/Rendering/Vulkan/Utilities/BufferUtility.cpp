@@ -6,6 +6,28 @@
 
 namespace VkUtils
 {
+	void CreateDeviceLocalBuffer(VkDeviceSize bufferSize, void const* sourceData, VkBufferUsageFlags distUsageFlags,
+		const Ref<AVulkan::VulkanContext>& context, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
+	{
+		VkBuffer stagingBuffer;
+		VkDeviceMemory stagingBufferMemory;
+
+		VkBufferUsageFlags stagingUsageFlags = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+		VkMemoryPropertyFlags stagingMemoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+		VkMemoryPropertyFlags distMemoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+
+		CreateBuffer(context->physicalDevice, context->logicalDevice, bufferSize, stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingBufferMemory);
+
+		void* data;
+		vkMapMemory(context->logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
+		memcpy(data, sourceData, (size_t)bufferSize);
+		vkUnmapMemory(context->logicalDevice, stagingBufferMemory);
+
+		CreateBuffer(context->physicalDevice, context->logicalDevice, bufferSize, distUsageFlags, distMemoryFlags, buffer, bufferMemory);
+		CopyBuffer(context->logicalDevice, context->graphicsQueue, stagingBuffer, buffer, bufferSize, commandPool);
+		DisposeBuffer(context->logicalDevice, stagingBuffer, stagingBufferMemory);
+	}
+	
 	void CreateBuffer(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, const uint64_t bufferSize,
 	                  const VkBufferUsageFlags& usageFlags, const VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{

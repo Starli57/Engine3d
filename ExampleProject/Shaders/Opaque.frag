@@ -8,7 +8,7 @@ precision highp sampler2DShadow;
 layout(location = 0) in vec3 inWorldPosition;
 layout(location = 1) in vec3 inNormal;
 layout(location = 2) in vec2 uv;
-layout(location = 3) in vec3 inDiffuseColor;
+layout(location = 3) in vec3 inVertexColor;
 layout(location = 4) in vec3 inLightPosition;
 layout(location = 5) in vec3 inLightDirection;
 layout(location = 6) in vec3 inViewPos;
@@ -22,6 +22,11 @@ layout(set = 1, binding = 0) uniform sampler2D diffuseMapSampler;
 layout(set = 1, binding = 1) uniform sampler2D specularMapSampler;
 layout(set = 1, binding = 2) uniform sampler2D normalMapSampler;
 layout(set = 1, binding = 3) uniform sampler2D alphaMapSampler;
+
+layout(set = 1, binding = 4) uniform Material
+{ 
+	float inTransparency;
+} material;
 
 layout(set = 2, binding = 0) uniform sampler2D shadowMapSampler;
 
@@ -56,9 +61,9 @@ void main()
 	float diffuse = max(dot(normal, reflectLightDir), 0.0);
 	float specular = kEnergyConservation * pow(max(dot(viewDir, reflectLightDir), 0.0), kShininess);
 	
-	vec3 color = (ambientLevel * diffuseMap + diffuse * diffuseLevel * diffuseMap * inDiffuseColor + specular * specularLevel * specularMap);
+	vec3 color = (ambientLevel * diffuseMap + diffuse * diffuseLevel * diffuseMap * inVertexColor + specular * specularLevel * specularMap);
 	color *= pcf(inWorldPosition, inLightMatrix, shadowMapSampler, shadowsEffect);
 	color = vec3(color.r * alphaMap.r, color.g * alphaMap.g, color.b * alphaMap.b);
 	
-	outColor = vec4(color.rgb, alphaMap.r * alphaMap.a);
+	outColor = vec4(color.rgb, alphaMap.r * alphaMap.a * material.inTransparency);
 }

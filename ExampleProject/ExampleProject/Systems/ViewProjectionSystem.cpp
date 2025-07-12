@@ -34,7 +34,10 @@ void ViewProjectionSystem::Update(float deltaTime = 0)
 		uboComponent.view = lookAt(position, position + direction, cameraComponent.upAxis);
 		auto projection = glm::perspective(glm::radians(cameraComponent.fov), 
 			screenAspectRatio, cameraComponent.zNear, cameraComponent.zFar);
+
+#if GLFW_INCLUDE_VULKAN
 		projection[1][1] *= -1;
+#endif
 		
 		uboComponent.projection = projection;
 		uboComponent.position = position;

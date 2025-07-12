@@ -1,16 +1,16 @@
 #pragma once
 
-#include "AssetsDatabase.h"
+#include "ResourcesStorage.h"
 
 namespace EngineCore
 {
-	class AssetsDatabaseVulkan : public AssetsDatabase
+	class ResourcesStorageVulkan : public ResourcesStorage
 	{
 	public:
 		std::vector<VkImage> images;
 		std::vector<VkImageView> imagesViews;
 		std::vector<VkDeviceMemory> imagesMemory;
-
+		
 		std::vector<VkBuffer> vertexBuffers;
 		std::vector<VkDeviceMemory> vertexBuffersMemory;
 
@@ -23,7 +23,7 @@ namespace EngineCore
 		std::vector<glm::vec3> boundingBoxMax;
 		std::vector<glm::vec3> boundingBoxCenter;
 	
-		AssetsDatabaseVulkan(const Ref<ProjectSettings>& projectSettings);
-		~AssetsDatabaseVulkan() override;
+		ResourcesStorageVulkan(const Ref<ProjectSettings>& projectSettings);
+		~ResourcesStorageVulkan() override;
 	};
 }

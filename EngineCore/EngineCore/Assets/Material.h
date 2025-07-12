@@ -32,7 +32,8 @@ namespace EngineCore
 		std::optional<uint32_t> alphaMap;
 
 		bool opaque = true;
-	
+
+		Material() = default;
 		Material(std::string pipelineId);
 
 		void SetDiffuseTexture(uint32_t texture);

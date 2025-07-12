@@ -1,10 +1,15 @@
 NameComponent:
   name: Diffuse Light
 PositionComponent:
-  position: [-400, 2000, 200]
+  position: [0, 800, 0]
 RotationComponent:
-  rotation: [0, 0, 0]
+  rotation: [-87.9000015, -57.5999985, 40]
 UboWorldComponent:
   {}
 UboDiffuseLightComponent:
   {}
+ShadowMapComponent:
+  fov: 60
+  zNear: 1
+  zFar: 10000
+  upAxis: [0, 1, 0]
