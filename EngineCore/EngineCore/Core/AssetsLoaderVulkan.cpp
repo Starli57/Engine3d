@@ -39,10 +39,6 @@ namespace EngineCore
         assetsDatabaseVulkan->images.resize(texturesCount);
         assetsDatabaseVulkan->imagesViews.resize(texturesCount);
         assetsDatabaseVulkan->imagesMemory.resize(texturesCount);
-
-        auto materialsCount = assetsDatabase->materialsPaths.size();
-        assetsDatabaseVulkan->materialTransparencyBuffers.resize(materialsCount);
-        assetsDatabaseVulkan->materialTransparencyBuffersMemory.resize(materialsCount);
     }
 
     void AssetsLoaderVulkan::LoadTexture(const std::filesystem::path& path)
@@ -187,6 +183,17 @@ namespace EngineCore
     }
 
     void AssetsLoaderVulkan::LoadMaterial(std::filesystem::path& path)
+    {
+        Ref<Material> material = CreateRef<Material>();
+        auto materialIterator = assetsDatabase->materialsIndexByPath.find(path);
+        auto index = materialIterator->second;
+        LoadAndDeserializeMaterial(materialIterator->first, material);
+
+        assetsDatabase->materials.at(index) = material;
+        assetsDatabase->materialLoadStatuses.at(index) = 2;
+    }
+
+    void AssetsLoaderVulkan::UnLoadAllMaterial()
     {
     }
 }

@@ -11,9 +11,6 @@ namespace EngineCore
 		std::vector<VkImageView> imagesViews;
 		std::vector<VkDeviceMemory> imagesMemory;
 		
-		std::vector<VkBuffer> materialTransparencyBuffers;
-		std::vector<VkDeviceMemory> materialTransparencyBuffersMemory;
-		
 		std::vector<VkBuffer> vertexBuffers;
 		std::vector<VkDeviceMemory> vertexBuffersMemory;
 

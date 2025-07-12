@@ -26,6 +26,7 @@ namespace EngineCore
 
 	Engine::~Engine()
 	{
+		resourcesManager->UnLoadAllMaterial();
 		resourcesManager->UnLoadAllMeshes();
 		resourcesManager->UnLoadAllTextures();
 		resourcesManager.reset();

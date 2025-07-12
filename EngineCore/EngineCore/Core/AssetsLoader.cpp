@@ -89,7 +89,7 @@ namespace EngineCore
 		inFile.close();
 	}
 
-	void AssetsLoader::LoadAndDeserializeMaterial(const std::filesystem::path& path, const uint32_t index)
+	void AssetsLoader::LoadAndDeserializeMaterial(const std::filesystem::path& path, const Ref<Material>& material)
 	{
 		std::vector<YAML::Node> data;
 
@@ -106,7 +106,7 @@ namespace EngineCore
 		if (data.size() > 1) spdlog::warn("Material file has more than 1 material at path={}", path.string());
 
 		auto node = data[0];
-		auto material = CreateRef<Material>(node["pipelineName"].as<std::string>());
+		material->pipelineId = node["pipelineName"].as<std::string>();
 
 		material->roughness = node["roughness"].as<float>();
 		material->metallic = node["metallic"].as<float>();
@@ -136,20 +136,6 @@ namespace EngineCore
 		auto alphaTexturePath = node["alphaTextureName"] ? node["alphaTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
 		auto alphaTextureIndex = GetOrLoadTextureStr(alphaTexturePath);
 		material->SetAlphaMap(alphaTextureIndex);
-	
-		assetsDatabase->materials.at(index) = material;
-		assetsDatabase->materialLoadStatuses.at(index) = 2;
-	}
-
-	void AssetsLoader::LoadAllMaterials()
-	{
-		std::for_each(std::execution::par, assetsDatabase->materialsIndexByPath.begin(), assetsDatabase->materialsIndexByPath.end(),
-			[this](const auto& pair)
-			{
-				auto path = pair.first;
-				auto index = pair.second;
-				LoadMaterial(path, index);
-			});
 	}
 
 	void AssetsLoader::LoadRequestedMeshes()
@@ -194,7 +180,7 @@ namespace EngineCore
 		std::for_each(std::execution::par, loadMaterials.begin(), loadMaterials.end(), [this](const auto& materialIndex)
 			{
 				auto path = assetsDatabase->materialsPaths[materialIndex];
-				LoadMaterial(path, materialIndex);
+				LoadMaterial(path);
 			});
 	}
 }

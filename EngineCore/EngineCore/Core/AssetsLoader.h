@@ -33,10 +33,10 @@ namespace EngineCore
 		virtual void LoadTexture(const std::filesystem::path& path, uint32_t textureIndex) = 0;
 		virtual void UnLoadAllTextures() = 0;
 
-		void LoadAndDeserializeMaterial(const std::filesystem::path& path, uint32_t index);
+		void LoadAndDeserializeMaterial(const std::filesystem::path& path, const Ref<Material>& material);
 		virtual void LoadMaterial(std::filesystem::path& path) = 0;
-		void LoadAllMaterials();
-
+		virtual void UnLoadAllMaterial() = 0;
+		
 		void LoadRequestedMeshes();
 		void LoadRequestedMaterials();
 

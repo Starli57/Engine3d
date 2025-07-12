@@ -19,6 +19,7 @@ namespace EngineCore
 		void UnLoadAllMeshes() override;
 
 		void LoadMaterial(std::filesystem::path& path) override;
+		void UnLoadAllMaterial() override;
 		
 		//todo: replace and make via a pattern
 		URef<std::mutex> graphicsQueueMutex;

@@ -2,6 +2,7 @@
 #include "IDescriptor.h"
 #include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/Ref.h"
+#include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
 
 using namespace EngineCore;
 
@@ -25,6 +26,7 @@ namespace AVulkan
         
         std::vector<VkDescriptorPool> descriptorPools;
         std::vector<std::vector<VkDescriptorSet>> descriptorSets;
+        std::vector<Ref<BufferModel>> materialsUniformBuffers;
         VkSampler& textureSampler;
     };
 }

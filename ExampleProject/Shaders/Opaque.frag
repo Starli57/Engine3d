@@ -22,7 +22,11 @@ layout(set = 1, binding = 0) uniform sampler2D diffuseMapSampler;
 layout(set = 1, binding = 1) uniform sampler2D specularMapSampler;
 layout(set = 1, binding = 2) uniform sampler2D normalMapSampler;
 layout(set = 1, binding = 3) uniform sampler2D alphaMapSampler;
-layout(set = 1, binding = 4) uniform float inTransparency;
+
+layout(set = 1, binding = 4) uniform Material
+{ 
+	float inTransparency;
+} material;
 
 layout(set = 2, binding = 0) uniform sampler2D shadowMapSampler;
 
@@ -61,5 +65,5 @@ void main()
 	color *= pcf(inWorldPosition, inLightMatrix, shadowMapSampler, shadowsEffect);
 	color = vec3(color.r * alphaMap.r, color.g * alphaMap.g, color.b * alphaMap.b);
 	
-	outColor = vec4(color.rgb, alphaMap.r * alphaMap.a * inTransparency);
+	outColor = vec4(color.rgb, alphaMap.r * alphaMap.a * material.inTransparency);
 }

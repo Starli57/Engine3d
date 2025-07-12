@@ -3,6 +3,9 @@
 
 #include "EngineCore/Profiler/Profiler.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
+#include "EngineCore/Rendering/Vulkan/UniformBufferModel/UboMaterial.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/UniformBufferVulkanUtility.h"
 
 namespace AVulkan
 {
@@ -24,6 +27,9 @@ namespace AVulkan
 
     DescriptorMaterialOpaque::~DescriptorMaterialOpaque()
     {
+        for(const auto& uniformBuffer : materialsUniformBuffers)
+            VkUtils::DisposeBuffer(logicalDevice, uniformBuffer->buffer, uniformBuffer->bufferMemory);
+        
         vkDestroyDescriptorSetLayout(logicalDevice, descriptorSetLayout, nullptr);
 
         for(auto pool : descriptorPools)
@@ -51,6 +57,12 @@ namespace AVulkan
         {
             descriptorsAllocator->AllocateDescriptorSets(logicalDevice, descriptorSetLayout, 
                 descriptorPools.at(i), descriptorSets.at(i), descriptorsAllocator->maxDescriptorSets);
+        }
+
+        materialsUniformBuffers.resize(resourcesStorage->materialsPaths.size());
+        for(int i = 0; i < resourcesStorage->materialsPaths.size(); i++)
+        {
+            materialsUniformBuffers.at(i) = VkUtils::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboMaterial));
         }
     }
     
@@ -106,8 +118,13 @@ namespace AVulkan
             alphaImageInfo.imageView = alphaMapImageView;
             alphaImageInfo.sampler = textureSampler;
 
+            UboMaterial uboMaterial = UboMaterial(resourcesStorage->materials.at(i));
+            memcpy(materialsUniformBuffers.at(i)->bufferMapped, &uboMaterial, sizeof(UboMaterial));
+            
             VkDescriptorBufferInfo transparencyBufferInfo {};
-            transparencyBufferInfo.buffer
+            transparencyBufferInfo.buffer = materialsUniformBuffers.at(i)->buffer;
+            transparencyBufferInfo.range = sizeof(UboMaterial);
+            transparencyBufferInfo.offset = 0;
             
             std::array<VkWriteDescriptorSet, 5> descriptorWrites{};
 
@@ -126,7 +143,7 @@ namespace AVulkan
                 VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &alphaImageInfo, nullptr);
 
             descriptorsAllocator->WriteDescriptorSet(descriptorWrites[4], descriptorSet, 4, 0, 1,
-                VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+                VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &transparencyBufferInfo);
             
             vkUpdateDescriptorSets(logicalDevice, descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
         }
