@@ -65,18 +65,8 @@ namespace EngineCore
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingMemory;
-
-        VkBufferUsageFlags usageFlagsStaging = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-        constexpr VkMemoryPropertyFlags memoryFlagsStaging = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-
-        VkUtils::CreateBuffer(vulkanApi->context->physicalDevice, vulkanApi->context->logicalDevice, imageSize,
-            usageFlagsStaging, memoryFlagsStaging, stagingBuffer, stagingMemory);
-
-        void* data;
-        vkMapMemory(vulkanApi->context->logicalDevice, stagingMemory, 0, imageSize, 0, &data);
-        memcpy(data, texturePixels, imageSize);
-        vkUnmapMemory(vulkanApi->context->logicalDevice, stagingMemory);
-
+        VkUtils::CreateStagingBuffer(imageSize, texturePixels, stagingBuffer, stagingMemory, vulkanApi->context);
+        
         stbi_image_free(texturePixels);
         
         constexpr VkImageTiling tiling = VK_IMAGE_TILING_OPTIMAL;

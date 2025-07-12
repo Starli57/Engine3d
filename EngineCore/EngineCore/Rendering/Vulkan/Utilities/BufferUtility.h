@@ -7,6 +7,9 @@
 
 namespace VkUtils
 {
+	void CreateStagingBuffer(VkDeviceSize bufferSize, void const* sourceData,
+		VkBuffer& buffer, VkDeviceMemory& bufferMemory, const Ref<AVulkan::VulkanContext>& context);
+	
 	void CreateDeviceLocalBuffer(VkDeviceSize bufferSize, void const* sourceData, VkBufferUsageFlags distUsageFlags,
 		const Ref<AVulkan::VulkanContext>& context, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool);
 	

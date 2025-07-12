@@ -6,6 +6,21 @@
 
 namespace VkUtils
 {
+	void CreateStagingBuffer(VkDeviceSize bufferSize, void const* sourceData,
+		VkBuffer& buffer, VkDeviceMemory& bufferMemory, const Ref<AVulkan::VulkanContext>& context)
+	{
+		VkBufferUsageFlags usageFlagsStaging = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+		constexpr VkMemoryPropertyFlags memoryFlagsStaging = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+
+		CreateBuffer(context->physicalDevice, context->logicalDevice, bufferSize,
+			usageFlagsStaging, memoryFlagsStaging, buffer, bufferMemory);
+
+		void* data;
+		vkMapMemory(context->logicalDevice, bufferMemory, 0, bufferSize, 0, &data);
+		memcpy(data, sourceData, bufferSize);
+		vkUnmapMemory(context->logicalDevice, bufferMemory);	
+	}
+	
 	void CreateDeviceLocalBuffer(VkDeviceSize bufferSize, void const* sourceData, VkBufferUsageFlags distUsageFlags,
 		const Ref<AVulkan::VulkanContext>& context, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
 	{

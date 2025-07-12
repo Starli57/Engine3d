@@ -8,31 +8,9 @@ namespace VkUtils
 	void CreateVertexBuffer(const Ref<AVulkan::VulkanContext>& context, std::vector<Vertex>& vertices,
 		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
 	{
-		//todo: use BufferUtility::CreateDeviceLocalBuffer instead of code below
 		uint64_t bufferSize = sizeof(Vertex) * vertices.size();
-
-		VkBufferUsageFlags stagingUsageFlags = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-		VkBufferUsageFlags distUsageFlags    = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-
-		VkMemoryPropertyFlags stagingMemoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-		VkMemoryPropertyFlags distMemoryFlags    = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
-
-		VkBuffer stagingBuffer;
-		VkDeviceMemory stagingMemory;
-
-		CreateBuffer(context->physicalDevice, context->logicalDevice, bufferSize,
-			stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingMemory);
-
-		void* data;
-		vkMapMemory(context->logicalDevice, stagingMemory, 0, bufferSize, 0, &data);
-		memcpy(data, vertices.data(), (size_t)bufferSize);
-		vkUnmapMemory(context->logicalDevice, stagingMemory);
-
-		CreateBuffer(context->physicalDevice, context->logicalDevice, bufferSize,
-			distUsageFlags, distMemoryFlags, vertexBuffer, bufferMemory);
-
-		CopyBuffer(context->logicalDevice, context->graphicsQueue, stagingBuffer, vertexBuffer, bufferSize, commandPool);
-		DisposeBuffer(context->logicalDevice, stagingBuffer, stagingMemory);
+		VkBufferUsageFlags distUsageFlags = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+		CreateDeviceLocalBuffer(bufferSize, vertices.data(), distUsageFlags, context, vertexBuffer, bufferMemory, commandPool);
 	}
 
 	void DisposeVertexBuffer(const VkDevice& logicalDevice, const VkBuffer& buffer, const VkDeviceMemory& bufferMemory)
