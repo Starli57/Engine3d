@@ -1,5 +1,5 @@
 #include "EngineCore/Pch.h"
-#include "PipelinesCollection.h"
+#include "EngineCore/Rendering/PipelinesCollection.h"
 
 PipelinesCollection::PipelinesCollection(const Ref<ProjectSettings>& projectSettings)
 {
