@@ -8,9 +8,10 @@
 
 namespace VkUtils
 {
-    VkImage CreateImage(const Ref<AVulkan::VulkanContext>& vulkanContext,
-                        const uint32_t width, const uint32_t height, const VkFormat format, const VkImageTiling tiling, const VkImageUsageFlags usage,
-                        const VkSampleCountFlagBits msaa, VkMemoryPropertyFlags properties, VkDeviceMemory& imageMemory)
+    void CreateImage(const Ref<AVulkan::VulkanContext>& vulkanContext,
+                        const uint32_t width, const uint32_t height, const uint32_t mipLevels, const VkFormat format,
+                        const VkImageTiling tiling, const VkImageUsageFlags usage,
+                        const VkSampleCountFlagBits msaa, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
     {
         VkImageCreateInfo imageInfo{};
         imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -18,7 +19,7 @@ namespace VkUtils
         imageInfo.extent.width = width;
         imageInfo.extent.height = height;
         imageInfo.extent.depth = 1;
-        imageInfo.mipLevels = 1;
+        imageInfo.mipLevels = mipLevels;
         imageInfo.arrayLayers = 1;
         imageInfo.format = format;
         imageInfo.tiling = tiling;
@@ -27,7 +28,6 @@ namespace VkUtils
         imageInfo.samples = msaa;
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-        VkImage image = nullptr;
         const auto createStatus = vkCreateImage(vulkanContext->logicalDevice, &imageInfo, nullptr, &image);
         CAssert::Check(createStatus == VK_SUCCESS, "Failed to create vk image");
 
@@ -43,7 +43,6 @@ namespace VkUtils
         CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate vk image memory");
 
         vkBindImageMemory(vulkanContext->logicalDevice, image, imageMemory, 0);
-        return image;
     }
 
     void CopyBufferToImage(const Ref<AVulkan::VulkanContext>& vulkanContext, const VkBuffer& buffer, const VkImage& image, const uint32_t width, const uint32_t height, VkCommandPool& commandPool)
@@ -70,7 +69,7 @@ namespace VkUtils
         vkFreeCommandBuffers(vulkanContext->logicalDevice, commandPool, 1, &commandBuffer);
     }
 
-    void TransitionImageLayout(const VkCommandBuffer& commandBuffer, const VkImage& image,
+    void TransitionImageLayout(const VkCommandBuffer& commandBuffer, const uint32_t mipLevels, const VkImage& image,
         const VkImageLayout oldLayout, const VkImageLayout newLayout, const VkImageAspectFlags aspectMask)
     {
         VkImageMemoryBarrier barrier{};
@@ -82,7 +81,7 @@ namespace VkUtils
         barrier.image = image;
         barrier.subresourceRange.aspectMask = aspectMask;
         barrier.subresourceRange.baseMipLevel = 0;
-        barrier.subresourceRange.levelCount = 1;
+        barrier.subresourceRange.levelCount = mipLevels;
         barrier.subresourceRange.baseArrayLayer = 0;
         barrier.subresourceRange.layerCount = 1;
 
@@ -134,7 +133,7 @@ namespace VkUtils
         vkDestroyImage(logicalDevice, image, nullptr);
     }
 
-    void CreateImageView(const VkDevice& logicalDevice, const VkFormat& imageFormat, const VkImageAspectFlags imageAspectFlags,
+    void CreateImageView(const VkDevice& logicalDevice, const uint32_t mipLevels, const VkFormat& imageFormat, const VkImageAspectFlags imageAspectFlags,
         const VkImage& image, VkImageView& imageView)
     {
         VkImageViewCreateInfo createInfo{};
@@ -142,7 +141,7 @@ namespace VkUtils
         createInfo.image = image;
         createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
         createInfo.format = imageFormat;
-
+        
         createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
         createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
         createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
@@ -150,7 +149,7 @@ namespace VkUtils
         createInfo.subresourceRange.aspectMask = imageAspectFlags;
 
         createInfo.subresourceRange.baseMipLevel = 0;
-        createInfo.subresourceRange.levelCount = 1;
+        createInfo.subresourceRange.levelCount = mipLevels;
         createInfo.subresourceRange.baseArrayLayer = 0;
         createInfo.subresourceRange.layerCount = 1;
 

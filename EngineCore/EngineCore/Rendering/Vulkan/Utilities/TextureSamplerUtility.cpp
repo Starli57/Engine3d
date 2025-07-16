@@ -26,7 +26,7 @@ namespace VkUtils
         samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
         samplerInfo.mipLodBias = 0.0f;
         samplerInfo.minLod = 0.0f;
-        samplerInfo.maxLod = 0.0f;
+        samplerInfo.maxLod = VK_LOD_CLAMP_NONE;
 
         const auto createStatus = vkCreateSampler(logicalDevice, &samplerInfo, nullptr, &textureSampler);
         EngineCore::CAssert::Check(createStatus == VK_SUCCESS, "Textures sampler can't be created");
