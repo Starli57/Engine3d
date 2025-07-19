@@ -62,21 +62,23 @@ void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std
     }
         
     //format meshes
-    auto meshesMap = new std::unordered_map<uint16_t, std::unordered_map<uint16_t, ConvertingMeshData>>();
+    std::vector<ConvertingMeshData>* meshes = new std::vector<ConvertingMeshData>();
+    meshes->resize(materials.size());
 
-    for(uint16_t shapeIndex = 0; shapeIndex < shapes.size(); shapeIndex++)
+    for (int i = 0; i < materials.size(); i++)
     {
-        if (!meshesMap->contains(shapeIndex)) meshesMap->emplace(shapeIndex, std::unordered_map<uint16_t, ConvertingMeshData>());
-        
-        auto shape = shapes[shapeIndex];
-        uint16_t i = 0;
-        
+        meshes->at(i).materialIndex = i;
+        meshes->at(i).materialPath = outFolder + ToLowerCase(materials.at(i).name);
+        meshes->at(i).materialName = ToLowerCase(materials.at(i).name);
+    }
+
+    for (const auto& shape : shapes)
+    {
+        uint32_t i = 0;
         for (const auto& index : shape.mesh.indices)
         {
-            auto materialIndex = shape.mesh.material_ids[i / 3];
-            if (!meshesMap->at(shapeIndex).contains(materialIndex)) meshesMap->at(shapeIndex).emplace(materialIndex, ConvertingMeshData());
-            
-            ConvertingMeshData& meshMeta = meshesMap->at(shapeIndex).at(materialIndex);
+            auto materialId = shape.mesh.material_ids[i / 3];
+            ConvertingMeshData& meshMeta = meshes->at(materialId);
 
             Vertex vertex;
             vertex.position =
@@ -113,22 +115,6 @@ void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std
         }
     }
 
-    auto meshes = new std::vector<ConvertingMeshData>();
-    uint16_t meshIndexCounter = 0;
-    for(const auto& meshesByShape : *meshesMap)
-    {
-        for(const auto& meshesByMaterial : meshesByShape.second)
-        {
-            ConvertingMeshData mesh = meshesByMaterial.second;
-            mesh.meshIndex = meshIndexCounter++;
-            mesh.materialIndex = meshesByMaterial.first;
-            mesh.materialPath = outFolder + ToLowerCase(materials.at(mesh.materialIndex).name);
-            mesh.materialName = ToLowerCase(materials.at(mesh.materialIndex).name);
-            meshes->push_back(mesh);
-        }
-    }
-
-    //todo: fix tangents calculation
     //CalculateNormalsTangents(meshes);
         
     //--format meshes
@@ -142,7 +128,7 @@ void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std
     {
         auto material = materials.at(meshIt.materialIndex);
         auto fileNameWithoutExtension = meshPathStr.substr(0, meshPathStr.find_last_of("."));
-        auto assetName = ToLowerCase(fileNameWithoutExtension + "_" + meshIt.materialName + std::to_string(meshIt.meshIndex));
+        auto assetName = ToLowerCase(fileNameWithoutExtension + "_" + meshIt.materialName);
 
         if (meshIt.vertices.empty() || meshIt.indices.empty())
         {
@@ -154,31 +140,26 @@ void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std
         auto serialized = SerializeMesh(outFolder + assetName + ".mesh", meshIt);
         if (serialized)
         {
-            serializedMeshNames.at(meshIt.meshIndex) = outFolder + assetName + ".mesh";
+            serializedMeshNames.at(meshIt.materialIndex) = outFolder + assetName + ".mesh";
             spdlog::info("Mesh {} saved to folder {}", assetName, outFolder);
         }
-    });
-
-    for(int i = 0; i < materials.size(); i++)
-    {
+            
         //serialize material to yaml
         YAML::Node materialNode;
-        auto material = materials.at(i);
+
         auto materialName = ToLowerCase(material.name);
-        auto transparency = material.dissolve;
-        auto isOpaque = transparency >= 1.0 && material.alpha_texname.empty();
-        
+        bool isOpaque = material.dissolve >= 1.0 && material.alpha_texname.empty();
         materialNode["materialName"] = materialName;
         materialNode["pipelineName"] = isOpaque ? "opaque" : "transparent";
+        materialNode["isOpaque"] = isOpaque;
             
         materialNode["roughness"] = material.roughness;
         materialNode["metallic"] = material.metallic;
         materialNode["sheen"] = material.sheen;
         materialNode["specularExponent"] = material.shininess;
         materialNode["indexOfRefraction"] = material.ior;
-        materialNode["transparency"] = transparency;
-        materialNode["isOpaque"] = isOpaque;
-        
+        materialNode["transparency"] = material.dissolve;
+            
         materialNode["ambientColor"] = glm::vec3(material.ambient[0], material.ambient[1], material.ambient[2]);
         materialNode["diffuseColor"] = glm::vec3(material.diffuse[0], material.diffuse[1], material.diffuse[2]);
         materialNode["specularColor"] = glm::vec3(material.specular[0], material.specular[1], material.specular[2]);
@@ -196,16 +177,9 @@ void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std
         std::ofstream fMaterialOut(outFolder + materialName + ".material");
         fMaterialOut << materialNode;
         fMaterialOut.close();
-    }
+        serializedMaterialNames.at(meshIt.materialIndex) = outFolder + materialName + ".material";
+    });
 
-    //todo:don't need to serialize materials names as it exist in meshes already
-    for(int i = 0; i < meshes->size(); i++)
-    {
-        auto material = materials.at(meshes->at(i).materialIndex);
-        auto materialName = ToLowerCase(material.name);
-        serializedMaterialNames.at(i) = outFolder + materialName + ".material";
-    }
-    
     std::for_each(std::execution::par, texturesPaths.begin(), texturesPaths.end(), [this, &inFolder, &outFolder](const auto& pathIter)
     {
         auto textureName = ToLowerCase(FormatTextureName(pathIter.second.string(), inFolder));
