@@ -1,5 +1,6 @@
 # 3d Engine / Renderer
-My data driven realtime 3d rendering engine / sandbox powered by vulkan graphics api for windows platform. 
+My data driven realtime rendering engine powered by vulkan graphics api for windows platform. 
+I use it as a sandbox project to train my skills in graphics programming, it's not supposed to be used in production (at least for now)
 
 # Rendered by the engine scene
 Amazon Lumberyard Bistro scene © 2017 Amazon Lumberyard used to test materials system and the whole rendering pipeline for a complex scene
