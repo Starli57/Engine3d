@@ -18,6 +18,9 @@ namespace EngineCore
 
         void AddDrawCall();
         uint16_t GetDrawCalls() const;
+
+        void AddTrianglesCount(uint32_t count);
+        uint32_t GetTrianglesCount() const;
         
         void Reset();
     
@@ -25,5 +28,6 @@ namespace EngineCore
 
     private:
         uint16_t drawCalls;
+        uint32_t trianglesCount;
     };
 }

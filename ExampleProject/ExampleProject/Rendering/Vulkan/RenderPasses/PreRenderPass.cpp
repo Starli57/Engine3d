@@ -50,6 +50,8 @@ namespace AVulkan
             DrawEntity drawEntity = DrawEntity(&positionComponent, &uboModel, &meshComponent, &materialComponent);
             if (isOpaque) renderPassContext->opaqueEntities[opaqueCount++] = drawEntity;
             else renderPassContext->transparentEntities[transparentCount++] = drawEntity;
+
+            Profiler::GetInstance().AddTrianglesCount(renderPassContext->assetsDatabase->indexesCount.at(meshComponent.meshIndex.value()));
         }
         
         Profiler::GetInstance().BeginSample("Prepass: Sort Opaque");

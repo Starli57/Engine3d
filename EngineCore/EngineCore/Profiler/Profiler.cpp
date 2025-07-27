@@ -48,11 +48,22 @@ namespace EngineCore
         return drawCalls;
     }
 
+    void Profiler::AddTrianglesCount(uint32_t count)
+    {
+        trianglesCount += count;
+    }
+
+    uint32_t Profiler::GetTrianglesCount() const
+    {
+        return trianglesCount;
+    }
+
     void Profiler::Reset()
     {
         samples.clear();
         currentSample = nullptr;
         drawCalls = 0;
+        trianglesCount = 0;
     }
 
     float Profiler::GetDeltaTime(const ProfilerSample& sample) const
