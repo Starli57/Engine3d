@@ -27,4 +27,9 @@ namespace EngineCore
 	{
 		this->alphaMap = texture;
 	}
+
+	void Material::SetMetallicRoughness(uint32_t texture)
+	{
+		this->metallicRoughness = texture;
+	}
 }

@@ -30,7 +30,8 @@ namespace EngineCore
 		std::optional<uint32_t> specular;
 		std::optional<uint32_t> normalMap;
 		std::optional<uint32_t> alphaMap;
-
+		std::optional<uint32_t> metallicRoughness;
+		
 		bool opaque = true;
 
 		Material() = default;
@@ -40,5 +41,6 @@ namespace EngineCore
 		void SetSpecular(uint32_t texture);
 		void SetNormalMap(uint32_t texture);
 		void SetAlphaMap(uint32_t texture);
+		void SetMetallicRoughness(uint32_t texture);
 	};
 }

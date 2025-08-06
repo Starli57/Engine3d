@@ -92,3 +92,34 @@ void ResourcesConverter::WriteSerializedMeshNames(const std::string& filePath, c
     fOut.close();
 }
 
+bool ResourcesConverter::SerializeMesh(const std::string& filePath, const ConvertingMeshData& meshIt) const
+{
+    std::ofstream outFile(filePath, std::ios::binary);
+    if (!outFile)
+    {
+        spdlog::critical("Failed to open file for writing mesh data");
+        return false;
+    }
+
+    size_t vertexCount = meshIt.vertices.size();
+    outFile.write(reinterpret_cast<const char*>(&vertexCount), sizeof(size_t));
+    outFile.write(reinterpret_cast<const char*>(meshIt.vertices.data()), vertexCount * sizeof(EngineCore::Vertex));
+
+    size_t indexCount = meshIt.indices.size();
+    outFile.write(reinterpret_cast<const char*>(&indexCount), sizeof(size_t));
+    outFile.write(reinterpret_cast<const char*>(meshIt.indices.data()), indexCount * sizeof(uint32_t));
+
+    auto materialPath = meshIt.materialPath + ".material";
+    size_t materialPathSize = materialPath.size();
+    outFile.write(reinterpret_cast<const char*>(&materialPathSize), sizeof(materialPathSize));
+    outFile.write(materialPath.data(), materialPathSize);
+
+    auto materialName = ToLowerCase(meshIt.materialName + ".material");
+    size_t materialNameSize = materialName.size();
+    outFile.write(reinterpret_cast<const char*>(&materialNameSize), sizeof(materialNameSize));
+    outFile.write(materialName.data(), materialNameSize);
+    
+    outFile.close();
+
+    return true;
+}
