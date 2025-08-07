@@ -116,13 +116,13 @@ project "ExampleProject"
 		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject" }
 		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
 		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Prefabs" }
-		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Fonts" }
+		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\Externals\\Fonts" }
 		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Worlds" }
 		postbuildcommands { "mkdir $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources" }
 
 		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Shaders $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Shaders" }
 		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Prefabs $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Prefabs" }
-		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Fonts $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Fonts" }
+		postbuildcommands { "copy $(SolutionDir)\\Externals\\Fonts $(SolutionDir)Output\\" .. outputdir .. "\\Externals\\Fonts" }
 		postbuildcommands { "copy $(SolutionDir)\\ExampleProject\\Worlds $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Worlds" }
 		postbuildcommands { "{COPY} $(SolutionDir)\\ExampleProject\\Resources $(SolutionDir)Output\\" .. outputdir .. "\\ExampleProject\\Resources" }
 	
