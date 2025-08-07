@@ -1,10 +1,43 @@
-﻿#include "EngineCore/Pch.h"
+﻿#include <tiny_gltf.h>
+
+#include "EngineCore/Pch.h"
 #include "ResourcesConverterGltf.h"
 #include "EngineCore/Serialization/EntitySerializer.h"
-
-#include <tiny_gltf.h>
+#include "EngineCore/Utilities/YamlConverters.h"
 
 #include "glm/gtc/type_ptr.hpp"
+
+void ResourcesConverterGltf::ImportFolder(const std::string& inFolder, const std::string& outFolder,
+	const std::string& directoryName)
+{
+	auto outParentPath = std::filesystem::path(outFolder).parent_path();
+	CreateFolder(outParentPath);
+    
+	std::unordered_map<std::string, std::filesystem::path> meshesPaths;
+	std::unordered_map<std::string, std::filesystem::path> texturesPaths;
+
+	auto meshesExtensions = std::vector<std::string>();
+	meshesExtensions.reserve(1);
+	meshesExtensions.emplace_back(".gltf");
+	meshesExtensions.emplace_back(".glb");
+
+	auto texturesExtensions = std::vector<std::string>();
+	texturesExtensions.reserve(4);
+	texturesExtensions.emplace_back(".png");
+	texturesExtensions.emplace_back(".jpg");
+	texturesExtensions.emplace_back(".JPG");
+	texturesExtensions.emplace_back(".jpeg");
+
+	FillPaths(meshesPaths, meshesExtensions, inFolder);
+	FillPaths(texturesPaths, texturesExtensions, inFolder);
+
+	for (const auto& meshPath : meshesPaths)
+	{
+		ImportMesh(meshPath.first, meshPath.second, inFolder, outFolder, directoryName, texturesPaths);
+	}
+
+	spdlog::info("Imported folder: {}", inFolder);
+}
 
 void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const std::filesystem::path& meshPath,
                                         const std::string& inFolder, const std::string& outFolder, const std::string& directoryName,
@@ -15,9 +48,11 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
     std::string err;
     std::string warn;
 
-	bool isLoaded = false;
-	isLoaded = gltfLoader.LoadASCIIFromFile(&model, &err, &warn, meshPathStr);
-    //isLoaded = gltfLoader.LoadBinaryFromFile(&model, &err, &warn, meshPathStr);
+	auto binary = meshPathStr.ends_with("glb");
+	auto isLoaded = binary
+		? gltfLoader.LoadBinaryFromFile(&model, &err, &warn, meshPath.string())
+		: gltfLoader.LoadASCIIFromFile(&model, &err, &warn, meshPath.string());
+
     if (!warn.empty()) spdlog::warn(warn);
     if (!err.empty()) spdlog::error(err);
 
@@ -36,8 +71,83 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 	std::vector<std::string> serializedMaterialNames;
 	serializedMaterialNames.resize(model.materials.size());
 	
-	ImportMaterials(model, outFolder, meshes, serializedMaterialNames);
-	
+	//materials
+	int i = 0;
+	for (auto& material : model.materials)
+	{
+		auto& pbr = material.pbrMetallicRoughness;
+		
+		YAML::Node materialNode;
+
+		auto materialName = ToLowerCase(material.name);
+		materialNode["materialName"] = materialName;
+
+		{
+			if (pbr.baseColorTexture.index < 0) pbr.baseColorTexture.index = 0;
+			auto baseColor = model.textures[pbr.baseColorTexture.index];
+			auto baseImage = model.images[baseColor.source];
+			BindTextureToMaterial(materialNode, "diffuseTextureName", outFolder, baseImage.uri);
+		}
+		
+		if (pbr.metallicRoughnessTexture.index >= 0)
+		{			
+			auto image = model.textures[pbr.metallicRoughnessTexture.index];
+			auto baseImage = model.images[image.source];
+			BindTextureToMaterial(materialNode, "metallicRoughness", outFolder, baseImage.uri);
+		}
+
+		if (material.normalTexture.index >= 0)
+		{
+			auto image = model.textures[material.normalTexture.index];
+			auto baseImage = model.images[image.source];
+			BindTextureToMaterial(materialNode, "bumpTextureName", outFolder, baseImage.uri);
+		}
+
+		if (material.occlusionTexture.index >= 0)
+		{
+			auto image = model.textures[material.occlusionTexture.index];
+			auto baseImage = model.images[image.source];
+			BindTextureToMaterial(materialNode, "occlusion", outFolder, baseImage.uri);
+		}
+
+		if (material.emissiveTexture.index >= 0)
+		{
+			auto image = model.textures[material.emissiveTexture.index];
+			auto baseImage = model.images[image.source];
+			BindTextureToMaterial(materialNode, "emissive", outFolder, baseImage.uri);
+		}
+		
+		bool isTransparent = material.alphaMode == "BLEND";
+		materialNode["pipelineName"] = isTransparent ? "transparent" : "opaque";
+		materialNode["isOpaque"] = !isTransparent;
+
+		//todo: add real values
+		materialNode["roughness"] = 0;
+		materialNode["metallic"] = 0;
+		materialNode["sheen"] = 0;
+		materialNode["specularExponent"] = 0;
+		materialNode["indexOfRefraction"] = 0;
+		materialNode["transparency"] = 1;
+		materialNode["ambientColor"] = glm::vec3(1.0, 1.0, 1.0);
+		materialNode["diffuseColor"] = glm::vec3(1.0, 1.0, 1.0);
+		materialNode["specularColor"] = glm::vec3(1.0, 1.0, 1.0);
+		materialNode["emissionColor"] = glm::vec3(1.0, 1.0, 1.0);
+		
+		auto materialPath = outFolder + materialName + ".material";
+		std::ofstream fMaterialOut(materialPath);
+		fMaterialOut << materialNode;
+		fMaterialOut.close();
+		serializedMaterialNames.at(i) = materialPath;
+
+		meshes->at(i).materialIndex = i;
+		meshes->at(i).meshIndex = i;
+		meshes->at(i).materialName = materialName;
+		meshes->at(i).materialPath = outFolder + materialName;
+		
+		i++;
+	}
+
+	//meshes
     for (const auto& mesh : model.meshes)
     {
 	    for(const auto& primitive : mesh.primitives)
@@ -57,7 +167,7 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 
 	    	const tinygltf::Buffer &indicesBuffer = model.buffers[indicesView.buffer];
 			const float* positionBuffer = reinterpret_cast<const float *>(&(model.buffers[positionView.buffer].data[positionAccessor.byteOffset + positionView.byteOffset]));
-	    	const float* normalBuffer = reinterpret_cast<const float *>(&(model.buffers[normalView.buffer].data[normalAccessor.byteOffset + normalAccessor.byteOffset]));
+	    	const float* normalBuffer = reinterpret_cast<const float *>(&(model.buffers[normalView.buffer].data[normalAccessor.byteOffset + normalView.byteOffset]));
 	    	const float* uvBuffer = reinterpret_cast<const float *>(&(model.buffers[uvView.buffer].data[uvAccessor.byteOffset + uvView.byteOffset]));
 
 	    	uint64_t positionByteStride = positionAccessor.ByteStride(positionView)
@@ -161,69 +271,3 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
     delete meshes;
 }
 
-void ResourcesConverterGltf::ImportMaterials(tinygltf::Model& model, const std::string& outFolder,
-	std::vector<ConvertingMeshData>* meshes, std::vector<std::string>& serializedMaterialNames) const
-{
-	int i = 0;
-	for (auto& material : model.materials)
-	{
-		auto& pbr = material.pbrMetallicRoughness;
-		
-		YAML::Node materialNode;
-
-		auto materialName = ToLowerCase(material.name);
-		materialNode["materialName"] = materialName;
-
-		{
-			if (pbr.baseColorTexture.index < 0) pbr.baseColorTexture.index = 0;
-			auto baseColor = model.textures[pbr.baseColorTexture.index];
-			auto baseImage = model.images[baseColor.source];
-			BindTextureToMaterial(materialNode, "ambientTextureName", outFolder, baseImage.uri);
-		}
-		
-		if (pbr.metallicRoughnessTexture.index >= 0)
-		{			
-			auto image = model.textures[pbr.metallicRoughnessTexture.index];
-			auto baseImage = model.images[image.source];
-			BindTextureToMaterial(materialNode, "metallicRoughness", outFolder, baseImage.uri);
-		}
-
-		if (material.normalTexture.index >= 0)
-		{
-			auto image = model.textures[material.normalTexture.index];
-			auto baseImage = model.images[image.source];
-			BindTextureToMaterial(materialNode, "bumpTextureName", outFolder, baseImage.uri);
-		}
-
-		if (material.occlusionTexture.index >= 0)
-		{
-			auto image = model.textures[material.occlusionTexture.index];
-			auto baseImage = model.images[image.source];
-			BindTextureToMaterial(materialNode, "occlusion", outFolder, baseImage.uri);
-		}
-
-		if (material.emissiveTexture.index >= 0)
-		{
-			auto image = model.textures[material.emissiveTexture.index];
-			auto baseImage = model.images[image.source];
-			BindTextureToMaterial(materialNode, "emissive", outFolder, baseImage.uri);
-		}
-		
-		bool isTransparent = material.alphaMode == "BLEND";
-		materialNode["pipelineName"] = isTransparent ? "transparent" : "opaque";
-		materialNode["isOpaque"] = !isTransparent;
-
-		auto materialPath = outFolder + materialName + ".material";
-		std::ofstream fMaterialOut(materialPath);
-		fMaterialOut << materialNode;
-		fMaterialOut.close();
-		serializedMaterialNames.at(i) = materialPath;
-
-		meshes->at(i).materialIndex = i;
-		meshes->at(i).meshIndex = i;
-		meshes->at(i).materialName = materialName;
-		meshes->at(i).materialPath = materialPath;
-		
-		i++;
-	}
-}

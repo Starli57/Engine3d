@@ -35,7 +35,7 @@ void ResourcesConverterObj::ImportFolder(const std::string& inFolder, const std:
         ImportMesh(meshPath.first, meshPath.second, inFolder, outFolder, directoryName, texturesPaths);
     }
 
-    spdlog::info("Imported mesh: {}", inFolder);
+    spdlog::info("Imported foldere: {}", inFolder);
 }
 
 void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std::filesystem::path& meshPath, const std::string& inFolder, 
