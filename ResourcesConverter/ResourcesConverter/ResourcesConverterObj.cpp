@@ -35,7 +35,7 @@ void ResourcesConverterObj::ImportFolder(const std::string& inFolder, const std:
         ImportMesh(meshPath.first, meshPath.second, inFolder, outFolder, directoryName, texturesPaths);
     }
 
-    spdlog::info("Imported mesh: {}", inFolder);
+    spdlog::info("Imported foldere: {}", inFolder);
 }
 
 void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std::filesystem::path& meshPath, const std::string& inFolder, 
@@ -174,10 +174,11 @@ void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std
         BindTextureToMaterial(materialNode, "alphaTextureName", outFolder, material.alpha_texname);
         BindTextureToMaterial(materialNode, "reflectionTextureName", outFolder, material.reflection_texname);
 
-        std::ofstream fMaterialOut(outFolder + materialName + ".material");
+        auto saveMaterialPath = outFolder + materialName + ".material";
+        std::ofstream fMaterialOut(saveMaterialPath);
         fMaterialOut << materialNode;
         fMaterialOut.close();
-        serializedMaterialNames.at(meshIt.materialIndex) = outFolder + materialName + ".material";
+        serializedMaterialNames.at(meshIt.materialIndex) = saveMaterialPath;
     });
 
     std::for_each(std::execution::par, texturesPaths.begin(), texturesPaths.end(), [this, &inFolder, &outFolder](const auto& pathIter)
@@ -190,36 +191,4 @@ void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std
         
     //clean
     delete meshes;
-}
-
-bool ResourcesConverterObj::SerializeMesh(const std::string& filePath, const ConvertingMeshData& meshIt) const
-{
-    std::ofstream outFile(filePath, std::ios::binary);
-    if (!outFile)
-    {
-        spdlog::critical("Failed to open file for writing mesh data");
-        return false;
-    }
-
-    size_t vertexCount = meshIt.vertices.size();
-    outFile.write(reinterpret_cast<const char*>(&vertexCount), sizeof(size_t));
-    outFile.write(reinterpret_cast<const char*>(meshIt.vertices.data()), vertexCount * sizeof(Vertex));
-
-    size_t indexCount = meshIt.indices.size();
-    outFile.write(reinterpret_cast<const char*>(&indexCount), sizeof(size_t));
-    outFile.write(reinterpret_cast<const char*>(meshIt.indices.data()), indexCount * sizeof(uint32_t));
-
-    auto materialPath = meshIt.materialPath + ".material";
-    size_t materialPathSize = materialPath.size();
-    outFile.write(reinterpret_cast<const char*>(&materialPathSize), sizeof(materialPathSize));
-    outFile.write(materialPath.data(), materialPathSize);
-
-    auto materialName = ToLowerCase(meshIt.materialName + ".material");
-    size_t materialNameSize = materialName.size();
-    outFile.write(reinterpret_cast<const char*>(&materialNameSize), sizeof(materialNameSize));
-    outFile.write(materialName.data(), materialNameSize);
-    
-    outFile.close();
-
-    return true;
 }
