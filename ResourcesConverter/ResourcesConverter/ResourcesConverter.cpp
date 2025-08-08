@@ -17,7 +17,7 @@ void ResourcesConverter::FillPaths(std::unordered_map<std::string, std::filesyst
 
         if (paths.find(fileName) != paths.end())
         {
-            spdlog::error("File with the same name was already added: " + fileName);
+            spdlog::warn("File with the same name was already added: " + fileName);
             continue;
         }
 

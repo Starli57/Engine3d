@@ -158,7 +158,6 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 	    	tinygltf::Accessor& positionAccessor = model.accessors[primitive.attributes.at("POSITION")];
 	    	tinygltf::Accessor& normalAccessor = model.accessors[primitive.attributes.at("NORMAL")];
 	    	tinygltf::Accessor& uvAccessor = model.accessors[primitive.attributes.at("TEXCOORD_0")];
-	    //	tinygltf::Accessor& colorAccessor = model.accessors[primitive.attributes.at("COLOR_0")];
 
 	    	const tinygltf::BufferView &indicesView = model.bufferViews[indicesAccessor.bufferView];
 	    	const tinygltf::BufferView &positionView = model.bufferViews[positionAccessor.bufferView];
@@ -177,12 +176,24 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 	    	uint64_t normalByteStride = normalAccessor.ByteStride(normalView)
 	    		? (normalAccessor.ByteStride(normalView) / sizeof(float))
 	    		: tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC3);
-
 	    	
 	    	uint64_t uvByteStride = uvAccessor.ByteStride(uvView)
 				? (uvAccessor.ByteStride(uvView) / sizeof(float))
 				: tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC2);
 
+	    	const float* colorBuffer;
+	    	uint64_t colorByteStride = 0;
+	    	if (primitive.attributes.contains("COLOR_0"))
+	    	{
+	    		tinygltf::Accessor& colorAccessor = model.accessors[primitive.attributes.at("COLOR_0")];
+	    		const tinygltf::BufferView &colorView = model.bufferViews[colorAccessor.bufferView];
+	    		colorBuffer = reinterpret_cast<const float *>(&(model.buffers[colorView.buffer].data[colorAccessor.byteOffset + colorView.byteOffset]));
+
+	    		colorByteStride = colorAccessor.ByteStride(colorView)
+					? (colorAccessor.ByteStride(colorView) / sizeof(float))
+					: tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC2);
+	    	}
+	    	
 	    	uint32_t vertexStart = meshMeta.vertices.size();
 	    	for (size_t v = 0; v < positionAccessor.count; v++)
 	    	{
@@ -191,7 +202,7 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 	    		vertex.normal = glm::normalize(glm::vec3(normalBuffer ? glm::make_vec3(&normalBuffer[v * normalByteStride]) : glm::vec3(0.0f)));
 	    		vertex.uv = uvBuffer ? glm::make_vec2(&uvBuffer[v * uvByteStride]) : glm::vec3(0.0f);
 	    		//vertex.uv1 = bufferTexCoordSet1 ? glm::make_vec2(&bufferTexCoordSet1[v * uv1ByteStride]) : glm::vec3(0.0f);
-	    		//vertex.color = bufferColorSet0 ? glm::make_vec4(&bufferColorSet0[v * color0ByteStride]) : glm::vec4(1.0f);
+	    		vertex.color = colorBuffer ? glm::make_vec4(&colorBuffer[v * colorByteStride]) : glm::vec4(1.0f);
 	    		
 	    		meshMeta.vertices.push_back(vertex);
 	    	}
