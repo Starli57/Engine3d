@@ -72,7 +72,7 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 	serializedMaterialNames.resize(model.materials.size());
 	
 	//materials
-	int i = 0;
+	uint16_t i = 0;
 	for (auto& material : model.materials)
 	{
 		auto& pbr = material.pbrMetallicRoughness;

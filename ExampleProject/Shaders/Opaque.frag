@@ -34,7 +34,7 @@ layout(set = 2, binding = 0) uniform sampler2D shadowMapSampler;
 
 const float baseColorLevel = 1.0;
 const float ambientLevel = 0.03;
-const float shadowsEffect = 0.65;
+const float shadowsEffect = 0.35;
 
 
 void main()
@@ -90,9 +90,5 @@ void main()
 	color = color / (color + vec3(1.0));
 	color = pow(color, vec3(1.0 / 2.2));
 
-	outColor = vec4(
-		color.r * material.baseColorFactor.r,
-		color.g * material.baseColorFactor.g,
-		color.b * material.baseColorFactor.b,
-		material.baseColorFactor.a);
+	outColor = vec4(color.rgb, material.baseColorFactor.a);
 }
