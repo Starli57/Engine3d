@@ -1,0 +1,409 @@
+NameComponent:
+  name: sponza_0.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_0.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\0.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_1.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_1.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\1.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_2.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_2.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\2.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_3.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_3.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\3.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_4.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_4.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\4.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_5.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_5.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\5.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_6.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_6.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\6.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_7.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_7.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\7.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_8.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_8.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\8.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_9.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_9.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\9.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_10.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_10.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\10.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_11.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_11.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\11.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_12.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_12.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\12.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_13.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_13.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\13.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_14.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_14.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\14.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_15.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_15.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\15.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_16.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_16.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\16.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_17.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_17.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\17.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_18.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_18.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\18.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_19.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_19.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\19.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_20.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_20.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\20.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_21.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_21.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\21.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_22.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_22.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\22.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_23.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_23.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\23.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: sponza_24.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_24.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SponzaglTF\24.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: Diffuse Light
+PositionComponent:
+  position: [-1500, 3000, -350]
+RotationComponent:
+  rotation: [7, -50, 40]
+UboWorldComponent:
+  {}
+UboDiffuseLightComponent:
+  {}
+ShadowMapComponent:
+  fov: 60
+  zNear: 1
+  zFar: 10000
+  upAxis: [0, 1, 0]
+---
+NameComponent:
+  name: Camera
+PositionComponent:
+  position: [-893.9599, 373.983673, -75.1880035]
+RotationComponent:
+  rotation: [0.603156209, -24.2266293, 40]
+CameraComponent:
+  fov: 60
+  zNear: 1
+  zFar: 7500
+  upAxis: [0, 1, 0]
+UboModelComponent:
+  {}
+UboWorldComponent:
+  {}
+CameraFreeComponent:
+  movementSpeed: 200
+  rotationSpeed: 12

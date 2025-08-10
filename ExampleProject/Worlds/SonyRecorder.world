@@ -1,0 +1,79 @@
+NameComponent:
+  name: scene_tc-d50.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, -90, 0]
+ScaleComponent:
+  scale: [100, 100, 100]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SonyTC-D5Recorder\scene_tc-d50.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SonyTC-D5Recorder\tc-d50.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: scene_tc-d5_op1.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, -90, 0]
+ScaleComponent:
+  scale: [100, 100, 100]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SonyTC-D5Recorder\scene_tc-d5_op1.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SonyTC-D5Recorder\tc-d5_op1.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: scene_tc-d5_black2.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, -90, 0]
+ScaleComponent:
+  scale: [100, 100, 100]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\SonyTC-D5Recorder\scene_tc-d5_black2.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\SonyTC-D5Recorder\tc-d5_black2.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: Camera
+PositionComponent:
+  position: [-73.1007843, 239.957504, 246.120804]
+RotationComponent:
+  rotation: [-80.0064621, -36.1739082, 40]
+CameraComponent:
+  fov: 60
+  zNear: 1
+  zFar: 7500
+  upAxis: [0, 1, 0]
+UboModelComponent:
+  {}
+UboWorldComponent:
+  {}
+CameraFreeComponent:
+  movementSpeed: 200
+  rotationSpeed: 12
+---
+NameComponent:
+  name: Diffuse Light
+PositionComponent:
+  position: [250, 250, 140]
+RotationComponent:
+  rotation: [-87.9000015, -57.5999985, 40]
+UboWorldComponent:
+  {}
+UboDiffuseLightComponent:
+  {}
+ShadowMapComponent:
+  fov: 60
+  zNear: 1
+  zFar: 10000
+  upAxis: [0, 1, 0]
