@@ -28,6 +28,8 @@ layout(set = 1, binding = 3) uniform sampler2D lightOcclusionMapSampler;
 layout(set = 1, binding = 4) uniform Material
 { 
 	vec4 baseColorFactor;
+	float metallicFactor;
+	float roughnessFactor;
 } material;
 
 layout(set = 2, binding = 0) uniform sampler2D shadowMapSampler;
@@ -40,10 +42,18 @@ const float gamma = 2.2;
 void main()
 {
 	vec3 baseColorMap = pow(texture(baseColorMapSampler, uv).rgb, vec3(gamma));
+	baseColorMap = vec3(
+		baseColorMap.r * material.baseColorFactor.r * inVertexColor.r,
+		baseColorMap.g * material.baseColorFactor.g * inVertexColor.g,
+		baseColorMap.b * material.baseColorFactor.b * inVertexColor.b);
+	
 	vec3 metallicRoughnessMap = texture(metallicRoughnessMapSampler, uv).rgb;
 	vec3 normalMap = texture(normalMapSampler, uv).rgb;
 	float lightOcclusionMap = texture(lightOcclusionMapSampler, uv).r;
 
+	float metalness = metallicRoughnessMap.b * material.metallicFactor;
+	float roughness = metallicRoughnessMap.g * material.roughnessFactor;
+	
 	vec3 normal = normalize(inNormal);
 	//	if (normalMap != vec3(0.0))
 	//	{
@@ -58,7 +68,7 @@ void main()
 	float baseColor = max(dot(normal, reflectLightDir), 0.0);
 
 	vec3 F0 = vec3(0.04);
-	F0 = mix(F0, baseColorMap, metallicRoughnessMap.b);
+	F0 = mix(F0, baseColorMap, metalness);
 	vec3 Lo = vec3(0.0);
 
 	vec3 h = normalize(viewDir + lightDirection);
@@ -68,13 +78,13 @@ void main()
 	vec3 radiance = lightColor * attenuation;
 
 	// cook-torrance brdf
-	float NDF = DistributionGGX(normal, h, metallicRoughnessMap.g);
-	float G = GeometrySmith(normal, viewDir, lightDirection, metallicRoughnessMap.g);
+	float NDF = DistributionGGX(normal, h, roughness);
+	float G = GeometrySmith(normal, viewDir, lightDirection, roughness);
 	vec3 F = FresnelSchlick(max(dot(h, viewDir), 0.0), F0);
 
 	vec3 kS = F;
 	vec3 kD = vec3(1.0) - kS;
-	kD *= 1.0 - metallicRoughnessMap.b;
+	kD *= 1.0 - metalness;
 
 	vec3 numerator = NDF * G * F;
 	float denominator = max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDirection), 0.0) + 0.0001;

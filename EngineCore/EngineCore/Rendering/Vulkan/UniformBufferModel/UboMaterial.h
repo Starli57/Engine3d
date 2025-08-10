@@ -7,9 +7,11 @@ namespace AVulkan
     struct UboMaterial
     {
         glm::vec4 baseColorFactor;
-
+        float metallicFactor;
+        float roughnessFactor;
+        
         UboMaterial(const Ref<PbrMaterial>& material) : 
-            baseColorFactor(material->baseColor)
+            baseColorFactor(material->baseColor), metallicFactor(material->metallic), roughnessFactor(material->roughness)
         {
             
         }
