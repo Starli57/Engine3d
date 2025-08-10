@@ -45,8 +45,9 @@ namespace AVulkan
         const auto specularMap = descriptorsAllocator->DescriptorSetLayoutBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
         const auto normalMap = descriptorsAllocator->DescriptorSetLayoutBinding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
         const auto alphaMap = descriptorsAllocator->DescriptorSetLayoutBinding(3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-        const auto transparency = descriptorsAllocator->DescriptorSetLayoutBinding(4, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-        std::vector bindings = { diffuseMap, specularMap, normalMap, alphaMap, transparency };
+        const auto emissiveMap = descriptorsAllocator->DescriptorSetLayoutBinding(4, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        const auto material = descriptorsAllocator->DescriptorSetLayoutBinding(5, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        std::vector bindings = { diffuseMap, specularMap, normalMap, alphaMap, emissiveMap, material };
         descriptorsAllocator->CreateLayout(logicalDevice, bindings, descriptorSetLayout);
     }
 
@@ -98,6 +99,12 @@ namespace AVulkan
                 occlusionTextureImageView = resourcesStorage->imagesViews.at(material->occlusionTexture.value());
             }
 
+            VkImageView emissionTextureImageView = nullptr;
+            if (material->emissiveTexture.has_value())
+            {
+                emissionTextureImageView = resourcesStorage->imagesViews.at(material->emissiveTexture.value());
+            }
+            
             VkDescriptorImageInfo baseTextureInfo{};
             baseTextureInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             baseTextureInfo.imageView = baseTextuerImageView;
@@ -118,15 +125,20 @@ namespace AVulkan
             occlusionInfo.imageView = occlusionTextureImageView;
             occlusionInfo.sampler = textureSampler;
 
+            VkDescriptorImageInfo emissionInfo{};
+            emissionInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            emissionInfo.imageView = emissionTextureImageView;
+            emissionInfo.sampler = textureSampler;
+            
             UboMaterial uboMaterial = UboMaterial(resourcesStorage->materials.at(i));
             memcpy(materialsUniformBuffers.at(i)->bufferMapped, &uboMaterial, sizeof(UboMaterial));
             
-            VkDescriptorBufferInfo transparencyBufferInfo {};
-            transparencyBufferInfo.buffer = materialsUniformBuffers.at(i)->buffer;
-            transparencyBufferInfo.range = sizeof(UboMaterial);
-            transparencyBufferInfo.offset = 0;
+            VkDescriptorBufferInfo materialBufferInfo {};
+            materialBufferInfo.buffer = materialsUniformBuffers.at(i)->buffer;
+            materialBufferInfo.range = sizeof(UboMaterial);
+            materialBufferInfo.offset = 0;
             
-            std::array<VkWriteDescriptorSet, 5> descriptorWrites{};
+            std::array<VkWriteDescriptorSet, 6> descriptorWrites{};
 
             auto descriptorSet = descriptorSets.at(frame).at(i);
 
@@ -143,7 +155,10 @@ namespace AVulkan
                 VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &occlusionInfo, nullptr);
 
             descriptorsAllocator->WriteDescriptorSet(descriptorWrites[4], descriptorSet, 4, 0, 1,
-                VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &transparencyBufferInfo);
+                VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &emissionInfo, nullptr);
+
+            descriptorsAllocator->WriteDescriptorSet(descriptorWrites[5], descriptorSet, 5, 0, 1,
+                VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &materialBufferInfo);
             
             vkUpdateDescriptorSets(logicalDevice, descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
         }

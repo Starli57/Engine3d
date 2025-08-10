@@ -24,12 +24,14 @@ layout(set = 1, binding = 0) uniform sampler2D baseColorMapSampler;
 layout(set = 1, binding = 1) uniform sampler2D metallicRoughnessMapSampler;
 layout(set = 1, binding = 2) uniform sampler2D normalMapSampler;
 layout(set = 1, binding = 3) uniform sampler2D lightOcclusionMapSampler;
+layout(set = 1, binding = 4) uniform sampler2D emissionMapSampler;
 
-layout(set = 1, binding = 4) uniform Material
+layout(set = 1, binding = 5) uniform Material
 { 
 	vec4 baseColorFactor;
 	float metallicFactor;
 	float roughnessFactor;
+	float alphaCutoffFactor;
 } material;
 
 layout(set = 2, binding = 0) uniform sampler2D shadowMapSampler;
@@ -41,14 +43,23 @@ const float gamma = 2.2;
 
 void main()
 {
-	vec3 baseColorMap = pow(texture(baseColorMapSampler, uv).rgb, vec3(gamma));
-	baseColorMap = vec3(
+	
+	vec4 baseColorMap = pow(texture(baseColorMapSampler, uv), vec4(gamma));
+	baseColorMap = vec4(
 		baseColorMap.r * material.baseColorFactor.r * inVertexColor.r,
 		baseColorMap.g * material.baseColorFactor.g * inVertexColor.g,
-		baseColorMap.b * material.baseColorFactor.b * inVertexColor.b);
+		baseColorMap.b * material.baseColorFactor.b * inVertexColor.b,
+		baseColorMap.a * material.baseColorFactor.a);
+
+	if (material.alphaCutoffFactor > baseColorMap.a)
+	{
+		discard;
+	}
 	
 	vec3 metallicRoughnessMap = texture(metallicRoughnessMapSampler, uv).rgb;
 	vec3 normalMap = texture(normalMapSampler, uv).rgb;
+	vec3 emissiveMap = texture(emissionMapSampler, uv).rgb;
+		
 	float lightOcclusionMap = texture(lightOcclusionMapSampler, uv).r;
 
 	float metalness = metallicRoughnessMap.b * material.metallicFactor;
@@ -68,12 +79,12 @@ void main()
 	float baseColor = max(dot(normal, reflectLightDir), 0.0);
 
 	vec3 F0 = vec3(0.04);
-	F0 = mix(F0, baseColorMap, metalness);
+	F0 = mix(F0, baseColorMap.rgb, metalness);
 	vec3 Lo = vec3(0.0);
 
 	vec3 h = normalize(viewDir + lightDirection);
 	float distanceToLight = length(inLightPosition - inWorldPosition);
-	float attenuation = 1.0;// / (distanceToLight * distanceToLight);
+	float attenuation = 10000.0 / distanceToLight;// / (distanceToLight * distanceToLight);
 	vec3 lightColor = vec3(1.0, 1.0, 1.0);
 	vec3 radiance = lightColor * attenuation;
 
@@ -87,16 +98,19 @@ void main()
 	kD *= 1.0 - metalness;
 
 	vec3 numerator = NDF * G * F;
-	float denominator = max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDirection), 0.0) + 0.0001;
+	float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDirection), 0.0) + 0.0001;
 	vec3 specular = numerator / denominator;
 
 	// add to outgoing radiance Lo
 	float NdotL = max(dot(normal, lightDirection), 0.0);
-	Lo += (kD * baseColorMap / kPi + specular) * radiance * NdotL;
+	Lo += (kD * baseColorMap.rgb / kPi + specular) * radiance * NdotL;
 
-	vec3 ambient = vec3(ambientLevel) * baseColorMap * lightOcclusionMap;
+	vec3 ambient = vec3(ambientLevel) * baseColorMap.rgb * lightOcclusionMap;
 	vec3 color = ambient + Lo;
+	
 	color *= pcf(inWorldPosition, inLightMatrix, shadowMapSampler, shadowsEffect);
+	color += emissiveMap;
+	
 	color = color / (color + vec3(1.0));
 	color = pow(color, vec3(1.0 / gamma));
 

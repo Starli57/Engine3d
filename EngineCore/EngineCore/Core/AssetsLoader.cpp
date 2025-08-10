@@ -130,7 +130,7 @@ namespace EngineCore
 		auto occlusionTextureIndex = GetOrLoadTextureStr(occlusionTexturePath);
 		material->occlusionTexture = occlusionTextureIndex;
 		
-		auto emissiveTexturePath = node["emissiveTextureName"] ? node["emissiveTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
+		auto emissiveTexturePath = node["emissiveTextureName"] ? node["emissiveTextureName"].as<std::string>() : projectSettings->resourcesPath + "/black_box.png";
 		auto emissiveTextureIndex = GetOrLoadTextureStr(emissiveTexturePath);
 		material->emissiveTexture = emissiveTextureIndex;
 	}
