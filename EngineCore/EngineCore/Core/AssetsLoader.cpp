@@ -109,9 +109,10 @@ namespace EngineCore
 		material->pipelineId = node["pipelineName"].as<std::string>();
 		material->opaque = node["isOpaque"].as<bool>();
 
+		material->baseColor = node["baseColor"].as<glm::vec4>();
 		material->roughness = node["roughness"].as<float>();
 		material->metallic = node["metallic"].as<float>();
-		material->baseColor = node["baseColor"].as<glm::vec4>();
+		material->alphaCutoff = node["alphaCutoffFactor"].as<float>();
 		
 		auto baseColorTexturePath = node["baseColorTextureName"] ? node["baseColorTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
 		auto diffuseTextureIndex = GetOrLoadTextureStr(baseColorTexturePath);

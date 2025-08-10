@@ -124,6 +124,7 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 		materialNode["roughness"] = pbr.roughnessFactor;
 		materialNode["metallic"] = pbr.metallicFactor;
 		materialNode["baseColor"] = pbr.baseColorFactor;
+		materialNode["alphaCutoffFactor"] = material.alphaCutoff;
 		
 		auto materialPath = outFolder + materialName + ".material";
 		std::ofstream fMaterialOut(materialPath);
@@ -175,7 +176,8 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 
 	    	const float* colorBuffer;
 	    	uint64_t colorByteStride = 0;
-	    	if (primitive.attributes.contains("COLOR_0"))
+	    	bool hasColor = primitive.attributes.contains("COLOR_0");
+	    	if (hasColor)
 	    	{
 	    		tinygltf::Accessor& colorAccessor = model.accessors[primitive.attributes.at("COLOR_0")];
 	    		const tinygltf::BufferView &colorView = model.bufferViews[colorAccessor.bufferView];
@@ -194,7 +196,7 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 	    		vertex.normal = glm::normalize(glm::vec3(normalBuffer ? glm::make_vec3(&normalBuffer[v * normalByteStride]) : glm::vec3(0.0f)));
 	    		vertex.uv = uvBuffer ? glm::make_vec2(&uvBuffer[v * uvByteStride]) : glm::vec3(0.0f);
 	    		//vertex.uv1 = bufferTexCoordSet1 ? glm::make_vec2(&bufferTexCoordSet1[v * uv1ByteStride]) : glm::vec3(0.0f);
-	    		vertex.color = colorBuffer != nullptr ? glm::make_vec4(&colorBuffer[v * colorByteStride]) : glm::vec4(1.0f);
+	    		vertex.color = hasColor ? glm::make_vec4(&colorBuffer[v * colorByteStride]) : glm::vec4(1.0f);
 	    		
 	    		meshMeta.vertices.push_back(vertex);
 	    	}
