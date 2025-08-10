@@ -89,7 +89,7 @@ namespace EngineCore
 		inFile.close();
 	}
 
-	void AssetsLoader::LoadAndDeserializeMaterial(const std::filesystem::path& path, const Ref<Material>& material)
+	void AssetsLoader::LoadAndDeserializeMaterial(const std::filesystem::path& path, const Ref<PbrMaterial>& material)
 	{
 		std::vector<YAML::Node> data;
 
@@ -103,39 +103,36 @@ namespace EngineCore
 			return;
 		}
 
-		if (data.size() > 1) spdlog::warn("Material file has more than 1 material at path={}", path.string());
+		if (data.size() > 1) spdlog::warn("PbrMaterial file has more than 1 material at path={}", path.string());
 
 		auto node = data[0];
 		material->pipelineId = node["pipelineName"].as<std::string>();
+		material->opaque = node["isOpaque"].as<bool>();
 
+		material->baseColor = node["baseColor"].as<glm::vec4>();
 		material->roughness = node["roughness"].as<float>();
 		material->metallic = node["metallic"].as<float>();
-		material->sheen = node["sheen"].as<float>();
-		material->specularExponent = node["specularExponent"].as<float>();
-		material->indexOfRefraction = node["indexOfRefraction"].as<float>();
-		material->transparency = node["transparency"].as<float>();
-		material->opaque = node["isOpaque"].as<bool>();
+		material->alphaCutoff = node["alphaCutoffFactor"].as<float>();
 		
-		material->ambientColor = node["ambientColor"].as<glm::vec3>();
-		material->diffuseColor = node["diffuseColor"].as<glm::vec3>();
-		material->specularColor = node["specularColor"].as<glm::vec3>();
-		material->emissionColor = node["emissionColor"].as<glm::vec3>();
+		auto baseColorTexturePath = node["baseColorTextureName"] ? node["baseColorTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
+		auto diffuseTextureIndex = GetOrLoadTextureStr(baseColorTexturePath);
+		material->baseTexture = diffuseTextureIndex;
 
-		auto diffuseTexturePath = node["diffuseTextureName"] ? node["diffuseTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
-		auto diffuseTextureIndex = GetOrLoadTextureStr(diffuseTexturePath);
-		material->SetDiffuseTexture(diffuseTextureIndex);
-
-		auto specularTexturePath = node["specularTextureName"] ? node["specularTextureName"].as<std::string>() : projectSettings->resourcesPath + "/black_box.png";
-		auto specularTextureIndex = GetOrLoadTextureStr(specularTexturePath);
-		material->SetSpecular(specularTextureIndex);
-
-		auto normalTexturePath = node["bumpTextureName"] ? node["bumpTextureName"].as<std::string>() : projectSettings->resourcesPath + "/black_box.png";
+		auto normalTexturePath = node["normalsTextureName"] ? node["normalsTextureName"].as<std::string>() : projectSettings->resourcesPath + "/black_box.png";
 		auto normalTextureIndex = GetOrLoadTextureStr(normalTexturePath);
-		material->SetNormalMap(normalTextureIndex);
+		material->normalsTexture = normalTextureIndex;
 
-		auto alphaTexturePath = node["alphaTextureName"] ? node["alphaTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
-		auto alphaTextureIndex = GetOrLoadTextureStr(alphaTexturePath);
-		material->SetAlphaMap(alphaTextureIndex);
+		auto metallicRoughnessPath = node["metallicRoughnessTextureName"] ? node["metallicRoughnessTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
+		auto metallicRoughnessTextureIndex = GetOrLoadTextureStr(metallicRoughnessPath);
+		material->metallicRoughnessTexture = metallicRoughnessTextureIndex;
+		
+		auto occlusionTexturePath = node["occlusionTextureName"] ? node["occlusionTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
+		auto occlusionTextureIndex = GetOrLoadTextureStr(occlusionTexturePath);
+		material->occlusionTexture = occlusionTextureIndex;
+		
+		auto emissiveTexturePath = node["emissiveTextureName"] ? node["emissiveTextureName"].as<std::string>() : projectSettings->resourcesPath + "/black_box.png";
+		auto emissiveTextureIndex = GetOrLoadTextureStr(emissiveTexturePath);
+		material->emissiveTexture = emissiveTextureIndex;
 	}
 
 	void AssetsLoader::LoadRequestedMeshes()

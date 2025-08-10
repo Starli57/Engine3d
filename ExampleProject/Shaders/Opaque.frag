@@ -1,6 +1,8 @@
 #version 450
 
+#include "PbrMath.glsl"
 #include "ShadowMapsMath.glsl"
+#include "Constants.glsl"
 
 precision highp float;
 precision highp sampler2DShadow;
@@ -18,52 +20,99 @@ layout(location = 12) in mat3 inTBN;
 
 layout(location = 0) out vec4 outColor;
 
-layout(set = 1, binding = 0) uniform sampler2D diffuseMapSampler;
-layout(set = 1, binding = 1) uniform sampler2D specularMapSampler;
+layout(set = 1, binding = 0) uniform sampler2D baseColorMapSampler;
+layout(set = 1, binding = 1) uniform sampler2D metallicRoughnessMapSampler;
 layout(set = 1, binding = 2) uniform sampler2D normalMapSampler;
-layout(set = 1, binding = 3) uniform sampler2D alphaMapSampler;
+layout(set = 1, binding = 3) uniform sampler2D lightOcclusionMapSampler;
+layout(set = 1, binding = 4) uniform sampler2D emissionMapSampler;
 
-layout(set = 1, binding = 4) uniform Material
+layout(set = 1, binding = 5) uniform Material
 { 
-	float inTransparency;
+	vec4 baseColorFactor;
+	float metallicFactor;
+	float roughnessFactor;
+	float alphaCutoffFactor;
 } material;
 
 layout(set = 2, binding = 0) uniform sampler2D shadowMapSampler;
 
-const float ambientLevel = 0.05;
-const float diffuseLevel = 1.0;
-const float specularLevel = 1.0;
-
+const float baseColorLevel = 1.0;
+const float ambientLevel = 0.03;
 const float shadowsEffect = 0.35;
+const float gamma = 2.2;
 
-const float kPi = 3.14159265;
-const float kShininess = 16.0;
-const float kEnergyConservation = ( 2.0 + kShininess ) / ( 2.0 * kPi );
-
-void main() 
+void main()
 {
-	vec3 diffuseMap = texture(diffuseMapSampler, uv).rgb;
-	vec3 specularMap = texture(specularMapSampler, uv).rgb;
+	
+	vec4 baseColorMap = pow(texture(baseColorMapSampler, uv), vec4(gamma));
+	baseColorMap = vec4(
+		baseColorMap.r * material.baseColorFactor.r * inVertexColor.r,
+		baseColorMap.g * material.baseColorFactor.g * inVertexColor.g,
+		baseColorMap.b * material.baseColorFactor.b * inVertexColor.b,
+		baseColorMap.a * material.baseColorFactor.a);
+
+	if (material.alphaCutoffFactor > baseColorMap.a)
+	{
+		discard;
+	}
+	
+	vec3 metallicRoughnessMap = texture(metallicRoughnessMapSampler, uv).rgb;
 	vec3 normalMap = texture(normalMapSampler, uv).rgb;
-	vec4 alphaMap = texture(alphaMapSampler, uv).rgba;
+	vec3 emissiveMap = texture(emissionMapSampler, uv).rgb;
+		
+	float lightOcclusionMap = texture(lightOcclusionMapSampler, uv).r;
 
+	float metalness = metallicRoughnessMap.b * material.metallicFactor;
+	float roughness = metallicRoughnessMap.g * material.roughnessFactor;
+	
 	vec3 normal = normalize(inNormal);
-//	if (normalMap != vec3(0.0))
-//	{
-//		normal = normalMap * 2.0 - 1.0;
-//		normal = normalize(inTBN * normal);
-//	}
+	//	if (normalMap != vec3(0.0))
+	//	{
+	//		normal = normalMap * 2.0 - 1.0;
+	//		normal = normalize(inTBN * normal);
+	//	}
 
-	vec3 lightDirection = normalize(inLightPosition - inWorldPosition);
-	vec3 reflectLightDir = reflect(-lightDirection, normal); 
 	vec3 viewDir = normalize(inViewPos - inWorldPosition);
+	vec3 lightDirection = normalize(inLightPosition - inWorldPosition);
+	vec3 reflectLightDir = reflect(-lightDirection, normal);
 
-	float diffuse = max(dot(normal, reflectLightDir), 0.0);
-	float specular = kEnergyConservation * pow(max(dot(viewDir, reflectLightDir), 0.0), kShininess);
+	float baseColor = max(dot(normal, reflectLightDir), 0.0);
+
+	vec3 F0 = vec3(0.04);
+	F0 = mix(F0, baseColorMap.rgb, metalness);
+	vec3 Lo = vec3(0.0);
+
+	vec3 h = normalize(viewDir + lightDirection);
+	float distanceToLight = length(inLightPosition - inWorldPosition);
+	float attenuation = 10000.0 / distanceToLight;// / (distanceToLight * distanceToLight);
+	vec3 lightColor = vec3(1.0, 1.0, 1.0);
+	vec3 radiance = lightColor * attenuation;
+
+	// cook-torrance brdf
+	float NDF = DistributionGGX(normal, h, roughness);
+	float G = GeometrySmith(normal, viewDir, lightDirection, roughness);
+	vec3 F = FresnelSchlick(max(dot(h, viewDir), 0.0), F0);
+
+	vec3 kS = F;
+	vec3 kD = vec3(1.0) - kS;
+	kD *= 1.0 - metalness;
+
+	vec3 numerator = NDF * G * F;
+	float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDirection), 0.0) + 0.0001;
+	vec3 specular = numerator / denominator;
+
+	// add to outgoing radiance Lo
+	float NdotL = max(dot(normal, lightDirection), 0.0);
+	Lo += (kD * baseColorMap.rgb / kPi + specular) * radiance * NdotL;
+
+	vec3 ambient = vec3(ambientLevel) * baseColorMap.rgb * lightOcclusionMap;
+	vec3 color = ambient + Lo;
 	
-	vec3 color = (ambientLevel * diffuseMap + diffuse * diffuseLevel * diffuseMap * inVertexColor + specular * specularLevel * specularMap);
 	color *= pcf(inWorldPosition, inLightMatrix, shadowMapSampler, shadowsEffect);
-	color = vec3(color.r * alphaMap.r, color.g * alphaMap.g, color.b * alphaMap.b);
+	color += emissiveMap;
 	
-	outColor = vec4(color.rgb, alphaMap.r * alphaMap.a * material.inTransparency);
+	color = color / (color + vec3(1.0));
+	color = pow(color, vec3(1.0 / gamma));
+
+	outColor = vec4(color.rgb, material.baseColorFactor.a);
 }

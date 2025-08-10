@@ -5,6 +5,7 @@
 #include <future>
 #include <spdlog/spdlog.h>
 
+#include "ResourcesConverterGltf.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/ProjectSettings.h"
 
@@ -26,7 +27,7 @@ int main()
 				auto directoryName = entry.path().filename().string();
 				conversionTasks.push_back(std::async(std::launch::async, [inFolder, outFolder, directoryName]()
 					{
-						URef<ResourcesConverterObj> objConverter = CreateUniqueRef<ResourcesConverterObj>();
+						auto objConverter = CreateUniqueRef<ResourcesConverterGltf>();
 						objConverter->ImportFolder(inFolder + directoryName + "/", outFolder + directoryName + "/", directoryName);
 					}));
 			}

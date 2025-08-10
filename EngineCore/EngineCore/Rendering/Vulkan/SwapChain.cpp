@@ -182,7 +182,7 @@ namespace AVulkan
 
 		for (const auto& data : availableFormats)
 		{
-			if (data.format == VK_FORMAT_R8G8B8A8_SRGB && data.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
+			if (data.format == VK_FORMAT_R8G8B8A8_UNORM && data.colorSpace == VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)
 			{
 				spdlog::info("Chosen color format: {0}", static_cast<int>(data.format));
 				return data;

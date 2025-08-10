@@ -6,10 +6,14 @@ namespace AVulkan
 {
     struct UboMaterial
     {
-        float transparency;
-
-        UboMaterial(const Ref<Material>& material) : 
-            transparency(material->transparency)
+        glm::vec4 baseColorFactor;
+        float metallicFactor;
+        float roughnessFactor;
+        float alphaCutoffFactor;
+        
+        UboMaterial(const Ref<PbrMaterial>& material) : 
+            baseColorFactor(material->baseColor), metallicFactor(material->metallic),
+            roughnessFactor(material->roughness), alphaCutoffFactor(material->alphaCutoff)
         {
             
         }

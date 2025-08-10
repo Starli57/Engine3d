@@ -1,24 +1,24 @@
 NameComponent:
-  name: damagedhelmet_material_mr.mesh
+  name: damagedhelmet_material_mr0.mesh
 PositionComponent:
   position: [0, 0, 0]
 RotationComponent:
-  rotation: [0, 68.9000015, 0]
+  rotation: [0, 71.9000015, 0]
 ScaleComponent:
   scale: [100, 100, 100]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\DamagedHelmet\damagedhelmet_material_mr.mesh
+  meshPath: ../ExampleProject/Resources\DamagedHelmet\damagedhelmet_material_mr0.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\DamagedHelmet\material_mr.material
+  materialPath: ../ExampleProject/Resources\DamagedHelmet\material_mr0.material
 UboModelComponent:
   {}
 ---
 NameComponent:
   name: Camera
 PositionComponent:
-  position: [24.1120567, 208.111969, 342.520569]
+  position: [21.4179249, 215.244461, 381.953827]
 RotationComponent:
-  rotation: [633.819946, -21.36022, 40]
+  rotation: [-86.999176, -25.9576855, 40]
 CameraComponent:
   fov: 60
   zNear: 1
@@ -35,9 +35,9 @@ CameraFreeComponent:
 NameComponent:
   name: Diffuse Light
 PositionComponent:
-  position: [-226.399994, 1000, 400]
+  position: [-200, 220, 450]
 RotationComponent:
-  rotation: [-10, -57.5999985, 40]
+  rotation: [-63, -24, 40]
 UboWorldComponent:
   {}
 UboDiffuseLightComponent:
@@ -47,18 +47,3 @@ ShadowMapComponent:
   zNear: 1
   zFar: 10000
   upAxis: [0, 1, 0]
----
-NameComponent:
-  name: cube_material.mesh
-PositionComponent:
-  position: [0, -119.300003, 0]
-RotationComponent:
-  rotation: [0, 0, 0]
-ScaleComponent:
-  scale: [1000, 1, 1000]
-MeshComponent:
-  meshPath: ../ExampleProject/Resources\Cube\cube_material.mesh
-MaterialComponent:
-  materialPath: ../ExampleProject/Resources\Cube\material.material
-UboModelComponent:
-  {}
