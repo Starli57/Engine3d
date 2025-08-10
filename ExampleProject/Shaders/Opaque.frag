@@ -35,11 +35,11 @@ layout(set = 2, binding = 0) uniform sampler2D shadowMapSampler;
 const float baseColorLevel = 1.0;
 const float ambientLevel = 0.03;
 const float shadowsEffect = 0.35;
-
+const float gamma = 2.2;
 
 void main()
 {
-	vec3 baseColorMap = pow(texture(baseColorMapSampler, uv).rgb, vec3(2.2));
+	vec3 baseColorMap = pow(texture(baseColorMapSampler, uv).rgb, vec3(gamma));
 	vec3 metallicRoughnessMap = texture(metallicRoughnessMapSampler, uv).rgb;
 	vec3 normalMap = texture(normalMapSampler, uv).rgb;
 	float lightOcclusionMap = texture(lightOcclusionMapSampler, uv).r;
@@ -62,8 +62,8 @@ void main()
 	vec3 Lo = vec3(0.0);
 
 	vec3 h = normalize(viewDir + lightDirection);
-	float distanceToLight = 1.0;//length(inLightPosition - inWorldPosition);
-	float attenuation = 1.0 / (distanceToLight * distanceToLight);
+	float distanceToLight = length(inLightPosition - inWorldPosition);
+	float attenuation = 1.0;// / (distanceToLight * distanceToLight);
 	vec3 lightColor = vec3(1.0, 1.0, 1.0);
 	vec3 radiance = lightColor * attenuation;
 
@@ -88,7 +88,7 @@ void main()
 	vec3 color = ambient + Lo;
 	color *= pcf(inWorldPosition, inLightMatrix, shadowMapSampler, shadowsEffect);
 	color = color / (color + vec3(1.0));
-	color = pow(color, vec3(1.0 / 2.2));
+	color = pow(color, vec3(1.0 / gamma));
 
 	outColor = vec4(color.rgb, material.baseColorFactor.a);
 }
