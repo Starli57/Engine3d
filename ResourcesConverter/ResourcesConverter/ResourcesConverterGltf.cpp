@@ -79,7 +79,7 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 		
 		YAML::Node materialNode;
 
-		auto materialName = ToLowerCase(material.name);
+		auto materialName = ToLowerCase(material.name) + std::to_string(i);
 		materialNode["materialName"] = materialName;
 
 		{
