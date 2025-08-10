@@ -21,21 +21,6 @@ layout(binding = 1) uniform Lights
     vec3 inLightDirection;
 } lights;
 
-//layout(binding = 3) uniform Material
-//{
-//    float transparency;
-//    float roughness;
-//    float metallic;
-//    float sheen;
-//    float specularExponent;
-//    float indexOfRefraction;
-//
-//    vec3 ambientColor;
-//    vec3 diffuseColor;
-//    vec3 specularColor;
-//    vec3 emissionColor;
-//} material;
-
 layout(push_constant) uniform Model{
     mat4 model;
 } uboM;

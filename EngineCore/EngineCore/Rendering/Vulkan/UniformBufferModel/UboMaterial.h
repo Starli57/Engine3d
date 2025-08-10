@@ -6,10 +6,10 @@ namespace AVulkan
 {
     struct UboMaterial
     {
-        float transparency;
+        glm::vec4 baseColorFactor;
 
-        UboMaterial(const Ref<Material>& material) : 
-            transparency(material->transparency)
+        UboMaterial(const Ref<PbrMaterial>& material) : 
+            baseColorFactor(material->baseColor)
         {
             
         }

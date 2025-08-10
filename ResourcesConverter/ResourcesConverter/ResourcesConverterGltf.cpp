@@ -86,52 +86,44 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 			if (pbr.baseColorTexture.index < 0) pbr.baseColorTexture.index = 0;
 			auto baseColor = model.textures[pbr.baseColorTexture.index];
 			auto baseImage = model.images[baseColor.source];
-			BindTextureToMaterial(materialNode, "diffuseTextureName", outFolder, baseImage.uri);
+			BindTextureToMaterial(materialNode, "baseColorTextureName", outFolder, baseImage.uri);
 		}
 		
 		if (pbr.metallicRoughnessTexture.index >= 0)
 		{			
 			auto image = model.textures[pbr.metallicRoughnessTexture.index];
 			auto baseImage = model.images[image.source];
-			BindTextureToMaterial(materialNode, "metallicRoughness", outFolder, baseImage.uri);
+			BindTextureToMaterial(materialNode, "metallicRoughnessTextureName", outFolder, baseImage.uri);
 		}
 
 		if (material.normalTexture.index >= 0)
 		{
 			auto image = model.textures[material.normalTexture.index];
 			auto baseImage = model.images[image.source];
-			BindTextureToMaterial(materialNode, "bumpTextureName", outFolder, baseImage.uri);
+			BindTextureToMaterial(materialNode, "normalsTextureName", outFolder, baseImage.uri);
 		}
 
 		if (material.occlusionTexture.index >= 0)
 		{
 			auto image = model.textures[material.occlusionTexture.index];
 			auto baseImage = model.images[image.source];
-			BindTextureToMaterial(materialNode, "occlusion", outFolder, baseImage.uri);
+			BindTextureToMaterial(materialNode, "occlusionTextureName", outFolder, baseImage.uri);
 		}
 
 		if (material.emissiveTexture.index >= 0)
 		{
 			auto image = model.textures[material.emissiveTexture.index];
 			auto baseImage = model.images[image.source];
-			BindTextureToMaterial(materialNode, "emissive", outFolder, baseImage.uri);
+			BindTextureToMaterial(materialNode, "emissiveTextureName", outFolder, baseImage.uri);
 		}
 		
 		bool isTransparent = material.alphaMode == "BLEND";
 		materialNode["pipelineName"] = isTransparent ? "transparent" : "opaque";
 		materialNode["isOpaque"] = !isTransparent;
 
-		//todo: add real values
-		materialNode["roughness"] = 0;
-		materialNode["metallic"] = 0;
-		materialNode["sheen"] = 0;
-		materialNode["specularExponent"] = 0;
-		materialNode["indexOfRefraction"] = 0;
-		materialNode["transparency"] = 1;
-		materialNode["ambientColor"] = glm::vec3(1.0, 1.0, 1.0);
-		materialNode["diffuseColor"] = glm::vec3(1.0, 1.0, 1.0);
-		materialNode["specularColor"] = glm::vec3(1.0, 1.0, 1.0);
-		materialNode["emissionColor"] = glm::vec3(1.0, 1.0, 1.0);
+		materialNode["roughness"] = pbr.roughnessFactor;
+		materialNode["metallic"] = pbr.metallicFactor;
+		materialNode["baseColor"] = pbr.baseColorFactor;
 		
 		auto materialPath = outFolder + materialName + ".material";
 		std::ofstream fMaterialOut(materialPath);
@@ -202,7 +194,7 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 	    		vertex.normal = glm::normalize(glm::vec3(normalBuffer ? glm::make_vec3(&normalBuffer[v * normalByteStride]) : glm::vec3(0.0f)));
 	    		vertex.uv = uvBuffer ? glm::make_vec2(&uvBuffer[v * uvByteStride]) : glm::vec3(0.0f);
 	    		//vertex.uv1 = bufferTexCoordSet1 ? glm::make_vec2(&bufferTexCoordSet1[v * uv1ByteStride]) : glm::vec3(0.0f);
-	    		vertex.color = colorBuffer ? glm::make_vec4(&colorBuffer[v * colorByteStride]) : glm::vec4(1.0f);
+	    		vertex.color = colorBuffer != nullptr ? glm::make_vec4(&colorBuffer[v * colorByteStride]) : glm::vec4(1.0f);
 	    		
 	    		meshMeta.vertices.push_back(vertex);
 	    	}

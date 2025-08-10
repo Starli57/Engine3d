@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ResourcesStorage.h"
-#include "EngineCore/Assets/Material.h"
+#include "EngineCore/Assets/PbrMaterial.h"
 #include "EngineCore/Assets/Meta/MeshMeta.h"
 #include "EngineCore/Defines/DllDefines.h"
 #include "EngineCore/Rendering/IGraphicsApi.h"
@@ -33,7 +33,7 @@ namespace EngineCore
 		virtual void LoadTexture(const std::filesystem::path& path, uint32_t textureIndex) = 0;
 		virtual void UnLoadAllTextures() = 0;
 
-		void LoadAndDeserializeMaterial(const std::filesystem::path& path, const Ref<Material>& material);
+		void LoadAndDeserializeMaterial(const std::filesystem::path& path, const Ref<PbrMaterial>& material);
 		virtual void LoadMaterial(std::filesystem::path& path) = 0;
 		virtual void UnLoadAllMaterial() = 0;
 		

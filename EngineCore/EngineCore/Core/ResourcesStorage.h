@@ -11,7 +11,7 @@
 #include "EngineCore/Defines/DllDefines.h"
 #include "EngineCore/Utilities/UniqueId.h"
 #include "EngineCore/CustomAssert.h"
-#include "EngineCore/Assets/Material.h"
+#include "EngineCore/Assets/PbrMaterial.h"
 #include "EngineCore/Assets/Meta/MeshMeta.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/ProjectSettings.h"
@@ -51,7 +51,7 @@ namespace EngineCore
 
 		std::unordered_map<uint32_t, MeshMeta> customMeshes;
 	
-		std::vector<Ref<Material>> materials;
+		std::vector<Ref<PbrMaterial>> materials;
 		std::vector<uint32_t> meshMaterialBinding;
 	
 		ResourcesStorage(const Ref<ProjectSettings>& projectSettings);

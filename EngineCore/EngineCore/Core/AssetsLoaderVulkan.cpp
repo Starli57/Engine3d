@@ -220,7 +220,7 @@ namespace EngineCore
         auto materialIndex = assetsDatabaseVulkan->materialsIndexByPath.find(parsedMaterialPath);
         if (materialIndex == assetsDatabaseVulkan->materialsIndexByPath.end())
         {
-            spdlog::critical("Material not found {0}", meshMeta.materialPath);
+            spdlog::critical("PbrMaterial not found {0}", meshMeta.materialPath);
         }
 
         assetsDatabaseVulkan->meshMaterialBinding.at(meshIndex) = materialIndex->second;
@@ -237,7 +237,7 @@ namespace EngineCore
 
     void AssetsLoaderVulkan::LoadMaterial(std::filesystem::path& path)
     {
-        Ref<Material> material = CreateRef<Material>();
+        Ref<PbrMaterial> material = CreateRef<PbrMaterial>();
         auto materialIterator = assetsDatabase->materialsIndexByPath.find(path);
         auto index = materialIterator->second;
         LoadAndDeserializeMaterial(materialIterator->first, material);
