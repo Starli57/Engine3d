@@ -20,7 +20,7 @@
 #include "EngineCore/Components/RotationVelocityComponent.h"
 #include "EngineCore/Components/ScaleComponent.h"
 #include "EngineCore/Components/ShadowMapComponent.h"
-#include "EngineCore/Components/UboDiffuseLightComponent.h"
+#include "EngineCore/Components/LightComponent.h"
 #include "EngineCore/Components/UboModelComponent.h"
 #include "EngineCore/Components/UboWorldComponent.h"
 
@@ -70,7 +70,7 @@ namespace EngineCore
 		void SerializeComponent(YAML::Emitter& out, const MaterialComponent& component) const;
 		void SerializeComponent(YAML::Emitter& out, UboModelComponent& component) const;
 		void SerializeComponent(YAML::Emitter& out, UboWorldComponent& component) const;
-		void SerializeComponent(YAML::Emitter& out, const UboDiffuseLightComponent& component) const;
+		void SerializeComponent(YAML::Emitter& out, const LightComponent& component) const;
 		void SerializeComponent(YAML::Emitter& out, IdComponent& component) const;
 		void SerializeComponent(YAML::Emitter& out, const ShadowMapComponent& component) const;
 	

@@ -18,7 +18,7 @@ void ComponentsRenderer::Update(const Ref<Entity>& entity)
 	RenderComponent<MaterialComponent>(entity);
 	RenderComponent<CameraComponent>(entity);
 	RenderComponent<CameraFreeComponent>(entity);
-	RenderComponent<UboDiffuseLightComponent>(entity);
+	RenderComponent<LightComponent>(entity);
 	RenderComponent<UboModelComponent>(entity);
 	RenderComponent<UboWorldComponent>(entity);
 	RenderComponent<ShadowMapComponent>(entity);
@@ -63,9 +63,10 @@ void ComponentsRenderer::RenderComponent(const Ref<Entity>&, CameraFreeComponent
 	parametersRenderer->RenderParameter("Rotation speed", component.rotationSpeed, 0.2f, 0, 100);
 }
 
-void ComponentsRenderer::RenderComponent(const Ref<Entity>&, UboDiffuseLightComponent& component) const
+void ComponentsRenderer::RenderComponent(const Ref<Entity>&, LightComponent& component) const
 {
-	//	RenderParameter("Intensity", component->intensity, 0.01f, 0, FLT_MAX);
+	parametersRenderer->RenderColorParameter("Light Color", component.color);
+	parametersRenderer->RenderParameter("Intensity", component.intensity, 0.1f, 0, FLT_MAX);
 }
 
 void ComponentsRenderer::RenderComponent(const Ref<Entity>&, UboModelComponent& component) const

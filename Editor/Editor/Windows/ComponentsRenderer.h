@@ -13,7 +13,7 @@
 #include "EngineCore/Components/RotationVelocityComponent.h"
 #include "EngineCore/Components/CameraComponent.h"
 #include "EngineCore/Components/ScaleComponent.h"
-#include "EngineCore/Components/UboDiffuseLightComponent.h"
+#include "EngineCore/Components/LightComponent.h"
 #include "EngineCore/Components/UboModelComponent.h"
 #include "EngineCore/Components/UboWorldComponent.h"
 #include "EngineCore/Components/MeshComponent.h"
@@ -51,7 +51,7 @@ private:
 	void RenderComponent(const Ref<Entity>&, ScaleComponent& component) const;
 	void RenderComponent(const Ref<Entity>&, CameraComponent& component) const;
 	void RenderComponent(const Ref<Entity>&, CameraFreeComponent& component) const;
-	void RenderComponent(const Ref<Entity>&, UboDiffuseLightComponent& component) const;
+	void RenderComponent(const Ref<Entity>&, LightComponent& component) const;
 	void RenderComponent(const Ref<Entity>&, UboModelComponent& component) const;
 	void RenderComponent(const Ref<Entity>&, UboWorldComponent& component) const;
 	void RenderComponent(const Ref<Entity>&, MeshComponent& component) const;

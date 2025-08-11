@@ -15,8 +15,9 @@ layout(location = 4) in vec3 inLightPosition;
 layout(location = 5) in vec3 inLightDirection;
 layout(location = 6) in vec3 inViewPos;
 layout(location = 7) in vec4 inFragPosLightSpace;
-layout(location = 8) in mat4 inLightMatrix;
-layout(location = 12) in mat3 inTBN;
+layout(location = 8) in vec4 inLightColorAndIntensity;
+layout(location = 9) in mat4 inLightMatrix;
+layout(location = 13) in mat3 inTBN;
 
 layout(location = 0) out vec4 outColor;
 
@@ -78,27 +79,23 @@ void main()
 
 	float baseColor = max(dot(normal, reflectLightDir), 0.0);
 
-	vec3 F0 = vec3(0.04);
-	F0 = mix(F0, baseColorMap.rgb, metalness);
 	vec3 Lo = vec3(0.0);
-
 	vec3 h = normalize(viewDir + lightDirection);
+	
 	float distanceToLight = length(inLightPosition - inWorldPosition);
-	float attenuation = 10000.0 / distanceToLight;// / (distanceToLight * distanceToLight);
-	vec3 lightColor = vec3(1.0, 1.0, 1.0);
-	vec3 radiance = lightColor * attenuation;
+	float attenuation = 1.0 / distanceToLight;// / (distanceToLight * distanceToLight);
+	vec3 radiance = inLightColorAndIntensity.rgb * inLightColorAndIntensity.a * attenuation;
 
 	// cook-torrance brdf
 	float NDF = DistributionGGX(normal, h, roughness);
-	float G = GeometrySmith(normal, viewDir, lightDirection, roughness);
-	vec3 F = FresnelSchlick(max(dot(h, viewDir), 0.0), F0);
+	float geometrySmith = GeometrySmith(normal, viewDir, lightDirection, roughness);
+	vec3 fresnelSchlick = FresnelSchlick(max(dot(h, viewDir), 0.0), mix(vec3(0.04), baseColorMap.rgb, metalness));
 
-	vec3 kS = F;
-	vec3 kD = vec3(1.0) - kS;
+	vec3 kD = vec3(1.0) - fresnelSchlick;
 	kD *= 1.0 - metalness;
 
-	vec3 numerator = NDF * G * F;
-	float denominator = 4.0 * max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDirection), 0.0) + 0.0001;
+	vec3 numerator = NDF * geometrySmith * fresnelSchlick;
+	float denominator = 0.5 * max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDirection), 0.0) + 0.0001;
 	vec3 specular = numerator / denominator;
 
 	// add to outgoing radiance Lo

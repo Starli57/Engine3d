@@ -22,4 +22,5 @@ public:
 	bool RenderParameter(std::string& parameter) const;
 	void RenderParameter(const char* label, const std::filesystem::path& parameter,
 	                     const std::unordered_map<std::string, std::filesystem::path>& paths) const;
+	bool RenderColorParameter(const char* label, glm::vec3& color) const;
 };

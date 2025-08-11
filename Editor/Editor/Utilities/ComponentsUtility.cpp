@@ -22,7 +22,7 @@ const char* allComponentsNames[componentsLength] =
       "RotationVelocityComponent",
       "ScaleComponent",
       "ShadowMapComponent",
-      "UboDiffuseLightComponent",
+      "LightComponent",
       "UboModelComponent",
       "UboWorldComponent",
       "CameraFreeComponent",
@@ -43,7 +43,7 @@ bool HasComponent(Ref<Entity> entity, const std::string& componentName)
       if (componentName == "RotationVelocityComponent") return entity->HasComponent<RotationVelocityComponent>();
       if (componentName == "ScaleComponent") return entity->HasComponent<ScaleComponent>();
       if (componentName == "ShadowMapComponent") return entity->HasComponent<ShadowMapComponent>();
-      if (componentName == "UboDiffuseLightComponent") return entity->HasComponent<UboDiffuseLightComponent>();
+      if (componentName == "LightComponent") return entity->HasComponent<LightComponent>();
       if (componentName == "UboModelComponent") return entity->HasComponent<UboModelComponent>();
       if (componentName == "UboWorldComponent") return entity->HasComponent<UboWorldComponent>();
       if (componentName == "CameraFreeComponent") return entity->HasComponent<CameraFreeComponent>();
@@ -67,7 +67,7 @@ void AddComponent(Ref<Entity> entity, const std::string& componentName)
       if (componentName == "RotationVelocityComponent") entity->AddComponent<RotationVelocityComponent>();
       if (componentName == "ScaleComponent") entity->AddComponent<ScaleComponent>();
       if (componentName == "ShadowMapComponent") entity->AddComponent<ShadowMapComponent>();
-      if (componentName == "UboDiffuseLightComponent") entity->AddComponent<UboDiffuseLightComponent>();
+      if (componentName == "LightComponent") entity->AddComponent<LightComponent>();
       if (componentName == "UboModelComponent") entity->AddComponent<UboModelComponent>();
       if (componentName == "UboWorldComponent") entity->AddComponent<UboWorldComponent>();
       if (componentName == "CameraFreeComponent") entity->AddComponent<CameraFreeComponent>();
@@ -90,7 +90,7 @@ void RemoveComponent(Ref<Entity> entity, const std::string& componentName)
       if (componentName == "RotationVelocityComponent") entity->RemoveComponent<RotationVelocityComponent>();
       if (componentName == "ScaleComponent") entity->RemoveComponent<ScaleComponent>();
       if (componentName == "ShadowMapComponent") entity->RemoveComponent<ShadowMapComponent>();
-      if (componentName == "UboDiffuseLightComponent") entity->RemoveComponent<UboDiffuseLightComponent>();
+      if (componentName == "LightComponent") entity->RemoveComponent<LightComponent>();
       if (componentName == "UboModelComponent") entity->RemoveComponent<UboModelComponent>();
       if (componentName == "UboWorldComponent") entity->RemoveComponent<UboWorldComponent>();
       if (componentName == "CameraFreeComponent") entity->RemoveComponent<CameraFreeComponent>();

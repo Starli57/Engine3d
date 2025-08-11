@@ -149,7 +149,7 @@ namespace EngineCore
 		SerializeComponent<MaterialComponent>(emitter, entity);
 		SerializeComponent<UboModelComponent>(emitter, entity);
 		SerializeComponent<UboWorldComponent>(emitter, entity);
-		SerializeComponent<UboDiffuseLightComponent>(emitter, entity);
+		SerializeComponent<LightComponent>(emitter, entity);
 		SerializeComponent<ShadowMapComponent>(emitter, entity);
 		onSerializeClientEntities(entity, emitter);
 	}
@@ -294,10 +294,14 @@ namespace EngineCore
 		out << YAML::EndMap;
 	}
 
-	void EntitySerializer::SerializeComponent(YAML::Emitter& out, const UboDiffuseLightComponent& component) const
+	void EntitySerializer::SerializeComponent(YAML::Emitter& out, const LightComponent& component) const
 	{
-		out << YAML::Key << "UboDiffuseLightComponent";
+		out << YAML::Key << "LightComponent";
 		out << YAML::BeginMap;
+		
+		out << YAML::Key << "color" << YAML::Value << component.color;
+		out << YAML::Key << "intensity" << YAML::Value << component.intensity;
+		
 		out << YAML::EndMap;
 	}
 
@@ -410,9 +414,11 @@ namespace EngineCore
 
 	void EntitySerializer::InstantiateComponentUboDiffuseLight(const Ref<Entity>& entity, YAML::Node node) const
 	{
-		if (auto uboDiffuseLightComponent = node["UboDiffuseLightComponent"])
+		if (auto lightComponent = node["LightComponent"])
 		{
-			entity->AddComponent<UboDiffuseLightComponent>();
+			entity->AddComponent<LightComponent>(
+				lightComponent["color"].as<glm::vec3>(),
+				lightComponent["intensity"].as<float>());
 		}
 	}
 

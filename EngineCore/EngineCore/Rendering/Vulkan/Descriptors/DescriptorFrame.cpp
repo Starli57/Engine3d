@@ -100,19 +100,20 @@ namespace AVulkan
         memcpy(cursorUniformBuffers.at(frame)->bufferMapped, &inputManager->cursorPlacementWorldPosition, sizeof(glm::vec3));
         
         //todo: support multiple lights
-        const auto lightEntries = ecs->registry->view<PositionComponent, RotationComponent, UboDiffuseLightComponent>();
+        const auto lightEntries = ecs->registry->view<PositionComponent, RotationComponent, LightComponent>();
         for (const auto entity : lightEntries)
         {
-            //todo: now color descriptor can handle only 1 light entry, need to extend
+            //todo: now lights descriptor can handle only 1 light entry, need to extend
             auto& position = lightEntries.get<PositionComponent>(entity).position;
             auto& rotation = lightEntries.get<RotationComponent>(entity).rotation;
+            auto& lightComponent = lightEntries.get<LightComponent>(entity);
             glm::mat4 viewProjection = lightsProjection.projection * lightsProjection.view;
 
             glm::vec3 direction;
             CalculateDirection(&direction, rotation + glm::vec3(0,90,0));
             Normalize(&direction);
 
-            UboLight uboLight = UboLight(viewProjection, position, direction);
+            UboLight uboLight = UboLight(viewProjection, position, direction, lightComponent.color, lightComponent.intensity);
             memcpy(lightUniformBuffers.at(frame)->bufferMapped, &uboLight, sizeof(UboLight));
         }
     }
@@ -129,7 +130,7 @@ namespace AVulkan
         }
 
         //todo: support multiple light entries 
-        auto lightsEntries = ecs->registry->view<PositionComponent, UboDiffuseLightComponent, UboWorldComponent>();
+        auto lightsEntries = ecs->registry->view<PositionComponent, LightComponent, UboWorldComponent>();
         if (lightsEntries.begin() != lightsEntries.end())
         {
             auto firstLight = lightsEntries.front();

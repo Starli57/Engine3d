@@ -20,7 +20,7 @@
 #include "EngineCore/Components/RotationVelocityComponent.h"
 #include "EngineCore/Components/ScaleComponent.h"
 #include "EngineCore/Components/ShadowMapComponent.h"
-#include "EngineCore/Components/UboDiffuseLightComponent.h"
+#include "EngineCore/Components/LightComponent.h"
 #include "EngineCore/Components/UboModelComponent.h"
 #include "EngineCore/Components/UboWorldComponent.h"
 #include "ExampleProject/Components/CameraFreeComponent.h"

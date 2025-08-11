@@ -86,3 +86,8 @@ void ParametersRenderer::RenderParameter(const char* label, const std::filesyste
         ImGui::EndPopup();
     }
 }
+
+bool ParametersRenderer::RenderColorParameter(const char* label, glm::vec3& color) const
+{
+    return ImGui::ColorEdit3(label, glm::value_ptr(color));
+}

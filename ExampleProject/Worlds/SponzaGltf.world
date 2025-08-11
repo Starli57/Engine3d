@@ -381,8 +381,9 @@ RotationComponent:
   rotation: [7, -50, 40]
 UboWorldComponent:
   {}
-UboDiffuseLightComponent:
-  {}
+LightComponent:
+  intensity: 1000
+  color: [1, 1, 1]
 ShadowMapComponent:
   fov: 60
   zNear: 1
