@@ -9,7 +9,7 @@
 namespace VkUtils
 {
 	VkVertexInputBindingDescription GetVertexInputBindingDescription();
-	std::array<VkVertexInputAttributeDescription, 6> GetVertexInputAttributeDescriptions();
+	std::array<VkVertexInputAttributeDescription, 4> GetVertexInputAttributeDescriptions();
 
 	void CreateVertexBuffer(const Ref<AVulkan::VulkanContext>& context, std::vector<Vertex>& vertices,
 		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool);

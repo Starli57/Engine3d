@@ -12,17 +12,16 @@ struct CubeDefinition : public MeshMeta
         auto whiteColor = glm::vec3(1.0f, 1.0f, 1.0f);
         auto vec3zero = glm::vec3(0, 0, 0);
 
-        //todo: calculate normal, tangent and bitangent
         vertices = std::vector<Vertex>
         {
-            Vertex(glm::vec3(-1.0f, -1.0f,  1.0f), vec3zero, vec3zero, vec3zero, whiteColor, glm::vec3(1.0f, 0.0f, 0.0f)), // 0: Front-bottom-left
-            Vertex(glm::vec3( 1.0f, -1.0f,  1.0f), vec3zero, vec3zero, vec3zero, whiteColor, glm::vec3(0.0f, 1.0f, 0.0f)), // 1: Front-bottom-right
-            Vertex(glm::vec3( 1.0f,  1.0f,  1.0f), vec3zero, vec3zero, vec3zero, whiteColor, glm::vec3(0.0f, 0.0f, 1.0f)), // 2: Front-top-right
-            Vertex(glm::vec3(-1.0f,  1.0f,  1.0f), vec3zero, vec3zero, vec3zero, whiteColor, glm::vec3(1.0f, 1.0f, 0.0f)), // 3: Front-top-left
-            Vertex(glm::vec3(-1.0f, -1.0f, -1.0f), vec3zero, vec3zero, vec3zero, whiteColor, glm::vec3(1.0f, 0.0f, 1.0f)), // 4: Back-bottom-left
-            Vertex(glm::vec3( 1.0f, -1.0f, -1.0f), vec3zero, vec3zero, vec3zero, whiteColor, glm::vec3(1.0f, 1.0f, 1.0f)), // 5: Back-bottom-right
-            Vertex(glm::vec3( 1.0f,  1.0f, -1.0f), vec3zero, vec3zero, vec3zero, whiteColor, glm::vec3(0.5f, 0.5f, 0.5f)), // 6: Back-top-right
-            Vertex(glm::vec3(-1.0f,  1.0f, -1.0f), vec3zero, vec3zero, vec3zero, whiteColor, glm::vec3(0.0f, 0.5f, 0.5f))  // 7: Back-top-left
+            Vertex(glm::vec3(-1.0f, -1.0f,  1.0f), vec3zero, whiteColor, glm::vec3(1.0f, 0.0f, 0.0f)), // 0: Front-bottom-left
+            Vertex(glm::vec3( 1.0f, -1.0f,  1.0f), vec3zero, whiteColor, glm::vec3(0.0f, 1.0f, 0.0f)), // 1: Front-bottom-right
+            Vertex(glm::vec3( 1.0f,  1.0f,  1.0f), vec3zero, whiteColor, glm::vec3(0.0f, 0.0f, 1.0f)), // 2: Front-top-right
+            Vertex(glm::vec3(-1.0f,  1.0f,  1.0f), vec3zero, whiteColor, glm::vec3(1.0f, 1.0f, 0.0f)), // 3: Front-top-left
+            Vertex(glm::vec3(-1.0f, -1.0f, -1.0f), vec3zero, whiteColor, glm::vec3(1.0f, 0.0f, 1.0f)), // 4: Back-bottom-left
+            Vertex(glm::vec3( 1.0f, -1.0f, -1.0f), vec3zero, whiteColor, glm::vec3(1.0f, 1.0f, 1.0f)), // 5: Back-bottom-right
+            Vertex(glm::vec3( 1.0f,  1.0f, -1.0f), vec3zero, whiteColor, glm::vec3(0.5f, 0.5f, 0.5f)), // 6: Back-top-right
+            Vertex(glm::vec3(-1.0f,  1.0f, -1.0f), vec3zero, whiteColor, glm::vec3(0.0f, 0.5f, 0.5f))  // 7: Back-top-left
         };
 
         indices = std::vector<uint32_t>

@@ -237,8 +237,6 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 	    }
     }
 	
-    //CalculateNormalsTangents(meshes);
-        
     //--format meshes
     std::vector<std::string> serializedMeshNames;
     serializedMeshNames.resize(meshes->size());

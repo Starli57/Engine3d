@@ -114,9 +114,7 @@ void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std
             i++;
         }
     }
-
-    //CalculateNormalsTangents(meshes);
-        
+    
     //--format meshes
     std::vector<std::string> serializedMeshNames;
     std::vector<std::string> serializedMaterialNames;

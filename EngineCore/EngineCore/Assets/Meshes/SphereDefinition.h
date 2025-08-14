@@ -27,12 +27,9 @@ struct SphereDefinition : public MeshMeta
 
                 const float x = xy * cosf(sectorAngle);
                 const float y = xy * sinf(sectorAngle);
-                //todo: calculate tangent and bitangent
                 vertices.emplace_back(
                     glm::vec3(x, y, z), 
                     glm::vec3(x, y, z),
-                    glm::vec3(0, 0, 0),
-                    glm::vec3(0, 0, 0),
                     glm::vec3(1.0f), 
                     glm::vec2(static_cast<float>(sector) / sectorCount, static_cast<float>(stack) / stackCount));
             }

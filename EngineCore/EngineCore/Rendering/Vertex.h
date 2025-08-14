@@ -8,21 +8,21 @@ namespace EngineCore
 	{
 		glm::vec3 position;
 		glm::vec3 normal;
-		glm::vec3 tangent;
-		glm::vec3 bitangent;
 		glm::vec3 color;
 		glm::vec2 uv;
 
 		Vertex() 
 		{
+			position = glm::vec3(0.0f);
+			normal = glm::vec3(0.0f);
+			color = glm::vec3(1.0f);
+			uv = glm::vec2(0.0f);
 		}
 
-		Vertex(glm::vec3 position, glm::vec3 normal, glm::vec3 tangent, glm::vec3 bitangent, glm::vec3 color, glm::vec2 uv)
+		Vertex(glm::vec3 position, glm::vec3 normal, glm::vec3 color, glm::vec2 uv)
 		{
 			this->position = position;
 			this->normal = normal;
-			this->tangent = tangent;
-			this->bitangent = bitangent;
 			this->color = color;
 			this->uv = uv;
 		}

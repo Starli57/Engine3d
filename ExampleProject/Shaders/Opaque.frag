@@ -17,7 +17,6 @@ layout(location = 6) in vec3 inViewPos;
 layout(location = 7) in vec4 inFragPosLightSpace;
 layout(location = 8) in vec4 inLightColorAndIntensity;
 layout(location = 9) in mat4 inLightMatrix;
-layout(location = 13) in mat3 inTBN;
 
 layout(location = 0) out vec4 outColor;
 

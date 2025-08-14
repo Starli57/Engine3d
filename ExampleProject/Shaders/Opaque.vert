@@ -2,10 +2,8 @@
 
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec3 inNormal;
-layout(location = 2) in vec3 inTangent;
-layout(location = 3) in vec3 inBitangent;
-layout(location = 4) in vec2 inUv;
-layout(location = 5) in vec3 inColor;
+layout(location = 2) in vec2 inUv;
+layout(location = 3) in vec3 inColor;
 
 layout(binding = 0) uniform World 
 {
@@ -36,7 +34,6 @@ layout(location = 6) out vec3 outViewPosition;
 layout(location = 7) out vec4 outFragPosLightSpace;
 layout(location = 8) out vec4 outLightColorAndIntensity;
 layout(location = 9) out mat4 outLightMatrix;
-layout(location = 13) out mat3 outTBN;
 
 void main() 
 {
@@ -52,9 +49,4 @@ void main()
     outLightMatrix = lights.viewProjection;
     outFragPosLightSpace = outLightMatrix * vec4(outWorldPosition, 1.0);
     outLightColorAndIntensity = lights.inLightColorAndIntensity;
-    
-    vec3 T = normalize(vec3(uboM.model * vec4(inTangent,   0.0)));
-    vec3 B = normalize(vec3(uboM.model * vec4(inBitangent, 0.0)));
-    vec3 N = normalize(vec3(uboM.model * vec4(inNormal,    0.0)));
-    outTBN = mat3(T, B, N);
 }
