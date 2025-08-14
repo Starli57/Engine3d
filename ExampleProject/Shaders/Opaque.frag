@@ -67,11 +67,10 @@ void main()
 	float roughness = metallicRoughnessMap.g * material.roughnessFactor;
 	
 	vec3 normal = normalize(inNormal);
-	//	if (normalMap != vec3(0.0))
-	//	{
-	//		normal = normalMap * 2.0 - 1.0;
-	//		normal = normalize(inTBN * normal);
-	//	}
+	if (normalMap != vec3(0.0))
+	{
+		normal = ApplyNormalMap(normal, inWorldPosition, normalMap, uv);
+	}
 
 	vec3 viewDir = normalize(inViewPos - inWorldPosition);
 	vec3 lightDirection = normalize(inLightPosition - inWorldPosition);

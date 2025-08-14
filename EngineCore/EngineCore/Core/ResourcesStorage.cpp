@@ -168,9 +168,11 @@ namespace EngineCore
 	{
 		spdlog::info("FillTexturesPaths");
 		auto relevantExtensions = std::vector<std::string>();
-		relevantExtensions.reserve(2);
+		relevantExtensions.reserve(4);
 		relevantExtensions.emplace_back(".png");
 		relevantExtensions.emplace_back(".jpg");
+		relevantExtensions.emplace_back(".JPG");
+		relevantExtensions.emplace_back(".jpeg");
 	
 		IOUtility().FindAndEmplaceResourcesFiles(projectSettings->resourcesPath, relevantExtensions, texturesPaths, texturesIndexByPath);
 		meshLoadStatuses.resize(texturesPaths.size(), 0);
