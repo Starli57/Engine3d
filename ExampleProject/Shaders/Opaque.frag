@@ -44,7 +44,9 @@ const float shadowsEffect = 0.25;
 void main()
 {
 	
-	vec4 baseColorMap = sRGBToLinear(texture(baseColorMapSampler, uv));
+	vec4 baseColorMap = texture(baseColorMapSampler, uv);
+	baseColorMap = vec4(pow(baseColorMap.xyz, vec3(2.2)), baseColorMap.w);
+	
 	baseColorMap = vec4(
 		baseColorMap.r * material.baseColorFactor.r * inVertexColor.r,
 		baseColorMap.g * material.baseColorFactor.g * inVertexColor.g,
@@ -107,7 +109,7 @@ void main()
 	color += emissiveMap;
 	
 	color = color / (color + vec3(1.0));
-	color = linearTosRGB(color);
+	color = pow(color, vec3(1.0 / 2.2));
 
 	outColor = vec4(color.rgb, material.baseColorFactor.a);
 }

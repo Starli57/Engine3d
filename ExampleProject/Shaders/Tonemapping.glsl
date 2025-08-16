@@ -37,6 +37,11 @@ vec3 RRTAndODTFit(vec3 color)
     return a / b;
 }
 
+vec3 toneMapReinhard(vec3 color)
+{
+    return color / (color + vec3(1.0));
+}
+
 // tone mapping
 vec3 toneMapACES_Hill(vec3 color)
 {
