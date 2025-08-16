@@ -3,6 +3,7 @@
 #include "PbrMath.glsl"
 #include "ShadowMapsMath.glsl"
 #include "Constants.glsl"
+#include "sRGB.glsl"
 
 precision highp float;
 precision highp sampler2DShadow;
@@ -37,14 +38,13 @@ layout(set = 1, binding = 5) uniform Material
 layout(set = 2, binding = 0) uniform sampler2D shadowMapSampler;
 
 const float baseColorLevel = 1.0;
-const float ambientLevel = 0.03;
-const float shadowsEffect = 0.35;
-const float gamma = 2.2;
+const float ambientLevel = 0.02;
+const float shadowsEffect = 0.25;
 
 void main()
 {
 	
-	vec4 baseColorMap = pow(texture(baseColorMapSampler, uv), vec4(gamma));
+	vec4 baseColorMap = sRGBToLinear(texture(baseColorMapSampler, uv));
 	baseColorMap = vec4(
 		baseColorMap.r * material.baseColorFactor.r * inVertexColor.r,
 		baseColorMap.g * material.baseColorFactor.g * inVertexColor.g,
@@ -81,7 +81,7 @@ void main()
 	vec3 h = normalize(viewDir + lightDirection);
 	
 	float distanceToLight = length(inLightPosition - inWorldPosition);
-	float attenuation = 1.0 / distanceToLight;// / (distanceToLight * distanceToLight);
+	float attenuation = 1.0 / (distanceToLight * distanceToLight);
 	vec3 radiance = inLightColorAndIntensity.rgb * inLightColorAndIntensity.a * attenuation;
 
 	// cook-torrance brdf
@@ -107,7 +107,7 @@ void main()
 	color += emissiveMap;
 	
 	color = color / (color + vec3(1.0));
-	color = pow(color, vec3(1.0 / gamma));
+	color = linearTosRGB(color);
 
 	outColor = vec4(color.rgb, material.baseColorFactor.a);
 }
