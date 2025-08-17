@@ -3,7 +3,6 @@
 #include "PbrMath.glsl"
 #include "ShadowMapsMath.glsl"
 #include "Constants.glsl"
-#include "sRGB.glsl"
 
 precision highp float;
 precision highp sampler2DShadow;
