@@ -1,6 +1,11 @@
 #include "TransformSystem.h"
 
+#include "EngineCore/Components/PositionComponent.h"
+#include "EngineCore/Components/RotationComponent.h"
+#include "EngineCore/Components/ScaleComponent.h"
+#include "EngineCore/Components/UboModelComponent.h"
 #include "EngineCore/Profiler/Profiler.h"
+#include "glm/ext/matrix_transform.hpp"
 
 TransformSystem::TransformSystem(const Ref<Ecs>& ecs) : ecs(ecs)
 {

@@ -1,8 +1,14 @@
 #include "ViewProjectionSystem.h"
 
+#include "EngineCore/Components/CameraComponent.h"
+#include "EngineCore/Components/PositionComponent.h"
+#include "EngineCore/Components/RotationComponent.h"
 #include "EngineCore/Components/ShadowMapComponent.h"
+#include "EngineCore/Components/UboWorldComponent.h"
 #include "EngineCore/Profiler/Profiler.h"
-using namespace EngineCore;
+#include "EngineCore/Utilities/MathUtility.h"
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/ext/matrix_transform.hpp"
 
 ViewProjectionSystem::ViewProjectionSystem(const Ref<Ecs>& ecs, GLFWwindow* window)
 {
@@ -16,7 +22,7 @@ void ViewProjectionSystem::Update(float deltaTime = 0)
 	glfwGetFramebufferSize(window, &width, &height);
 	if (width == 0 || height == 0) return;
 
-	Profiler::GetInstance().BeginSample("ViewProjectionSystems");
+	EngineCore::Profiler::GetInstance().BeginSample("ViewProjectionSystems");
 	const auto screenAspectRatio = static_cast<float>(width) / static_cast<float>(height);
 
 	const auto cameraEntities = ecs->registry->view<PositionComponent, RotationComponent, UboWorldComponent, CameraComponent>();
@@ -52,8 +58,8 @@ void ViewProjectionSystem::Update(float deltaTime = 0)
 		auto& shadowMapComponent = allProjections.get<ShadowMapComponent>(entity);
 		
 		glm::vec3 direction;
-		CalculateDirection(&direction, rotation);
-		Normalize(&direction);
+		EngineCore::CalculateDirection(&direction, rotation);
+		EngineCore::Normalize(&direction);
 
 		uboComponent.view = lookAt(position, position + direction, shadowMapComponent.upAxis);
 		const auto projection = glm::perspective(glm::radians(shadowMapComponent.fov), screenAspectRatio, shadowMapComponent.zNear, shadowMapComponent.zFar);
@@ -61,5 +67,5 @@ void ViewProjectionSystem::Update(float deltaTime = 0)
 		uboComponent.projection = projection;
 		uboComponent.position = position;
 	}
-	Profiler::GetInstance().EndSample();
+	EngineCore::Profiler::GetInstance().EndSample();
 }

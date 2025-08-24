@@ -29,13 +29,11 @@ namespace EngineCore
         graphicsQueueMutex = CreateUniqueRef<std::mutex>();
     
         vulkanApi = dynamic_cast<GraphicsApiVulkan*>(graphicsApi);
-    	assetsDatabase->textureLoadStatuses.resize(assetsDatabase->texturesPaths.size());
     	assetsDatabase->materialLoadStatuses.resize(assetsDatabase->materialsPaths.size());
-    	assetsDatabase->meshLoadStatuses.resize(assetsDatabase->meshesPaths.size());
-
     	assetsDatabase->materials.resize(assetsDatabase->materialsPaths.size());
 
         auto meshesCount = assetsDatabase->meshesIndexByPath.size() + assetsDatabase->customMeshes.size();
+    	assetsDatabase->meshLoadStatuses.resize(meshesCount);
         assetsDatabase->vertexBuffers.resize(meshesCount);
         assetsDatabase->vertexBuffersMemory.resize(meshesCount);
         assetsDatabase->indexBuffers.resize(meshesCount);
@@ -47,6 +45,7 @@ namespace EngineCore
         assetsDatabase->boundingBoxCenter.resize(meshesCount);
         
         auto texturesCount = assetsDatabase->texturesIndexByPath.size();
+    	assetsDatabase->textureLoadStatuses.resize(texturesCount);
         assetsDatabase->images.resize(texturesCount);
         assetsDatabase->imagesViews.resize(texturesCount);
         assetsDatabase->imagesMemory.resize(texturesCount);

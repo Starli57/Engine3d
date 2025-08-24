@@ -118,7 +118,10 @@ namespace EngineCore
 			graphicsApi->Render();
 			Profiler::GetInstance().EndSample();
 		
+			Profiler::GetInstance().BeginSample("Editor");
 			editorUpdate();
+			Profiler::GetInstance().EndSample();
+			
 			Profiler::GetInstance().Reset();
 		
 			uint32_t targetDeltaMs = 16;

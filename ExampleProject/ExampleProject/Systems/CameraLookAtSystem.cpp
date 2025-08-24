@@ -7,7 +7,7 @@
 #include "EngineCore/Utilities/MathUtility.h"
 #include "EngineCore/Utilities/PhysicsUtility.h"
 
-CameraLookAtSystem::CameraLookAtSystem(const Ref<Ecs>& ecs, const Ref<InputManager>& input) : ecs(ecs), input(input)
+CameraLookAtSystem::CameraLookAtSystem(const Ref<Ecs>& ecs, const Ref<EngineCore::InputManager>& input) : ecs(ecs), input(input)
 {
 }
 
@@ -23,8 +23,8 @@ void CameraLookAtSystem::Update(float deltaTime)
         cameraPosition = cameraEntities.get<PositionComponent>(entity).position;
         auto& rotation = cameraEntities.get<RotationComponent>(entity).rotation;
 
-        CalculateDirection(&cameraDirection, rotation);
-        Normalize(&cameraDirection);
+        EngineCore::CalculateDirection(&cameraDirection, rotation);
+        EngineCore::Normalize(&cameraDirection);
     }
 	
     const auto selectableEntities = ecs->registry->view<PositionComponent, RotationComponent, ScaleComponent>();

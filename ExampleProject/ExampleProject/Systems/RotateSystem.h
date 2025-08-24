@@ -5,7 +5,6 @@
 #include "EngineCore/Components/RotationComponent.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
-using namespace EngineCore;
 
 class RotateSystem : ISystem
 {
