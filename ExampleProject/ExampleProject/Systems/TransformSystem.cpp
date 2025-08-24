@@ -13,7 +13,7 @@ TransformSystem::TransformSystem(const Ref<Ecs>& ecs) : ecs(ecs)
 
 void TransformSystem::Update(float deltaTime)
 {
-	EngineCore::Profiler::GetInstance().BeginSample("TransformSystems");
+	Engine::Profiler::GetInstance().BeginSample("TransformSystems");
 	const auto transformComponents = ecs->registry->view<UboModelComponent, PositionComponent, RotationComponent, ScaleComponent>();
 	for (const auto entity : transformComponents)
 	{
@@ -32,5 +32,5 @@ void TransformSystem::Update(float deltaTime)
 
 		uboComponent.model = uboModel;
 	}
-	EngineCore::Profiler::GetInstance().EndSample();
+	Engine::Profiler::GetInstance().EndSample();
 }

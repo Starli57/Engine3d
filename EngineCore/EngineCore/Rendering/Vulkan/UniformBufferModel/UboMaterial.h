@@ -11,7 +11,7 @@ namespace AVulkan
         float roughnessFactor;
         float alphaCutoffFactor;
         
-        UboMaterial(const Ref<PbrMaterialAsset>& material) : 
+        UboMaterial(const Ref<Engine::PbrMaterialAsset>& material) : 
             baseColorFactor(material->baseColor), metallicFactor(material->metallic),
             roughnessFactor(material->roughness), alphaCutoffFactor(material->alphaCutoff)
         {

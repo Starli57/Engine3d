@@ -24,7 +24,7 @@
 
 namespace AVulkan
 {
-	class GraphicsApiVulkan : public IGraphicsApi
+	class GraphicsApiVulkan : public Engine::IGraphicsApi
 	{
 	public:
 		Ref<VulkanContext> context;
@@ -49,7 +49,7 @@ namespace AVulkan
 		VkCommandPool& GetCommandPool() const { return commandsManager->GetCommandPool(); }
 		VkCommandBuffer& GetCommandBuffer() const { return commandsManager->GetCommandBuffer(frame); }
 		
-		GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<InputManager> inputManager, const Ref<ResourcesStorageVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* window);
+		GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager, const Ref<Engine::ResourcesStorageVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* window);
 		virtual ~GraphicsApiVulkan() override;
 
 		void Init() override;
@@ -59,10 +59,10 @@ namespace AVulkan
 
 	private:
 		Ref<Ecs> ecs;
-		Ref<InputManager> inputManager;
-		Ref<ResourcesStorageVulkan> assetDatabase;
+		Ref<Engine::InputManager> inputManager;
+		Ref<Engine::ResourcesStorageVulkan> assetDatabase;
 		Ref<ProjectSettings> projectSettings;
-		Ref<Rollback> rollback;
+		Ref<Engine::Rollback> rollback;
 		
 		CommandsManager* commandsManager;
 

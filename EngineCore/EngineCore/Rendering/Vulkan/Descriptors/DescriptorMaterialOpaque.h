@@ -4,15 +4,13 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
 
-using namespace EngineCore;
-
 namespace AVulkan
 {
     class DescriptorMaterialOpaque : public IDescriptor
     {
     public:
         DescriptorMaterialOpaque(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs,
-            const Ref<DescriptorsAllocator>& descriptorsAllocator, VkSampler& textureSampler, const Ref<ResourcesStorageVulkan>& resourcesStorage);
+            const Ref<DescriptorsAllocator>& descriptorsAllocator, VkSampler& textureSampler, const Ref<Engine::ResourcesStorageVulkan>& resourcesStorage);
 
         ~DescriptorMaterialOpaque() override;
         void CreateLayout() override;
@@ -22,7 +20,7 @@ namespace AVulkan
         VkDescriptorSet& GetDescriptorSet(const uint32_t frame, const uint32_t materialIndex) { return descriptorSets.at(frame).at(materialIndex); }
 
     private:
-        Ref<ResourcesStorageVulkan> resourcesStorage;
+        Ref<Engine::ResourcesStorageVulkan> resourcesStorage;
         
         std::vector<VkDescriptorPool> descriptorPools;
         std::vector<std::vector<VkDescriptorSet>> descriptorSets;

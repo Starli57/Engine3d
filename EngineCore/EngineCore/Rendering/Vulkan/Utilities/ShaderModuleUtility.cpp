@@ -12,7 +12,7 @@ namespace VkUtils
 	{
 		spdlog::info("Create shader module: {0}", shaderPath);
 
-		const std::vector<char>& shaderCode = EngineCore::IOUtility().ReadFile(shaderPath);
+		const std::vector<char>& shaderCode = Engine::IOUtility().ReadFile(shaderPath);
 
 		VkShaderModuleCreateInfo createInfo{};
 		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -21,7 +21,7 @@ namespace VkUtils
 
 		VkShaderModule shaderModule;
 		auto createStatus = vkCreateShaderModule(logicalDevice, &createInfo, nullptr, &shaderModule);
-		EngineCore::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create shader module, statuc: " + createStatus);
+		Engine::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create shader module, statuc: " + createStatus);
 
 		return shaderModule;
 	}

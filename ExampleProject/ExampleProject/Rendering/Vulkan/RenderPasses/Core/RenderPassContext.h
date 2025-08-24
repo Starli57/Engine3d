@@ -12,14 +12,14 @@ namespace AVulkan
     public:
         DescriptorsManager* descriptorsManager;
         Ref<Ecs> ecs;
-        Ref<ResourcesStorageVulkan> assetsDatabase;
+        Ref<Engine::ResourcesStorageVulkan> assetsDatabase;
         Ref<SwapChainData> swapChainData;
         
         std::vector<DrawEntity> transparentEntities;
         std::vector<DrawEntity> opaqueEntities;
 
         RenderPassContext(DescriptorsManager* descriptorsManager, const Ref<Ecs>& ecs,
-            const Ref<ResourcesStorageVulkan>& assetsDatabase, const Ref<SwapChainData>& swapChainData)
+            const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase, const Ref<SwapChainData>& swapChainData)
             : descriptorsManager(descriptorsManager), ecs(ecs), assetsDatabase(assetsDatabase), swapChainData(swapChainData) {}
     };
 }

@@ -1,6 +1,6 @@
 #include "VulkanTextureView.h"
 
-VulkanTextureView::VulkanTextureView(const Ref<Engine>& engine, AVulkan::GraphicsApiVulkan& vulkanApi)
+VulkanTextureView::VulkanTextureView(const Ref<Engine::EngineApi>& engine, AVulkan::GraphicsApiVulkan& vulkanApi)
 	: engine(engine), vulkanApi(vulkanApi)
 {
     // const auto shadowMap = vulkanApi.GetRenderPassShadowMap();

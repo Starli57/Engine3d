@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "EngineCore/Editor/IWindow.h"
 
-class ResourcesConverterWindow : public EngineCore::IWindow
+class ResourcesConverterWindow : public Engine::IWindow
 {
 public:
     ResourcesConverterWindow();

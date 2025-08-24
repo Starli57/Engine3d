@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "EngineCore/Editor/IWindow.h"
 
-class MaterialEditor : public EngineCore::IWindow
+class MaterialEditor : public Engine::IWindow
 {
 public:
     void Update() override;

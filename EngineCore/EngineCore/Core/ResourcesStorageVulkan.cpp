@@ -3,7 +3,7 @@
 
 #include "EngineCore/Utilities/IOUtility.h"
 
-namespace EngineCore
+namespace Engine
 {
 	ResourcesStorageVulkan::ResourcesStorageVulkan(const Ref<ProjectSettings>& projectSettings)
 		: projectSettings(projectSettings)

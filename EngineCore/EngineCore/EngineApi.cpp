@@ -1,13 +1,13 @@
 #include "EngineCore/Pch.h"
 
-#include "Engine.h"
+#include "EngineApi.h"
 
 #include "CustomAssert.h"
 #include "Profiler/Profiler.h"
 
-namespace EngineCore
+namespace Engine
 {
-	Engine::Engine(const Ref<ProjectSettings>& projectSettings) : projectSettings(projectSettings)
+	EngineApi::EngineApi(const Ref<ProjectSettings>& projectSettings) : projectSettings(projectSettings)
 	{
 		InitLogger();
 
@@ -21,12 +21,12 @@ namespace EngineCore
 		throw std::runtime_error("The rendering api is not supported");
 #endif
 
-		entitySerializer = CreateRef<EngineCore::EntitySerializer>(projectSettings,assetsDatabase);
+		entitySerializer = CreateRef<Engine::EntitySerializer>(projectSettings,assetsDatabase);
 	
 		spdlog::info("--Engine init finished--");
 	}
 
-	Engine::~Engine()
+	EngineApi::~EngineApi()
 	{
 		resourcesManager->UnLoadAllMaterial();
 		resourcesManager->UnLoadAllMeshes();
@@ -42,7 +42,7 @@ namespace EngineCore
 		glfwTerminate();
 	}
 
-	void Engine::InitLogger() const
+	void EngineApi::InitLogger() const
 	{
 #ifdef DEBUG
 		spdlog::set_level(spdlog::level::debug);
@@ -54,20 +54,20 @@ namespace EngineCore
 
 	}
 
-	void Engine::InitGlfw() const
+	void EngineApi::InitGlfw() const
 	{
 		auto status = glfwInit();
 		CAssert::Check(status == GLFW_TRUE, "Glfw can't be init");
 	}
 
-	void Engine::SetupGlfwHints() const
+	void EngineApi::SetupGlfwHints() const
 	{
 #if GLFW_INCLUDE_VULKAN
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 #endif
 	}
 
-	void Engine::CreateAppWindow()
+	void EngineApi::CreateAppWindow()
 	{
 		window = glfwCreateWindow(1600, 1200, projectSettings->projectName.c_str(), nullptr, nullptr);
 		CAssert::Check(window != nullptr, "GLFW window can't be created");
@@ -75,12 +75,12 @@ namespace EngineCore
 		glfwSetWindowUserPointer(window, this);
 	}
 
-	void Engine::DefineInput()
+	void EngineApi::DefineInput()
 	{
 		input = CreateRef<InputManager>(window, ecs);
 	}
 
-	void Engine::DefineGraphicsApi()
+	void EngineApi::DefineGraphicsApi()
 	{
 #if GLFW_INCLUDE_VULKAN
 		graphicsApi = new AVulkan::GraphicsApiVulkan(ecs, input, assetsDatabase, projectSettings, window);
@@ -89,7 +89,7 @@ namespace EngineCore
 #endif
 	}
 
-	void Engine::DefineResourcesManager()
+	void EngineApi::DefineResourcesManager()
 	{
 #if GLFW_INCLUDE_VULKAN
 		resourcesManager = CreateRef<AssetsLoaderVulkan>(projectSettings, graphicsApi, assetsDatabase);
@@ -98,7 +98,7 @@ namespace EngineCore
 #endif
 	}
 
-	void Engine::Run()
+	void EngineApi::Run()
 	{
 	
 		while (!glfwWindowShouldClose(window))
@@ -138,12 +138,12 @@ namespace EngineCore
 		spdlog::info("Window closed");
 	}
 
-	void Engine::BindGameSystemsUpdateFunction(std::function<void()> gameSystemsUpdate)
+	void EngineApi::BindGameSystemsUpdateFunction(std::function<void()> gameSystemsUpdate)
 	{
 		this->gameSystemsUpdate = gameSystemsUpdate;
 	}
 
-	void Engine::BindEditorUpdateFunction(std::function<void()> editorUpdate)
+	void EngineApi::BindEditorUpdateFunction(std::function<void()> editorUpdate)
 	{
 		this->editorUpdate = editorUpdate;
 	}

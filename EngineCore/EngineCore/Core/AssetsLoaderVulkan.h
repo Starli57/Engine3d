@@ -4,7 +4,7 @@
 #include "EngineCore/Rendering/IGraphicsApi.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 
-namespace EngineCore
+namespace Engine
 {
 	class AssetsLoaderVulkan
 	{

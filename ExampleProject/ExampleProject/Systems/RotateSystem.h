@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EngineCore/Engine.h"
+#include "EngineCore/EngineApi.h"
 #include "EngineCore/Core/ISystem.h"
 #include "EngineCore/Components/RotationComponent.h"
 #include "EngineCore/Core/Ref.h"

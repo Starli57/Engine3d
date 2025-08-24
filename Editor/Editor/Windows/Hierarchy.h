@@ -12,11 +12,11 @@
 #include "EngineCore/Components/IdComponent.h"
 #include "EngineCore/Serialization/EntitySerializer.h"
 
-class Hierarchy : public IWindow
+class Hierarchy : public Engine::IWindow
 {
 public:
-	Hierarchy(const Ref<EngineCore::EntitySerializer>& serializer, const Ref<Ecs>& ecs, const Ref<Inspector>& inspector, const Ref<ProjectSettings>& projectSettings, const
-	          Ref<ResourcesStorageVulkan>& resourcesStorage);
+	Hierarchy(const Ref<Engine::EntitySerializer>& serializer, const Ref<Ecs>& ecs, const Ref<Inspector>& inspector, const Ref<ProjectSettings>& projectSettings, const
+	          Ref<Engine::ResourcesStorageVulkan>& resourcesStorage);
 	~Hierarchy();
 
 	void Update() override;
@@ -24,9 +24,9 @@ public:
 private:
 	Ref<Ecs> ecs;
 	Ref<Inspector> inspector;
-	Ref<EngineCore::EntitySerializer> serializer;
+	Ref<Engine::EntitySerializer> serializer;
 	Ref<ProjectSettings> projectSettings;
-	Ref<ResourcesStorageVulkan> resourcesStorage;
+	Ref<Engine::ResourcesStorageVulkan> resourcesStorage;
 
 	int selectedItemIndex;
 };

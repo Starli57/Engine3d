@@ -12,7 +12,7 @@ namespace AVulkan
     #pragma optimize("", off)
     DescriptorMaterialOpaque::DescriptorMaterialOpaque(
         VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs,
-        const Ref<DescriptorsAllocator>& descriptorsAllocator, VkSampler& textureSampler, const Ref<ResourcesStorageVulkan>& resourcesStorage)
+        const Ref<DescriptorsAllocator>& descriptorsAllocator, VkSampler& textureSampler, const Ref<Engine::ResourcesStorageVulkan>& resourcesStorage)
         : IDescriptor(physicalDevice, logicalDevice, ecs, descriptorsAllocator), textureSampler(textureSampler), resourcesStorage(resourcesStorage)
     {
         descriptorPools.resize(VulkanContext::maxFramesInFlight);
@@ -69,7 +69,7 @@ namespace AVulkan
     
     void DescriptorMaterialOpaque::UpdateDescriptorSets(const uint16_t frame) const
     {
-        Profiler::GetInstance().BeginSample("Update Opaque Material Descriptors");
+        Engine::Profiler::GetInstance().BeginSample("Update Opaque Material Descriptors");
         for(int i = 0; i < resourcesStorage->materials.size(); i++)
         {
             const auto material = resourcesStorage->materials.at(i);
@@ -162,7 +162,7 @@ namespace AVulkan
             
             vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
         }
-        Profiler::GetInstance().EndSample();
+        Engine::Profiler::GetInstance().EndSample();
     }
     #pragma optimize("", on)
 }

@@ -103,7 +103,7 @@ bool ResourcesConverter::SerializeMesh(const std::string& filePath, const Conver
 
     size_t vertexCount = meshIt.vertices.size();
     outFile.write(reinterpret_cast<const char*>(&vertexCount), sizeof(size_t));
-    outFile.write(reinterpret_cast<const char*>(meshIt.vertices.data()), vertexCount * sizeof(EngineCore::Vertex));
+    outFile.write(reinterpret_cast<const char*>(meshIt.vertices.data()), vertexCount * sizeof(Engine::Vertex));
 
     size_t indexCount = meshIt.indices.size();
     outFile.write(reinterpret_cast<const char*>(&indexCount), sizeof(size_t));

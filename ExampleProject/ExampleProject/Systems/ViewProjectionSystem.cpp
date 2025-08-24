@@ -22,7 +22,7 @@ void ViewProjectionSystem::Update(float deltaTime = 0)
 	glfwGetFramebufferSize(window, &width, &height);
 	if (width == 0 || height == 0) return;
 
-	EngineCore::Profiler::GetInstance().BeginSample("ViewProjectionSystems");
+	Engine::Profiler::GetInstance().BeginSample("ViewProjectionSystems");
 	const auto screenAspectRatio = static_cast<float>(width) / static_cast<float>(height);
 
 	const auto cameraEntities = ecs->registry->view<PositionComponent, RotationComponent, UboWorldComponent, CameraComponent>();
@@ -34,8 +34,8 @@ void ViewProjectionSystem::Update(float deltaTime = 0)
 		auto& cameraComponent = cameraEntities.get<CameraComponent>(entity);
 
 		glm::vec3 direction;
-		EngineCore::CalculateDirection(&direction, rotation);
-		EngineCore::Normalize(&direction);
+		Engine::CalculateDirection(&direction, rotation);
+		Engine::Normalize(&direction);
 		
 		uboComponent.view = lookAt(position, position + direction, cameraComponent.upAxis);
 		auto projection = glm::perspective(glm::radians(cameraComponent.fov), 
@@ -58,8 +58,8 @@ void ViewProjectionSystem::Update(float deltaTime = 0)
 		auto& shadowMapComponent = allProjections.get<ShadowMapComponent>(entity);
 		
 		glm::vec3 direction;
-		EngineCore::CalculateDirection(&direction, rotation);
-		EngineCore::Normalize(&direction);
+		Engine::CalculateDirection(&direction, rotation);
+		Engine::Normalize(&direction);
 
 		uboComponent.view = lookAt(position, position + direction, shadowMapComponent.upAxis);
 		const auto projection = glm::perspective(glm::radians(shadowMapComponent.fov), screenAspectRatio, shadowMapComponent.zNear, shadowMapComponent.zFar);
@@ -67,5 +67,5 @@ void ViewProjectionSystem::Update(float deltaTime = 0)
 		uboComponent.projection = projection;
 		uboComponent.position = position;
 	}
-	EngineCore::Profiler::GetInstance().EndSample();
+	Engine::Profiler::GetInstance().EndSample();
 }

@@ -6,7 +6,7 @@
 
 #include "spdlog/spdlog.h"
 
-namespace EngineCore
+namespace Engine
 {
     Rollback::Rollback(std::string name) : name(std::move(name))
     {

@@ -1,9 +1,6 @@
 ﻿#pragma once
 #include "Core/RenderPassContext.h"
-#include "EngineCore/Core/ResourcesStorageVulkan.h"
-#include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/Ref.h"
-using namespace EngineCore;
 
 namespace AVulkan
 {

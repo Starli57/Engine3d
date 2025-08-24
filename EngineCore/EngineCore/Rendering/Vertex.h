@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-namespace EngineCore
+namespace Engine
 {
 	struct Vertex 
 	{

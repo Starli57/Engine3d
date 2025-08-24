@@ -13,7 +13,7 @@ namespace VkUtils
 
         auto devices = GetRenderingDevicesList(instance, surface);
 
-        EngineCore::CAssert::Check(!devices.empty(), "Physical rendering device not found");
+        Engine::CAssert::Check(!devices.empty(), "Physical rendering device not found");
         spdlog::info("Physical rendering devices found: {0}", devices.size());
 
         VkPhysicalDevice bestDevice = VK_NULL_HANDLE;

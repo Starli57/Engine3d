@@ -6,7 +6,7 @@
 #include <filesystem>
 #include <unordered_map>
 
-namespace EngineCore
+namespace Engine
 {
     class IOUtility
     {

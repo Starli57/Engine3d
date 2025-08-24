@@ -2,7 +2,7 @@
 #include "InputManager.h"
 #include "EngineCore/Components/PositionComponent.h"
 
-namespace EngineCore
+namespace Engine
 {
 	InputManager::InputManager(GLFWwindow* window, const Ref<Ecs>& ecs)
 	{

@@ -2,7 +2,7 @@
 #include "EngineCore/Pch.h"
 #include "EngineCore/Utilities/UniqueId.h"
 
-namespace EngineCore
+namespace Engine
 {
     std::atomic<uint32_t> UniqueIdGenerator::globalId{ 0 };
 

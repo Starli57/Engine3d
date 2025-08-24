@@ -9,7 +9,7 @@
 #include "EngineCore/Assets/PbrMaterialAsset.h"
 #include "EngineCore/Rendering/Vulkan/Models/ImageModel.h"
 
-namespace EngineCore
+namespace Engine
 {
 	class ResourcesStorageVulkan
 	{

@@ -3,7 +3,6 @@
 #include <glm/glm.hpp>
 #include <numbers>
 #include "EngineCore/Assets/MeshAsset.h"
-using namespace EngineCore;
 
 struct SphereDefinition : public MeshAsset
 {

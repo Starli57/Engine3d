@@ -2,7 +2,7 @@
 #include "BufferUtility.h"
 
 #include "EngineCore/CustomAssert.h"
-#include "EngineCore/Engine.h"
+#include "EngineCore/EngineApi.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/MemoryUtility.h"
 
 namespace VkUtils
@@ -54,7 +54,7 @@ namespace VkUtils
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
 		auto createStatus = vkCreateBuffer(logicalDevice, &bufferInfo, nullptr, &buffer);
-		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create buffer, status: " + createStatus);
+		Engine::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create buffer, status: " + createStatus);
 	
 		BindMemory(physicalDevice, logicalDevice, memoryFlags, buffer, bufferMemory);
 	}
@@ -125,7 +125,7 @@ namespace VkUtils
 		allocInfo.memoryTypeIndex = FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, memoryFlags);
 
 		const auto allocateStatus = vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &bufferMemory);
-		CAssert::Check(allocateStatus == VK_SUCCESS, "Can't allocate memory for vertex buffer, status: " + allocateStatus);
+		Engine::CAssert::Check(allocateStatus == VK_SUCCESS, "Can't allocate memory for vertex buffer, status: " + allocateStatus);
 
 		vkBindBufferMemory(logicalDevice, buffer, bufferMemory, 0);
 	}

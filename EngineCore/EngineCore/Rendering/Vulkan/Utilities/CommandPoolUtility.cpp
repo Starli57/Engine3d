@@ -19,7 +19,7 @@ namespace VkUtils
 
 		VkCommandPool commandPool;
 		auto createStatus = vkCreateCommandPool(context->logicalDevice, &poolInfo, nullptr, &commandPool);
-		EngineCore::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create command pool, status = " + createStatus);
+		Engine::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create command pool, status = " + createStatus);
 
 		return commandPool;
 	}

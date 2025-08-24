@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "ProfilerSample.h"
 
-namespace EngineCore
+namespace Engine
 {
     class Profiler
     {

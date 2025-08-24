@@ -10,13 +10,12 @@
 #include "EngineCore/Managers/InputManager.h"
 #include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
 
-using namespace EngineCore;
 namespace AVulkan
 {
     class DescriptorFrame : public IDescriptor
     {
     public:
-        DescriptorFrame(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<InputManager> inputManager,
+        DescriptorFrame(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
             VkDescriptorPool& descriptorPool, const Ref<DescriptorsAllocator>& descriptorsAllocator);
         ~DescriptorFrame() override;
 
@@ -37,6 +36,6 @@ namespace AVulkan
         std::vector<Ref<BufferModel>> lightUniformBuffers;
         std::vector<Ref<BufferModel>> cursorUniformBuffers;
         
-        Ref<InputManager> inputManager;
+        Ref<Engine::InputManager> inputManager;
     };
 }

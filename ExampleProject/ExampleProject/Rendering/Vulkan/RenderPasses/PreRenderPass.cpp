@@ -51,16 +51,16 @@ namespace AVulkan
             if (isOpaque) renderPassContext->opaqueEntities[opaqueCount++] = drawEntity;
             else renderPassContext->transparentEntities[transparentCount++] = drawEntity;
 
-            Profiler::GetInstance().AddTrianglesCount(renderPassContext->assetsDatabase->indexesCount.at(meshComponent.meshIndex.value()));
+            Engine::Profiler::GetInstance().AddTrianglesCount(renderPassContext->assetsDatabase->indexesCount.at(meshComponent.meshIndex.value()));
         }
-        
-        Profiler::GetInstance().BeginSample("Prepass: Sort Opaque");
-        Sort(renderPassContext->opaqueEntities, rendererPosition);
-        Profiler::GetInstance().EndSample();
 
-        Profiler::GetInstance().BeginSample("Prepass: Sort Transparent");
+        Engine::Profiler::GetInstance().BeginSample("Prepass: Sort Opaque");
+        Sort(renderPassContext->opaqueEntities, rendererPosition);
+        Engine::Profiler::GetInstance().EndSample();
+
+        Engine::Profiler::GetInstance().BeginSample("Prepass: Sort Transparent");
         Sort(renderPassContext->transparentEntities, rendererPosition);
-        Profiler::GetInstance().EndSample();
+        Engine::Profiler::GetInstance().EndSample();
     }
 
     void PreRenderPass::Sort(std::vector<DrawEntity>& entities, const glm::vec3& rendererPosition) const

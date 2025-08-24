@@ -12,7 +12,7 @@ namespace Client
 	class EntitySerializer
 	{
 	public:
-		EntitySerializer(const Ref<EngineCore::EntitySerializer>& enginesSerializer);
+		EntitySerializer(const Ref<Engine::EntitySerializer>& enginesSerializer);
 	
 	private:
 		void SerializeEntity(Ref<Entity>& entity, YAML::Emitter& emitter);

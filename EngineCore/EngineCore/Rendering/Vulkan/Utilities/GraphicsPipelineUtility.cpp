@@ -2,12 +2,16 @@
 
 #include "GraphicsPipelineUtility.h"
 
+#include "ShaderModuleUtility.h"
+#include "VertexBufferUtility.h"
 #include "EngineCore/CustomAssert.h"
+#include "EngineCore/Components/UboModelComponent.h"
+#include "EngineCore/Rollback/Rollback.h"
 #include "spdlog/spdlog.h"
 
 namespace AVulkan
 {
-	Ref<PipelineVulkan> GraphicsPipelineUtility::Create(const Ref<VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
+	Ref<PipelineVulkan> GraphicsPipelineUtility::Create(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
 		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa)
 	{
 		spdlog::info("Create graphics pipeline");
@@ -15,7 +19,7 @@ namespace AVulkan
 
 		try
 		{
-			initializationRollback = CreateUniqueRef<Rollback>("VkPipelineInit");
+			initializationRollback = CreateUniqueRef<Engine::Rollback>("VkPipelineInit");
 
 			auto vertModule = VkUtils::CreateShaderModule(pipelineConfig->vertShaderPath, logicalDevice);
 			auto fragModule = VkUtils::CreateShaderModule(pipelineConfig->fragShaderPath, logicalDevice);
@@ -82,7 +86,7 @@ namespace AVulkan
 			pipelineInfo.pDepthStencilState = &depthStencil;
 
 			auto createState = vkCreateGraphicsPipelines(logicalDevice, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &pipeline->pipeline);
-			CAssert::Check(createState == VK_SUCCESS, "Failed to create graphics pipeline, state" + createState);
+			Engine::CAssert::Check(createState == VK_SUCCESS, "Failed to create graphics pipeline, state" + createState);
 
 			initializationRollback->Dispose();
 
@@ -97,7 +101,7 @@ namespace AVulkan
 		return pipeline;
 	}
 
-	Ref<PipelineVulkan> GraphicsPipelineUtility::ReCreate(const Ref<PipelineVulkan>& pipeline, const Ref<VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
+	Ref<PipelineVulkan> GraphicsPipelineUtility::ReCreate(const Ref<PipelineVulkan>& pipeline, const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
 		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa)
 	{
 		Dispose(pipeline, logicalDevice);
@@ -149,7 +153,7 @@ namespace AVulkan
 		return viewportState;
 	}
 
-	VkPipelineRasterizationStateCreateInfo GraphicsPipelineUtility::SetupRasterizer(const Ref<VulkanPipelineConfig>& pipelineConfig) const
+	VkPipelineRasterizationStateCreateInfo GraphicsPipelineUtility::SetupRasterizer(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig) const
 	{
 		spdlog::info("Setup rasterizer");
 		VkPipelineRasterizationStateCreateInfo rasterizer{};
@@ -184,7 +188,7 @@ namespace AVulkan
 		return multisampling;
 	}
 
-	VkPipelineColorBlendStateCreateInfo GraphicsPipelineUtility::SetupColorsBlending(const Ref<VulkanPipelineConfig>& pipelineConfig) const
+	VkPipelineColorBlendStateCreateInfo GraphicsPipelineUtility::SetupColorsBlending(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig) const
 	{
 		auto colorBlendAttachment = new VkPipelineColorBlendAttachmentState();
 		colorBlendAttachment->colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |

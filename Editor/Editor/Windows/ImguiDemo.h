@@ -4,7 +4,7 @@
 
 #include "EngineCore/Editor/IWindow.h"
 
-class ImguiDemo : public EngineCore::IWindow
+class ImguiDemo : public Engine::IWindow
 {
 public:
 	void Update() override;

@@ -16,7 +16,7 @@
 
 namespace AVulkan
 {
-	GraphicsApiVulkan::GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<InputManager> inputManager, const Ref<ResourcesStorageVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* glfwWindow)
+	GraphicsApiVulkan::GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager, const Ref<Engine::ResourcesStorageVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* glfwWindow)
 	{
 		this->context = CreateRef<VulkanContext>();
 		this->ecs = ecs;
@@ -25,7 +25,7 @@ namespace AVulkan
 		this->projectSettings = projectSettings;
 		this->context->window = glfwWindow;
 		this->context->pipelinesCollection = CreateRef<PipelinesCollection>(projectSettings);
-		this->rollback = CreateRef<Rollback>("GraphicsApiVulkan");
+		this->rollback = CreateRef<Engine::Rollback>("GraphicsApiVulkan");
 	}
 
 	GraphicsApiVulkan::~GraphicsApiVulkan()
@@ -104,11 +104,11 @@ namespace AVulkan
 		submitInfo.commandBufferCount = static_cast<uint32_t>(submitCommandBuffers.size());
 		submitInfo.pCommandBuffers = submitCommandBuffers.data();
 
-		Profiler::GetInstance().BeginSample("Renderer Submit");
+		Engine::Profiler::GetInstance().BeginSample("Renderer Submit");
 		auto submitStatus = vkQueueSubmit(context->graphicsQueue, 1, &submitInfo, drawFences[frame]);
-		Profiler::GetInstance().EndSample();
-		
-		CAssert::Check(submitStatus == VK_SUCCESS, "Failed to submit draw command buffer, status: " + submitStatus);
+		Engine::Profiler::GetInstance().EndSample();
+
+		Engine::CAssert::Check(submitStatus == VK_SUCCESS, "Failed to submit draw command buffer, status: " + submitStatus);
 
 		VkPresentInfoKHR presentInfo{};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -118,17 +118,17 @@ namespace AVulkan
 		presentInfo.pSwapchains = &swapChainData->swapChain;
 		presentInfo.pImageIndices = &imageIndex;
 
-		Profiler::GetInstance().BeginSample("vkQueuePresentKHR");
+		Engine::Profiler::GetInstance().BeginSample("vkQueuePresentKHR");
 		auto presentStatus = vkQueuePresentKHR(context->presentationQueue, &presentInfo);
-		Profiler::GetInstance().EndSample();
+		Engine::Profiler::GetInstance().EndSample();
 
 		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR)
 		{
 			RecreateSwapChain();
 			return;
 		}
-		
-		CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
+
+		Engine::CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
 		
 		frame = (frame + 1) % context->maxFramesInFlight;
 	}

@@ -3,7 +3,7 @@
 #include "EngineCore/Core/SystemsState.h"
 #include "EngineCore/Editor/IWindow.h"
 
-class SystemsStateWindow : public EngineCore::IWindow
+class SystemsStateWindow : public Engine::IWindow
 {
 public:
     SystemsStateWindow(const Ref<SystemsState>& systemsState);

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace EngineCore
+namespace Engine
 {
 	class IWindow
 	{

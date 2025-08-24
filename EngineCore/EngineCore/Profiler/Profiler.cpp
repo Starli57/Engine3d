@@ -1,7 +1,7 @@
 ﻿#include "EngineCore/Pch.h"
 #include "Profiler.h"
 
-namespace EngineCore
+namespace Engine
 {
     Profiler& Profiler::GetInstance()
     {

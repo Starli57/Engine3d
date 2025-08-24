@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace EngineCore
+namespace Engine
 {
 	struct PipelineConfig
 	{

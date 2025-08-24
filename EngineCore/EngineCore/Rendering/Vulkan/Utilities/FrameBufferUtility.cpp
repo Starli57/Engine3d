@@ -21,7 +21,7 @@ namespace VkUtils
         framebufferInfo.layers = 1;
 
         auto createStatus = vkCreateFramebuffer(logicalDevice, &framebufferInfo, nullptr, &frameBuffer);
-        EngineCore::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create framebuffer, status = " + createStatus);
+        Engine::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create framebuffer, status = " + createStatus);
     }
 
     void DisposeFrameBuffer(const VkDevice& logicalDevice, std::vector<VkFramebuffer>& frameBuffers)

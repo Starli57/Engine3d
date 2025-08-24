@@ -2,7 +2,7 @@
 #include "EngineCore/Pch.h"
 #include "RollbackExtension.h"
 
-namespace EngineCore
+namespace Engine
 {
     void RollbackExtension::Dispose(const Rollback& rollback) const
     {

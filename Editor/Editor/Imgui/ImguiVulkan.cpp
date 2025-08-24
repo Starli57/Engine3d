@@ -10,7 +10,7 @@ ImguiVulkan::ImguiVulkan(const Ref<ProjectSettings>& projectSettings, AVulkan::G
 {
     spdlog::info("Start editor imgui initialization");
 
-    rollback = CreateRef<Rollback>("Editor");
+    rollback = CreateRef<Engine::Rollback>("Editor");
 
     queueFamilies = VkUtils::GetQueueFamilies(vulkanApi.context->physicalDevice, vulkanApi.context->windowSurface);
     graphicsQueueFamily = queueFamilies.graphicsFamily.value();
@@ -128,7 +128,7 @@ void ImguiVulkan::CreateRenderPass(VkRenderPass& renderPass) const
     renderPassInfo.pDependencies = &dependency;
     auto renderPassStatus = vkCreateRenderPass(vulkanApi.context->logicalDevice, &renderPassInfo, nullptr, &renderPass);
 
-    CAssert::Check(renderPassStatus == VK_SUCCESS, "Failed to create imgui render pass");
+    Engine::CAssert::Check(renderPassStatus == VK_SUCCESS, "Failed to create imgui render pass");
 }
 
 void ImguiVulkan::DefaultEditorColors(ImGuiStyle* dst) const

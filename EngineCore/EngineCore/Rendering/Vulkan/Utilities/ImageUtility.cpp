@@ -29,7 +29,7 @@ namespace VkUtils
         imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
         const auto createStatus = vkCreateImage(vulkanContext->logicalDevice, &imageInfo, nullptr, &image);
-        EngineCore::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create vk image");
+        Engine::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create vk image");
 
         VkMemoryRequirements memRequirements;
         vkGetImageMemoryRequirements(vulkanContext->logicalDevice, image, &memRequirements);
@@ -40,7 +40,7 @@ namespace VkUtils
         allocInfo.memoryTypeIndex = FindMemoryType(vulkanContext->physicalDevice, memRequirements.memoryTypeBits, properties);
 
         const auto allocateStatus = vkAllocateMemory(vulkanContext->logicalDevice, &allocInfo, nullptr, &imageMemory);
-        EngineCore::CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate vk image memory");
+        Engine::CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate vk image memory");
 
         vkBindImageMemory(vulkanContext->logicalDevice, image, imageMemory, 0);
     }
@@ -154,7 +154,7 @@ namespace VkUtils
         createInfo.subresourceRange.layerCount = 1;
 
         const auto createStatus = vkCreateImageView(logicalDevice, &createInfo, nullptr, &imageView);
-        EngineCore::CAssert::Check(createStatus == VK_SUCCESS, "Image view can't be created, status: " + createStatus);
+        Engine::CAssert::Check(createStatus == VK_SUCCESS, "Image view can't be created, status: " + createStatus);
     }
 
     void DestroyImageView(const VkDevice& logicalDevice, const VkImageView& imageView)

@@ -5,14 +5,14 @@
 #include "EngineCore/Profiler/Profiler.h"
 #include "ExampleProject/Components/CameraFreeComponent.h"
 
-CameraFlySystem::CameraFlySystem(const Ref<Ecs>& ecs, const Ref<EngineCore::InputManager>& input)
+CameraFlySystem::CameraFlySystem(const Ref<Ecs>& ecs, const Ref<Engine::InputManager>& input)
 	: ecs(ecs), input(input)
 {
 }
 
 void CameraFlySystem::Update(const float deltaTime)
 {
-	EngineCore::Profiler::GetInstance().BeginSample("CameraFlySystem Update");
+	Engine::Profiler::GetInstance().BeginSample("CameraFlySystem Update");
 	const auto entities = ecs->registry->view<PositionComponent, RotationComponent, CameraFreeComponent>();
 	for (const auto entity : entities)
 	{
@@ -48,5 +48,5 @@ void CameraFlySystem::Update(const float deltaTime)
 		if (input->IsKeyPressed(GLFW_KEY_S))
 			position -= forward * freeCamComponent.movementSpeed * deltaTime;
 	}
-	EngineCore::Profiler::GetInstance().EndSample();
+	Engine::Profiler::GetInstance().EndSample();
 }

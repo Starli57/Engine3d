@@ -47,7 +47,7 @@ namespace VkUtils
 
 		VkDevice logicalDevice;
 		auto createStatus = vkCreateDevice(context->physicalDevice, &createInfo, nullptr, &logicalDevice);
-		EngineCore::CAssert::Check(createStatus == VK_SUCCESS, "failed to create logical device, status: " + createStatus);
+		Engine::CAssert::Check(createStatus == VK_SUCCESS, "failed to create logical device, status: " + createStatus);
 
 		vkGetDeviceQueue(logicalDevice, queueFamilies.graphicsFamily.value(), 0, &context->graphicsQueue);
 		vkGetDeviceQueue(logicalDevice, queueFamilies.presentationFamily.value(), 0, &context->presentationQueue);

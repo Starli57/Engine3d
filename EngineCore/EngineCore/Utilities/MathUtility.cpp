@@ -1,7 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "MathUtility.h"
 
-namespace EngineCore
+namespace Engine
 {
 	void CalculateDirection(glm::vec3* direction, const glm::vec3& rotation)
 	{

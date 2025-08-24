@@ -4,7 +4,7 @@
 
 namespace Client
 {
-    EntitySerializer::EntitySerializer(const Ref<EngineCore::EntitySerializer>& enginesSerializer)
+    EntitySerializer::EntitySerializer(const Ref<Engine::EntitySerializer>& enginesSerializer)
     {
         enginesSerializer->onSerializeClientEntities = [this](Ref<Entity>& entity, YAML::Emitter& emitter) { SerializeEntity(entity, emitter); };
         enginesSerializer->onInstantiateClientEntities = [this](Ref<Entity>& entity, YAML::Node& node) { InstantiatePrefab(entity, node); };

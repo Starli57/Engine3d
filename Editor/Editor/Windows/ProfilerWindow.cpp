@@ -4,7 +4,7 @@
 #include "EngineCore/Components/NameComponent.h"
 #include "EngineCore/Profiler/Profiler.h"
 
-ProfilerWindow::ProfilerWindow(const Ref<Engine>& engine, AVulkan::GraphicsApiVulkan& vulkanApi) : 
+ProfilerWindow::ProfilerWindow(const Ref<Engine::EngineApi>& engine, AVulkan::GraphicsApiVulkan& vulkanApi) : 
 	engine(engine), vulkanApi(vulkanApi)
 {
 }
@@ -13,7 +13,7 @@ void ProfilerWindow::Update()
 {
 	ImGui::Begin("Vulkan debug info");
 
-	auto profiler = Profiler::GetInstance();
+	auto profiler = Engine::Profiler::GetInstance();
 	auto samples = profiler.samples;
 	for (size_t i = 0; i < samples.size(); i++) ShowRecursive(samples[i]);
 
@@ -30,9 +30,9 @@ void ProfilerWindow::Update()
 	ImGui::End();
 }
 
-void ProfilerWindow::ShowRecursive(ProfilerSample& sample) const
+void ProfilerWindow::ShowRecursive(Engine::ProfilerSample& sample) const
 {
-	if (ImGui::TreeNode(sample.sampleName.c_str(), (sample.sampleName + " : %.3fms").c_str(), Profiler::GetInstance().GetDeltaTime(sample) * 1000))
+	if (ImGui::TreeNode(sample.sampleName.c_str(), (sample.sampleName + " : %.3fms").c_str(), Engine::Profiler::GetInstance().GetDeltaTime(sample) * 1000))
 	{
 		for (auto& childrenSample : sample.childrenSamples)
 		{

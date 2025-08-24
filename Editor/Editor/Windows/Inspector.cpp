@@ -1,7 +1,7 @@
 #include "Inspector.h"
 #include "Editor/Utilities/ComponentsUtility.h"
 
-Inspector::Inspector(Ref<ResourcesStorageVulkan> resourcesStorage) : resourcesStorage(resourcesStorage)
+Inspector::Inspector(Ref<Engine::ResourcesStorageVulkan> resourcesStorage) : resourcesStorage(resourcesStorage)
 {
     componentsRenderer = CreateUniqueRef<ComponentsRenderer>(resourcesStorage);
 }

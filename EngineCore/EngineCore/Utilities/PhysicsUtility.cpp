@@ -1,7 +1,7 @@
 ﻿#include "EngineCore/Pch.h"
 #include "PhysicsUtility.h"
 
-namespace EngineCore
+namespace Engine
 {
     glm::vec3 GetIntersectionPoint(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, float distance)
     {

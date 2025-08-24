@@ -7,8 +7,8 @@
 namespace VkUtils
 {
     void CreateVkSemaphore(VkDevice logicalDevice, const VkSemaphoreCreateInfo* createInfo, 
-        const VkAllocationCallbacks* allocator, VkSemaphore* semaphore, const Ref<EngineCore::Rollback>& rollback);
+        const VkAllocationCallbacks* allocator, VkSemaphore* semaphore, const Ref<Engine::Rollback>& rollback);
 
     void CreateVkFence(VkDevice logicalDevice, const VkFenceCreateInfo* createInfo,
-        const VkAllocationCallbacks* allocator, VkFence* fence, const Ref<EngineCore::Rollback>& rollback);
+        const VkAllocationCallbacks* allocator, VkFence* fence, const Ref<Engine::Rollback>& rollback);
 }

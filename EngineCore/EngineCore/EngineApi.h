@@ -5,7 +5,6 @@
 #include <entt.hpp>
 
 #include "Core/SystemsState.h"
-#include "EngineCore/Defines/DllDefines.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Managers/InputManager.h"
@@ -20,13 +19,13 @@
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 #endif
 
-namespace EngineCore
+namespace Engine
 {
-	class Engine
+	class EngineApi
 	{
 	public:
-		Engine(const Ref<ProjectSettings>& projectSettings);
-		virtual ~Engine();
+		EngineApi(const Ref<ProjectSettings>& projectSettings);
+		virtual ~EngineApi();
 	
 		void InitLogger() const;
 		void InitGlfw() const;
@@ -54,7 +53,7 @@ namespace EngineCore
 		GLFWwindow* GetWindow() const { return window; }
 		Ref<Ecs> GetEcs() { return ecs; }
 		Ref<InputManager> GetInput() { return input; }
-		Ref<EngineCore::EntitySerializer> GetSerializer() { return entitySerializer; }
+		Ref<Engine::EntitySerializer> GetSerializer() { return entitySerializer; }
 		Ref<SystemsState> GetSystemsState() { return systemsState; }
 	
 		float GetDeltaTime() const { return deltaTime; }
@@ -77,7 +76,7 @@ namespace EngineCore
 		Ref<Ecs> ecs;
 		Ref<InputManager> input;
 		Ref<SystemsState> systemsState;
-		Ref<EngineCore::EntitySerializer> entitySerializer;
+		Ref<Engine::EntitySerializer> entitySerializer;
 	
 		float deltaTime;
 

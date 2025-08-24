@@ -8,7 +8,7 @@ RotateSystem::RotateSystem(const Ref<Ecs>& ecs) : ecs(ecs)
 
 void RotateSystem::Update(const float deltaTime)
 {
-	Profiler::GetInstance().BeginSample("RotateSystem");
+	Engine::Profiler::GetInstance().BeginSample("RotateSystem");
 	const auto rotationComponents = ecs->registry->view<RotationVelocityComponent, RotationComponent>();
 	for (const auto entity : rotationComponents)
 	{
@@ -17,5 +17,5 @@ void RotateSystem::Update(const float deltaTime)
 
 		rotationComponent.rotation += rotationVelocityComponent.velocity * deltaTime;
 	}
-	Profiler::GetInstance().EndSample();
+	Engine::Profiler::GetInstance().EndSample();
 }

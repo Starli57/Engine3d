@@ -11,7 +11,7 @@ namespace VkUtils
 
 		VkSurfaceKHR surface;
 		const auto createResult = glfwCreateWindowSurface(vulkanContext->instance, vulkanContext->window, nullptr, &surface);
-		EngineCore::CAssert::Check(createResult == VK_SUCCESS, "Can't create vulkan window surface, status: " + createResult);
+		Engine::CAssert::Check(createResult == VK_SUCCESS, "Can't create vulkan window surface, status: " + createResult);
 
 		return surface;
 	}

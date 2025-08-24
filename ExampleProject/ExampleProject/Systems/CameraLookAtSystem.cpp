@@ -7,7 +7,7 @@
 #include "EngineCore/Utilities/MathUtility.h"
 #include "EngineCore/Utilities/PhysicsUtility.h"
 
-CameraLookAtSystem::CameraLookAtSystem(const Ref<Ecs>& ecs, const Ref<EngineCore::InputManager>& input) : ecs(ecs), input(input)
+CameraLookAtSystem::CameraLookAtSystem(const Ref<Ecs>& ecs, const Ref<Engine::InputManager>& input) : ecs(ecs), input(input)
 {
 }
 
@@ -23,8 +23,8 @@ void CameraLookAtSystem::Update(float deltaTime)
         cameraPosition = cameraEntities.get<PositionComponent>(entity).position;
         auto& rotation = cameraEntities.get<RotationComponent>(entity).rotation;
 
-        EngineCore::CalculateDirection(&cameraDirection, rotation);
-        EngineCore::Normalize(&cameraDirection);
+        Engine::CalculateDirection(&cameraDirection, rotation);
+        Engine::Normalize(&cameraDirection);
     }
 	
     const auto selectableEntities = ecs->registry->view<PositionComponent, RotationComponent, ScaleComponent>();
@@ -34,10 +34,10 @@ void CameraLookAtSystem::Update(float deltaTime)
         auto& scale = selectableEntities.get<ScaleComponent>(entity).scale;
 		
         float distance = FLT_MAX;
-        EngineCore::DoesIntersectCube(cameraPosition, cameraDirection, position - scale  / 2.0f, position + scale  / 2.0f, distance);
+        Engine::DoesIntersectCube(cameraPosition, cameraDirection, position - scale  / 2.0f, position + scale  / 2.0f, distance);
         if (distance < minDistance) minDistance = distance;
     }
 
-    if (minDistance < FLT_MAX) input->cameraLookAtPosition = EngineCore::GetIntersectionPoint(cameraPosition, cameraDirection, minDistance);
+    if (minDistance < FLT_MAX) input->cameraLookAtPosition = Engine::GetIntersectionPoint(cameraPosition, cameraDirection, minDistance);
     else input->cameraLookAtPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 }

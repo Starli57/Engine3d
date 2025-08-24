@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-namespace EngineCore
+namespace Engine
 {
     class CAssert
     {

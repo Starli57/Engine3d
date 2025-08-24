@@ -3,18 +3,18 @@
 #include <imgui.h>
 #include <imgui_impl_vulkan.h>
 
-#include "EngineCore/Engine.h"
+#include "EngineCore/EngineApi.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 #include "EngineCore/Editor/IWindow.h"
 
-class VulkanTextureView : public IWindow
+class VulkanTextureView : public Engine::IWindow
 {
 public:
-	VulkanTextureView(const Ref<Engine>& engine, AVulkan::GraphicsApiVulkan& vulkanApi);
+	VulkanTextureView(const Ref<Engine::EngineApi>& engine, AVulkan::GraphicsApiVulkan& vulkanApi);
 	void Update() override;
 
 private:
-	Ref<Engine> engine;
+	Ref<Engine::EngineApi> engine;
 	AVulkan::GraphicsApiVulkan& vulkanApi;
 
 	std::vector<VkDescriptorSet> textureDescriptors;

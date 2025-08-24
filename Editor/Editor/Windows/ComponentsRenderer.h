@@ -20,18 +20,17 @@
 #include "EngineCore/Components/MaterialComponent.h"
 #include "EngineCore/Components/ShadowMapComponent.h"
 #include "ExampleProject/Components/CameraFreeComponent.h"
-using namespace EngineCore;
 
 class ComponentsRenderer
 {
 public:
 
-	ComponentsRenderer(const Ref<ResourcesStorageVulkan>& resourcesStorage);
+	ComponentsRenderer(const Ref<Engine::ResourcesStorageVulkan>& resourcesStorage);
 	void Update(const Ref<Entity>& entity);
 
 private:
 
-	Ref<ResourcesStorageVulkan> resourcesStorage;
+	Ref<Engine::ResourcesStorageVulkan> resourcesStorage;
 	Ref<ParametersRenderer> parametersRenderer;
 
 	template <typename T>

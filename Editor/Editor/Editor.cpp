@@ -16,7 +16,7 @@
 #include "Windows/ResourcesConverterWindow.h"
 #include "Windows/SystemsStateWindow.h"
 
-Editor::Editor(const Ref<ProjectSettings>& projectSettings, const Ref<Engine>& engine) : 
+Editor::Editor(const Ref<ProjectSettings>& projectSettings, const Ref<Engine::EngineApi>& engine) : 
 	projectSettings(projectSettings), engine(engine)
 {
 	const auto graphicsApi = engine->GetGraphicsApi();

@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "EngineCore/Rendering/PipelineConfig.h"
 
-namespace EngineCore
+namespace Engine
 {
 	struct VulkanPipelineConfig : public PipelineConfig
 	{

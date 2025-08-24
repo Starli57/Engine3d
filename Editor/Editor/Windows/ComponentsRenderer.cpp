@@ -1,7 +1,7 @@
 
 #include "ComponentsRenderer.h"
 
-ComponentsRenderer::ComponentsRenderer(const Ref<ResourcesStorageVulkan>& resourcesStorage)
+ComponentsRenderer::ComponentsRenderer(const Ref<Engine::ResourcesStorageVulkan>& resourcesStorage)
 {
 	this->resourcesStorage = resourcesStorage;
 	parametersRenderer = CreateRef<ParametersRenderer>();

@@ -24,7 +24,7 @@
 #include "EngineCore/Components/UboWorldComponent.h"
 #include "EngineCore/Core/ResourcesStorageVulkan.h"
 
-namespace EngineCore
+namespace Engine
 {
 	class EntitySerializer
 	{

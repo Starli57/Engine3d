@@ -37,7 +37,7 @@ namespace AVulkan
     void DescriptorShadowMap::UpdateDescriptorSets(uint16_t frame, const VkImageView& shadowImageView,
         const VkSampler& shadowSampler) const
     {
-        EngineCore::Profiler::GetInstance().BeginSample("Update ShadowMap Descriptors");
+        Engine::Profiler::GetInstance().BeginSample("Update ShadowMap Descriptors");
         VkDescriptorImageInfo shadowMapInfo{};
         shadowMapInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         shadowMapInfo.imageView = shadowImageView;
@@ -50,6 +50,6 @@ namespace AVulkan
             VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &shadowMapInfo, nullptr);
 
         vkUpdateDescriptorSets(logicalDevice, descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
-        EngineCore::Profiler::GetInstance().EndSample();
+        Engine::Profiler::GetInstance().EndSample();
     }
 }

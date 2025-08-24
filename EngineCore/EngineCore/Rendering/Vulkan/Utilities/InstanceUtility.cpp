@@ -28,7 +28,7 @@ namespace VkUtils
 		SetupValidationLayers(createInfo);
 
 		const VkResult result = vkCreateInstance(&createInfo, nullptr, &instance);
-		EngineCore::CAssert::Check(result == VK_SUCCESS, "vulkan instance can't be created: " + result);
+		Engine::CAssert::Check(result == VK_SUCCESS, "vulkan instance can't be created: " + result);
 	}
 
 	void DisposeInstance(const VkInstance& instance) 

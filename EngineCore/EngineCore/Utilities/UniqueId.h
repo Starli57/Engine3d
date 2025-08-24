@@ -2,7 +2,7 @@
 
 #include <atomic>
 
-namespace EngineCore
+namespace Engine
 {
     class UniqueIdGenerator
     {

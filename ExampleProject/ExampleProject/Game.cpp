@@ -2,7 +2,7 @@
 
 Game::Game(Ref<ProjectSettings> projectSettings) : projectSettings(projectSettings)
 {
-	engine = CreateRef<Engine>(projectSettings);
+	engine = CreateRef<Engine::EngineApi>(projectSettings);
 	engine->InitGlfw();
 	engine->SetupGlfwHints();
 	engine->CreateAppWindow();

@@ -16,7 +16,7 @@ namespace VkUtils
 			stagingUsageFlags, stagingMemoryFlags, bufferModel->buffer, bufferModel->bufferMemory);
 
 		const auto mapStatus = vkMapMemory(logicalDevice, bufferModel->bufferMemory, 0, bufferSize, 0, &bufferModel->bufferMapped);
-		EngineCore::CAssert::Check(mapStatus == VK_SUCCESS, "Uniform buffer can't be created, status: " + mapStatus);
+		Engine::CAssert::Check(mapStatus == VK_SUCCESS, "Uniform buffer can't be created, status: " + mapStatus);
 
 		return bufferModel;
 	}

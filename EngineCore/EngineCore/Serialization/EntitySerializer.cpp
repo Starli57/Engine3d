@@ -55,7 +55,7 @@ namespace YAML {
 }
 
 
-namespace EngineCore
+namespace Engine
 {
 	YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& v)
 	{

@@ -33,7 +33,7 @@ public:
 private:
 	Ref<ProjectSettings> projectSettings;
 	AVulkan::GraphicsApiVulkan& vulkanApi;
-    Ref<Rollback> rollback;
+    Ref<Engine::Rollback> rollback;
 
 	VkRenderPass renderPass;
 

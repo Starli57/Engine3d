@@ -18,17 +18,14 @@
 #include "EngineCore/Rendering/Vulkan/Utilities/VertexBufferUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/IndexBufferUtility.h"
 
-using namespace AVulkan;
-
-
-namespace EngineCore
+namespace Engine
 {
     AssetsLoaderVulkan::AssetsLoaderVulkan(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, Ref<ResourcesStorageVulkan> assetsDatabase) : 
         projectSettings(projectSettings), assetsDatabase(assetsDatabase)
     {
         graphicsQueueMutex = CreateUniqueRef<std::mutex>();
     
-        vulkanApi = dynamic_cast<GraphicsApiVulkan*>(graphicsApi);
+        vulkanApi = dynamic_cast<AVulkan::GraphicsApiVulkan*>(graphicsApi);
     	assetsDatabase->materialLoadStatuses.resize(assetsDatabase->materialsPaths.size());
     	assetsDatabase->materials.resize(assetsDatabase->materialsPaths.size());
 

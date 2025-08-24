@@ -3,8 +3,8 @@
 
 namespace AVulkan
 {
-    DescriptorsManager::DescriptorsManager(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<InputManager> inputManager,
-            VkSampler& textureSampler, const Ref<ResourcesStorageVulkan>& assetsDatabase)
+    DescriptorsManager::DescriptorsManager(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
+            VkSampler& textureSampler, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase)
                 : logicalDevice(logicalDevice), inputManager(inputManager)
     {
         descriptorsAllocator = CreateRef<DescriptorsAllocator>();

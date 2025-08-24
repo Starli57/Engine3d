@@ -7,12 +7,11 @@
 #include "EngineCore/Core/Entity.h"
 #include "EngineCore/Editor/IWindow.h"
 #include "EngineCore/Core/ResourcesStorageVulkan.h"
-using namespace EngineCore;
 
-class Inspector : public IWindow
+class Inspector : public Engine::IWindow
 {
 public:
-	Inspector(Ref<ResourcesStorageVulkan> resourcesStorage);
+	Inspector(Ref<Engine::ResourcesStorageVulkan> resourcesStorage);
 
 	void Update() override;
 	void Observe(const Ref<Entity>& entity);
@@ -20,7 +19,7 @@ public:
 private:
 	URef<ComponentsRenderer> componentsRenderer;
 
-	Ref<ResourcesStorageVulkan> resourcesStorage;
+	Ref<Engine::ResourcesStorageVulkan> resourcesStorage;
 	Ref<Entity> observingEntity;
 
 	void ShowAddComponentBtn() const;

@@ -4,6 +4,7 @@
 #include "EngineCore/Profiler/Profiler.h"
 #include "EngineCore/Rendering/Vulkan/UniformBufferModel/UboLight.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/FrameBufferUtility.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/GraphicsPipelineUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/RenderPassUtility.h"
 
 namespace AVulkan
@@ -33,7 +34,7 @@ namespace AVulkan
 
     void RenderPassOpaque::Render(VkCommandBuffer& commandBuffer, const uint16_t frame, const uint32_t imageIndex, std::function<bool(const Ref<Entity>& entity)> filter)
     {
-		Profiler::GetInstance().BeginSample("RenderPassOpaque");
+        Engine::Profiler::GetInstance().BeginSample("RenderPassOpaque");
         BeginRenderPass(commandBuffer, imageIndex, 2, 1);
         
         for (const auto& drawEntity : renderPassContext->opaqueEntities)
@@ -47,7 +48,7 @@ namespace AVulkan
         }
         
         VkUtils::EndRenderPass(commandBuffer);
-		Profiler::GetInstance().EndSample();
+        Engine::Profiler::GetInstance().EndSample();
     }
 
     void RenderPassOpaque::RenderEntity(const DrawEntity& drawEntity, const VkCommandBuffer& commandBuffer, const uint16_t frame) const
@@ -74,7 +75,7 @@ namespace AVulkan
         vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->layout, 0,
             static_cast<uint32_t>(descriptorSets.size()), descriptorSets.data(), 0, nullptr);
         vkCmdDrawIndexed(commandBuffer, renderPassContext->assetsDatabase->indexesCount.at(meshIndex), 1, 0, 0, 0);
-        Profiler::GetInstance().AddDrawCall();
+        Engine::Profiler::GetInstance().AddDrawCall();
     }
 
     void RenderPassOpaque::CreateFrameBuffers()

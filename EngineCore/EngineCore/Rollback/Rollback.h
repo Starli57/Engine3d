@@ -5,7 +5,7 @@
 #include <functional>
 #include "EngineCore/Core/Ref.h"
 
-namespace EngineCore
+namespace Engine
 {
 	class RollbackExtension;
 

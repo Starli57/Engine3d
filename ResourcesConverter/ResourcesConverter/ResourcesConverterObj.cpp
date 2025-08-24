@@ -80,7 +80,7 @@ void ResourcesConverterObj::ImportMesh(const std::string& meshPathStr, const std
             auto materialId = shape.mesh.material_ids[i / 3];
             ConvertingMeshData& meshMeta = meshes->at(materialId);
 
-            Vertex vertex;
+            Engine::Vertex vertex;
             vertex.position =
             {
                 attrib.vertices[3 * index.vertex_index + 0],

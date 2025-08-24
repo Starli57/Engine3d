@@ -18,7 +18,7 @@ namespace VkUtils
 		allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
 
 		auto createStatus = vkAllocateCommandBuffers(logicalDevice, &allocInfo, commandBuffers.data());
-		CAssert::Check(createStatus == VK_SUCCESS, "Failed to allocate command buffers, status: " + createStatus);
+		Engine::CAssert::Check(createStatus == VK_SUCCESS, "Failed to allocate command buffers, status: " + createStatus);
 	}
 
 	void FreeCommandBuffers(const VkDevice& logicalDevice, const VkCommandPool& commandPool, const std::vector<VkCommandBuffer>& commandBuffers)
@@ -29,19 +29,19 @@ namespace VkUtils
 
 	void BindPipeline(const VkCommandBuffer& commandBuffer, const Ref<PipelineVulkan>& pipeline)
 	{
-		Profiler::GetInstance().BeginSample("BindPipelines");
+		Engine::Profiler::GetInstance().BeginSample("BindPipelines");
 		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline->pipeline);
-		Profiler::GetInstance().EndSample();
+		Engine::Profiler::GetInstance().EndSample();
 	}
 
-	void BindVertexAndIndexBuffers(const VkCommandBuffer& commandBuffer, const int32_t meshVulkan, const Ref<ResourcesStorageVulkan>& assetsDatabase)
+	void BindVertexAndIndexBuffers(const VkCommandBuffer& commandBuffer, const int32_t meshVulkan, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase)
 	{
-		Profiler::GetInstance().BeginSample("BindVertexAndIndexBuffers");
+		Engine::Profiler::GetInstance().BeginSample("BindVertexAndIndexBuffers");
 		VkBuffer vertexBuffers[] = { assetsDatabase->vertexBuffers.at(meshVulkan)};
 		VkDeviceSize offsets[] = { 0 };
 		vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
 		vkCmdBindIndexBuffer(commandBuffer, assetsDatabase->indexBuffers.at(meshVulkan), 0, VK_INDEX_TYPE_UINT32);
-		Profiler::GetInstance().EndSample();
+		Engine::Profiler::GetInstance().EndSample();
 	}
 
 	void BeginCommandBuffer(const VkCommandBuffer& commandBuffer) 
@@ -51,13 +51,13 @@ namespace VkUtils
 		beginInfo.pInheritanceInfo = nullptr;
 
 		auto beginStatus = vkBeginCommandBuffer(commandBuffer, &beginInfo);
-		CAssert::Check(beginStatus == VK_SUCCESS, "Failed to begin recording a command buffer, status: " + beginStatus);
+		Engine::CAssert::Check(beginStatus == VK_SUCCESS, "Failed to begin recording a command buffer, status: " + beginStatus);
 	}
 
 	void EndCommandBuffer(const VkCommandBuffer& commandBuffer)
 	{
 		auto endStatus = vkEndCommandBuffer(commandBuffer);
-		CAssert::Check(endStatus == VK_SUCCESS, "Failed to end recording a command buffer, status: " + endStatus);
+		Engine::CAssert::Check(endStatus == VK_SUCCESS, "Failed to end recording a command buffer, status: " + endStatus);
 	}
 
 }

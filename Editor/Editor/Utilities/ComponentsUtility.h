@@ -10,6 +10,7 @@
 
 #include "EngineCore/Components/CameraComponent.h"
 #include "EngineCore/Components/IdComponent.h"
+#include "EngineCore/Components/LightComponent.h"
 #include "EngineCore/Components/MaterialComponent.h"
 #include "EngineCore/Components/MeshComponent.h"
 #include "EngineCore/Components/NameComponent.h"
@@ -20,7 +21,6 @@
 #include "EngineCore/Components/RotationVelocityComponent.h"
 #include "EngineCore/Components/ScaleComponent.h"
 #include "EngineCore/Components/ShadowMapComponent.h"
-#include "EngineCore/Components/LightComponent.h"
 #include "EngineCore/Components/UboModelComponent.h"
 #include "EngineCore/Components/UboWorldComponent.h"
 #include "ExampleProject/Components/CameraFreeComponent.h"

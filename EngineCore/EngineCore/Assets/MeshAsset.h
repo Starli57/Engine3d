@@ -4,7 +4,7 @@
 #include "EngineCore/Rendering/Vertex.h"
 #include <string>
 
-namespace EngineCore
+namespace Engine
 {
     struct MeshAsset
     {

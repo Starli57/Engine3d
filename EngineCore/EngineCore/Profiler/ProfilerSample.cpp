@@ -1,7 +1,7 @@
 ﻿#include "EngineCore/Pch.h"
 #include "ProfilerSample.h"
 
-namespace EngineCore
+namespace Engine
 {
     ProfilerSample::ProfilerSample()
     {

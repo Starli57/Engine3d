@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <glm/glm.hpp>
 
-namespace EngineCore
+namespace Engine
 {
     glm::vec3 GetIntersectionPoint(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, float distance);
     bool DoesIntersectCube(const glm::vec3& rayOrigin, const glm::vec3& rayDirection, const glm::vec3& leftBottom, const glm::vec3& rightTop, float& distance);

@@ -9,7 +9,7 @@
 
 namespace AVulkan
 {
-    DescriptorFrame::DescriptorFrame(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<InputManager> inputManager,
+    DescriptorFrame::DescriptorFrame(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
         VkDescriptorPool& descriptorPool, const Ref<DescriptorsAllocator>& descriptorsAllocator)
         : IDescriptor(physicalDevice, logicalDevice, ecs, descriptorsAllocator), descriptorPool(descriptorPool), inputManager(inputManager)
     {
@@ -57,7 +57,7 @@ namespace AVulkan
 
     void DescriptorFrame::UpdateDescriptorSets(const uint16_t frame) const
     {
-        Profiler::GetInstance().BeginSample("Update Frame Descriptors");
+        Engine::Profiler::GetInstance().BeginSample("Update Frame Descriptors");
         UpdateUniformBuffer(frame);
         
         VkDescriptorBufferInfo viewProjectionDescriptorInfo{};
@@ -86,7 +86,7 @@ namespace AVulkan
             VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &cursorDescriptorInfo);
         
         vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
-        Profiler::GetInstance().EndSample();
+        Engine::Profiler::GetInstance().EndSample();
     }
     
     void DescriptorFrame::UpdateUniformBuffer(uint16_t frame) const
@@ -110,8 +110,8 @@ namespace AVulkan
             glm::mat4 viewProjection = lightsProjection.projection * lightsProjection.view;
 
             glm::vec3 direction;
-            CalculateDirection(&direction, rotation + glm::vec3(0,90,0));
-            Normalize(&direction);
+            Engine::CalculateDirection(&direction, rotation + glm::vec3(0,90,0));
+            Engine::Normalize(&direction);
 
             UboLight uboLight = UboLight(viewProjection, position, direction, lightComponent.color, lightComponent.intensity);
             memcpy(lightUniformBuffers.at(frame)->bufferMapped, &uboLight, sizeof(UboLight));

@@ -38,7 +38,7 @@ namespace VkUtils
 
 		VkRenderPass renderPass;
 		auto createStatus = vkCreateRenderPass(vulkanContext->logicalDevice, &renderPassInfo, nullptr, &renderPass);
-		EngineCore::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create render pass, status: " + createStatus);
+		Engine::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create render pass, status: " + createStatus);
 
 		return renderPass;
 	}

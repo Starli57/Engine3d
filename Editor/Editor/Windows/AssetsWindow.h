@@ -6,18 +6,18 @@
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Serialization/EntitySerializer.h"
 
-class AssetsWindow : public IWindow
+class AssetsWindow : public Engine::IWindow
 {
 public:
-	AssetsWindow(Ref<EngineCore::EntitySerializer> serializer, const Ref<Ecs>& ecs, const Ref<ResourcesStorageVulkan>& resourcesStorage, const Ref<ProjectSettings>& projectSettings);
+	AssetsWindow(Ref<Engine::EntitySerializer> serializer, const Ref<Ecs>& ecs, const Ref<Engine::ResourcesStorageVulkan>& resourcesStorage, const Ref<ProjectSettings>& projectSettings);
 	~AssetsWindow();
 
 	void Update() override;
 
 private:
 	Ref<Ecs> ecs;
-	Ref<ResourcesStorageVulkan> resourcesStorage;
+	Ref<Engine::ResourcesStorageVulkan> resourcesStorage;
 	Ref<ProjectSettings> projectSettings;
-	Ref<EngineCore::EntitySerializer> serializer;
+	Ref<Engine::EntitySerializer> serializer;
 };
 

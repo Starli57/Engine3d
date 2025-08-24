@@ -7,10 +7,10 @@
 class CameraLookAtSystem : ISystem
 {
 public:
-    CameraLookAtSystem(const Ref<Ecs>& ecs, const Ref<EngineCore::InputManager>& input);
+    CameraLookAtSystem(const Ref<Ecs>& ecs, const Ref<Engine::InputManager>& input);
     virtual void Update(float deltaTime) override;
     
 private:
     Ref<Ecs> ecs;
-    Ref<EngineCore::InputManager> input;
+    Ref<Engine::InputManager> input;
 };

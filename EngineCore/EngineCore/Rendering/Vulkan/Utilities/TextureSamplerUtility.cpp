@@ -2,7 +2,7 @@
 #include "TextureSamplerUtility.h"
 
 #include "EngineCore/CustomAssert.h"
-#include "EngineCore/Engine.h"
+#include "EngineCore/EngineApi.h"
 
 namespace VkUtils
 {
@@ -30,6 +30,6 @@ namespace VkUtils
         samplerInfo.maxLod = VK_LOD_CLAMP_NONE;
 
         const auto createStatus = vkCreateSampler(logicalDevice, &samplerInfo, nullptr, &textureSampler);
-        CAssert::Check(createStatus == VK_SUCCESS, "Textures sampler can't be created");
+        Engine::CAssert::Check(createStatus == VK_SUCCESS, "Textures sampler can't be created");
     }
 }

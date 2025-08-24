@@ -5,7 +5,7 @@
 #include "EngineCore/Core/Ecs.h"
 #include "glm/vec3.hpp"
 
-namespace EngineCore
+namespace Engine
 {
 	class InputManager
 	{

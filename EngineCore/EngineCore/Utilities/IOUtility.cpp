@@ -4,7 +4,7 @@
 #include "EngineCore/CustomAssert.h"
 #include "spdlog/spdlog.h"
 
-namespace EngineCore
+namespace Engine
 {
     std::vector<char> IOUtility::ReadFile(const std::string& filepath) const
     {

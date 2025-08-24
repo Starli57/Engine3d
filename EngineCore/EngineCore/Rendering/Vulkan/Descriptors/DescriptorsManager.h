@@ -11,8 +11,8 @@ namespace AVulkan
     class DescriptorsManager
     {
     public:
-        DescriptorsManager(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<InputManager> inputManager,
-            VkSampler& textureSampler, const Ref<ResourcesStorageVulkan>& assetsDatabase);
+        DescriptorsManager(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
+            VkSampler& textureSampler, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase);
         ~DescriptorsManager();
 
         void CreateGlobalDescriptorsPool();
@@ -38,6 +38,6 @@ namespace AVulkan
         URef<DescriptorShadowMap> shadowMapDescriptor;
         VkDescriptorPool globalDescriptorPool;
 
-        Ref<InputManager> inputManager;
+        Ref<Engine::InputManager> inputManager;
     };
 }

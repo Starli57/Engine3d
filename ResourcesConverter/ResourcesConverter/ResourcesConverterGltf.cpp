@@ -191,7 +191,7 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 	    	uint32_t vertexStart = static_cast<uint32_t>(meshMeta.vertices.size());
 	    	for (size_t v = 0; v < positionAccessor.count; v++)
 	    	{
-	    		Vertex vertex;
+			    Engine::Vertex vertex;
 	    		vertex.position = glm::vec4(glm::make_vec3(&positionBuffer[v * positionByteStride]), 1.0f);
 	    		vertex.normal = glm::normalize(glm::vec3(normalBuffer ? glm::make_vec3(&normalBuffer[v * normalByteStride]) : glm::vec3(0.0f)));
 	    		vertex.uv = uvBuffer ? glm::make_vec2(&uvBuffer[v * uvByteStride]) : glm::vec3(0.0f);

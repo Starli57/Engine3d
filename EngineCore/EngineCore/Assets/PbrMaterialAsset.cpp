@@ -2,7 +2,7 @@
 #include "EngineCore/Pch.h"
 #include "EngineCore/Assets/PbrMaterialAsset.h"
 
-namespace EngineCore
+namespace Engine
 {
 	PbrMaterialAsset::PbrMaterialAsset(std::string pipelineId) : pipelineId(std::move(pipelineId))
 	{

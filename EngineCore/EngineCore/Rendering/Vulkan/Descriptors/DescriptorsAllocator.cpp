@@ -4,8 +4,6 @@
 #include "EngineCore/Components/UboWorldComponent.h"
 #include "spdlog/spdlog.h"
 
-using namespace EngineCore;
-
 namespace AVulkan
 {
 	void DescriptorsAllocator::CreateLayout(const VkDevice& logicalDevice, const std::vector<VkDescriptorSetLayoutBinding>& bindings, VkDescriptorSetLayout& layout) const
@@ -16,7 +14,7 @@ namespace AVulkan
 		layoutInfo.pBindings = bindings.data();
 
 		auto createStatus = vkCreateDescriptorSetLayout(logicalDevice, &layoutInfo, nullptr, &layout);
-		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create descriptor set layout, status: " + createStatus);
+		Engine::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create descriptor set layout, status: " + createStatus);
 	}
 
 	VkDescriptorSetLayoutBinding DescriptorsAllocator::DescriptorSetLayoutBinding(const uint32_t binding, const VkDescriptorType descriptorType, const VkShaderStageFlags stageFlags, uint32_t descriptorCount = 1) const
@@ -51,7 +49,7 @@ namespace AVulkan
 		poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 
 		const auto createStatus = vkCreateDescriptorPool(logicalDevice, &poolInfo, nullptr, &pool);
-		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create descriptor pool, status: " + createStatus);
+		Engine::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create descriptor pool, status: " + createStatus);
 
 		spdlog::info("Created descriptor pool");
 	}
@@ -76,7 +74,7 @@ namespace AVulkan
 
 		setsReference.resize(count);
 		const auto allocateStatus = vkAllocateDescriptorSets(logicalDevice, &allocInfo, setsReference.data());
-		CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate descriptor sets, status: " + allocateStatus);
+		Engine::CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate descriptor sets, status: " + allocateStatus);
 	}
 
 	void DescriptorsAllocator::WriteDescriptorSet(VkWriteDescriptorSet& writeSet, const VkDescriptorSet& descriptorSet, const uint32_t dstBinding, const uint32_t dstArrayElement,
