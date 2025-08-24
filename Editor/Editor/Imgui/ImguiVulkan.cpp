@@ -3,6 +3,8 @@
 
 #include "ImguiVulkan.h"
 
+#include "EngineCore/CustomAssert.h"
+
 ImguiVulkan::ImguiVulkan(const Ref<ProjectSettings>& projectSettings, AVulkan::GraphicsApiVulkan& vulkanApi) :
     projectSettings(projectSettings), vulkanApi(vulkanApi)
 {

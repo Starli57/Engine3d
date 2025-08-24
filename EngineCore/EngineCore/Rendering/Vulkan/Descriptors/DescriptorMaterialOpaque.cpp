@@ -160,7 +160,7 @@ namespace AVulkan
             descriptorsAllocator->WriteDescriptorSet(descriptorWrites[5], descriptorSet, 5, 0, 1,
                 VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &materialBufferInfo);
             
-            vkUpdateDescriptorSets(logicalDevice, descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
+            vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
         }
         Profiler::GetInstance().EndSample();
     }

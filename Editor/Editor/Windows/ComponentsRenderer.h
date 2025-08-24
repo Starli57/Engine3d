@@ -5,7 +5,7 @@
 #include "ParametersRenderer.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Entity.h"
-#include "EngineCore/Core/ResourcesStorage.h"
+#include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Components/NameComponent.h"
 #include "EngineCore/Components/PositionComponent.h"
 #include "EngineCore/Components/RotationComponent.h"
@@ -26,12 +26,12 @@ class ComponentsRenderer
 {
 public:
 
-	ComponentsRenderer(const Ref<ResourcesStorage>& assetsDatabase);
+	ComponentsRenderer(const Ref<ResourcesStorageVulkan>& resourcesStorage);
 	void Update(const Ref<Entity>& entity);
 
 private:
 
-	Ref<ResourcesStorage> assetsDatabase;
+	Ref<ResourcesStorageVulkan> resourcesStorage;
 	Ref<ParametersRenderer> parametersRenderer;
 
 	template <typename T>

@@ -8,7 +8,6 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Entity.h"
 #include "EngineCore/Core/ProjectSettings.h"
-#include "EngineCore/Core/ResourcesStorage.h"
 
 #include "EngineCore/Components/IdComponent.h"
 #include "EngineCore/Components/CameraComponent.h"
@@ -23,6 +22,7 @@
 #include "EngineCore/Components/LightComponent.h"
 #include "EngineCore/Components/UboModelComponent.h"
 #include "EngineCore/Components/UboWorldComponent.h"
+#include "EngineCore/Core/ResourcesStorageVulkan.h"
 
 namespace EngineCore
 {
@@ -30,7 +30,7 @@ namespace EngineCore
 	{
 	public:
 
-		EntitySerializer(const Ref<ProjectSettings>& projectSettings, const Ref<ResourcesStorage>& assetsDatabase);
+		EntitySerializer(const Ref<ProjectSettings>& projectSettings, const Ref<ResourcesStorageVulkan>& resourcesStorage);
 
 		void SerializeWorld(const Ref<Ecs>& ecs, const std::string& filePath);
 		bool InstantiateWorld(const Ref<Ecs>& ecs, const std::filesystem::path& filePath) const;
@@ -49,7 +49,7 @@ namespace EngineCore
 	private:
 
 		Ref<ProjectSettings> projectSettings;
-		Ref<ResourcesStorage> assetsDatabase;
+		Ref<ResourcesStorageVulkan> resourcesStorage;
 
 		template <typename T>
 		void SerializeComponent(YAML::Emitter& out, Ref<Entity> entity)

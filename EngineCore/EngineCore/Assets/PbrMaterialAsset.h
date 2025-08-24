@@ -8,7 +8,7 @@
 
 namespace EngineCore
 {
-	class PbrMaterial
+	class PbrMaterialAsset
 	{
 	public:
 		std::string pipelineId;
@@ -26,7 +26,7 @@ namespace EngineCore
 		float metallic = 0.0f;
 		float alphaCutoff = 0.01f;
 		
-		PbrMaterial() = default;
-		PbrMaterial(std::string pipelineId);
+		PbrMaterialAsset() = default;
+		PbrMaterialAsset(std::string pipelineId);
 	};
 }

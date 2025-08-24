@@ -1,6 +1,5 @@
 
 #include "ParametersRenderer.h"
-#include "EngineCore/Core/AssetsLoader.h"
 
 bool ParametersRenderer::RenderParameter(const char* label, int& parameter, const int min, const int max) const
 {

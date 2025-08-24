@@ -2,10 +2,10 @@
 
 #include <glm/glm.hpp>
 #include <numbers>
-#include "EngineCore/Assets/Meta/MeshMeta.h"
+#include "EngineCore/Assets/MeshAsset.h"
 using namespace EngineCore;
 
-struct SphereDefinition : public MeshMeta
+struct SphereDefinition : public MeshAsset
 {
 	SphereDefinition()
 	{

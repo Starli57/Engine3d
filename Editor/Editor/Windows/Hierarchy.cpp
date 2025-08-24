@@ -68,7 +68,7 @@ void Hierarchy::Update()
 }
 
 Hierarchy::Hierarchy(const Ref<EngineCore::EntitySerializer>& serializer, const Ref<Ecs>& ecs, const Ref<Inspector>& inspector,
-                     const Ref<ProjectSettings>& projectSettings, const Ref<ResourcesStorage>& assetsDatabase)
+                     const Ref<ProjectSettings>& projectSettings, const Ref<ResourcesStorageVulkan>& resourcesStorage)
     : serializer(serializer), ecs(ecs), inspector(inspector), projectSettings(projectSettings), selectedItemIndex(0)
 {
 }

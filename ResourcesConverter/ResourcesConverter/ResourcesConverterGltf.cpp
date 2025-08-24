@@ -188,7 +188,7 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 					: tinygltf::GetNumComponentsInType(TINYGLTF_TYPE_VEC2);
 	    	}
 	    	
-	    	uint32_t vertexStart = meshMeta.vertices.size();
+	    	uint32_t vertexStart = static_cast<uint32_t>(meshMeta.vertices.size());
 	    	for (size_t v = 0; v < positionAccessor.count; v++)
 	    	{
 	    		Vertex vertex;

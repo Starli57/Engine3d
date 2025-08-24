@@ -7,10 +7,16 @@
 #include "EngineCore/Rendering/Vulkan/Utilities/MemoryUtility.h"
 
 #define STB_IMAGE_IMPLEMENTATION
+#include <fstream>
 #include <stb_image.h>
-#include <EngineCore/Rendering/Vulkan/Utilities/IndexBufferUtility.h>
+#include <yaml-cpp/exceptions.h>
+#include <yaml-cpp/node/node.h>
+#include <yaml-cpp/node/parse.h>
+#include "EngineCore/Utilities/YamlConverters.h"
 
+#include "EngineCore/CustomAssert.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/VertexBufferUtility.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/IndexBufferUtility.h"
 
 using namespace AVulkan;
 
@@ -18,29 +24,195 @@ using namespace AVulkan;
 namespace EngineCore
 {
     AssetsLoaderVulkan::AssetsLoaderVulkan(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, Ref<ResourcesStorageVulkan> assetsDatabase) : 
-        AssetsLoader(projectSettings, graphicsApi, assetsDatabase), assetsDatabaseVulkan(assetsDatabase)
+        projectSettings(projectSettings), assetsDatabase(assetsDatabase)
     {
         graphicsQueueMutex = CreateUniqueRef<std::mutex>();
     
         vulkanApi = dynamic_cast<GraphicsApiVulkan*>(graphicsApi);
+    	assetsDatabase->textureLoadStatuses.resize(assetsDatabase->texturesPaths.size());
+    	assetsDatabase->materialLoadStatuses.resize(assetsDatabase->materialsPaths.size());
+    	assetsDatabase->meshLoadStatuses.resize(assetsDatabase->meshesPaths.size());
+
+    	assetsDatabase->materials.resize(assetsDatabase->materialsPaths.size());
 
         auto meshesCount = assetsDatabase->meshesIndexByPath.size() + assetsDatabase->customMeshes.size();
-        assetsDatabaseVulkan->vertexBuffers.resize(meshesCount);
-        assetsDatabaseVulkan->vertexBuffersMemory.resize(meshesCount);
-        assetsDatabaseVulkan->indexBuffers.resize(meshesCount);
-        assetsDatabaseVulkan->indexBuffersMemory.resize(meshesCount);
-        assetsDatabaseVulkan->indexesCount.resize(meshesCount);
-        assetsDatabaseVulkan->meshMaterialBinding.resize(meshesCount);
-        assetsDatabaseVulkan->boundingBoxMin.resize(meshesCount);
-        assetsDatabaseVulkan->boundingBoxMax.resize(meshesCount);
-        assetsDatabaseVulkan->boundingBoxCenter.resize(meshesCount);
+        assetsDatabase->vertexBuffers.resize(meshesCount);
+        assetsDatabase->vertexBuffersMemory.resize(meshesCount);
+        assetsDatabase->indexBuffers.resize(meshesCount);
+        assetsDatabase->indexBuffersMemory.resize(meshesCount);
+        assetsDatabase->indexesCount.resize(meshesCount);
+        assetsDatabase->meshMaterialBinding.resize(meshesCount);
+        assetsDatabase->boundingBoxMin.resize(meshesCount);
+        assetsDatabase->boundingBoxMax.resize(meshesCount);
+        assetsDatabase->boundingBoxCenter.resize(meshesCount);
         
-        auto texturesCount = assetsDatabaseVulkan->texturesIndexByPath.size();
-        assetsDatabaseVulkan->images.resize(texturesCount);
-        assetsDatabaseVulkan->imagesViews.resize(texturesCount);
-        assetsDatabaseVulkan->imagesMemory.resize(texturesCount);
+        auto texturesCount = assetsDatabase->texturesIndexByPath.size();
+        assetsDatabase->images.resize(texturesCount);
+        assetsDatabase->imagesViews.resize(texturesCount);
+        assetsDatabase->imagesMemory.resize(texturesCount);
+    	
+    	//SetupMeshBuffers(cubeDefinition);
+    	//CreateMesh(sphereDefiniton);
     }
 
+	void AssetsLoaderVulkan::Load()
+	{
+		LoadRequestedMaterials();
+		LoadRequestedMeshes();
+	}
+
+	uint32_t AssetsLoaderVulkan::GetTextureStr(const std::string& path) const
+	{
+		return GetTexture(std::filesystem::path(path));
+	}
+
+	uint32_t AssetsLoaderVulkan::GetTexture(const std::filesystem::path& path) const
+	{
+		assetsDatabase->AddTextureLoadRequest(path);
+		auto textureIter = assetsDatabase->texturesIndexByPath.find(path);
+		CAssert::Check(textureIter != assetsDatabase->texturesIndexByPath.end(), "Texture file not found " + path.string());
+		return textureIter->second;
+	}
+
+	uint32_t AssetsLoaderVulkan::GetOrLoadTextureStr(const std::string& pathStr)
+	{
+		auto path = std::filesystem::path(pathStr);
+		return GetOrLoadTexture(path);
+	}
+
+	uint32_t AssetsLoaderVulkan::GetOrLoadTexture(const std::filesystem::path& path)
+	{
+		auto textureIter = assetsDatabase->texturesIndexByPath.find(path);
+		if (!assetsDatabase->SetTextureLoadingStatus(path)) return textureIter->second;
+
+		LoadTexture(path);
+		return textureIter->second;
+	}
+
+	void AssetsLoaderVulkan::LoadAndDeserializeMesh(const std::filesystem::path& path, MeshAsset& meshAsset) const
+	{
+		std::ifstream inFile(path.string(), std::ios::binary);
+		if (!inFile)
+		{
+			spdlog::critical("Failed to open mesh file for reading by path={}", path.string());
+			return;
+		}
+
+		size_t vertexCount;
+		inFile.read(reinterpret_cast<char*>(&vertexCount), sizeof(size_t));
+		meshAsset.vertices.resize(vertexCount);
+		inFile.read(reinterpret_cast<char*>(meshAsset.vertices.data()), vertexCount * sizeof(Vertex));
+
+		size_t indexCount;
+		inFile.read(reinterpret_cast<char*>(&indexCount), sizeof(size_t));
+		meshAsset.indices.resize(indexCount);
+		inFile.read(reinterpret_cast<char*>(meshAsset.indices.data()), indexCount * sizeof(uint32_t));
+
+		size_t materialPathSize;
+		inFile.read(reinterpret_cast<char*>(&materialPathSize), sizeof(materialPathSize));
+		meshAsset.materialPath.resize(materialPathSize);
+		inFile.read(reinterpret_cast<char*>(&meshAsset.materialPath[0]), materialPathSize);
+
+		size_t materialNameSize;
+		inFile.read(reinterpret_cast<char*>(&materialNameSize), sizeof(materialNameSize));
+		meshAsset.materialName.resize(materialNameSize);
+		inFile.read(reinterpret_cast<char*>(&meshAsset.materialName[0]), materialNameSize);
+		
+		inFile.close();
+	}
+
+	void AssetsLoaderVulkan::LoadAndDeserializeMaterial(const std::filesystem::path& path, const Ref<PbrMaterialAsset>& material)
+	{
+		std::vector<YAML::Node> data;
+
+		try
+		{
+			data = YAML::LoadAllFromFile(path.string());
+		}
+		catch (YAML::ParserException e)
+		{
+			spdlog::critical("Failed to load material by path={0} error={1}", path.string(), e.what());
+			return;
+		}
+
+		if (data.size() > 1) spdlog::warn("PbrMaterial file has more than 1 material at path={}", path.string());
+
+		auto node = data[0];
+		material->pipelineId = node["pipelineName"].as<std::string>();
+		material->opaque = node["isOpaque"].as<bool>();
+
+		material->baseColor = node["baseColor"].as<glm::vec4>();
+		material->roughness = node["roughness"].as<float>();
+		material->metallic = node["metallic"].as<float>();
+		material->alphaCutoff = node["alphaCutoffFactor"].as<float>();
+		
+		auto baseColorTexturePath = node["baseColorTextureName"] ? node["baseColorTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
+		auto diffuseTextureIndex = GetOrLoadTextureStr(baseColorTexturePath);
+		material->baseTexture = diffuseTextureIndex;
+
+		auto normalTexturePath = node["normalsTextureName"] ? node["normalsTextureName"].as<std::string>() : projectSettings->resourcesPath + "/black_box.png";
+		auto normalTextureIndex = GetOrLoadTextureStr(normalTexturePath);
+		material->normalsTexture = normalTextureIndex;
+
+		auto metallicRoughnessPath = node["metallicRoughnessTextureName"] ? node["metallicRoughnessTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
+		auto metallicRoughnessTextureIndex = GetOrLoadTextureStr(metallicRoughnessPath);
+		material->metallicRoughnessTexture = metallicRoughnessTextureIndex;
+		
+		auto occlusionTexturePath = node["occlusionTextureName"] ? node["occlusionTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
+		auto occlusionTextureIndex = GetOrLoadTextureStr(occlusionTexturePath);
+		material->occlusionTexture = occlusionTextureIndex;
+		
+		auto emissiveTexturePath = node["emissiveTextureName"] ? node["emissiveTextureName"].as<std::string>() : projectSettings->resourcesPath + "/black_box.png";
+		auto emissiveTextureIndex = GetOrLoadTextureStr(emissiveTexturePath);
+		material->emissiveTexture = emissiveTextureIndex;
+	}
+
+	void AssetsLoaderVulkan::LoadRequestedMeshes()
+	{
+		std::vector<uint32_t> loadMeshes;
+		assetsDatabase->meshLoadStatusMutex.lock();
+		{
+			loadMeshes.resize(assetsDatabase->meshLoadRequests.size());
+		
+			for (uint32_t i = 0; i < loadMeshes.size(); i++)
+			{
+				loadMeshes[i] = assetsDatabase->meshLoadRequests.front();
+				assetsDatabase->meshLoadRequests.pop();
+			}
+		}
+		assetsDatabase->meshLoadStatusMutex.unlock();
+		if (loadMeshes.empty()) return;
+	
+		std::for_each(std::execution::par, loadMeshes.begin(), loadMeshes.end(), [this](const auto& meshIndex)
+			{
+				auto path = assetsDatabase->meshesPaths[meshIndex];
+				LoadMesh(path);
+			});
+	}
+
+	void AssetsLoaderVulkan::LoadRequestedMaterials()
+	{
+		std::vector<uint32_t> loadMaterials;
+		assetsDatabase->materialLoadStatusMutex.lock();
+		{
+			loadMaterials.resize(assetsDatabase->materialLoadRequests.size());
+	
+			for (uint32_t i = 0; i < loadMaterials.size(); i++)
+			{
+				loadMaterials[i] = assetsDatabase->materialLoadRequests.front();
+				assetsDatabase->materialLoadRequests.pop();
+			}
+		}
+		assetsDatabase->materialLoadStatusMutex.unlock();
+		if (loadMaterials.empty()) return;
+	
+		std::for_each(std::execution::par, loadMaterials.begin(), loadMaterials.end(), [this](const auto& materialIndex)
+			{
+				auto path = assetsDatabase->materialsPaths[materialIndex];
+				LoadMaterial(path);
+			});
+	}
+	
     void AssetsLoaderVulkan::LoadTexture(const std::filesystem::path& path)
     {
         auto iter = assetsDatabase->texturesIndexByPath.find(path);
@@ -74,10 +246,10 @@ namespace EngineCore
         constexpr VkImageUsageFlags usageFlags = VK_IMAGE_USAGE_TRANSFER_SRC_BIT  | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
         constexpr VkMemoryPropertyFlags memoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
-        auto& image = assetsDatabaseVulkan->images.at(textureIndex);
+        auto& image = assetsDatabase->images.at(textureIndex);
         VkUtils::CreateImage(vulkanApi->context,
             width, height, mipLevels, vulkanApi->context->imageFormat,
-            tiling, usageFlags, VK_SAMPLE_COUNT_1_BIT, memoryFlags, image, assetsDatabaseVulkan->imagesMemory.at(textureIndex));
+            tiling, usageFlags, VK_SAMPLE_COUNT_1_BIT, memoryFlags, image, assetsDatabase->imagesMemory.at(textureIndex));
         
         auto commandPool = vulkanApi->GetCommandPool();
         auto commandBuffer = VkUtils::BeginCommandBuffer(vulkanApi->context->logicalDevice, commandPool);
@@ -173,71 +345,71 @@ namespace EngineCore
 
         VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
         VkUtils::CreateImageView(vulkanApi->context->logicalDevice, mipLevels, vulkanApi->context->imageFormat, aspectFlags,
-            image, assetsDatabaseVulkan->imagesViews.at(textureIndex));
+            image, assetsDatabase->imagesViews.at(textureIndex));
 
-        assetsDatabaseVulkan->textureLoadStatuses.at(textureIndex) = 2;
+        assetsDatabase->textureLoadStatuses.at(textureIndex) = 2;
     }
 
     void AssetsLoaderVulkan::UnLoadAllTextures()
     {
-        for (auto image : assetsDatabaseVulkan->images) VkUtils::DestroyImage(vulkanApi->context->logicalDevice, image);
-        for (auto view : assetsDatabaseVulkan->imagesViews) VkUtils::DestroyImageView(vulkanApi->context->logicalDevice, view);
-        for (auto imageMemory : assetsDatabaseVulkan->imagesMemory) VkUtils::FreeDeviceMemory(vulkanApi->context->logicalDevice, imageMemory);
+        for (auto image : assetsDatabase->images) VkUtils::DestroyImage(vulkanApi->context->logicalDevice, image);
+        for (auto view : assetsDatabase->imagesViews) VkUtils::DestroyImageView(vulkanApi->context->logicalDevice, view);
+        for (auto imageMemory : assetsDatabase->imagesMemory) VkUtils::FreeDeviceMemory(vulkanApi->context->logicalDevice, imageMemory);
 
-        assetsDatabaseVulkan->images.clear();
-        assetsDatabaseVulkan->imagesViews.clear();
-        assetsDatabaseVulkan->imagesMemory.clear();
+        assetsDatabase->images.clear();
+        assetsDatabase->imagesViews.clear();
+        assetsDatabase->imagesMemory.clear();
     }
 
     void AssetsLoaderVulkan::LoadMesh(std::filesystem::path& path)
     {
-        MeshMeta meshMeta;
+        MeshAsset meshAsset;
         auto meshIter = assetsDatabase->meshesIndexByPath.find(path);
-        LoadAndDeserializeMesh(meshIter->first, meshMeta);
-        SetupMeshBuffers(meshMeta, meshIter->second);
+        LoadAndDeserializeMesh(meshIter->first, meshAsset);
+        SetupMeshBuffers(meshAsset, meshIter->second);
     }
 
-    void AssetsLoaderVulkan::SetupMeshBuffers(MeshMeta& meshMeta, uint32_t meshIndex)
+    void AssetsLoaderVulkan::SetupMeshBuffers(MeshAsset& meshAsset, uint32_t meshIndex)
     {
         auto commandPool = vulkanApi->GetCommandPool();
 
         graphicsQueueMutex->lock();
         VkUtils::CreateVertexBuffer(vulkanApi->context,
-            meshMeta.vertices, assetsDatabaseVulkan->vertexBuffers.at(meshIndex), assetsDatabaseVulkan->vertexBuffersMemory.at(meshIndex), commandPool);
+            meshAsset.vertices, assetsDatabase->vertexBuffers.at(meshIndex), assetsDatabase->vertexBuffersMemory.at(meshIndex), commandPool);
 
-        VkUtils::CreateIndexBuffer(vulkanApi->context, meshMeta.indices, assetsDatabaseVulkan->indexBuffers.at(meshIndex),
-            assetsDatabaseVulkan->indexBuffersMemory.at(meshIndex), commandPool);
+        VkUtils::CreateIndexBuffer(vulkanApi->context, meshAsset.indices, assetsDatabase->indexBuffers.at(meshIndex),
+            assetsDatabase->indexBuffersMemory.at(meshIndex), commandPool);
         graphicsQueueMutex->unlock();
 
-        assetsDatabaseVulkan->indexesCount.at(meshIndex) = static_cast<uint32_t>(meshMeta.indices.size());
+        assetsDatabase->indexesCount.at(meshIndex) = static_cast<uint32_t>(meshAsset.indices.size());
 
-        meshMeta.CalculateBoundingBox(
-            assetsDatabaseVulkan->boundingBoxMin.at(meshIndex),
-            assetsDatabaseVulkan->boundingBoxMax.at(meshIndex),
-            assetsDatabaseVulkan->boundingBoxCenter.at(meshIndex));
+        meshAsset.CalculateBoundingBox(
+            assetsDatabase->boundingBoxMin.at(meshIndex),
+            assetsDatabase->boundingBoxMax.at(meshIndex),
+            assetsDatabase->boundingBoxCenter.at(meshIndex));
         
-        auto parsedMaterialPath = std::filesystem::path(meshMeta.materialPath);
-        auto materialIndex = assetsDatabaseVulkan->materialsIndexByPath.find(parsedMaterialPath);
-        if (materialIndex == assetsDatabaseVulkan->materialsIndexByPath.end())
+        auto parsedMaterialPath = std::filesystem::path(meshAsset.materialPath);
+        auto materialIndex = assetsDatabase->materialsIndexByPath.find(parsedMaterialPath);
+        if (materialIndex == assetsDatabase->materialsIndexByPath.end())
         {
-            spdlog::critical("PbrMaterial not found {0}", meshMeta.materialPath);
+            spdlog::critical("PbrMaterial not found {0}", meshAsset.materialPath);
         }
 
-        assetsDatabaseVulkan->meshMaterialBinding.at(meshIndex) = materialIndex->second;
-        assetsDatabaseVulkan->meshLoadStatuses.at(meshIndex) = 2;
+        assetsDatabase->meshMaterialBinding.at(meshIndex) = materialIndex->second;
+        assetsDatabase->meshLoadStatuses.at(meshIndex) = 2;
     }
 
     void AssetsLoaderVulkan::UnLoadAllMeshes()
     {
-        for (int i = 0; i < assetsDatabaseVulkan->vertexBuffers.size(); i++)
-            VkUtils::DisposeVertexBuffer(vulkanApi->context->logicalDevice, assetsDatabaseVulkan->vertexBuffers.at(i), assetsDatabaseVulkan->vertexBuffersMemory.at(i));
-        for (int i = 0; i < assetsDatabaseVulkan->indexBuffers.size(); i++)
-            VkUtils::DisposeIndexBuffer(vulkanApi->context->logicalDevice, assetsDatabaseVulkan->indexBuffers.at(i), assetsDatabaseVulkan->indexBuffersMemory.at(i));
+        for (int i = 0; i < assetsDatabase->vertexBuffers.size(); i++)
+            VkUtils::DisposeVertexBuffer(vulkanApi->context->logicalDevice, assetsDatabase->vertexBuffers.at(i), assetsDatabase->vertexBuffersMemory.at(i));
+        for (int i = 0; i < assetsDatabase->indexBuffers.size(); i++)
+            VkUtils::DisposeIndexBuffer(vulkanApi->context->logicalDevice, assetsDatabase->indexBuffers.at(i), assetsDatabase->indexBuffersMemory.at(i));
     }
 
     void AssetsLoaderVulkan::LoadMaterial(std::filesystem::path& path)
     {
-        Ref<PbrMaterial> material = CreateRef<PbrMaterial>();
+        Ref<PbrMaterialAsset> material = CreateRef<PbrMaterialAsset>();
         auto materialIterator = assetsDatabase->materialsIndexByPath.find(path);
         auto index = materialIterator->second;
         LoadAndDeserializeMaterial(materialIterator->first, material);

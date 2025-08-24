@@ -1,6 +1,7 @@
 ﻿#include "EngineCore/Pch.h"
 #include "RenderPassShadowMaps.h"
 
+#include "EngineCore/CustomAssert.h"
 #include "EngineCore/Profiler/Profiler.h"
 #include "EngineCore/Rendering/Vulkan/Descriptors/DescriptorsManager.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/FrameBufferUtility.h"

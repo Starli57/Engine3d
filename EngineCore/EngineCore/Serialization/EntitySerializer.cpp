@@ -80,8 +80,8 @@ namespace EngineCore
 		return out;
 	}
 
-	EntitySerializer::EntitySerializer(const Ref<ProjectSettings>& projectSettings, const Ref<ResourcesStorage>& assetsDatabase) : 
-		projectSettings(projectSettings), assetsDatabase(assetsDatabase)
+	EntitySerializer::EntitySerializer(const Ref<ProjectSettings>& projectSettings, const Ref<ResourcesStorageVulkan>& resourcesStorage) : 
+		projectSettings(projectSettings), resourcesStorage(resourcesStorage)
 	{
 	}
 
@@ -214,8 +214,8 @@ namespace EngineCore
 
 		for (int i = 0; i < meshPaths.size(); i++)
 		{
-			auto meshIndex = assetsDatabase->meshesIndexByPath.find(meshPaths.at(i));
-			auto materialIndex = assetsDatabase->materialsIndexByPath.find(materialPaths.at(i));
+			auto meshIndex = resourcesStorage->meshesIndexByPath.find(meshPaths.at(i));
+			auto materialIndex = resourcesStorage->materialsIndexByPath.find(materialPaths.at(i));
 			auto ent = ecs->CreateEntity();
 			ent->AddComponent<IdComponent>();
 			ent->AddComponent<PositionComponent>();
@@ -226,8 +226,8 @@ namespace EngineCore
 			ent->AddComponent<UboModelComponent>();
 			ent->AddComponent<NameComponent>(meshPaths.at(i).filename().string());
 
-			assetsDatabase->AddMeshLoadRequest(meshIndex->first);
-			assetsDatabase->AddMaterialLoadRequest(materialIndex->first);
+			resourcesStorage->AddMeshLoadRequest(meshIndex->first);
+			resourcesStorage->AddMaterialLoadRequest(materialIndex->first);
 		}
 	}
 
@@ -310,7 +310,7 @@ namespace EngineCore
 		out << YAML::Key << "MeshComponent";
 		out << YAML::BeginMap;
 
-		auto path = component.meshIndex.has_value() ? assetsDatabase->meshesPaths.at(component.meshIndex.value()).string() : "";
+		auto path = component.meshIndex.has_value() ? resourcesStorage->meshesPaths.at(component.meshIndex.value()).string() : "";
 		out << YAML::Key << "meshPath" << YAML::Value << path;
 
 		out << YAML::EndMap;
@@ -321,7 +321,7 @@ namespace EngineCore
 		out << YAML::Key << "MaterialComponent";
 		out << YAML::BeginMap;
 
-		auto path = assetsDatabase->materialsPaths.at(component.materialIndex).string();
+		auto path = resourcesStorage->materialsPaths.at(component.materialIndex).string();
 		out << YAML::Key << "materialPath" << YAML::Value << path;
 
 		out << YAML::EndMap;
@@ -434,8 +434,8 @@ namespace EngineCore
 			}
 
 
-			auto index = assetsDatabase->meshesIndexByPath.find(std::filesystem::path(path));
-			if (index == assetsDatabase->meshesIndexByPath.end())
+			auto index = resourcesStorage->meshesIndexByPath.find(std::filesystem::path(path));
+			if (index == resourcesStorage->meshesIndexByPath.end())
 			{
 				spdlog::critical("Failed to deserialize mesh component, because mesh by path {} not found", path);
 				entity->AddComponent<MeshComponent>();
@@ -443,7 +443,7 @@ namespace EngineCore
 			}
 
 			entity->AddComponent<MeshComponent>(index->second);
-			assetsDatabase->AddMeshLoadRequest(index->first);
+			resourcesStorage->AddMeshLoadRequest(index->first);
 		}
 	}
 
@@ -459,8 +459,8 @@ namespace EngineCore
 			}
 
 
-			const auto index = assetsDatabase->materialsIndexByPath.find(std::filesystem::path(path));
-			if (index == assetsDatabase->materialsIndexByPath.end())
+			const auto index = resourcesStorage->materialsIndexByPath.find(std::filesystem::path(path));
+			if (index == resourcesStorage->materialsIndexByPath.end())
 			{
 				spdlog::critical("Failed to deserialize material component, because mterial by path {} not found", path);
 				entity->AddComponent<MaterialComponent>();
@@ -468,7 +468,7 @@ namespace EngineCore
 			}
 
 			entity->AddComponent<MaterialComponent>(index->second);
-			assetsDatabase->AddMaterialLoadRequest(index->first);
+			resourcesStorage->AddMaterialLoadRequest(index->first);
 		}
 	}
 

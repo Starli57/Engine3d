@@ -6,11 +6,10 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/ProjectSettings.h"
 
-using namespace EngineCore;
 class PipelinesCollection
 {
 public:
-	std::unordered_map<std::string, Ref<VulkanPipelineConfig>> pipelinesConfigs;
+	std::unordered_map<std::string, Ref<EngineCore::VulkanPipelineConfig>> pipelinesConfigs;
 
 	PipelinesCollection(const Ref<ProjectSettings>& projectSettings);
 	~PipelinesCollection();

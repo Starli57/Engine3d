@@ -6,7 +6,7 @@
 
 namespace EngineCore
 {
-    struct MeshMeta
+    struct MeshAsset
     {
         std::vector<Vertex> vertices;
         std::vector<uint32_t> indices;

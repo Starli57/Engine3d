@@ -1,6 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "CommandBufferUtility.h"
 
+#include "EngineCore/CustomAssert.h"
 #include "EngineCore/Profiler/Profiler.h"
 #include "spdlog/spdlog.h"
 

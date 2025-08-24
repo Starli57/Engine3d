@@ -1,9 +1,9 @@
 
 #include "ComponentsRenderer.h"
 
-ComponentsRenderer::ComponentsRenderer(const Ref<ResourcesStorage>& assetsDatabase)
+ComponentsRenderer::ComponentsRenderer(const Ref<ResourcesStorageVulkan>& resourcesStorage)
 {
-	this->assetsDatabase = assetsDatabase;
+	this->resourcesStorage = resourcesStorage;
 	parametersRenderer = CreateRef<ParametersRenderer>();
 }
 
@@ -79,15 +79,15 @@ void ComponentsRenderer::RenderComponent(const Ref<Entity>&, UboWorldComponent& 
 
 void ComponentsRenderer::RenderComponent(const Ref<Entity>&, MeshComponent& component) const
 {
-	auto max = static_cast<uint32_t>(assetsDatabase->MeshesCount() - 1);
-	ImGui::Text(assetsDatabase->meshesPaths.at(component.meshIndex.value()).filename().string().c_str());
+	auto max = static_cast<uint32_t>(resourcesStorage->MeshesCount() - 1);
+	ImGui::Text(resourcesStorage->meshesPaths.at(component.meshIndex.value()).filename().string().c_str());
 	parametersRenderer->RenderParameter("Mesh index", component.meshIndex, 0, max);
 }
 
 void ComponentsRenderer::RenderComponent(const Ref<Entity>&, MaterialComponent& component) const
 {
-	auto max = static_cast<uint32_t>(assetsDatabase->MaterialsCount() - 1);
-	ImGui::Text(assetsDatabase->materialsPaths.at(component.materialIndex).filename().string().c_str());
+	auto max = static_cast<uint32_t>(resourcesStorage->MaterialsCount() - 1);
+	ImGui::Text(resourcesStorage->materialsPaths.at(component.materialIndex).filename().string().c_str());
 	parametersRenderer->RenderParameter("Material index", component.materialIndex, 0U, max);
 }
 

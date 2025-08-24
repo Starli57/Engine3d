@@ -3,7 +3,7 @@
 
 PipelinesCollection::PipelinesCollection(const Ref<ProjectSettings>& projectSettings)
 {
-	auto shadowPass = CreateRef<VulkanPipelineConfig>();
+	auto shadowPass = CreateRef<EngineCore::VulkanPipelineConfig>();
 	shadowPass->pipelineName = "shadowPass";
 	shadowPass->fragShaderPath = projectSettings->projectPath + "Shaders/ShadowPassFrag.spv";
 	shadowPass->vertShaderPath = projectSettings->projectPath + "Shaders/ShadowPassVert.spv";
@@ -14,7 +14,7 @@ PipelinesCollection::PipelinesCollection(const Ref<ProjectSettings>& projectSett
 	shadowPass->useVertices = true;
 	pipelinesConfigs.emplace(shadowPass->pipelineName, shadowPass);
 	
-	auto opaque = CreateRef<VulkanPipelineConfig>();
+	auto opaque = CreateRef<EngineCore::VulkanPipelineConfig>();
 	opaque->pipelineName = "opaque";
 	opaque->fragShaderPath = projectSettings->projectPath + "Shaders/OpaqueFrag.spv";
 	opaque->vertShaderPath = projectSettings->projectPath + "Shaders/OpaqueVert.spv";
@@ -25,7 +25,7 @@ PipelinesCollection::PipelinesCollection(const Ref<ProjectSettings>& projectSett
 	opaque->useVertices = true;
 	pipelinesConfigs.emplace(opaque->pipelineName, opaque);
 
-	auto transparent = CreateRef<VulkanPipelineConfig>();
+	auto transparent = CreateRef<EngineCore::VulkanPipelineConfig>();
 	transparent->pipelineName = "transparent";
 	transparent->fragShaderPath = projectSettings->projectPath + "Shaders/OpaqueFrag.spv";
 	transparent->vertShaderPath = projectSettings->projectPath + "Shaders/OpaqueVert.spv";
@@ -36,7 +36,7 @@ PipelinesCollection::PipelinesCollection(const Ref<ProjectSettings>& projectSett
 	transparent->useVertices = true;
 	pipelinesConfigs.emplace(transparent->pipelineName, transparent);
 	
-	auto edges = CreateRef<VulkanPipelineConfig>();
+	auto edges = CreateRef<EngineCore::VulkanPipelineConfig>();
 	edges->pipelineName = "edges";
 	edges->fragShaderPath = projectSettings->projectPath + "Shaders/OpaqueFrag.spv";
 	edges->vertShaderPath = projectSettings->projectPath + "Shaders/OpaqueVert.spv";

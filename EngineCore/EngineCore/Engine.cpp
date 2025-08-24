@@ -1,6 +1,8 @@
 #include "EngineCore/Pch.h"
 
 #include "Engine.h"
+
+#include "CustomAssert.h"
 #include "Profiler/Profiler.h"
 
 namespace EngineCore

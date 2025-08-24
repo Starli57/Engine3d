@@ -4,6 +4,7 @@
 
 #include "GraphicsApiVulkan.h"
 
+#include "EngineCore/CustomAssert.h"
 #include "EngineCore/Profiler/Profiler.h"
 #include "Utilities/FormatUtility.h"
 #include "Utilities/ImageUtility.h"

@@ -1,11 +1,5 @@
 #pragma once
 
-#include "EngineCore/Core/ResourcesStorage.h"
-#include "EngineCore/Assets/PbrMaterial.h"
-#include "EngineCore/Core/Ref.h"
-#include "EngineCore/Core/EventHandler.h"
-#include "EngineCore/Assets/Meta/MeshMeta.h"
-
 namespace EngineCore
 {
     class IGraphicsApi

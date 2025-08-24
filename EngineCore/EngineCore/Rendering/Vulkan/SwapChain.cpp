@@ -34,7 +34,7 @@ namespace AVulkan
 		spdlog::info("Create swap chain");
 		
 		auto details = VkUtils::GetSwapChainDetails(vulkanContext->physicalDevice, vulkanContext->windowSurface);
-		CAssert::Check(VkUtils::DoSupportSwapChain(details), "Swap chains are not supported");
+		EngineCore::CAssert::Check(VkUtils::DoSupportSwapChain(details), "Swap chains are not supported");
 
 		swapChainData->surfaceFormat = ChooseSwapSurfaceFormat(details.formats);
 		VkPresentModeKHR presentMode = ChoosePresentMode(details.presentModes);
@@ -54,7 +54,7 @@ namespace AVulkan
 			details.capabilities, physicalDeviceQueueIndices, swapChainData->imagesCount);
 
 		auto createStatus = vkCreateSwapchainKHR(vulkanContext->logicalDevice, &createInfo, nullptr, &swapChainData->swapChain);
-		CAssert::Check(createStatus == VK_SUCCESS, "Failed to create swap chain, status: " + createStatus);
+		EngineCore::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create swap chain, status: " + createStatus);
 
 		vkGetSwapchainImagesKHR(vulkanContext->logicalDevice, swapChainData->swapChain, &swapChainData->imagesCount, nullptr);
 		swapChainData->images.resize(swapChainData->imagesCount);

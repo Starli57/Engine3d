@@ -1,7 +1,7 @@
 #include "AssetsWindow.h"
 
-AssetsWindow::AssetsWindow(Ref<EngineCore::EntitySerializer> serializer, const Ref<Ecs>& ecs, const Ref<ResourcesStorage>& assetsDatabase, const Ref<ProjectSettings>& projectSettings) :
-    serializer(serializer), ecs(ecs), assetsDatabase(assetsDatabase), projectSettings(projectSettings)
+AssetsWindow::AssetsWindow(Ref<EntitySerializer> serializer, const Ref<Ecs>& ecs, const Ref<ResourcesStorageVulkan>& resourcesStorage, const Ref<ProjectSettings>& projectSettings) :
+    serializer(serializer), ecs(ecs), resourcesStorage(resourcesStorage), projectSettings(projectSettings)
 {
 }
 
@@ -14,7 +14,7 @@ void AssetsWindow::Update()
     ImGui::Begin("Assets");
     
     ImGui::Text("Prefabs");
-    for (const auto& prefab : assetsDatabase->prefabsIndexByPath)
+    for (const auto& prefab : resourcesStorage->prefabsIndexByPath)
     {
         if (ImGui::Button(prefab.first.filename().string().c_str()))
         {
@@ -23,7 +23,7 @@ void AssetsWindow::Update()
     }
 
     ImGui::Text("Worlds");
-    for (const auto& world : assetsDatabase->worldsIndexByPath)
+    for (const auto& world : resourcesStorage->worldsIndexByPath)
     {
         if (ImGui::Button(world.first.filename().string().c_str()))
         {
@@ -32,7 +32,7 @@ void AssetsWindow::Update()
     }
 
     ImGui::Text("Combined Meshes");
-    for (const auto& mesh : assetsDatabase->combinedMeshIndexByPath)
+    for (const auto& mesh : resourcesStorage->combinedMeshIndexByPath)
     {
         if (ImGui::Button(mesh.first.filename().string().c_str()))
         {
