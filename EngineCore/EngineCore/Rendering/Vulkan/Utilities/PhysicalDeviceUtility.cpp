@@ -90,25 +90,26 @@ namespace VkUtils
     {
         //todo: make better score calculation
 
-        VkPhysicalDeviceProperties deviceProperties;
-        VkPhysicalDeviceFeatures deviceFeatures;
-        VkPhysicalDeviceMemoryProperties memoryProperties;
-        vkGetPhysicalDeviceProperties(device, &deviceProperties);
-        vkGetPhysicalDeviceFeatures(device, &deviceFeatures);
-        vkGetPhysicalDeviceMemoryProperties(device, &memoryProperties);
+        VkPhysicalDeviceProperties2 deviceProperties {};
+        deviceProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+        vkGetPhysicalDeviceProperties2(device, &deviceProperties);
+        
+        VkPhysicalDeviceMemoryProperties2 memoryProperties {};
+        memoryProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PROPERTIES_2;
+        vkGetPhysicalDeviceMemoryProperties2(device, &memoryProperties);
 
         uint64_t totalMemory = 0;
-        spdlog::info("Device: {0}", deviceProperties.deviceName);
+        spdlog::info("Device: {0}", deviceProperties.properties.deviceName);
 
-        for (uint32_t i = 0; i < memoryProperties.memoryHeapCount; ++i)
+        for (uint32_t i = 0; i < memoryProperties.memoryProperties.memoryHeapCount; ++i)
         {
-            auto memoryMb = memoryProperties.memoryHeaps[i].size / (1024 * 1024);
+            auto memoryMb = memoryProperties.memoryProperties.memoryHeaps[i].size / (1024 * 1024);
             totalMemory += memoryMb;
 
             spdlog::info("{0}: Size={1} MB", i, memoryMb);
         }
 
-        uint64_t discreteMult = deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 2 : 1;
+        uint64_t discreteMult = deviceProperties.properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU ? 2 : 1;
 
         return discreteMult * totalMemory;
     }
@@ -137,10 +138,14 @@ namespace VkUtils
 
     void PrintPhysicalDeviceDebugInformation(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface)
     {
-        VkPhysicalDeviceProperties deviceProperties;
-        vkGetPhysicalDeviceProperties(physicalDevice, &deviceProperties);
-        spdlog::info("Rendering GPU: {0}", deviceProperties.deviceName);
-
+        VkPhysicalDeviceProperties2 deviceProperties {};
+        deviceProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+        vkGetPhysicalDeviceProperties2(physicalDevice, &deviceProperties);
+        spdlog::info("Rendering GPU: {0}", deviceProperties.properties.deviceName);
+        uint32_t major = VK_API_VERSION_MAJOR(deviceProperties.properties.apiVersion);
+        uint32_t minor = VK_API_VERSION_MINOR(deviceProperties.properties.apiVersion);
+        spdlog::info("Device API Versions: {}.{}", major, minor);
+        
         AVulkan::SwapChainSurfaceSettings surfaceSettings;
 
         VkUtils::GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
@@ -161,10 +166,11 @@ namespace VkUtils
 
     VkSampleCountFlagBits GetMaxUsableSampleCount(const VkPhysicalDevice& physicalDevice) 
     {
-        VkPhysicalDeviceProperties physicalDeviceProperties;
-        vkGetPhysicalDeviceProperties(physicalDevice, &physicalDeviceProperties);
+        VkPhysicalDeviceProperties2 deviceProperties {};
+        deviceProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+        vkGetPhysicalDeviceProperties2(physicalDevice, &deviceProperties);
 
-        VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts & physicalDeviceProperties.limits.framebufferDepthSampleCounts;
+        VkSampleCountFlags counts = deviceProperties.properties.limits.framebufferColorSampleCounts & deviceProperties.properties.limits.framebufferDepthSampleCounts;
         if (counts & VK_SAMPLE_COUNT_64_BIT) { return VK_SAMPLE_COUNT_64_BIT; }
         if (counts & VK_SAMPLE_COUNT_32_BIT) { return VK_SAMPLE_COUNT_32_BIT; }
         if (counts & VK_SAMPLE_COUNT_16_BIT) { return VK_SAMPLE_COUNT_16_BIT; }

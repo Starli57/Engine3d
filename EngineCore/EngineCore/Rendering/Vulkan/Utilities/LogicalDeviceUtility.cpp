@@ -38,10 +38,21 @@ namespace VkUtils
 		createInfo.pQueueCreateInfos = queueCreateInfos.data();
 		createInfo.enabledExtensionCount = static_cast<uint32_t>(AVulkan::physicalDeviceExtensions.size());
 		createInfo.ppEnabledExtensionNames = AVulkan::physicalDeviceExtensions.data();
+		
+		VkPhysicalDeviceFeatures2 deviceFeatures{};
+		deviceFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+		vkGetPhysicalDeviceFeatures2(context->physicalDevice, &deviceFeatures);
 
-		VkPhysicalDeviceFeatures deviceFeatures;
-		vkGetPhysicalDeviceFeatures(context->physicalDevice, &deviceFeatures);
-		createInfo.pEnabledFeatures = &deviceFeatures;
+#if DEBUG
+		VkPhysicalDeviceBufferDeviceAddressFeatures bufferDeviceAddressFeatures{};
+		bufferDeviceAddressFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_BUFFER_DEVICE_ADDRESS_FEATURES;
+		bufferDeviceAddressFeatures.bufferDeviceAddress = VK_TRUE;
+		bufferDeviceAddressFeatures.bufferDeviceAddressCaptureReplay = VK_TRUE;
+		
+		deviceFeatures.pNext = &bufferDeviceAddressFeatures;
+#endif
+		
+		createInfo.pNext = &deviceFeatures;
 
 		VkUtils::SetupValidationLayers(createInfo);
 

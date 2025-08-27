@@ -2,19 +2,11 @@
 
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <unordered_map>
-#include <string>
-#include <vector>
 
 #include "Core/IRenderPass.h"
-#include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/UniformBufferVulkanUtility.h"
-#include "EngineCore/Rendering/PipelinesCollection.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/Ref.h"
-#include "EngineCore/Rendering/Vulkan/Descriptors/DescriptorsManager.h"
-#include "EngineCore/Utilities/MathUtility.h"
 
 namespace AVulkan
 {
