@@ -11,12 +11,12 @@
 
 namespace AVulkan
 {
-	Ref<PipelineVulkan> GraphicsPipelineUtility::Create(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
-		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa)
+#pragma optimize("", off)
+	void GraphicsPipelineUtility::Create(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
+		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa,
+		Ref<PipelineVulkan>& pipeline)
 	{
 		spdlog::info("Create graphics pipeline");
-		auto pipeline = CreateRef<PipelineVulkan>();
-
 		try
 		{
 			initializationRollback = CreateUniqueRef<Engine::Rollback>("VkPipelineInit");
@@ -98,14 +98,14 @@ namespace AVulkan
 			initializationRollback->Dispose();
 			throw;
 		}
-		return pipeline;
 	}
+#pragma optimize("", on)
 
-	Ref<PipelineVulkan> GraphicsPipelineUtility::ReCreate(const Ref<PipelineVulkan>& pipeline, const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
+	void GraphicsPipelineUtility::ReCreate(Ref<PipelineVulkan>& pipeline, const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
 		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa)
 	{
 		Dispose(pipeline, logicalDevice);
-		return Create(pipelineConfig, logicalDevice, renderpass, swapChainExtent, descriptorSetLayouts, msaa);
+		Create(pipelineConfig, logicalDevice, renderpass, swapChainExtent, descriptorSetLayouts, msaa, pipeline);
 	}
 
 	void GraphicsPipelineUtility::Dispose(const Ref<PipelineVulkan>& pipeline, const VkDevice& logicalDevice) const

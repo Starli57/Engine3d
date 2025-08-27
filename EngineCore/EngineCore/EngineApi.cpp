@@ -117,10 +117,12 @@ namespace Engine
 			Profiler::GetInstance().BeginSample("Rendering");
 			graphicsApi->Render();
 			Profiler::GetInstance().EndSample();
-		
+
+#if DEBUG
 			Profiler::GetInstance().BeginSample("Editor");
 			editorUpdate();
 			Profiler::GetInstance().EndSample();
+#endif
 			
 			Profiler::GetInstance().Reset();
 		

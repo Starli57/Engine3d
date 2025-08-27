@@ -19,15 +19,24 @@ Game::Game(Ref<ProjectSettings> projectSettings) : projectSettings(projectSettin
 	engine->BindGameSystemsUpdateFunction([this]() { UpdateGameSystems(); });
 	
 	serializer = CreateRef<Client::EntitySerializer>(engine->GetSerializer());
-	
+
+#if DEBUG
 	editor = CreateRef<Editor>(projectSettings, engine);
+#endif
+	
+#if !DEBUG
+	engine->GetSerializer()->InstantiateWorld(engine->GetEcs(), engine->GetResourcesManager()->assetsDatabase->worldsPaths.at(0));
+#endif
 	
 	InitializeGameSystems();
 }
 
 Game::~Game()
 {
+#if DEBUG
 	editor.reset();
+#endif
+	
 	engine.reset();
 }
 

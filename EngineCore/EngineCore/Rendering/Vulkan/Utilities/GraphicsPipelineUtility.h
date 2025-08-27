@@ -17,11 +17,11 @@ namespace AVulkan
 	class GraphicsPipelineUtility
 	{
 	public:
-		Ref<PipelineVulkan> Create(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
+		void Create(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
 			VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts,
-			VkSampleCountFlagBits msaa);
+			VkSampleCountFlagBits msaa, Ref<PipelineVulkan>& pipeline);
 
-		Ref<PipelineVulkan> ReCreate(const Ref<PipelineVulkan>& pipeline, const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
+		void ReCreate(Ref<PipelineVulkan>& pipeline, const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
 			VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa);
 
 		void Dispose(const Ref<PipelineVulkan>& pipeline, const VkDevice& logicalDevice) const;

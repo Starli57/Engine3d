@@ -113,11 +113,12 @@ namespace AVulkan
         auto descriptorSetLayouts = std::vector<VkDescriptorSetLayout>();
         descriptorSetLayouts.resize(1);
         descriptorSetLayouts.at(0) = renderPassContext->descriptorsManager->GetDescriptorSetLayoutFrame();
-            
-        auto shadowPassPipeline = GraphicsPipelineUtility().Create(
+
+        auto pipeline = CreateRef<PipelineVulkan>();
+        GraphicsPipelineUtility().Create(
             shadowPassPipelineConfig, vulkanContext->logicalDevice, renderPass,
-            renderPassContext->swapChainData->extent, descriptorSetLayouts, VK_SAMPLE_COUNT_1_BIT);
-        pipelines.emplace(shadowPassPipelineConfig->pipelineName, shadowPassPipeline);
+            renderPassContext->swapChainData->extent, descriptorSetLayouts, VK_SAMPLE_COUNT_1_BIT, pipeline);
+        pipelines.emplace(shadowPassPipelineConfig->pipelineName, pipeline);
     }
 
     void RenderPassShadowMaps::CreateShadowMapBuffer()

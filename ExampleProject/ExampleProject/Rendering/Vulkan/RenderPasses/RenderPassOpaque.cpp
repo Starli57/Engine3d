@@ -110,8 +110,9 @@ namespace AVulkan
         for (const auto& config : vulkanContext->pipelinesCollection->pipelinesConfigs)
         {
             GraphicsPipelineUtility pipelineUtility;
-            auto pipeline = pipelineUtility.Create(config.second, vulkanContext->logicalDevice, renderPass,
-                renderPassContext->swapChainData->extent, descriptorSetLayouts, vulkanContext->msaa);
+            auto pipeline = CreateRef<PipelineVulkan>();
+            pipelineUtility.Create(config.second, vulkanContext->logicalDevice, renderPass,
+                renderPassContext->swapChainData->extent, descriptorSetLayouts, vulkanContext->msaa, pipeline);
 
             pipelines.emplace(config.first, pipeline);
         }
