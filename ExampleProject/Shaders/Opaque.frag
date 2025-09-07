@@ -38,7 +38,7 @@ layout(set = 2, binding = 0) uniform sampler2D shadowMapSampler;
 
 const float baseColorLevel = 1.0;
 const float ambientLevel = 0.02;
-const float shadowsEffect = 0.25;
+const float shadowsEffect = 0.1;
 
 void main()
 {
@@ -74,10 +74,7 @@ void main()
 
 	vec3 viewDir = normalize(inViewPos - inWorldPosition);
 	vec3 lightDirection = normalize(inLightPosition - inWorldPosition);
-	vec3 reflectLightDir = reflect(-lightDirection, normal);
-
-	float baseColor = max(dot(normal, reflectLightDir), 0.0);
-
+	
 	vec3 Lo = vec3(0.0);
 	vec3 h = normalize(viewDir + lightDirection);
 	

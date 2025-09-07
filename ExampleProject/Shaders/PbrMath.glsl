@@ -54,7 +54,7 @@ mat3 CalculateTBN( vec3 N, vec3 p, vec2 uv )
     }
 
     if (length(duv2) <= 1e-2) {
-        duv2 = vec2(0.0, -1.0);
+        duv2 = vec2(0.0, 1.0);
     }
 
     // solve the linear system
@@ -81,11 +81,11 @@ mat3 CalculateTBN( vec3 N, vec3 p, vec2 uv )
     return mat3( T * invmax, B * invmax, N );
 }
 
-// https://github.com/PacktPublishing/3D-Graphics-Rendering-Cookbook-Second-Edition/blob/main/data/shaders/gltf/PBR.sp
+//http://www.thetenthplanet.de/archives/1180
 vec3 ApplyNormalMap(vec3 n, vec3 v, vec3 normalSample, vec2 uv)
 {
     vec3 map = normalize( 2.0 * normalSample - vec3(1.0) );
-    mat3 TBN = CalculateTBN(n, v, uv);
+    mat3 TBN = CalculateTBN(n, -v, uv);
 
     return normalize(TBN * map);
 }
