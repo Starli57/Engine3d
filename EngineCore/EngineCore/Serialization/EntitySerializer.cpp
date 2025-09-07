@@ -351,7 +351,7 @@ namespace Engine
 		out << YAML::Key << "ShadowMapComponent";
 		out << YAML::BeginMap;
 
-		out << YAML::Key << "fov" << YAML::Value << component.fov;
+		out << YAML::Key << "farObjectProjectionMultiplier" << YAML::Value << component.farObjectProjectionMultiplier;
 		out << YAML::Key << "zNear" << YAML::Value << component.zNear;
 		out << YAML::Key << "zFar" << YAML::Value << component.zFar;
 		out << YAML::Key << "upAxis" << YAML::Value << component.upAxis;
@@ -498,7 +498,7 @@ namespace Engine
 		if (auto cameraComponent = node["ShadowMapComponent"])
 		{
 			entity->AddComponent<ShadowMapComponent>(
-				cameraComponent["fov"].as<float>(),
+				cameraComponent["farObjectProjectionMultiplier"].as<float>(),
 				cameraComponent["zNear"].as<float>(),
 				cameraComponent["zFar"].as<float>(),
 				cameraComponent["upAxis"].as<glm::vec3>());

@@ -93,7 +93,7 @@ void ComponentsRenderer::RenderComponent(const Ref<Entity>&, MaterialComponent& 
 
 void ComponentsRenderer::RenderComponent(const Ref<Entity>&, ShadowMapComponent& component) const
 {
-	parametersRenderer->RenderParameter("FOV", component.fov, 30.0f, 120.0f);
+	parametersRenderer->RenderParameter("Far Objects Mult", component.farObjectProjectionMultiplier, 1.0f, 100.0f);
 	parametersRenderer->RenderParameter("ZNear", component.zNear);
 	parametersRenderer->RenderParameter("ZFar", component.zFar);
 	parametersRenderer->RenderParameter("Up Axis", component.upAxis);

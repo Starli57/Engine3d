@@ -36,17 +36,17 @@ bool ParametersRenderer::RenderParameter(const char* label, std::optional<int>& 
 
 bool ParametersRenderer::RenderParameter(const char* label, float& parameter, const float vMin, const float vMax) const
 {
-	return ImGui::DragFloat(label, &parameter, parameter * dynamicStep, vMin, vMax, "%.1f");
+	return ImGui::DragFloat(label, &parameter, glm::max(0.01f, parameter * dynamicStep), vMin, vMax, "%.1f");
 }
 
 bool ParametersRenderer::RenderParameter(const char* label, glm::vec2& parameter, const float vMin, const float vMax) const
 {
-	return ImGui::DragFloat2(label, glm::value_ptr(parameter), glm::length(parameter) * dynamicStep, vMin, vMax, "%.1f");
+	return ImGui::DragFloat2(label, glm::value_ptr(parameter), glm::max(0.01f, glm::length(parameter) * dynamicStep), vMin, vMax, "%.1f");
 }
 
 bool ParametersRenderer::RenderParameter(const char* label, glm::vec3& parameter, const float vMin, const float vMax) const
 {
-	return ImGui::DragFloat3(label, glm::value_ptr(parameter), glm::length(parameter) * dynamicStep, vMin, vMax, "%.1f");
+	return ImGui::DragFloat3(label, glm::value_ptr(parameter), glm::max(0.01f, glm::length(parameter) * dynamicStep), vMin, vMax, "%.1f");
 }
 
 bool ParametersRenderer::RenderParameter(std::string& parameter) const

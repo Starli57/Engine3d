@@ -4,7 +4,7 @@
 class ShadowMapComponent
 {
 public:
-    float fov;
+    float farObjectProjectionMultiplier;
 
     float zNear;
     float zFar;
@@ -13,7 +13,7 @@ public:
 
     ShadowMapComponent() 
     {
-        fov = 60;
+        farObjectProjectionMultiplier = 5.0f;
 
         zNear = 1.0f;
         zFar = 1000;
@@ -21,8 +21,8 @@ public:
         upAxis = glm::vec3(0.0f, 1.0f, 0.0f);
     }
 
-    ShadowMapComponent(const float fov, const float zNear, const float zFar, const glm::vec3 upAxis)
-        : fov(fov), zNear(zNear), zFar(zFar), upAxis(upAxis)
+    ShadowMapComponent(const float farObjectProjectionMultiplier, const float zNear, const float zFar, const glm::vec3 upAxis)
+        : farObjectProjectionMultiplier(farObjectProjectionMultiplier), zNear(zNear), zFar(zFar), upAxis(upAxis)
     {
     }
 	//todo: use move constructor

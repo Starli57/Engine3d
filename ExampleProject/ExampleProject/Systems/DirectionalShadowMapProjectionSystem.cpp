@@ -80,6 +80,12 @@ void DirectionalShadowMapProjectionSystem::Update(float deltaTime)
 			maxZ = std::max(maxZ, trf.z);
 		}
 		
+		if (minZ < 0) minZ *= shadowMapComponent.farObjectProjectionMultiplier;
+		else minZ /= shadowMapComponent.farObjectProjectionMultiplier;
+		
+		if (maxZ < 0)maxZ /= shadowMapComponent.farObjectProjectionMultiplier;
+		else maxZ *= shadowMapComponent.farObjectProjectionMultiplier;
+		
 		const glm::mat4 lightProjection = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
 		uboComponent.projection = lightProjection;
 	}
