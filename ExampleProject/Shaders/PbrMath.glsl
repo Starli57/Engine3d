@@ -54,7 +54,7 @@ mat3 CalculateTBN( vec3 N, vec3 p, vec2 uv )
     }
 
     if (length(duv2) <= 1e-2) {
-        duv2 = vec2(0.0, 1.0);
+        duv2 = vec2(0.0, -1.0);
     }
 
     // solve the linear system
