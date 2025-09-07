@@ -55,7 +55,8 @@ void Game::InitializeGameSystems()
 	cameraLookAtPositionSystem = CreateUniqueRef<CameraLookAtSystem>(ecs, input);
 	rotatorSystem = CreateUniqueRef<RotateSystem>(ecs);
 	transformSystem = CreateUniqueRef<TransformSystem>(ecs);
-	cameraSystem = CreateUniqueRef<ViewProjectionSystem>(ecs, window);
+	cameraProjectionSystem = CreateUniqueRef<ViewProjectionSystem>(ecs, window);
+	directionalShadowMapProjectionSystem = CreateUniqueRef<DirectionalShadowMapProjectionSystem>(ecs, window);
 	freeCameraSystem = CreateUniqueRef<CameraFlySystem>(ecs, input);
 }
 
@@ -66,5 +67,6 @@ void Game::UpdateGameSystems() const
 	rotatorSystem->Update(deltaTime);
 	transformSystem->Update(deltaTime);
 	freeCameraSystem->Update(deltaTime);
-	cameraSystem->Update(deltaTime);
+	cameraProjectionSystem->Update(deltaTime);
+	directionalShadowMapProjectionSystem->Update(deltaTime);
 }

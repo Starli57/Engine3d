@@ -8,6 +8,7 @@
 #include "Serialization/EntitySerializer.h"
 #include "Systems/CameraFlySystem.h"
 #include "Systems/CameraLookAtSystem.h"
+#include "Systems/DirectionalShadowMapProjectionSystem.h"
 #include "Systems/RotateSystem.h"
 #include "Systems/TransformSystem.h"
 #include "Systems/ViewProjectionSystem.h"
@@ -25,12 +26,13 @@ private:
 	Ref<Client::EntitySerializer> serializer;
 	
 	Ref<ProjectSettings> projectSettings;
-\
-	URef<CameraLookAtSystem> cameraLookAtPositionSystem;\
+
+	URef<CameraLookAtSystem> cameraLookAtPositionSystem;
 	URef<RotateSystem> rotatorSystem;
 	URef<TransformSystem> transformSystem;
-	URef<ViewProjectionSystem> cameraSystem;
-	URef<CameraFlySystem> freeCameraSystem;\
+	URef<ViewProjectionSystem> cameraProjectionSystem;
+	URef<DirectionalShadowMapProjectionSystem> directionalShadowMapProjectionSystem;
+	URef<CameraFlySystem> freeCameraSystem;
 
 #if GLFW_INCLUDE_VULKAN
 	Ref<AVulkan::RendererVulkan> renderer;

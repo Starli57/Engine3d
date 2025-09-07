@@ -22,7 +22,7 @@ void ViewProjectionSystem::Update(float deltaTime = 0)
 	glfwGetFramebufferSize(window, &width, &height);
 	if (width == 0 || height == 0) return;
 
-	Engine::Profiler::GetInstance().BeginSample("ViewProjectionSystems");
+	Engine::Profiler::GetInstance().BeginSample("Camera ViewProjectionSystems");
 	const auto screenAspectRatio = static_cast<float>(width) / static_cast<float>(height);
 
 	const auto cameraEntities = ecs->registry->view<PositionComponent, RotationComponent, UboWorldComponent, CameraComponent>();
@@ -44,25 +44,6 @@ void ViewProjectionSystem::Update(float deltaTime = 0)
 #if GLFW_INCLUDE_VULKAN
 		projection[1][1] *= -1;
 #endif
-		
-		uboComponent.projection = projection;
-		uboComponent.position = position;
-	}
-
-	auto allProjections = ecs->registry->view<PositionComponent, RotationComponent, UboWorldComponent, ShadowMapComponent>();
-	for (auto entity : allProjections)
-	{
-		auto& position = allProjections.get<PositionComponent>(entity).position;
-		auto& rotation = allProjections.get<RotationComponent>(entity).rotation;
-		auto& uboComponent = allProjections.get<UboWorldComponent>(entity);
-		auto& shadowMapComponent = allProjections.get<ShadowMapComponent>(entity);
-		
-		glm::vec3 direction;
-		Engine::CalculateDirection(&direction, rotation);
-		Engine::Normalize(&direction);
-
-		uboComponent.view = lookAt(position, position + direction, shadowMapComponent.upAxis);
-		const auto projection = glm::perspective(glm::radians(shadowMapComponent.fov), screenAspectRatio, shadowMapComponent.zNear, shadowMapComponent.zFar);
 		
 		uboComponent.projection = projection;
 		uboComponent.position = position;

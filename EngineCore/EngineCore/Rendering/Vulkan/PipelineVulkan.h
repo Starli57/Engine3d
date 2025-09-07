@@ -4,7 +4,7 @@
 
 struct PipelineVulkan
 {
-	VkPipeline pipeline;
+	VkPipeline pipeline = VK_NULL_HANDLE;
 	VkPipelineLayout layout;
 };
 
