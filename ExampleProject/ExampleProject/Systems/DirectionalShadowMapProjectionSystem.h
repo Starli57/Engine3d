@@ -4,6 +4,7 @@
 
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/ISystem.h"
+#include "glm/fwd.hpp"
 
 class DirectionalShadowMapProjectionSystem: public ISystem
 {

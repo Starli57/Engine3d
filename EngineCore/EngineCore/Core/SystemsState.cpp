@@ -9,6 +9,7 @@ SystemsState::SystemsState()
 {
       CameraFlySystem = true;
       CameraLookAtSystem = true;
+      DirectionalShadowMapProjectionSystem = true;
       RotateSystem = true;
       TransformSystem = true;
       ViewProjectionSystem = true;

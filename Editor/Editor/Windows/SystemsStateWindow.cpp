@@ -13,6 +13,7 @@ void SystemsStateWindow::Update()
       ImGui::Begin("Systems State");
       ImGui::Checkbox("CameraFlySystem", &systemsState->CameraFlySystem);
       ImGui::Checkbox("CameraLookAtSystem", &systemsState->CameraLookAtSystem);
+      ImGui::Checkbox("DirectionalShadowMapProjectionSystem", &systemsState->DirectionalShadowMapProjectionSystem);
       ImGui::Checkbox("RotateSystem", &systemsState->RotateSystem);
       ImGui::Checkbox("TransformSystem", &systemsState->TransformSystem);
       ImGui::Checkbox("ViewProjectionSystem", &systemsState->ViewProjectionSystem);

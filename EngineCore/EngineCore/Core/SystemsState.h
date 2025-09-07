@@ -8,6 +8,7 @@ struct SystemsState
 {
       bool CameraFlySystem;
       bool CameraLookAtSystem;
+      bool DirectionalShadowMapProjectionSystem;
       bool RotateSystem;
       bool TransformSystem;
       bool ViewProjectionSystem;
