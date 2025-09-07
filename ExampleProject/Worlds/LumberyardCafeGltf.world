@@ -1,0 +1,4160 @@
+NameComponent:
+  name: Diffuse Light
+PositionComponent:
+  position: [-1708.19995, 5000, 0]
+RotationComponent:
+  rotation: [-0.800000012, -73.3000031, 40]
+UboWorldComponent:
+  {}
+LightComponent:
+  color: [0.950177908, 0.861755669, 0.801395595]
+  intensity: 50000000
+ShadowMapComponent:
+  farObjectProjectionMultiplier: 3
+  zNear: 1
+  zFar: 3000
+  upAxis: [0, 1, 0]
+---
+NameComponent:
+  name: Camera
+PositionComponent:
+  position: [-1293.14502, 620.52417, -9.56390953]
+RotationComponent:
+  rotation: [-360.850403, -20.1409569, 40]
+CameraComponent:
+  fov: 60
+  zNear: 1
+  zFar: 7500
+  upAxis: [0, 1, 0]
+UboModelComponent:
+  {}
+UboWorldComponent:
+  {}
+CameraFreeComponent:
+  movementSpeed: 200
+  rotationSpeed: 12
+---
+NameComponent:
+  name: all_material0.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_material0.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\material0.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_vespa_headlight1.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_vespa_headlight1.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\vespa_headlight1.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_foliage_leaves.doublesided2.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_foliage_leaves.doublesided2.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\foliage_leaves.doublesided2.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_foliage_trunk3.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_foliage_trunk3.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\foliage_trunk3.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_vespa_odometer_glass4.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_vespa_odometer_glass4.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\vespa_odometer_glass4.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_vespa5.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_vespa5.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\vespa5.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_vespa_odometer6.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_vespa_odometer6.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\vespa_odometer6.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_foliage_bux_hedges46.doublesided7.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_foliage_bux_hedges46.doublesided7.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\foliage_bux_hedges46.doublesided7.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_foliage_ivy_leaf_a.doublesided8.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_foliage_ivy_leaf_a.doublesided8.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\foliage_ivy_leaf_a.doublesided8.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_foliage_ivy_branches9.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_foliage_ivy_branches9.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\foliage_ivy_branches9.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_foliage_linde_tree_large_trunk10.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_foliage_linde_tree_large_trunk10.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\foliage_linde_tree_large_trunk10.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_foliage_linde_tree_large_orange_leaves.doublesided11.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_foliage_linde_tree_large_orange_leaves.doublesided11.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\foliage_linde_tree_large_orange_leaves.doublesided11.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_foliage_linde_tree_large_green_leaves.doublesided12.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_foliage_linde_tree_large_green_leaves.doublesided12.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\foliage_linde_tree_large_green_leaves.doublesided12.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_antenna_metal13.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_antenna_metal13.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\antenna_metal13.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_antenna_plastic_blue14.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_antenna_plastic_blue14.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\antenna_plastic_blue14.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_antenna_plastic15.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_antenna_plastic15.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\antenna_plastic15.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_ashtray16.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_ashtray16.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\ashtray16.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_awnings_hotel_fabric17.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_awnings_hotel_fabric17.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\awnings_hotel_fabric17.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_awnings_fabric18.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_awnings_fabric18.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\awnings_fabric18.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_awnings_beams19.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_awnings_beams19.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\awnings_beams19.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_bistro_sign_main20.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_bistro_sign_main20.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\bistro_sign_main20.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_bistro_sign_letters21.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_bistro_sign_letters21.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\bistro_sign_letters21.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_banner_metal22.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_banner_metal22.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\banner_metal22.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_bollards23.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_bollards23.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\bollards23.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_wood_painted324.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_wood_painted324.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_wood_painted324.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete_grooved25.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete_grooved25.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete_grooved25.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete_smooth26.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete_smooth26.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete_smooth26.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete_plaster1_blendshader27.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete_plaster1_blendshader27.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete_plaster1_blendshader27.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_spotlight_glass_emissive28.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_spotlight_glass_emissive28.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\spotlight_glass_emissive28.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_focus29.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_focus29.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_focus29.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_grain_metal30.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_grain_metal30.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_grain_metal30.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_glass_exterior31.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_glass_exterior31.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_glass_exterior31.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_metal32.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_metal32.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_metal32.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_light_bulb33.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_light_bulb33.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_light_bulb33.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_metal_pipe34.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_metal_pipe34.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_metal_pipe34.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_forge_metal35.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_forge_metal35.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_forge_metal35.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_focus_ornament36.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_focus_ornament36.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_focus_ornament36.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_wood_polished37.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_wood_polished37.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_wood_polished37.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_roofing_shingle_grey38.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_roofing_shingle_grey38.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_roofing_shingle_grey38.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_roofing_shingle_green39.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_roofing_shingle_green39.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_roofing_shingle_green39.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_plastic40.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_plastic40.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_plastic40.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete141.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete141.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete141.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_curtains42.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_curtains42.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_curtains42.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_glass_dirty_masked43.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_glass_dirty_masked43.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_glass_dirty_masked43.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete44.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete44.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete44.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_bistro_main_door45.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_bistro_main_door45.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_bistro_main_door45.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete_yellow46.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete_yellow46.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete_yellow46.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_trim_cornice47.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_trim_cornice47.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_trim_cornice47.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_emissive_streetlight48.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_emissive_streetlight48.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\emissive_streetlight48.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_side_letters49.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_side_letters49.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_side_letters49.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_glass_dirty50.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_glass_dirty50.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_glass_dirty50.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_doors51.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_doors51.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_doors51.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_brick_large_beige_blendshader52.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_brick_large_beige_blendshader52.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_brick_large_beige_blendshader52.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_wood_brown53.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_wood_brown53.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_wood_brown53.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_brick_small_red_blendshader54.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_brick_small_red_blendshader54.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_brick_small_red_blendshader54.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_wood_painted_green55.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_wood_painted_green55.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_wood_painted_green55.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete_plaster56.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete_plaster56.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete_plaster56.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_black_metal57.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_black_metal57.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_black_metal57.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_brick_large_white58.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_brick_large_white58.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_brick_large_white58.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_building_details59.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_building_details59.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_building_details59.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_wood_painted_cyan60.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_wood_painted_cyan60.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_wood_painted_cyan60.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_brick_small_red61.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_brick_small_red61.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_brick_small_red61.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_roofing_metal_0162.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_roofing_metal_0162.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_roofing_metal_0162.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_room_interior63.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_room_interior63.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_room_interior63.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_awning_beams64.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_awning_beams64.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_awning_beams64.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_boulangerie65.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_boulangerie65.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_boulangerie65.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_frosted_glass66.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_frosted_glass66.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_frosted_glass66.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_awning_fabric_cyan67.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_awning_fabric_cyan67.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_awning_fabric_cyan67.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete_white68.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete_white68.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete_white68.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_bronze_blendshader69.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_bronze_blendshader69.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_bronze_blendshader69.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_awning_fabric_red70.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_awning_fabric_red70.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_awning_fabric_red70.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_book_covers71.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_book_covers71.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_book_covers71.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete_smooth_blendshader72.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete_smooth_blendshader72.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete_smooth_blendshader72.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_wood_painted_green_blendshader73.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_wood_painted_green_blendshader73.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_wood_painted_green_blendshader73.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_rollup_door74.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_rollup_door74.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_rollup_door74.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_details_dark75.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_details_dark75.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_details_dark75.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_chair_0176.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_chair_0176.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_chair_0176.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_concrete77.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_concrete77.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\concrete77.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_plaster78.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_plaster78.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\plaster78.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_concrete279.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_concrete279.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\concrete279.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_chimneys_metal80.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_chimneys_metal80.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\chimneys_metal80.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_concrete_striped81.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_concrete_striped81.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\concrete_striped81.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_electricbox82.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_electricbox82.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\electricbox82.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_foliage_paris_flowers83.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_foliage_paris_flowers83.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\foliage_paris_flowers83.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_foliage_flowers.doublesided84.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_foliage_flowers.doublesided84.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\foliage_flowers.doublesided84.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_liquorbottle_01_glass_wine85.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_liquorbottle_01_glass_wine85.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_liquorbottle_01_glass_wine85.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_liquorbottle_01_caps86.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_liquorbottle_01_caps86.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_liquorbottle_01_caps86.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_liquorbottle_01_labels87.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_liquorbottle_01_labels87.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_liquorbottle_01_labels87.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_balcony_concrete88.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_balcony_concrete88.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\balcony_concrete88.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_balcony_trims89.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_balcony_trims89.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\balcony_trims89.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_balcony_ornaments90.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_balcony_ornaments90.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\balcony_ornaments90.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_balcony_green_wood91.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_balcony_green_wood91.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\balcony_green_wood91.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_menusign_0192.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_menusign_0192.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\menusign_0192.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_menusign_02_mesh93.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_menusign_02_mesh93.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\menusign_02_mesh93.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_menusign_02_glass94.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_menusign_02_glass94.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\menusign_02_glass94.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_napkinholder95.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_napkinholder95.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\napkinholder95.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_plantpots96.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_plantpots96.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\plantpots96.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_shopsign_bakery97.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_shopsign_bakery97.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\shopsign_bakery97.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_shopsign_ties_shop98.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_shopsign_ties_shop98.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\shopsign_ties_shop98.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_shopsign_book_store_emissive99.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_shopsign_book_store_emissive99.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\shopsign_book_store_emissive99.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_shopsign_pharmacy_emissive100.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_shopsign_pharmacy_emissive100.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\shopsign_pharmacy_emissive100.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_sidewalkbarrier101.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_sidewalkbarrier101.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\sidewalkbarrier101.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_pavement_curbstones102.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_pavement_curbstones102.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\pavement_curbstones102.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_pavement_cobblestone_small_blendshader103.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_pavement_cobblestone_small_blendshader103.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\pavement_cobblestone_small_blendshader103.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_pavement_cobblestone_big_blendshader104.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_pavement_cobblestone_big_blendshader104.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\pavement_cobblestone_big_blendshader104.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_pavement_brick_blendshader105.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_pavement_brick_blendshader105.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\pavement_brick_blendshader105.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_pavement_cobblestone_02106.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_pavement_cobblestone_02106.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\pavement_cobblestone_02106.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_pavement_ground_wet107.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_pavement_ground_wet107.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\pavement_ground_wet107.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_pavement_cobblestone_wet_blendshader108.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_pavement_cobblestone_wet_blendshader108.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\pavement_cobblestone_wet_blendshader108.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_pavement_cobblestone_wet_leaves_blendshader109.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_pavement_cobblestone_wet_leaves_blendshader109.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\pavement_cobblestone_wet_leaves_blendshader109.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_pavement_cobble_leaves_blendshader110.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_pavement_cobble_leaves_blendshader110.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\pavement_cobble_leaves_blendshader110.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_pavement_cobblestone_01_blendshader111.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_pavement_cobblestone_01_blendshader111.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\pavement_cobblestone_01_blendshader111.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_concrete3112.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_concrete3112.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\concrete3112.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_streetlight_metal113.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_streetlight_metal113.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\streetlight_metal113.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_streetlight_chains114.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_streetlight_chains114.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\streetlight_chains114.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_stringlights_01_white_color115.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_stringlights_01_white_color115.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_stringlights_01_white_color115.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_streetlight_support_bulb116.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_streetlight_support_bulb116.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\streetlight_support_bulb116.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_streetpivot117.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_streetpivot117.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_streetpivot117.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_streetsign_01118.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_streetsign_01118.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_streetsign_01118.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_table_terrace119.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_table_terrace119.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_table_terrace119.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_trafficsign_a120.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_trafficsign_a120.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_trafficsign_a120.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_trashcan121.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_trashcan121.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\trashcan121.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_spotlight_main122.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_spotlight_main122.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\spotlight_main122.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_spotlight_emissive123.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_spotlight_emissive123.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\spotlight_emissive123.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_lanternemissive124.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_lanternemissive124.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\lanternemissive124.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_pavement_manhole_cover125.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_pavement_manhole_cover125.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\pavement_manhole_cover125.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_stringlights126.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_stringlights126.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\stringlights126.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_stringlights_01_orange_color_emissive127.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_stringlights_01_orange_color_emissive127.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_stringlights_01_orange_color_emissive127.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_stringlights_01_red_color_emissive128.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_stringlights_01_red_color_emissive128.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_stringlights_01_red_color_emissive128.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_stringlights_01_white_color_emissive129.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_stringlights_01_white_color_emissive129.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_stringlights_01_white_color_emissive129.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_stringlights_01_pink_color_emissive130.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_stringlights_01_pink_color_emissive130.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_stringlights_01_pink_color_emissive130.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_stringlights_01_blue_color_emissive131.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_stringlights_01_blue_color_emissive131.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_stringlights_01_blue_color_emissive131.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_stringlights_01_green_color_emissive132.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_stringlights_01_green_color_emissive132.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_stringlights_01_green_color_emissive132.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_cashregister133.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_cashregister133.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_cashregister133.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_cashregister_buttons134.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_cashregister_buttons134.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_cashregister_buttons134.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_cashregister_glass135.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_cashregister_glass135.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_cashregister_glass135.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_coasters_01136.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_coasters_01136.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_coasters_01136.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_toffeejar_metal137.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_toffeejar_metal137.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\toffeejar_metal137.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_toffeejar_label138.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_toffeejar_label138.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\toffeejar_label138.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_cookiejar_cookies139.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_cookiejar_cookies139.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\cookiejar_cookies139.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_transparentglass.doublesided140.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_transparentglass.doublesided140.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\transparentglass.doublesided140.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_liquorbottle_01_glass_wine.001141.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_liquorbottle_01_glass_wine.001141.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_liquorbottle_01_glass_wine.001141.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_liquorbottle_01_caps.001142.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_liquorbottle_01_caps.001142.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_liquorbottle_01_caps.001142.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_metal_chrome1143.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_metal_chrome1143.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\metal_chrome1143.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_cloth144.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_cloth144.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\cloth144.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_table_cloth_01145.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_table_cloth_01145.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_table_cloth_01145.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_curtaina146.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_curtaina146.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\curtaina146.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_curtainb1147.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_curtainb1147.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\curtainb1147.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_cutlery_chrome148.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_cutlery_chrome148.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\cutlery_chrome148.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_cutlery_details149.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_cutlery_details149.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\cutlery_details149.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_doormat150.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_doormat150.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_doormat150.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_napkinholder_01151.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_napkinholder_01151.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\napkinholder_01151.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_trolley_plastic152.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_trolley_plastic152.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\trolley_plastic152.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_trolley_wheels153.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_trolley_wheels153.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\trolley_wheels153.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_trolley_wood_painted154.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_trolley_wood_painted154.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\trolley_wood_painted154.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_barstool155.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_barstool155.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_barstool155.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_beertap156.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_beertap156.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_beertap156.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_plaster157.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_plaster157.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_plaster157.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_wood158.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_wood158.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_wood158.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_wooden_stuco159.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_wooden_stuco159.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_wooden_stuco159.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_plaster_red160.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_plaster_red160.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_plaster_red160.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_wood_painted3.001161.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_wood_painted3.001161.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_wood_painted3.001161.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_grid162.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_grid162.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_grid162.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_brushed_metal163.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_brushed_metal163.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_brushed_metal163.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_plaster2164.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_plaster2164.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_plaster2164.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_frozen_glass165.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_frozen_glass165.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_frozen_glass165.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_floor_tile_hexagonal_blendshader166.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_floor_tile_hexagonal_blendshader166.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_floor_tile_hexagonal_blendshader166.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_paris_bartrim167.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_paris_bartrim167.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_paris_bartrim167.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_white_plastic168.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_white_plastic168.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_white_plastic168.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_grid1169.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_grid1169.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_grid1169.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_material170.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_material170.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_material170.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_paris_lantern171.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_paris_lantern171.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_paris_lantern171.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_ceiling_lamp172.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_ceiling_lamp172.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_ceiling_lamp172.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_ceilingfan173.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_ceilingfan173.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_ceilingfan173.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_table_03174.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_table_03174.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_table_03174.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_metal_worn_01175.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_metal_worn_01175.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\metal_worn_01175.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_wood176.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_wood176.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\wood176.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_plastic_02177.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_plastic_02177.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\plastic_02177.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_plants_metal_base_01178.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_plants_metal_base_01178.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\plants_metal_base_01178.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_plants_plants.doublesided179.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_plants_plants.doublesided179.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\plants_plants.doublesided179.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_liquorbottle_02_glass180.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_liquorbottle_02_glass180.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_liquorbottle_02_glass180.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_liquorbottle_01_glass181.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_liquorbottle_01_glass181.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_liquorbottle_01_glass181.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_liquorbottle_03_glass182.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_liquorbottle_03_glass182.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_liquorbottle_03_glass182.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_painting_metal183.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_painting_metal183.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_painting_metal183.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_paintings184.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_paintings184.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_paintings184.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_paintings_glass185.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_paintings_glass185.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_paintings_glass185.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_plates_details186.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_plates_details186.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\plates_details186.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_plates_ceramic187.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_plates_ceramic187.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\plates_ceramic187.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_radiator188.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_radiator188.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_radiator188.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_rubber_bar_mat_01189.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_rubber_bar_mat_01189.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\rubber_bar_mat_01189.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_plastic_01190.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_plastic_01190.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\plastic_01190.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_toffeejar_toffee191.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_toffeejar_toffee191.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\toffeejar_toffee191.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_wall_light_interior192.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_wall_light_interior192.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_wall_light_interior192.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_wall_bulb_light193.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_wall_bulb_light193.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_wall_bulb_light193.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_wall_lamp194.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_wall_lamp194.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\wall_lamp194.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_metal_bronze_01195.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_metal_bronze_01195.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\metal_bronze_01195.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_wickerbasket196.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_wickerbasket196.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\wickerbasket196.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_wood_painted3.002197.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_wood_painted3.002197.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_wood_painted3.002197.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_glass_exterior.001198.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_glass_exterior.001198.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_glass_exterior.001198.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_bistro_main_door.001199.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_bistro_main_door.001199.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_bistro_main_door.001199.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete_yellow.001200.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete_yellow.001200.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete_yellow.001200.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete_grooved.001201.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete_grooved.001201.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete_grooved.001201.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete.001202.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete.001202.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete.001202.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete1.001203.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete1.001203.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete1.001203.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_water204.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_water204.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\water204.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_ice205.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_ice205.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\ice205.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_wood_painted3.004207.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_wood_painted3.004207.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_wood_painted3.004207.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_bistro_main_door.002208.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_bistro_main_door.002208.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_bistro_main_door.002208.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_glass_exterior.002209.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_glass_exterior.002209.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_glass_exterior.002209.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete1.002210.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete1.002210.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete1.002210.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete.002211.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete.002211.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete.002211.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete_grooved.002212.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete_grooved.002212.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete_grooved.002212.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_concrete_yellow.002213.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_concrete_yellow.002213.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_concrete_yellow.002213.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_cashregister.001214.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_cashregister.001214.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_cashregister.001214.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_cashregister_buttons.001215.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_cashregister_buttons.001215.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_cashregister_buttons.001215.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_cashregister_glass.001216.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_cashregister_glass.001216.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_cashregister_glass.001216.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_coasters_01.001217.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_coasters_01.001217.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_coasters_01.001217.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_table_cloth_01.001218.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_table_cloth_01.001218.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_table_cloth_01.001218.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_toffeejar_metal.001219.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_toffeejar_metal.001219.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\toffeejar_metal.001219.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_toffeejar_label.001220.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_toffeejar_label.001220.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\toffeejar_label.001220.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_cookiejar_cookies.001221.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_cookiejar_cookies.001221.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\cookiejar_cookies.001221.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_transparentglasswine222.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_transparentglasswine222.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\transparentglasswine222.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_liquorbottle_01_caps.002223.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_liquorbottle_01_caps.002223.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_liquorbottle_01_caps.002223.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_metal_chrome1.001224.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_metal_chrome1.001224.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\metal_chrome1.001224.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_cloth.001225.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_cloth.001225.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\cloth.001225.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_curtaina.001226.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_curtaina.001226.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\curtaina.001226.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_curtainb1.001227.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_curtainb1.001227.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\curtainb1.001227.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_cutlery_chrome.001228.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_cutlery_chrome.001228.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\cutlery_chrome.001228.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_cutlery_details.001229.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_cutlery_details.001229.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\cutlery_details.001229.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_doormat.001230.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_doormat.001230.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_doormat.001230.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_beer231.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_beer231.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\beer231.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_napkinholder_01.001232.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_napkinholder_01.001232.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\napkinholder_01.001232.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_trolley_plastic.001233.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_trolley_plastic.001233.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\trolley_plastic.001233.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_trolley_wheels.001234.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_trolley_wheels.001234.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\trolley_wheels.001234.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_trolley_wood_painted.001235.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_trolley_wood_painted.001235.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\trolley_wood_painted.001235.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_barstool.001236.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_barstool.001236.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_barstool.001236.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_beertap.001237.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_beertap.001237.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_beertap.001237.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_plaster.001238.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_plaster.001238.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_plaster.001238.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_wood.001239.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_wood.001239.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_wood.001239.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_wooden_stuco.001240.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_wooden_stuco.001240.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_wooden_stuco.001240.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_plaster_red.001241.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_plaster_red.001241.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_plaster_red.001241.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_wood_painted3.003242.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_wood_painted3.003242.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_wood_painted3.003242.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_grid.001243.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_grid.001243.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_grid.001243.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_brushed_metal.001244.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_brushed_metal.001244.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_brushed_metal.001244.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_plaster2.001245.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_plaster2.001245.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_plaster2.001245.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_frozen_glass.001246.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_frozen_glass.001246.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_frozen_glass.001246.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_floor_tile_hexagonal_blendshader.001247.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_floor_tile_hexagonal_blendshader.001247.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_floor_tile_hexagonal_blendshader.001247.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_paris_bartrim.001248.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_paris_bartrim.001248.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_paris_bartrim.001248.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_white_plastic.001249.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_white_plastic.001249.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_white_plastic.001249.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_grid1.001250.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_grid1.001250.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_grid1.001250.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_material.001251.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_material.001251.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_material.001251.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_ceiling_lamp.001252.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_ceiling_lamp.001252.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_ceiling_lamp.001252.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_ceilingfan.001253.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_ceilingfan.001253.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_ceilingfan.001253.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_table_03.001254.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_table_03.001254.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_table_03.001254.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_metal_worn_01.001255.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_metal_worn_01.001255.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\metal_worn_01.001255.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_wood.001256.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_wood.001256.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\wood.001256.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_plastic_02.001257.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_plastic_02.001257.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\plastic_02.001257.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_plants_metal_base_01.001258.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_plants_metal_base_01.001258.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\plants_metal_base_01.001258.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_plants_plants.doublesided.001259.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_plants_plants.doublesided.001259.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\plants_plants.doublesided.001259.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_painting_metal.001260.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_painting_metal.001260.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_painting_metal.001260.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_paintings.001261.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_paintings.001261.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_paintings.001261.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_paintings_glass.001262.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_paintings_glass.001262.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_paintings_glass.001262.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_plates_details.001263.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_plates_details.001263.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\plates_details.001263.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_plates_ceramic.001264.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_plates_ceramic.001264.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\plates_ceramic.001264.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_radiator.001265.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_radiator.001265.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_radiator.001265.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_rubber_bar_mat_01.001266.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_rubber_bar_mat_01.001266.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\rubber_bar_mat_01.001266.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_plastic_01.001267.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_plastic_01.001267.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\plastic_01.001267.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_toffeejar_toffee.001268.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_toffeejar_toffee.001268.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\toffeejar_toffee.001268.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_wall_light_interior.001269.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_wall_light_interior.001269.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_wall_light_interior.001269.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_paris_wall_bulb_light.001270.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_paris_wall_bulb_light.001270.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\paris_wall_bulb_light.001270.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_wall_lamp.001271.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_wall_lamp.001271.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\wall_lamp.001271.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_metal_bronze_01.001272.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_metal_bronze_01.001272.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\metal_bronze_01.001272.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_lightbulb273.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_lightbulb273.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\lightbulb273.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_wickerbasket.001274.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_wickerbasket.001274.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\wickerbasket.001274.material
+UboModelComponent:
+  {}
+---
+NameComponent:
+  name: all_master_interior_01_paris_lantern1275.mesh
+PositionComponent:
+  position: [0, 0, 0]
+RotationComponent:
+  rotation: [0, 0, 0]
+ScaleComponent:
+  scale: [1, 1, 1]
+MeshComponent:
+  meshPath: ../ExampleProject/Resources\LumberyardCafeGltf\all_master_interior_01_paris_lantern1275.mesh
+MaterialComponent:
+  materialPath: ../ExampleProject/Resources\LumberyardCafeGltf\master_interior_01_paris_lantern1275.material
+UboModelComponent:
+  {}

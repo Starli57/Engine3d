@@ -376,26 +376,26 @@ UboModelComponent:
 NameComponent:
   name: Diffuse Light
 PositionComponent:
-  position: [-1500, 3000, -350]
+  position: [-665.599976, 2000, -115.099998]
 RotationComponent:
-  rotation: [7, -50, 40]
+  rotation: [40, -80.1999969, 40]
 UboWorldComponent:
   {}
 LightComponent:
-  intensity: 1000
-  color: [1, 1, 1]
+  color: [1, 0.971694887, 0.946619213]
+  intensity: 59714056
 ShadowMapComponent:
-  fov: 60
+  farObjectProjectionMultiplier: 5.0
   zNear: 1
-  zFar: 10000
+  zFar: 2002.59998
   upAxis: [0, 1, 0]
 ---
 NameComponent:
   name: Camera
 PositionComponent:
-  position: [-893.9599, 373.983673, -75.1880035]
+  position: [-408.614777, 409.826477, -67.4322739]
 RotationComponent:
-  rotation: [0.603156209, -24.2266293, 40]
+  rotation: [19.173975, -29.0954838, 40]
 CameraComponent:
   fov: 60
   zNear: 1

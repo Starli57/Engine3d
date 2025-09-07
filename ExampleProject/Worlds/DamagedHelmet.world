@@ -3,7 +3,9 @@ NameComponent:
 PositionComponent:
   position: [0, 0, 0]
 RotationComponent:
-  rotation: [0, 71.9000015, 0]
+  rotation: [3026.38232, 71.9000015, 0]
+RotationVelocityComponent:
+  velocity: [20, 0, 0]
 ScaleComponent:
   scale: [100, 100, 100]
 MeshComponent:
@@ -16,9 +18,9 @@ UboModelComponent:
 NameComponent:
   name: Camera
 PositionComponent:
-  position: [-72.4195709, 137.559723, 233.179428]
+  position: [-10.3458185, 105.004318, 266.116913]
 RotationComponent:
-  rotation: [-68.4400024, -32.7553673, 40]
+  rotation: [-85.7339096, -24.0806065, 40]
 CameraComponent:
   fov: 60
   zNear: 1
@@ -35,16 +37,16 @@ CameraFreeComponent:
 NameComponent:
   name: Diffuse Light
 PositionComponent:
-  position: [-29.6000004, 214, 187.300003]
+  position: [30.6000004, 300, 130.899994]
 RotationComponent:
-  rotation: [-110.5, -56.2000008, 40]
+  rotation: [-110.5, -65.1999969, 40]
 UboWorldComponent:
   {}
 LightComponent:
   color: [0.957295358, 0.788788795, 0.538265705]
-  intensity: 1500
+  intensity: 1000000
 ShadowMapComponent:
-  fov: 60
+  farObjectProjectionMultiplier: 5.0
   zNear: 1
   zFar: 10000
   upAxis: [0, 1, 0]
