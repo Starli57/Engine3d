@@ -37,12 +37,10 @@ layout(set = 1, binding = 5) uniform Material
 layout(set = 2, binding = 0) uniform sampler2D shadowMapSampler;
 
 const float baseColorLevel = 1.0;
-const float ambientLevel = 0.02;
-const float shadowsEffect = 0.1;
+const float ambientLevel = 0.05;
 
 void main()
 {
-	
 	vec4 baseColorMap = texture(baseColorMapSampler, uv);
 	baseColorMap = vec4(pow(baseColorMap.xyz, vec3(2.2)), baseColorMap.w);
 	
@@ -67,11 +65,8 @@ void main()
 	float roughness = metallicRoughnessMap.g * material.roughnessFactor;
 	
 	vec3 normal = normalize(inNormal);
-	if (normalMap != vec3(0.0))
-	{
-		normal = ApplyNormalMap(normal, inWorldPosition, normalMap, uv);
-	}
-
+	normal = ApplyNormalMap(normal, inWorldPosition, normalMap, uv);
+	
 	vec3 viewDir = normalize(inViewPos - inWorldPosition);
 	vec3 lightDirection = normalize(inLightPosition - inWorldPosition);
 	
@@ -94,14 +89,14 @@ void main()
 	float denominator = 0.5 * max(dot(normal, viewDir), 0.0) * max(dot(normal, lightDirection), 0.0) + 0.0001;
 	vec3 specular = numerator / denominator;
 
-	// add to outgoing radiance Lo
 	float NdotL = max(dot(normal, lightDirection), 0.0);
 	Lo += (kD * baseColorMap.rgb / kPi + specular) * radiance * NdotL;
 
 	vec3 ambient = vec3(ambientLevel) * baseColorMap.rgb * lightOcclusionMap;
-	vec3 color = ambient + Lo;
 	
-	color *= pcf(inWorldPosition, inLightMatrix, shadowMapSampler, shadowsEffect);
+	float pcf = pcf(inWorldPosition, inLightMatrix, shadowMapSampler);
+	vec3 color = ambient + Lo * pcf;
+	
 	color += emissiveMap;
 	
 	color = color / (color + vec3(1.0));

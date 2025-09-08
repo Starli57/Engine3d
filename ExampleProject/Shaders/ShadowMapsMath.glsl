@@ -11,7 +11,7 @@ float calculateShadows(vec4 projectedCoordinates, sampler2D shadowMapSampler)
 }
 
 
-float pcf(vec3 inWorldPosition, mat4 inLightMatrix, sampler2D shadowMapSampler, float shadowsEffect)
+float pcf(vec3 inWorldPosition, mat4 inLightMatrix, sampler2D shadowMapSampler)
 {
     vec4 projectedCoordinates = inLightMatrix * vec4(inWorldPosition.xyz, 1.0);
     projectedCoordinates /= projectedCoordinates.w;
@@ -25,5 +25,5 @@ float pcf(vec3 inWorldPosition, mat4 inLightMatrix, sampler2D shadowMapSampler, 
         for (float y = -1; y <= 1; y += 1.0)
             shadowSum += calculateShadows(projectedCoordinates + vec4(vec2(x, y) * offset, 0, 0), shadowMapSampler);
 
-    return max(shadowsEffect, shadowSum / 9.0);
+    return shadowSum / 9.0;
 }
