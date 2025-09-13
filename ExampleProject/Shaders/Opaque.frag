@@ -32,11 +32,11 @@ layout(set = 1, binding = 5) uniform Material
 	float metallicFactor;
 	float roughnessFactor;
 	float alphaCutoffFactor;
+	float normalScale;
 } material;
 
 layout(set = 2, binding = 0) uniform sampler2D shadowMapSampler;
 
-const float baseColorLevel = 1.0;
 const float ambientLevel = 0.05;
 
 void main()
@@ -57,6 +57,10 @@ void main()
 	
 	vec3 metallicRoughnessMap = texture(metallicRoughnessMapSampler, uv).rgb;
 	vec3 normalMap = texture(normalMapSampler, uv).rgb;
+	
+	//todo: fix normal map scaling
+//	normalMap = normalize((normalMap * 2.0 - 1.0) * vec3(material.normalScale, material.normalScale, 1.0));
+
 	vec3 emissiveMap = texture(emissionMapSampler, uv).rgb;
 		
 	float lightOcclusionMap = texture(lightOcclusionMapSampler, uv).r;

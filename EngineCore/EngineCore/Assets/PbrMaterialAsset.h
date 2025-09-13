@@ -25,6 +25,7 @@ namespace Engine
 		float roughness = 1.0f;
 		float metallic = 0.0f;
 		float alphaCutoff = 0.01f;
+		float normalsScale = 1.0f;
 		
 		PbrMaterialAsset() = default;
 		PbrMaterialAsset(std::string pipelineId);

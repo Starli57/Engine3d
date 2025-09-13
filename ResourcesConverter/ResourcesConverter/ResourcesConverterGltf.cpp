@@ -101,6 +101,7 @@ void ResourcesConverterGltf::ImportMesh(const std::string& meshPathStr, const st
 			auto image = model.textures[material.normalTexture.index];
 			auto baseImage = model.images[image.source];
 			BindTextureToMaterial(materialNode, "normalsTextureName", outFolder, baseImage.uri);
+			materialNode["normalsScale"] = material.normalTexture.scale;
 		}
 
 		if (material.occlusionTexture.index >= 0)

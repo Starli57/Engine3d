@@ -141,7 +141,8 @@ namespace Engine
 		material->roughness = node["roughness"].as<float>();
 		material->metallic = node["metallic"].as<float>();
 		material->alphaCutoff = node["alphaCutoffFactor"].as<float>();
-		
+		material->normalsScale = node["normalsScale"] ? node["normalsScale"].as<float>() : 1.0f;
+    	
 		auto baseColorTexturePath = node["baseColorTextureName"] ? node["baseColorTextureName"].as<std::string>() : projectSettings->resourcesPath + "/white_box.png";
 		auto diffuseTextureIndex = GetOrLoadTextureStr(baseColorTexturePath);
 		material->baseTexture = diffuseTextureIndex;
