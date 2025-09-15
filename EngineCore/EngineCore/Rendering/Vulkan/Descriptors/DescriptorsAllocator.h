@@ -6,7 +6,7 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rollback/Rollback.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
 	class DescriptorsAllocator
 	{

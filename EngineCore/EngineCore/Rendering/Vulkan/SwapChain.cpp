@@ -6,12 +6,12 @@
 #include "Utilities/ImageUtility.h"
 #include "Utilities/SwapchainUtility.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
 	SwapChain::SwapChain(const Ref<VulkanContext>& context, Ref<SwapChainData> swapChainData) :
 		vulkanContext(context), swapChainData(swapChainData)
 	{
-		physicalDeviceQueueIndices = VulkanApi::GetQueueFamilies(context->physicalDevice, context->windowSurface);
+		physicalDeviceQueueIndices = GetQueueFamilies(context->physicalDevice, context->windowSurface);
 	}
 
 	SwapChain::~SwapChain()
@@ -33,8 +33,8 @@ namespace AVulkan
 	{
 		spdlog::info("Create swap chain");
 		
-		auto details = VulkanApi::GetSwapChainDetails(vulkanContext->physicalDevice, vulkanContext->windowSurface);
-		Engine::CAssert::Check(VulkanApi::DoSupportSwapChain(details), "Swap chains are not supported");
+		auto details = GetSwapChainDetails(vulkanContext->physicalDevice, vulkanContext->windowSurface);
+		Engine::CAssert::Check(DoSupportSwapChain(details), "Swap chains are not supported");
 
 		swapChainData->surfaceFormat = ChooseSwapSurfaceFormat(details.formats);
 		VkPresentModeKHR presentMode = ChoosePresentMode(details.presentModes);
@@ -69,7 +69,7 @@ namespace AVulkan
 		swapChainData->imageViews.resize(swapChainData->images.size());
 		for (int i = 0; i < swapChainData->imageViews.size(); i++)
 		{
-			VulkanApi::CreateImageView(vulkanContext->logicalDevice, 1, vulkanContext->imageFormat, VK_IMAGE_ASPECT_COLOR_BIT,
+			CreateImageView(vulkanContext->logicalDevice, 1, vulkanContext->imageFormat, VK_IMAGE_ASPECT_COLOR_BIT,
 				swapChainData->images[i], swapChainData->imageViews[i]);
 		}
 	}
@@ -80,7 +80,7 @@ namespace AVulkan
 
 		swapChainData->depthBufferModel = CreateRef<ImageModel>();
 
-		VulkanApi::CreateImage(
+		CreateImage(
 			vulkanContext, swapChainData->extent.width, swapChainData->extent.height, 1, vulkanContext->depthFormat,
 			VK_IMAGE_TILING_OPTIMAL,
 			VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
@@ -89,7 +89,7 @@ namespace AVulkan
 			swapChainData->depthBufferModel->image,
 			swapChainData->depthBufferModel->imageMemory);
 
-		VulkanApi::CreateImageView(vulkanContext->logicalDevice, 1, vulkanContext->depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
+		CreateImageView(vulkanContext->logicalDevice, 1, vulkanContext->depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
 			swapChainData->depthBufferModel->image, swapChainData->depthBufferModel->imageView);
 	}
 
@@ -97,7 +97,7 @@ namespace AVulkan
 	{
 		spdlog::info("Create msaa color buffer");
 		swapChainData->msaaColorSample = CreateRef<ImageModel>();
-		VulkanApi::CreateImage(vulkanContext, 
+		CreateImage(vulkanContext, 
 			swapChainData->extent.width, swapChainData->extent.height, 1, vulkanContext->imageFormat,
 			VK_IMAGE_TILING_OPTIMAL, 
 			VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
@@ -105,7 +105,7 @@ namespace AVulkan
 			swapChainData->msaaColorSample->image,
 			swapChainData->msaaColorSample->imageMemory);
 
-		VulkanApi::CreateImageView(vulkanContext->logicalDevice, 1, vulkanContext->imageFormat, VK_IMAGE_ASPECT_COLOR_BIT,
+		CreateImageView(vulkanContext->logicalDevice, 1, vulkanContext->imageFormat, VK_IMAGE_ASPECT_COLOR_BIT,
 			swapChainData->msaaColorSample->image, swapChainData->msaaColorSample->imageView);
 	}
 
@@ -114,14 +114,14 @@ namespace AVulkan
 		spdlog::info("Create msaa depth buffer");
 		
 		swapChainData->msaaDepthSample = CreateRef<ImageModel>();
-		VulkanApi::CreateImage(vulkanContext, 
+		CreateImage(vulkanContext, 
 			swapChainData->extent.width, swapChainData->extent.height, 1, vulkanContext->depthFormat,
 			VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
 			vulkanContext->msaa, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
 			swapChainData->msaaDepthSample->image,
 			swapChainData->msaaDepthSample->imageMemory);
 
-		VulkanApi::CreateImageView(vulkanContext->logicalDevice, 1, vulkanContext->depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
+		CreateImageView(vulkanContext->logicalDevice, 1, vulkanContext->depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
 			swapChainData->msaaDepthSample->image, swapChainData->msaaDepthSample->imageView);
 	}
 
@@ -129,12 +129,12 @@ namespace AVulkan
 	{
 		spdlog::info("Dispose swapchain");
 
-		VulkanApi::DisposeImageModel(vulkanContext->logicalDevice, swapChainData->msaaDepthSample);
-		VulkanApi::DisposeImageModel(vulkanContext->logicalDevice, swapChainData->msaaColorSample);
-		VulkanApi::DisposeImageModel(vulkanContext->logicalDevice, swapChainData->depthBufferModel);
+		DisposeImageModel(vulkanContext->logicalDevice, swapChainData->msaaDepthSample);
+		DisposeImageModel(vulkanContext->logicalDevice, swapChainData->msaaColorSample);
+		DisposeImageModel(vulkanContext->logicalDevice, swapChainData->depthBufferModel);
 
 		for (int i = 0; i < swapChainData->imageViews.size(); i++)
-			VulkanApi::DestroyImageView(vulkanContext->logicalDevice, swapChainData->imageViews.at(i));
+			DestroyImageView(vulkanContext->logicalDevice, swapChainData->imageViews.at(i));
 		swapChainData->imageViews.clear();
 
 		vkDestroySwapchainKHR(vulkanContext->logicalDevice, swapChainData->swapChain, nullptr);

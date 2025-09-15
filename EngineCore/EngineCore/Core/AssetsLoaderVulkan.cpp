@@ -25,7 +25,7 @@ namespace Engine
     {
         graphicsQueueMutex = CreateUniqueRef<std::mutex>();
     
-        vulkanApi = dynamic_cast<AVulkan::GraphicsApiVulkan*>(graphicsApi);
+        vulkanApi = dynamic_cast<VulkanApi::GraphicsApiVulkan*>(graphicsApi);
     	assetsDatabase->materialLoadStatuses.resize(assetsDatabase->materialsPaths.size());
     	assetsDatabase->materials.resize(assetsDatabase->materialsPaths.size());
 

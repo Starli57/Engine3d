@@ -8,7 +8,7 @@
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
 #include "EngineCore/Rendering/Vulkan/Models/QueueFamilyIndices.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
 	class SwapChain
 	{

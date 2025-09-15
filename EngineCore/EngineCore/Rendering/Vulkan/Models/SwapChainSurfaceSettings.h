@@ -4,7 +4,7 @@
 
 #include <vector>
 
-namespace AVulkan
+namespace VulkanApi
 {
     struct SwapChainSurfaceSettings
     {

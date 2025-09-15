@@ -5,7 +5,7 @@
 
 namespace VulkanApi
 {
-	void CreateVertexBuffer(const Ref<AVulkan::VulkanContext>& context, std::vector<Engine::Vertex>& vertices,
+	void CreateVertexBuffer(const Ref<VulkanContext>& context, std::vector<Engine::Vertex>& vertices,
 		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
 	{
 		uint64_t bufferSize = sizeof(Engine::Vertex) * vertices.size();

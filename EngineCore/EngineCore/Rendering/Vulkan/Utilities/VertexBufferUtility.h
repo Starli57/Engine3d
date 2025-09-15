@@ -11,7 +11,7 @@ namespace VulkanApi
 	VkVertexInputBindingDescription GetVertexInputBindingDescription();
 	std::array<VkVertexInputAttributeDescription, 4> GetVertexInputAttributeDescriptions();
 
-	void CreateVertexBuffer(const Ref<AVulkan::VulkanContext>& context, std::vector<Engine::Vertex>& vertices,
+	void CreateVertexBuffer(const Ref<VulkanContext>& context, std::vector<Engine::Vertex>& vertices,
 		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool);
 
 	void DisposeVertexBuffer(const VkDevice& logicalDevice, const VkBuffer& buffer, const VkDeviceMemory& bufferMemory);

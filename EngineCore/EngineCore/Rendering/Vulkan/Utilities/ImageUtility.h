@@ -7,12 +7,12 @@
 
 namespace VulkanApi
 {
-    void CreateImage(const Ref<AVulkan::VulkanContext>& vulkanContext,
+    void CreateImage(const Ref<VulkanContext>& vulkanContext,
                         uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
                         VkSampleCountFlagBits msaa, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
     void DestroyImage(const VkDevice& logicalDevice, const VkImage& image);
     
-    void CopyBufferToImage(const Ref<AVulkan::VulkanContext>& vulkanContext,
+    void CopyBufferToImage(const Ref<VulkanContext>& vulkanContext,
                            const VkBuffer& buffer, const VkImage& image, uint32_t width, uint32_t height, VkCommandPool& commandPool);
     
     void TransitionImageLayout(const VkCommandBuffer& commandBuffer, const uint32_t mipLevels,
@@ -23,5 +23,5 @@ namespace VulkanApi
     
     void DestroyImageView(const VkDevice& logicalDevice, const VkImageView& imageView);
 
-    void DisposeImageModel(VkDevice& logicalDevice, Ref<AVulkan::ImageModel> imageModel);
+    void DisposeImageModel(VkDevice& logicalDevice, Ref<ImageModel> imageModel);
 }

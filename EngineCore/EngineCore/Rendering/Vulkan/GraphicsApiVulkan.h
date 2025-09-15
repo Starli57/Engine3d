@@ -22,7 +22,7 @@
 
 #include "Utilities/PhysicalDeviceUtility.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
 	class GraphicsApiVulkan : public Engine::IGraphicsApi
 	{

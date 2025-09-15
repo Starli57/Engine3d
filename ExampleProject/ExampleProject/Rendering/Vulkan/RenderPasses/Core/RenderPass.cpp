@@ -2,7 +2,7 @@
 #include "IRenderPass.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/RenderPassUtility.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     void IRenderPass::BeginRenderPass(const VkCommandBuffer& commandBuffer, const uint32_t imageIndex, uint32_t colorAttachmentsCount, uint32_t depthAttachmentsCount) const
     {

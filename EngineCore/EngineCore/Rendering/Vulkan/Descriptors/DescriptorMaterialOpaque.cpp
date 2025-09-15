@@ -7,7 +7,7 @@
 #include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/UniformBufferVulkanUtility.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     #pragma optimize("", off)
     DescriptorMaterialOpaque::DescriptorMaterialOpaque(
@@ -28,7 +28,7 @@ namespace AVulkan
     DescriptorMaterialOpaque::~DescriptorMaterialOpaque()
     {
         for(const auto& uniformBuffer : materialsUniformBuffers)
-            VulkanApi::DisposeBuffer(logicalDevice, uniformBuffer->buffer, uniformBuffer->bufferMemory);
+            DisposeBuffer(logicalDevice, uniformBuffer->buffer, uniformBuffer->bufferMemory);
         
         vkDestroyDescriptorSetLayout(logicalDevice, descriptorSetLayout, nullptr);
 
@@ -63,7 +63,7 @@ namespace AVulkan
         materialsUniformBuffers.resize(resourcesStorage->materialsPaths.size());
         for(int i = 0; i < resourcesStorage->materialsPaths.size(); i++)
         {
-            materialsUniformBuffers.at(i) = VulkanApi::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboMaterial));
+            materialsUniformBuffers.at(i) = CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboMaterial));
         }
     }
     

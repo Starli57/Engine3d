@@ -3,9 +3,9 @@
 
 namespace VulkanApi
 {
-	AVulkan::SwapChainSurfaceSettings GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface)
+	SwapChainSurfaceSettings GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface)
 	{
-		AVulkan::SwapChainSurfaceSettings surfaceSettings;
+		SwapChainSurfaceSettings surfaceSettings;
 		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceSettings.capabilities);
 
 		GetSwapChainColorFormats(physicalDevice, surface, surfaceSettings.formats);
@@ -14,14 +14,14 @@ namespace VulkanApi
 		return surfaceSettings;
 	}
 
-	bool DoSupportSwapChain(const AVulkan::SwapChainSurfaceSettings& details)
+	bool DoSupportSwapChain(const SwapChainSurfaceSettings& details)
 	{
 		return !details.formats.empty() && !details.presentModes.empty();
 	}
 
 	bool DoSupportSwapChain(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface)
 	{
-		AVulkan::SwapChainSurfaceSettings details = GetSwapChainDetails(physicalDevice, surface);
+		SwapChainSurfaceSettings details = GetSwapChainDetails(physicalDevice, surface);
 		return DoSupportSwapChain(details);
 	}
 

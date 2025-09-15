@@ -5,7 +5,7 @@
 #include "EngineCore/Rendering/Vulkan/Models/ImageModel.h"
 #include "EngineCore/Core/Ref.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
 	struct SwapChainData
 	{

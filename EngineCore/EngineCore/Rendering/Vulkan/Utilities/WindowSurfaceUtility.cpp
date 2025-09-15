@@ -5,18 +5,15 @@
 
 namespace VulkanApi
 {
-	VkSurfaceKHR CreateSurface(const Ref<AVulkan::VulkanContext>& vulkanContext)
+	void CreateSurface(const Ref<VulkanContext>& vulkanContext)
 	{
 		spdlog::info("Create Window Surface");
 
-		VkSurfaceKHR surface;
-		const auto createResult = glfwCreateWindowSurface(vulkanContext->instance, vulkanContext->window, nullptr, &surface);
+		const auto createResult = glfwCreateWindowSurface(vulkanContext->instance, vulkanContext->window, nullptr, &vulkanContext->windowSurface);
 		Engine::CAssert::Check(createResult == VK_SUCCESS, "Can't create vulkan window surface, status: " + createResult);
-
-		return surface;
 	}
 
-	void DisposeSurface(const Ref<AVulkan::VulkanContext>& vulkanContext)
+	void DisposeSurface(const Ref<VulkanContext>& vulkanContext)
 	{
 		spdlog::info("Dispose surface");
 		vkDestroySurfaceKHR(vulkanContext->instance, vulkanContext->windowSurface, nullptr);

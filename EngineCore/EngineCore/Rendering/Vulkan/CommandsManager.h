@@ -7,12 +7,12 @@
 #include "VulkanContext.h"
 #include "EngineCore/Core/Ref.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     class CommandsManager
     {
     public:
-        CommandsManager(const Ref<VulkanContext>& context, const int frameInFight);
+        CommandsManager(const Ref<VulkanContext>& context, const int buffersCount);
         ~CommandsManager();
 
         void CreateCommandPool();
@@ -21,7 +21,7 @@ namespace AVulkan
         
     private:
         Ref<VulkanContext> context;
-        const int frameInFight;
+        const int buffersCount;
         
         std::unordered_map<std::thread::id, uint32_t> threadsMapping;
         std::vector<VkCommandPool> commandPools;

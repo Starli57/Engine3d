@@ -1,7 +1,7 @@
 ﻿#include "EngineCore/Pch.h"
 #include "DescriptorsManager.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     DescriptorsManager::DescriptorsManager(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
             VkSampler& textureSampler, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase)

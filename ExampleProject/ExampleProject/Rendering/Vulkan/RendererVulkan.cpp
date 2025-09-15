@@ -3,9 +3,9 @@
 #include "EngineCore/Rendering/Vulkan/Utilities/CommandBufferUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/ImageUtility.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
-    RendererVulkan::RendererVulkan(AVulkan::GraphicsApiVulkan* graphicsApiVulkan, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs)
+    RendererVulkan::RendererVulkan(GraphicsApiVulkan* graphicsApiVulkan, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs)
         : graphicsApi(graphicsApiVulkan), assetsDatabase(assetsDatabase), ecs(ecs)
     {
         graphicsApi->BindClientFunctions(
@@ -30,20 +30,20 @@ namespace AVulkan
         graphicsApi->descriptorsManager->UpdateMaterialsDescriptors(frame);
         preRenderPass->UpdateDrawingEntities();
 		
-        VulkanApi::BeginCommandBuffer(commandBuffer);
+        BeginCommandBuffer(commandBuffer);
         renderPassClean->Render(commandBuffer, frame, imageIndex, nullptr);
         renderPassShadowMaps->Render(commandBuffer, frame, imageIndex, nullptr);
 
-        VulkanApi::TransitionImageLayout(commandBuffer, 1, renderPassShadowMaps->GetImageBuffer()->image,
+        TransitionImageLayout(commandBuffer, 1, renderPassShadowMaps->GetImageBuffer()->image,
             VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_ASPECT_DEPTH_BIT);
 
         graphicsApi->descriptorsManager->UpdateShadowsMapDescriptors(frame, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
         renderPassOpaque->Render(commandBuffer, frame, imageIndex, [this](const Ref<Entity>& entity) { return true; });
 		
-        VulkanApi::TransitionImageLayout(commandBuffer, 1, swapChainData->images.at(imageIndex),
+        TransitionImageLayout(commandBuffer, 1, swapChainData->images.at(imageIndex),
             VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_ASPECT_COLOR_BIT);
 
-        VulkanApi::EndCommandBuffer(commandBuffer);
+        EndCommandBuffer(commandBuffer);
     }
 
     void RendererVulkan::CreateRenderPasses()

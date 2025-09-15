@@ -2,7 +2,7 @@
 #include "Core/IRenderPass.h"
 #include "Core/RenderPassContext.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     class RenderPassClean : public IRenderPass
     {

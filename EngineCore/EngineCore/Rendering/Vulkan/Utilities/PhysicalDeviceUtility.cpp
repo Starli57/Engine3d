@@ -7,16 +7,15 @@
 
 namespace VulkanApi
 {
-    VkPhysicalDevice GetBestRenderingDevice(VkInstance& instance, VkSurfaceKHR& surface)
+    void ChooseRenderingDevice(const Ref<VulkanContext>& vulkanContext)
     {
         spdlog::info("Select physical rendering device");
 
-        auto devices = GetRenderingDevicesList(instance, surface);
+        auto devices = GetRenderingDevicesList(vulkanContext->instance, vulkanContext->windowSurface);
 
         Engine::CAssert::Check(!devices.empty(), "Physical rendering device not found");
         spdlog::info("Physical rendering devices found: {0}", devices.size());
 
-        VkPhysicalDevice bestDevice = VK_NULL_HANDLE;
         uint64_t bestScore = 0;
 
         for (auto& device : devices)
@@ -25,11 +24,9 @@ namespace VulkanApi
             if (score > bestScore)
             {
                 bestScore = score;
-                bestDevice = device;
+                vulkanContext->physicalDevice = device;
             }
         }
-
-        return bestDevice;
     }
 
     std::vector<VkPhysicalDevice> GetDevicesList(const VkInstance& instance)
@@ -61,9 +58,9 @@ namespace VulkanApi
     }
 
 
-    AVulkan::QueueFamilyIndices GetQueueFamilies(const VkPhysicalDevice& device, const VkSurfaceKHR& surface)
+    QueueFamilyIndices GetQueueFamilies(const VkPhysicalDevice& device, const VkSurfaceKHR& surface)
     {
-        AVulkan::QueueFamilyIndices indices;
+        QueueFamilyIndices indices;
 
         uint32_t queueFamilyCount = 0;
         vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
@@ -127,7 +124,7 @@ namespace VulkanApi
         std::vector<VkExtensionProperties> availableExtensions(extensionCount);
         vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
 
-        std::set<std::string> requiredExtensions(AVulkan::physicalDeviceExtensions.begin(), AVulkan::physicalDeviceExtensions.end());
+        std::set<std::string> requiredExtensions(physicalDeviceExtensions.begin(), physicalDeviceExtensions.end());
 
         for (const auto& extension : availableExtensions) {
             requiredExtensions.erase(extension.extensionName);
@@ -146,10 +143,10 @@ namespace VulkanApi
         uint32_t minor = VK_API_VERSION_MINOR(deviceProperties.properties.apiVersion);
         spdlog::info("Device API Versions: {}.{}", major, minor);
         
-        AVulkan::SwapChainSurfaceSettings surfaceSettings;
+        SwapChainSurfaceSettings surfaceSettings;
 
-        VulkanApi::GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
-        VulkanApi::GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
+        GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
+        GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
 
         for (auto colorFormat : surfaceSettings.formats)
         {

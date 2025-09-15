@@ -6,7 +6,7 @@
 #include "RenderPasses/RenderPassOpaque.h"
 #include "RenderPasses/RenderPassShadowMaps.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     class RendererVulkan
     {

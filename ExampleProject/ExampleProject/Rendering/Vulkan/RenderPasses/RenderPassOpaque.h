@@ -8,7 +8,7 @@
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/Ref.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     class RenderPassOpaque : public IRenderPass
     {

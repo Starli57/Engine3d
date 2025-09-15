@@ -10,7 +10,7 @@
 #include "EngineCore/Managers/InputManager.h"
 #include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     class DescriptorFrame : public IDescriptor
     {

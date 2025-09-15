@@ -8,7 +8,7 @@
 namespace VulkanApi
 {
 	void CreateStagingBuffer(VkDeviceSize bufferSize, void const* sourceData,
-		VkBuffer& buffer, VkDeviceMemory& bufferMemory, const Ref<AVulkan::VulkanContext>& context)
+		VkBuffer& buffer, VkDeviceMemory& bufferMemory, const Ref<VulkanContext>& context)
 	{
 		VkBufferUsageFlags usageFlagsStaging = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 		constexpr VkMemoryPropertyFlags memoryFlagsStaging = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
@@ -23,7 +23,7 @@ namespace VulkanApi
 	}
 	
 	void CreateDeviceLocalBuffer(VkDeviceSize bufferSize, void const* sourceData, VkBufferUsageFlags distUsageFlags,
-		const Ref<AVulkan::VulkanContext>& context, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
+		const Ref<VulkanContext>& context, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
 	{
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingBufferMemory;

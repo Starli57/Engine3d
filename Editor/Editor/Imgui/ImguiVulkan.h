@@ -23,7 +23,7 @@
 class ImguiVulkan : public IEngineEditor
 {
 public:
-    ImguiVulkan(const Ref<ProjectSettings>& projectSettings, AVulkan::GraphicsApiVulkan& vulkanApi);
+    ImguiVulkan(const Ref<ProjectSettings>& projectSettings, VulkanApi::GraphicsApiVulkan& vulkanApi);
     ~ImguiVulkan();
 
     void Update() override;
@@ -32,12 +32,12 @@ public:
 
 private:
 	Ref<ProjectSettings> projectSettings;
-	AVulkan::GraphicsApiVulkan& vulkanApi;
+	VulkanApi::GraphicsApiVulkan& vulkanApi;
     Ref<Engine::Rollback> rollback;
 
 	VkRenderPass renderPass;
 
-	AVulkan::QueueFamilyIndices queueFamilies;
+	VulkanApi::QueueFamilyIndices queueFamilies;
 	uint32_t graphicsQueueFamily;
 
 	void DefaultEditorColors(ImGuiStyle* dst) const;

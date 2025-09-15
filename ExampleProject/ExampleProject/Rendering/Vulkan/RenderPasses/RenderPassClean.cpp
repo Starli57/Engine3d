@@ -4,7 +4,7 @@
 #include "EngineCore/Rendering/Vulkan/Utilities/FrameBufferUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/RenderPassUtility.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     RenderPassClean::RenderPassClean(Ref<VulkanContext> vulkanContext, const Ref<RenderPassContext>& renderPassContext)
         : IRenderPass(vulkanContext, renderPassContext)
@@ -15,17 +15,17 @@ namespace AVulkan
 
     RenderPassClean::~RenderPassClean()
     {
-        VulkanApi::DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffers);
+        DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffers);
         frameBuffers.clear();
         
-        VulkanApi::DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
+        DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
     }
 
     void RenderPassClean::Render(VkCommandBuffer& commandBuffer, uint16_t frame, uint32_t imageIndex,
         std::function<bool(const Ref<Entity>& entity)> filter)
     {
         BeginRenderPass(commandBuffer, imageIndex, 2, 1);
-        VulkanApi::EndRenderPass(commandBuffer);
+        EndRenderPass(commandBuffer);
     }
 
     void RenderPassClean::CreateRenderPass()
@@ -87,7 +87,7 @@ namespace AVulkan
                 renderPassContext->swapChainData->imageViews[i]
             };
 
-            VulkanApi::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass, renderPassContext->swapChainData->extent.width,
+            CreateFrameBuffer(vulkanContext->logicalDevice, renderPass, renderPassContext->swapChainData->extent.width,
                 renderPassContext->swapChainData->extent.height, attachments, frameBuffers[i]);
         }
     }

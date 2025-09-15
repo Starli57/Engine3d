@@ -5,7 +5,7 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/PipelinesCollection.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
 	class VulkanContext
 	{

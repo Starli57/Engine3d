@@ -14,7 +14,7 @@
 #include "Utilities/TextureSamplerUtility.h"
 #include "Utilities/WindowSurfaceUtility.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
 	GraphicsApiVulkan::GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager, const Ref<Engine::ResourcesStorageVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* glfwWindow)
 	{
@@ -164,21 +164,21 @@ namespace AVulkan
 	void GraphicsApiVulkan::CreateInstance() const
 	{
 		VulkanApi::CreateInstance(context->instance);
-		rollback->Add([this]() { VulkanApi::DisposeInstance(context->instance); });
+		rollback->Add([this]() { DisposeInstance(context->instance); });
 	}
 
 	void GraphicsApiVulkan::CreateWindowSurface() const
 	{
-		context->windowSurface = VulkanApi::CreateSurface(context);
-		rollback->Add([this]() { VulkanApi::DisposeSurface(context); });
+		CreateSurface(context);
+		rollback->Add([this]() { DisposeSurface(context); });
 	}
 
 	void GraphicsApiVulkan::SelectPhysicalRenderingDevice() const
 	{
-		context->physicalDevice = VulkanApi::GetBestRenderingDevice(context->instance, context->windowSurface);
-		context->msaa = VulkanApi::GetMaxUsableSampleCount(context->physicalDevice);
-		context->depthFormat = VulkanApi::FindDepthBufferFormat(context->physicalDevice);
-		VulkanApi::PrintPhysicalDeviceDebugInformation(context->physicalDevice, context->windowSurface);
+		ChooseRenderingDevice(context);
+		context->msaa = GetMaxUsableSampleCount(context->physicalDevice);
+		context->depthFormat = FindDepthBufferFormat(context->physicalDevice);
+		PrintPhysicalDeviceDebugInformation(context->physicalDevice, context->windowSurface);
 	}
 
 	void GraphicsApiVulkan::CreateLogicalDevice() const
@@ -186,7 +186,7 @@ namespace AVulkan
 		context->logicalDevice = VulkanApi::CreateLogicalDevice(context);
 		rollback->Add([this]()
 		{
-			VulkanApi::DisposeLogicalDevice(context->logicalDevice);
+			DisposeLogicalDevice(context->logicalDevice);
 		});
 	}
 
@@ -250,9 +250,9 @@ namespace AVulkan
 
 		for (int i = 0; i < context->maxFramesInFlight; i++)
 		{
-			VulkanApi::CreateVkSemaphore(context->logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i], rollback);
-			VulkanApi::CreateVkSemaphore(context->logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i], rollback);
-			VulkanApi::CreateVkFence(context->logicalDevice, &fenceInfo, nullptr, &drawFences[i], rollback);
+			CreateVkSemaphore(context->logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i], rollback);
+			CreateVkSemaphore(context->logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i], rollback);
+			CreateVkFence(context->logicalDevice, &fenceInfo, nullptr, &drawFences[i], rollback);
 		}
 	}
 }

@@ -5,10 +5,10 @@
 #include "Utilities/CommandPoolUtility.h"
 
 
-namespace AVulkan
+namespace VulkanApi
 {
-    CommandsManager::CommandsManager(const Ref<VulkanContext>& context, const int frameInFight)
-        : context(context), frameInFight(frameInFight)
+    CommandsManager::CommandsManager(const Ref<VulkanContext>& context, const int buffersCount)
+        : context(context), buffersCount(buffersCount)
     {
         const auto coresCount = std::thread::hardware_concurrency();
         commandPools.reserve(coresCount);
@@ -21,8 +21,8 @@ namespace AVulkan
     {
         for (int i = 0; i < commandPools.size(); i++)
         {
-            VulkanApi::FreeCommandBuffers(context->logicalDevice, commandPools.at(i), commandBuffers.at(i));
-            VulkanApi::DisposeCommandPool(context, commandPools[i]);
+            FreeCommandBuffers(context->logicalDevice, commandPools.at(i), commandBuffers.at(i));
+            DisposeCommandPool(context, commandPools[i]);
         }
         
         commandBuffers.clear();
@@ -37,8 +37,8 @@ namespace AVulkan
         threadsMapping.emplace(threadId, poolIndex);
         
         commandPools.push_back(VulkanApi::CreateCommandPool(context));
-        commandBuffers.emplace_back(frameInFight);
-        VulkanApi::AllocateCommandBuffers(context->logicalDevice, commandPools.at(poolIndex), commandBuffers.at(poolIndex), frameInFight);
+        commandBuffers.emplace_back(buffersCount);
+        AllocateCommandBuffers(context->logicalDevice, commandPools.at(poolIndex), commandBuffers.at(poolIndex), buffersCount);
         createPoolMutex->unlock();
     }
 

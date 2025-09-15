@@ -1,13 +1,13 @@
 #include "VulkanTextureView.h"
 
-VulkanTextureView::VulkanTextureView(const Ref<Engine::EngineApi>& engine, AVulkan::GraphicsApiVulkan& vulkanApi)
+VulkanTextureView::VulkanTextureView(const Ref<Engine::EngineApi>& engine, VulkanApi::GraphicsApiVulkan& vulkanApi)
 	: engine(engine), vulkanApi(vulkanApi)
 {
     // const auto shadowMap = vulkanApi.GetRenderPassShadowMap();
     // const auto imageBuffer = shadowMap->GetImageBuffer();
     //
-    // textureDescriptors.reserve(AVulkan::VulkanContext::maxFramesInFlight);
-    // for (uint32_t i = 0; i < AVulkan::VulkanContext::maxFramesInFlight; ++i)
+    // textureDescriptors.reserve(VulkanApi::VulkanContext::maxFramesInFlight);
+    // for (uint32_t i = 0; i < VulkanApi::VulkanContext::maxFramesInFlight; ++i)
     //     textureDescriptors.emplace_back(ImGui_ImplVulkan_AddTexture(shadowMap->GetSampler(), imageBuffer->imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL));
 }
 
@@ -36,5 +36,5 @@ void VulkanTextureView::Update()
 
     ImGui::End();
 
-    frame = (frame + 1) % AVulkan::VulkanContext::maxFramesInFlight;
+    frame = (frame + 1) % VulkanApi::VulkanContext::maxFramesInFlight;
 }

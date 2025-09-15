@@ -7,6 +7,6 @@
 
 namespace VulkanApi
 {
-	VkSurfaceKHR CreateSurface(const Ref<AVulkan::VulkanContext>& context);
-	void DisposeSurface(const Ref<AVulkan::VulkanContext>& context);
+	void CreateSurface(const Ref<VulkanContext>& vulkanContext);
+	void DisposeSurface(const Ref<VulkanContext>& vulkanContext);
 }

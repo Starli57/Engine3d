@@ -7,7 +7,7 @@
 #include "EngineCore/Rendering/Vulkan/Utilities/UniformBufferVulkanUtility.h"
 #include "EngineCore/Utilities/MathUtility.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     DescriptorFrame::DescriptorFrame(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
         VkDescriptorPool& descriptorPool, const Ref<DescriptorsAllocator>& descriptorsAllocator)
@@ -20,11 +20,11 @@ namespace AVulkan
     DescriptorFrame::~DescriptorFrame()
     {
         for(const auto& cameraUniform : cameraUniformBuffers)
-            VulkanApi::DisposeBuffer(logicalDevice, cameraUniform->buffer, cameraUniform->bufferMemory);
+            DisposeBuffer(logicalDevice, cameraUniform->buffer, cameraUniform->bufferMemory);
         for(const auto& lightUniform : lightUniformBuffers)
-            VulkanApi::DisposeBuffer(logicalDevice, lightUniform->buffer, lightUniform->bufferMemory);
+            DisposeBuffer(logicalDevice, lightUniform->buffer, lightUniform->bufferMemory);
         for(const auto& cursorUniform : cursorUniformBuffers)
-            VulkanApi::DisposeBuffer(logicalDevice, cursorUniform->buffer, cursorUniform->bufferMemory);
+            DisposeBuffer(logicalDevice, cursorUniform->buffer, cursorUniform->bufferMemory);
         
         vkDestroyDescriptorSetLayout(logicalDevice, descriptorSetLayout, nullptr);
     }
@@ -49,9 +49,9 @@ namespace AVulkan
         
         for(int i = 0; i < VulkanContext::maxFramesInFlight; i++)
         {
-            cameraUniformBuffers.at(i) = VulkanApi::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboWorldComponent));
-            lightUniformBuffers.at(i) = VulkanApi::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboLight));
-            cursorUniformBuffers.at(i) = VulkanApi::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(glm::vec3));
+            cameraUniformBuffers.at(i) = CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboWorldComponent));
+            lightUniformBuffers.at(i) = CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboLight));
+            cursorUniformBuffers.at(i) = CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(glm::vec3));
         }
     }
 

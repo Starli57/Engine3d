@@ -2,7 +2,7 @@
 
 #include <vector>
 
-namespace AVulkan
+namespace VulkanApi
 {
     const std::vector<const char*> physicalDeviceExtensions =
     {

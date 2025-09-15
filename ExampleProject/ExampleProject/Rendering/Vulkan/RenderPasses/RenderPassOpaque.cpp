@@ -7,7 +7,7 @@
 #include "EngineCore/Rendering/Vulkan/Utilities/GraphicsPipelineUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/RenderPassUtility.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     RenderPassOpaque::RenderPassOpaque(const Ref<VulkanContext>& vulkanContext, const Ref<RenderPassContext>& renderPassContext) :
         IRenderPass(vulkanContext, renderPassContext)
@@ -22,14 +22,14 @@ namespace AVulkan
     {
         spdlog::info("RenderPassOpaque::~RenderPassOpaque");
 
-        for (auto frameBuffer : frameBuffers) VulkanApi::DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffer);
+        for (auto frameBuffer : frameBuffers) DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffer);
         frameBuffers.clear();
 
         GraphicsPipelineUtility pipelineUtility;
         for (const auto& pipeline : pipelines) pipelineUtility.Dispose(pipeline.second, vulkanContext->logicalDevice);
         pipelines.clear();
         
-        VulkanApi::DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
+        DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
     }
 
     void RenderPassOpaque::Render(VkCommandBuffer& commandBuffer, const uint16_t frame, const uint32_t imageIndex, std::function<bool(const Ref<Entity>& entity)> filter)
@@ -47,7 +47,7 @@ namespace AVulkan
             RenderEntity(renderPassContext->transparentEntities.at(i), commandBuffer, frame);
         }
         
-        VulkanApi::EndRenderPass(commandBuffer);
+        EndRenderPass(commandBuffer);
         Engine::Profiler::GetInstance().EndSample();
     }
 
@@ -60,8 +60,8 @@ namespace AVulkan
         const int32_t meshIndex = drawEntity.meshComponent->meshIndex.value();
 
         const auto pipeline = pipelines.at(material->pipelineId);
-        VulkanApi::BindPipeline(commandBuffer, pipeline);
-        VulkanApi::BindVertexAndIndexBuffers(commandBuffer, meshIndex, renderPassContext->assetsDatabase);
+        BindPipeline(commandBuffer, pipeline);
+        BindVertexAndIndexBuffers(commandBuffer, meshIndex, renderPassContext->assetsDatabase);
 
         vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT,
             0, sizeof(glm::mat4), &drawEntity.uboModelComponent->model);
@@ -91,7 +91,7 @@ namespace AVulkan
                 renderPassContext->swapChainData->msaaDepthSample->imageView
             };
 
-            VulkanApi::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass,
+            CreateFrameBuffer(vulkanContext->logicalDevice, renderPass,
                 renderPassContext->swapChainData->extent.width, renderPassContext->swapChainData->extent.height,
                 attachments, frameBuffers[i]);
         }

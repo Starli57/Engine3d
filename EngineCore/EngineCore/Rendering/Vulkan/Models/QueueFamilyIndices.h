@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <optional>
 
-namespace AVulkan
+namespace VulkanApi
 {
     struct QueueFamilyIndices
     {

@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "IDescriptor.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     class DescriptorShadowMap : public IDescriptor
     {

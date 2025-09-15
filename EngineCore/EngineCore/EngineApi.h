@@ -41,7 +41,7 @@ namespace Engine
 		void BindEditorUpdateFunction(std::function<void()> editorUpdate);
 
 #if GLFW_INCLUDE_VULKAN
-		AVulkan::GraphicsApiVulkan* GetGraphicsApi() const { return graphicsApi; }
+		VulkanApi::GraphicsApiVulkan* GetGraphicsApi() const { return graphicsApi; }
 		Ref<ResourcesStorageVulkan> GetAssetsDatabase() { return assetsDatabase; }
 		Ref<AssetsLoaderVulkan> GetResourcesManager() { return resourcesManager; }
 #else
@@ -64,7 +64,7 @@ namespace Engine
 		GLFWwindow* window;
 
 #if GLFW_INCLUDE_VULKAN
-		AVulkan::GraphicsApiVulkan* graphicsApi;
+		VulkanApi::GraphicsApiVulkan* graphicsApi;
 		Ref<ResourcesStorageVulkan> assetsDatabase;
 		Ref<AssetsLoaderVulkan> resourcesManager;
 #else

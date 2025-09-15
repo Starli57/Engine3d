@@ -8,7 +8,7 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     class RenderPassShadowMaps : public IRenderPass
     {

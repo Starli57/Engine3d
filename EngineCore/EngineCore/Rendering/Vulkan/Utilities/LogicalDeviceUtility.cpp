@@ -7,7 +7,7 @@
 
 namespace VulkanApi
 {
-	VkDevice CreateLogicalDevice(const Ref<AVulkan::VulkanContext>& context)
+	VkDevice CreateLogicalDevice(const Ref<VulkanContext>& context)
 	{
 		spdlog::info("Create logical device");
 
@@ -36,8 +36,8 @@ namespace VulkanApi
 		createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
 		createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
 		createInfo.pQueueCreateInfos = queueCreateInfos.data();
-		createInfo.enabledExtensionCount = static_cast<uint32_t>(AVulkan::physicalDeviceExtensions.size());
-		createInfo.ppEnabledExtensionNames = AVulkan::physicalDeviceExtensions.data();
+		createInfo.enabledExtensionCount = static_cast<uint32_t>(physicalDeviceExtensions.size());
+		createInfo.ppEnabledExtensionNames = physicalDeviceExtensions.data();
 		
 		VkPhysicalDeviceFeatures2 deviceFeatures{};
 		deviceFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
@@ -54,7 +54,7 @@ namespace VulkanApi
 		
 		createInfo.pNext = &deviceFeatures;
 
-		VulkanApi::SetupValidationLayers(createInfo);
+		SetupValidationLayers(createInfo);
 
 		VkDevice logicalDevice;
 		auto createStatus = vkCreateDevice(context->physicalDevice, &createInfo, nullptr, &logicalDevice);

@@ -11,8 +11,8 @@ namespace VulkanApi
 	std::vector<VkPhysicalDevice> GetDevicesList(const VkInstance& instance);
 	std::vector<VkPhysicalDevice> GetRenderingDevicesList(const VkInstance& instance, VkSurfaceKHR& surface);
 
-	VkPhysicalDevice GetBestRenderingDevice(VkInstance& instance, VkSurfaceKHR& surface);
-	AVulkan::QueueFamilyIndices GetQueueFamilies(const VkPhysicalDevice& device, const VkSurfaceKHR& surface);
+	void ChooseRenderingDevice(const Ref<VulkanContext>& vulkanContext);
+	QueueFamilyIndices GetQueueFamilies(const VkPhysicalDevice& device, const VkSurfaceKHR& surface);
 
 	void PrintPhysicalDeviceDebugInformation(VkPhysicalDevice& device, VkSurfaceKHR& surface);
 

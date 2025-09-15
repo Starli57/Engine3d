@@ -4,7 +4,7 @@
 #include "EngineCore/Components/UboWorldComponent.h"
 #include "spdlog/spdlog.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
 	void DescriptorsAllocator::CreateLayout(const VkDevice& logicalDevice, const std::vector<VkDescriptorSetLayoutBinding>& bindings, VkDescriptorSetLayout& layout) const
 	{

@@ -4,7 +4,7 @@
 #include "EngineCore/Components/NameComponent.h"
 #include "EngineCore/Profiler/Profiler.h"
 
-ProfilerWindow::ProfilerWindow(const Ref<Engine::EngineApi>& engine, AVulkan::GraphicsApiVulkan& vulkanApi) : 
+ProfilerWindow::ProfilerWindow(const Ref<Engine::EngineApi>& engine, VulkanApi::GraphicsApiVulkan& vulkanApi) : 
 	engine(engine), vulkanApi(vulkanApi)
 {
 }

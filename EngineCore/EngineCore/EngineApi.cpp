@@ -83,7 +83,7 @@ namespace Engine
 	void EngineApi::DefineGraphicsApi()
 	{
 #if GLFW_INCLUDE_VULKAN
-		graphicsApi = new AVulkan::GraphicsApiVulkan(ecs, input, assetsDatabase, projectSettings, window);
+		graphicsApi = new VulkanApi::GraphicsApiVulkan(ecs, input, assetsDatabase, projectSettings, window);
 #else
 		throw std::runtime_error("The rendering api is not supported");
 #endif

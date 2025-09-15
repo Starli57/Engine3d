@@ -5,9 +5,9 @@
 
 namespace VulkanApi
 {
-	AVulkan::SwapChainSurfaceSettings GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface);
+	SwapChainSurfaceSettings GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface);
 
-	bool DoSupportSwapChain(const AVulkan::SwapChainSurfaceSettings& details);
+	bool DoSupportSwapChain(const SwapChainSurfaceSettings& details);
 	bool DoSupportSwapChain(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface);
 
 	void GetSwapChainColorFormats(const VkPhysicalDevice& physicalDevice, const VkSurfaceKHR& surface, std::vector<VkSurfaceFormatKHR>& formats);

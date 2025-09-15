@@ -7,7 +7,7 @@
 
 namespace VulkanApi
 {
-	void CreateIndexBuffer(const Ref<AVulkan::VulkanContext>& context, std::vector<uint32_t>& indices,
+	void CreateIndexBuffer(const Ref<VulkanContext>& context, std::vector<uint32_t>& indices,
         VkBuffer& indexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
 	{
         VkDeviceSize bufferSize = sizeof(indices.at(0)) * indices.size();
@@ -19,6 +19,6 @@ namespace VulkanApi
     void DisposeIndexBuffer(const VkDevice& logicalDevice, const VkBuffer& buffer, const VkDeviceMemory& bufferMemory)
     {
 		if (buffer == VK_NULL_HANDLE) return;
-        VulkanApi::DisposeBuffer(logicalDevice, buffer, bufferMemory);
+        DisposeBuffer(logicalDevice, buffer, bufferMemory);
     }
 }

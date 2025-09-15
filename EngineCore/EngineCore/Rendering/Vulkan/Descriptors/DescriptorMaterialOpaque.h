@@ -4,7 +4,7 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     class DescriptorMaterialOpaque : public IDescriptor
     {

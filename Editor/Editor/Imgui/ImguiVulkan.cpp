@@ -5,7 +5,7 @@
 
 #include "EngineCore/CustomAssert.h"
 
-ImguiVulkan::ImguiVulkan(const Ref<ProjectSettings>& projectSettings, AVulkan::GraphicsApiVulkan& vulkanApi) :
+ImguiVulkan::ImguiVulkan(const Ref<ProjectSettings>& projectSettings, VulkanApi::GraphicsApiVulkan& vulkanApi) :
     projectSettings(projectSettings), vulkanApi(vulkanApi)
 {
     spdlog::info("Start editor imgui initialization");

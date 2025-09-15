@@ -10,6 +10,5 @@
 
 namespace VulkanApi
 {
-	Ref<AVulkan::BufferModel> CreateUniformBuffer(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, 
-			VkDeviceSize bufferSize);
+	Ref<BufferModel> CreateUniformBuffer(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, VkDeviceSize bufferSize);
 }

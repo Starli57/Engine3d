@@ -11,12 +11,12 @@
 class ProfilerWindow : public Engine::IWindow
 {
 public:
-	ProfilerWindow(const Ref<Engine::EngineApi>& engine, AVulkan::GraphicsApiVulkan& vulkanApi);
+	ProfilerWindow(const Ref<Engine::EngineApi>& engine, VulkanApi::GraphicsApiVulkan& vulkanApi);
 	void Update() override;
 
 private:
 	Ref<Engine::EngineApi> engine;
-	AVulkan::GraphicsApiVulkan& vulkanApi;
+	VulkanApi::GraphicsApiVulkan& vulkanApi;
 
 	void ShowRecursive(Engine::ProfilerSample& sample) const;
 };

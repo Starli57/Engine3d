@@ -12,7 +12,7 @@ namespace Engine
 	class Rollback;
 }
 
-namespace AVulkan
+namespace VulkanApi
 {
 	class GraphicsPipelineUtility
 	{

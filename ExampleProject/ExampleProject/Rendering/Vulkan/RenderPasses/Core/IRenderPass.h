@@ -12,7 +12,7 @@
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 #include "EngineCore/Rendering/Vulkan/Descriptors/DescriptorsManager.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     class IRenderPass
     {

@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-namespace AVulkan
+namespace VulkanApi
 {
 	struct UboLight
 	{

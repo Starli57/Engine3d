@@ -3,7 +3,7 @@
 #include "DescriptorsAllocator.h"
 #include "EngineCore/Core/Ecs.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     class IDescriptor
     {

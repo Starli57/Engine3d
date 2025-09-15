@@ -4,7 +4,7 @@
 #include "EngineCore/Profiler/Profiler.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 
-namespace AVulkan
+namespace VulkanApi
 {
     DescriptorShadowMap::DescriptorShadowMap(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
         const Ref<Ecs>& ecs, VkDescriptorPool& descriptorPool, const Ref<DescriptorsAllocator>& descriptorsAllocator)

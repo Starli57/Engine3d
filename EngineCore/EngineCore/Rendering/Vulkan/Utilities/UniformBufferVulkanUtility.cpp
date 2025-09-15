@@ -5,9 +5,9 @@
 
 namespace VulkanApi
 {
-	Ref<AVulkan::BufferModel> CreateUniformBuffer(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, const VkDeviceSize bufferSize)
+	Ref<BufferModel> CreateUniformBuffer(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, const VkDeviceSize bufferSize)
 	{
-		Ref<AVulkan::BufferModel> bufferModel = CreateRef<AVulkan::BufferModel>();
+		Ref<BufferModel> bufferModel = CreateRef<BufferModel>();
 
 		VkBufferUsageFlags stagingUsageFlags = VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 		constexpr VkMemoryPropertyFlags stagingMemoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
