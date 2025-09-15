@@ -5,12 +5,12 @@
 
 namespace VulkanApi
 {
-	void CreateVertexBuffer(const Ref<VulkanContext>& context, std::vector<Engine::Vertex>& vertices,
+	void CreateVertexBuffer(VulkanContext* vulkanContext, const std::vector<Engine::Vertex>& vertices,
 		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
 	{
 		uint64_t bufferSize = sizeof(Engine::Vertex) * vertices.size();
 		VkBufferUsageFlags distUsageFlags = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-		CreateDeviceLocalBuffer(bufferSize, vertices.data(), distUsageFlags, context, vertexBuffer, bufferMemory, commandPool);
+		CreateDeviceLocalBuffer(vulkanContext, bufferSize, vertices.data(), distUsageFlags, vertexBuffer, bufferMemory, commandPool);
 	}
 
 	void DisposeVertexBuffer(const VkDevice& logicalDevice, const VkBuffer& buffer, const VkDeviceMemory& bufferMemory)

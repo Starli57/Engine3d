@@ -8,7 +8,7 @@
 
 namespace VulkanApi
 {
-    void CreateImage(const Ref<VulkanContext>& vulkanContext,
+    void CreateImage(VulkanContext* vulkanContext,
                         const uint32_t width, const uint32_t height, const uint32_t mipLevels, const VkFormat format,
                         const VkImageTiling tiling, const VkImageUsageFlags usage,
                         const VkSampleCountFlagBits msaa, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory)
@@ -45,7 +45,7 @@ namespace VulkanApi
         vkBindImageMemory(vulkanContext->logicalDevice, image, imageMemory, 0);
     }
 
-    void CopyBufferToImage(const Ref<VulkanContext>& vulkanContext, const VkBuffer& buffer, const VkImage& image, const uint32_t width, const uint32_t height, VkCommandPool& commandPool)
+    void CopyBufferToImage(VulkanContext* vulkanContext, const VkBuffer& buffer, const VkImage& image, const uint32_t width, const uint32_t height, VkCommandPool& commandPool)
     {
         auto commandBuffer = BeginCommandBuffer(vulkanContext->logicalDevice, commandPool);
 

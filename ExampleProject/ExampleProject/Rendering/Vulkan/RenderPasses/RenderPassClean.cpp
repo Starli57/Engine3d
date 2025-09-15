@@ -6,7 +6,7 @@
 
 namespace VulkanApi
 {
-    RenderPassClean::RenderPassClean(Ref<VulkanContext> vulkanContext, const Ref<RenderPassContext>& renderPassContext)
+    RenderPassClean::RenderPassClean(VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext)
         : IRenderPass(vulkanContext, renderPassContext)
     {
         RenderPassClean::CreateRenderPass();

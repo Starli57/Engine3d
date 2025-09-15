@@ -7,8 +7,8 @@
 
 namespace VulkanApi
 {
-    CommandsManager::CommandsManager(const Ref<VulkanContext>& context, const int buffersCount)
-        : context(context), buffersCount(buffersCount)
+    CommandsManager::CommandsManager(VulkanContext* vulkanContext, const int buffersCount)
+        : vulkanContext(vulkanContext), buffersCount(buffersCount)
     {
         const auto coresCount = std::thread::hardware_concurrency();
         commandPools.reserve(coresCount);
@@ -21,8 +21,8 @@ namespace VulkanApi
     {
         for (int i = 0; i < commandPools.size(); i++)
         {
-            FreeCommandBuffers(context->logicalDevice, commandPools.at(i), commandBuffers.at(i));
-            DisposeCommandPool(context, commandPools[i]);
+            FreeCommandBuffers(vulkanContext->logicalDevice, commandPools.at(i), commandBuffers.at(i));
+            DisposeCommandPool(vulkanContext, commandPools[i]);
         }
         
         commandBuffers.clear();
@@ -36,9 +36,9 @@ namespace VulkanApi
         auto poolIndex = commandPools.size();
         threadsMapping.emplace(threadId, poolIndex);
         
-        commandPools.push_back(VulkanApi::CreateCommandPool(context));
+        commandPools.push_back(VulkanApi::CreateCommandPool(vulkanContext));
         commandBuffers.emplace_back(buffersCount);
-        AllocateCommandBuffers(context->logicalDevice, commandPools.at(poolIndex), commandBuffers.at(poolIndex), buffersCount);
+        AllocateCommandBuffers(vulkanContext->logicalDevice, commandPools.at(poolIndex), commandBuffers.at(poolIndex), buffersCount);
         createPoolMutex->unlock();
     }
 

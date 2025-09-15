@@ -12,7 +12,7 @@ namespace VulkanApi
     class CommandsManager
     {
     public:
-        CommandsManager(const Ref<VulkanContext>& context, const int buffersCount);
+        CommandsManager(VulkanContext* vulkanContext, const int buffersCount);
         ~CommandsManager();
 
         void CreateCommandPool();
@@ -20,7 +20,7 @@ namespace VulkanApi
         VkCommandBuffer& GetCommandBuffer(int frame);
         
     private:
-        Ref<VulkanContext> context;
+        VulkanContext* vulkanContext;
         const int buffersCount;
         
         std::unordered_map<std::thread::id, uint32_t> threadsMapping;

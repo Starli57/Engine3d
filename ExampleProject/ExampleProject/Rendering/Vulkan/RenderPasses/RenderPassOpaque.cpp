@@ -9,7 +9,7 @@
 
 namespace VulkanApi
 {
-    RenderPassOpaque::RenderPassOpaque(const Ref<VulkanContext>& vulkanContext, const Ref<RenderPassContext>& renderPassContext) :
+    RenderPassOpaque::RenderPassOpaque(VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext) :
         IRenderPass(vulkanContext, renderPassContext)
     {
         spdlog::info("Create RenderPass Opaque");

@@ -8,10 +8,10 @@
 
 namespace VulkanApi
 {
-	SwapChain::SwapChain(const Ref<VulkanContext>& context, Ref<SwapChainData> swapChainData) :
-		vulkanContext(context), swapChainData(swapChainData)
+	SwapChain::SwapChain(VulkanContext* vulkanContext, Ref<SwapChainData> swapChainData) :
+		vulkanContext(vulkanContext), swapChainData(swapChainData)
 	{
-		physicalDeviceQueueIndices = GetQueueFamilies(context->physicalDevice, context->windowSurface);
+		physicalDeviceQueueIndices = GetQueueFamilies(vulkanContext->physicalDevice, vulkanContext->windowSurface);
 	}
 
 	SwapChain::~SwapChain()

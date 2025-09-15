@@ -6,7 +6,7 @@
 
 namespace VulkanApi
 {
-	VkRenderPass CreateRenderPass(Ref<VulkanContext> vulkanContext,
+	VkRenderPass CreateRenderPass(VulkanContext* vulkanContext,
 		const std::vector<VkAttachmentDescription>& attachments, const VkSubpassDescription& subpass);
 
 	void DisposeRenderPass(const VkDevice& logicalDevice, const VkRenderPass& renderPass);

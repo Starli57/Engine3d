@@ -18,7 +18,7 @@ namespace VulkanApi
     {
     public:
         IRenderPass(
-            Ref<VulkanContext> vulkanContext, const Ref<RenderPassContext>& renderPassContext)
+            VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext)
             : vulkanContext(vulkanContext), renderPassContext(renderPassContext)
         {
             renderPass = VK_NULL_HANDLE;
@@ -31,7 +31,7 @@ namespace VulkanApi
         VkFramebuffer& GetFrameBuffer() { return frameBuffers.at(0); }
 
     protected:
-        Ref<VulkanContext> vulkanContext;
+        VulkanContext* vulkanContext;
         Ref<RenderPassContext> renderPassContext;
         
         VkRenderPass renderPass;

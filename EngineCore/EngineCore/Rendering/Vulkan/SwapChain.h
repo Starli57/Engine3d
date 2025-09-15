@@ -14,7 +14,7 @@ namespace VulkanApi
 	{
 	public:
 
-		SwapChain(const Ref<VulkanContext>& context, Ref<SwapChainData> swapChainData);
+		SwapChain(VulkanContext* vulkanContext, Ref<SwapChainData> swapChainData);
 		~SwapChain();
 
 		void Recreate();
@@ -28,7 +28,7 @@ namespace VulkanApi
 	private:
 
 		Ref<SwapChainData> swapChainData;
-		Ref<VulkanContext> vulkanContext;
+		VulkanContext* vulkanContext;
 		
 		QueueFamilyIndices physicalDeviceQueueIndices;
 

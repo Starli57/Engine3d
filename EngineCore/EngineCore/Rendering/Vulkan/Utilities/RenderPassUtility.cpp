@@ -7,7 +7,7 @@
 
 namespace VulkanApi
 {
-	VkRenderPass CreateRenderPass(Ref<VulkanContext> vulkanContext,
+	VkRenderPass CreateRenderPass(VulkanContext* vulkanContext,
 		const std::vector<VkAttachmentDescription>& attachments, const VkSubpassDescription& subpass)
 	{
 		std::array<VkSubpassDependency, 2> subpassDependencies;

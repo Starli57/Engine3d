@@ -7,11 +7,11 @@
 
 namespace VulkanApi
 {
-	void CreateStagingBuffer(VkDeviceSize bufferSize, void const* sourceData,
-		VkBuffer& buffer, VkDeviceMemory& bufferMemory, const Ref<VulkanContext>& context);
+	void CreateStagingBuffer(const VulkanContext* vulkanContext, VkDeviceSize bufferSize, void const* sourceData,
+	                         VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 	
-	void CreateDeviceLocalBuffer(VkDeviceSize bufferSize, void const* sourceData, VkBufferUsageFlags distUsageFlags,
-		const Ref<VulkanContext>& context, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool);
+	void CreateDeviceLocalBuffer(const VulkanContext* vulkanContext, VkDeviceSize bufferSize, void const* sourceData, VkBufferUsageFlags distUsageFlags,
+	                             VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool);
 	
 	void CreateBuffer(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, uint64_t bufferSize,
 	                  const VkBufferUsageFlags& usageFlags, VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory);

@@ -7,23 +7,23 @@
 
 namespace VulkanApi
 {
-	void CreateStagingBuffer(VkDeviceSize bufferSize, void const* sourceData,
-		VkBuffer& buffer, VkDeviceMemory& bufferMemory, const Ref<VulkanContext>& context)
+	void CreateStagingBuffer(const VulkanContext* vulkanContext, VkDeviceSize bufferSize, void const* sourceData,
+	                         VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{
 		VkBufferUsageFlags usageFlagsStaging = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 		constexpr VkMemoryPropertyFlags memoryFlagsStaging = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 
-		CreateBuffer(context->physicalDevice, context->logicalDevice, bufferSize,
+		CreateBuffer(vulkanContext->physicalDevice, vulkanContext->logicalDevice, bufferSize,
 			usageFlagsStaging, memoryFlagsStaging, buffer, bufferMemory);
 
 		void* data;
-		vkMapMemory(context->logicalDevice, bufferMemory, 0, bufferSize, 0, &data);
+		vkMapMemory(vulkanContext->logicalDevice, bufferMemory, 0, bufferSize, 0, &data);
 		memcpy(data, sourceData, bufferSize);
-		vkUnmapMemory(context->logicalDevice, bufferMemory);	
+		vkUnmapMemory(vulkanContext->logicalDevice, bufferMemory);	
 	}
 	
-	void CreateDeviceLocalBuffer(VkDeviceSize bufferSize, void const* sourceData, VkBufferUsageFlags distUsageFlags,
-		const Ref<VulkanContext>& context, VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
+	void CreateDeviceLocalBuffer(const VulkanContext* vulkanContext, VkDeviceSize bufferSize, void const* sourceData, VkBufferUsageFlags distUsageFlags,
+	                             VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
 	{
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingBufferMemory;
@@ -32,16 +32,16 @@ namespace VulkanApi
 		VkMemoryPropertyFlags stagingMemoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 		VkMemoryPropertyFlags distMemoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
-		CreateBuffer(context->physicalDevice, context->logicalDevice, bufferSize, stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingBufferMemory);
+		CreateBuffer(vulkanContext->physicalDevice, vulkanContext->logicalDevice, bufferSize, stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingBufferMemory);
 
 		void* data;
-		vkMapMemory(context->logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
+		vkMapMemory(vulkanContext->logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
 		memcpy(data, sourceData, (size_t)bufferSize);
-		vkUnmapMemory(context->logicalDevice, stagingBufferMemory);
+		vkUnmapMemory(vulkanContext->logicalDevice, stagingBufferMemory);
 
-		CreateBuffer(context->physicalDevice, context->logicalDevice, bufferSize, distUsageFlags, distMemoryFlags, buffer, bufferMemory);
-		CopyBuffer(context->logicalDevice, context->graphicsQueue, stagingBuffer, buffer, bufferSize, commandPool);
-		DisposeBuffer(context->logicalDevice, stagingBuffer, stagingBufferMemory);
+		CreateBuffer(vulkanContext->physicalDevice, vulkanContext->logicalDevice, bufferSize, distUsageFlags, distMemoryFlags, buffer, bufferMemory);
+		CopyBuffer(vulkanContext->logicalDevice, vulkanContext->graphicsQueue, stagingBuffer, buffer, bufferSize, commandPool);
+		DisposeBuffer(vulkanContext->logicalDevice, stagingBuffer, stagingBufferMemory);
 	}
 	
 	void CreateBuffer(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, const uint64_t bufferSize,

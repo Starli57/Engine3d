@@ -13,7 +13,7 @@ namespace VulkanApi
     class RenderPassOpaque : public IRenderPass
     {
     public:
-        RenderPassOpaque(const Ref<VulkanContext>& vulkanContext, const Ref<RenderPassContext>& renderPassContext);
+        RenderPassOpaque(VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext);
         ~RenderPassOpaque() override;
 
         void Render(VkCommandBuffer& commandBuffer, uint16_t frame, uint32_t imageIndex, std::function<bool(const Ref<Entity>& entity)> filter) override;

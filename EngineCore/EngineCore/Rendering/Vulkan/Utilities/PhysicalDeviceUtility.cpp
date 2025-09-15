@@ -7,7 +7,7 @@
 
 namespace VulkanApi
 {
-    void ChooseRenderingDevice(const Ref<VulkanContext>& vulkanContext)
+    void ChooseRenderingDevice(VulkanContext* vulkanContext)
     {
         spdlog::info("Select physical rendering device");
 
@@ -40,7 +40,7 @@ namespace VulkanApi
         return devices;
     }
 
-    std::vector<VkPhysicalDevice> GetRenderingDevicesList(const VkInstance& instance, VkSurfaceKHR& surface)
+    std::vector<VkPhysicalDevice> GetRenderingDevicesList(const VkInstance& instance, VkSurfaceKHR surface)
     {
         auto allDevices = GetDevicesList(instance);
 

@@ -27,7 +27,7 @@ namespace VulkanApi
 	class GraphicsApiVulkan : public Engine::IGraphicsApi
 	{
 	public:
-		Ref<VulkanContext> context;
+		VulkanContext* vulkanContext;
 
 		URef<DescriptorsManager> descriptorsManager;
 		Ref<SwapChain> swapChain;

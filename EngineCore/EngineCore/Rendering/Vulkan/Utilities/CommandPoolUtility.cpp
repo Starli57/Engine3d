@@ -7,10 +7,10 @@
 
 namespace VulkanApi
 {
-	VkCommandPool CreateCommandPool(const Ref<VulkanContext>& context)
+	VkCommandPool CreateCommandPool(VulkanContext* vulkanContext)
 	{
 		spdlog::info("Create command pool");
-		QueueFamilyIndices queueFamilyIndices = GetQueueFamilies(context->physicalDevice, context->windowSurface);
+		QueueFamilyIndices queueFamilyIndices = GetQueueFamilies(vulkanContext->physicalDevice, vulkanContext->windowSurface);
 
 		VkCommandPoolCreateInfo poolInfo{};
 		poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -18,15 +18,15 @@ namespace VulkanApi
 		poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 
 		VkCommandPool commandPool;
-		auto createStatus = vkCreateCommandPool(context->logicalDevice, &poolInfo, nullptr, &commandPool);
+		auto createStatus = vkCreateCommandPool(vulkanContext->logicalDevice, &poolInfo, nullptr, &commandPool);
 		Engine::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create command pool, status = " + createStatus);
 
 		return commandPool;
 	}
 
-	void DisposeCommandPool(const Ref<VulkanContext>& context, const VkCommandPool& commandPool)
+	void DisposeCommandPool(VulkanContext* vulkanContext, const VkCommandPool& commandPool)
 	{
 		spdlog::info("Dispose command pool");
-		vkDestroyCommandPool(context->logicalDevice, commandPool, nullptr);
+		vkDestroyCommandPool(vulkanContext->logicalDevice, commandPool, nullptr);
 	}
 }

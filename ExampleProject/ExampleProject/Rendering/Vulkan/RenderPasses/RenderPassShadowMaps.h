@@ -13,7 +13,7 @@ namespace VulkanApi
     class RenderPassShadowMaps : public IRenderPass
     {
     public:
-        RenderPassShadowMaps(Ref<VulkanContext> vulkanContext, const Ref<RenderPassContext>& renderPassContext);
+        RenderPassShadowMaps(VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext);
         ~RenderPassShadowMaps() override;
 
         void Render(VkCommandBuffer& commandBuffer, uint16_t frame, uint32_t imageIndex, std::function<bool(const Ref<Entity>& entity)> filter) override;

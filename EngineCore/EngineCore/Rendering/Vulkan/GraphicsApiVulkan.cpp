@@ -18,19 +18,20 @@ namespace VulkanApi
 {
 	GraphicsApiVulkan::GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager, const Ref<Engine::ResourcesStorageVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* glfwWindow)
 	{
-		this->context = CreateRef<VulkanContext>();
+		this->vulkanContext = new VulkanContext();
 		this->ecs = ecs;
 		this->inputManager = inputManager;
 		this->assetDatabase = assetDatabase;
 		this->projectSettings = projectSettings;
-		this->context->window = glfwWindow;
-		this->context->pipelinesCollection = CreateRef<PipelinesCollection>(projectSettings);
+		this->vulkanContext->window = glfwWindow;
+		this->vulkanContext->pipelinesCollection = CreateRef<PipelinesCollection>(projectSettings);
 		this->rollback = CreateRef<Engine::Rollback>("GraphicsApiVulkan");
 	}
 
 	GraphicsApiVulkan::~GraphicsApiVulkan()
 	{
 		rollback.reset();
+		delete vulkanContext;
 	}
 
 	void GraphicsApiVulkan::Init()
@@ -60,11 +61,11 @@ namespace VulkanApi
 	void GraphicsApiVulkan::RecreateSwapChain()
 	{
 		int width = 0, height = 0;
-		glfwGetFramebufferSize(context->window, &width, &height);
+		glfwGetFramebufferSize(vulkanContext->window, &width, &height);
 
 		while (width == 0 || height == 0)
 		{
-			glfwGetFramebufferSize(context->window, &width, &height);
+			glfwGetFramebufferSize(vulkanContext->window, &width, &height);
 			glfwWaitEvents();
 		}
 
@@ -82,7 +83,7 @@ namespace VulkanApi
 		if (acquireStatus != VK_SUCCESS) return;
 
 		auto commandBuffer = commandsManager->GetCommandBuffer(frame);
-		vkResetFences(context->logicalDevice, 1, &drawFences[frame]);
+		vkResetFences(vulkanContext->logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(commandBuffer, 0);
 
 		onClientRender();
@@ -105,7 +106,7 @@ namespace VulkanApi
 		submitInfo.pCommandBuffers = submitCommandBuffers.data();
 
 		Engine::Profiler::GetInstance().BeginSample("Renderer Submit");
-		auto submitStatus = vkQueueSubmit(context->graphicsQueue, 1, &submitInfo, drawFences[frame]);
+		auto submitStatus = vkQueueSubmit(vulkanContext->graphicsQueue, 1, &submitInfo, drawFences[frame]);
 		Engine::Profiler::GetInstance().EndSample();
 
 		Engine::CAssert::Check(submitStatus == VK_SUCCESS, "Failed to submit draw command buffer, status: " + submitStatus);
@@ -119,7 +120,7 @@ namespace VulkanApi
 		presentInfo.pImageIndices = &imageIndex;
 
 		Engine::Profiler::GetInstance().BeginSample("vkQueuePresentKHR");
-		auto presentStatus = vkQueuePresentKHR(context->presentationQueue, &presentInfo);
+		auto presentStatus = vkQueuePresentKHR(vulkanContext->presentationQueue, &presentInfo);
 		Engine::Profiler::GetInstance().EndSample();
 
 		if (presentStatus == VK_ERROR_OUT_OF_DATE_KHR || presentStatus == VK_SUBOPTIMAL_KHR)
@@ -130,15 +131,15 @@ namespace VulkanApi
 
 		Engine::CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
 		
-		frame = (frame + 1) % context->maxFramesInFlight;
+		frame = (frame + 1) % vulkanContext->maxFramesInFlight;
 	}
 
 	VkResult GraphicsApiVulkan::AcquireNextImage()
 	{
-		vkWaitForFences(context->logicalDevice, 1, &drawFences[frame], VK_TRUE, context->frameSyncTimeout);
+		vkWaitForFences(vulkanContext->logicalDevice, 1, &drawFences[frame], VK_TRUE, vulkanContext->frameSyncTimeout);
 
 		auto acquireStatus = vkAcquireNextImageKHR(
-			context->logicalDevice, swapChainData->swapChain, context->frameSyncTimeout,
+			vulkanContext->logicalDevice, swapChainData->swapChain, vulkanContext->frameSyncTimeout,
 			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 		
 		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR) 
@@ -151,7 +152,7 @@ namespace VulkanApi
 	
 	void GraphicsApiVulkan::FinalizeRenderOperations()
 	{
-		vkDeviceWaitIdle(context->logicalDevice);
+		vkDeviceWaitIdle(vulkanContext->logicalDevice);
 	}
 
 	void GraphicsApiVulkan::BindClientFunctions(std::function<void()> onClientRender, std::function<void()> onRenderPassesCreate, std::function<void()> onRenderPassesDispose)
@@ -163,37 +164,37 @@ namespace VulkanApi
 
 	void GraphicsApiVulkan::CreateInstance() const
 	{
-		VulkanApi::CreateInstance(context->instance);
-		rollback->Add([this]() { DisposeInstance(context->instance); });
+		VulkanApi::CreateInstance(vulkanContext->instance);
+		rollback->Add([this]() { DisposeInstance(vulkanContext->instance); });
 	}
 
 	void GraphicsApiVulkan::CreateWindowSurface() const
 	{
-		CreateSurface(context);
-		rollback->Add([this]() { DisposeSurface(context); });
+		CreateSurface(vulkanContext);
+		rollback->Add([this]() { DisposeSurface(vulkanContext); });
 	}
 
 	void GraphicsApiVulkan::SelectPhysicalRenderingDevice() const
 	{
-		ChooseRenderingDevice(context);
-		context->msaa = GetMaxUsableSampleCount(context->physicalDevice);
-		context->depthFormat = FindDepthBufferFormat(context->physicalDevice);
-		PrintPhysicalDeviceDebugInformation(context->physicalDevice, context->windowSurface);
+		ChooseRenderingDevice(vulkanContext);
+		vulkanContext->msaa = GetMaxUsableSampleCount(vulkanContext->physicalDevice);
+		vulkanContext->depthFormat = FindDepthBufferFormat(vulkanContext->physicalDevice);
+		PrintPhysicalDeviceDebugInformation(vulkanContext->physicalDevice, vulkanContext->windowSurface);
 	}
 
 	void GraphicsApiVulkan::CreateLogicalDevice() const
 	{
-		context->logicalDevice = VulkanApi::CreateLogicalDevice(context);
+		vulkanContext->logicalDevice = VulkanApi::CreateLogicalDevice(vulkanContext);
 		rollback->Add([this]()
 		{
-			DisposeLogicalDevice(context->logicalDevice);
+			DisposeLogicalDevice(vulkanContext->logicalDevice);
 		});
 	}
 
 	void GraphicsApiVulkan::CreateSwapChain()
 	{
 		swapChainData = CreateRef<SwapChainData>();
-		swapChain = CreateRef<SwapChain>(context, swapChainData);
+		swapChain = CreateRef<SwapChain>(vulkanContext, swapChainData);
 
 		swapChain->CreateSwapchain();
 		swapChain->CreateSwapChainImageViews();
@@ -205,7 +206,7 @@ namespace VulkanApi
 
 	void GraphicsApiVulkan::CreateDescriptorManager()
 	{
-		descriptorsManager = CreateUniqueRef<DescriptorsManager>(context->physicalDevice, context->logicalDevice, ecs, inputManager,
+		descriptorsManager = CreateUniqueRef<DescriptorsManager>(vulkanContext->physicalDevice, vulkanContext->logicalDevice, ecs, inputManager,
 			textureSampler, assetDatabase);
 
 		rollback->Add([this] { descriptorsManager.reset(); });
@@ -219,7 +220,7 @@ namespace VulkanApi
 
 	void GraphicsApiVulkan::CreateCommandsManager()
 	{
-		commandsManager = new CommandsManager(context, context->maxFramesInFlight);
+		commandsManager = new CommandsManager(vulkanContext, vulkanContext->maxFramesInFlight);
 		rollback->Add([this]() { delete commandsManager; });
 	}
 
@@ -231,15 +232,15 @@ namespace VulkanApi
 
 	void GraphicsApiVulkan::CreateTextureSampler()
 	{
-		VulkanApi::CreateTextureSampler(context->physicalDevice, context->logicalDevice, textureSampler);
-		rollback->Add([this]() { vkDestroySampler(context->logicalDevice, textureSampler, nullptr); });
+		VulkanApi::CreateTextureSampler(vulkanContext->physicalDevice, vulkanContext->logicalDevice, textureSampler);
+		rollback->Add([this]() { vkDestroySampler(vulkanContext->logicalDevice, textureSampler, nullptr); });
 	}
 
 	void GraphicsApiVulkan::CreateSyncObjects()
 	{
-		imageAvailableSemaphores.resize(context->maxFramesInFlight);
-		renderFinishedSemaphores.resize(context->maxFramesInFlight);
-		drawFences.resize(context->maxFramesInFlight);
+		imageAvailableSemaphores.resize(vulkanContext->maxFramesInFlight);
+		renderFinishedSemaphores.resize(vulkanContext->maxFramesInFlight);
+		drawFences.resize(vulkanContext->maxFramesInFlight);
 
 		VkSemaphoreCreateInfo semaphoreInfo{};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -248,11 +249,11 @@ namespace VulkanApi
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-		for (int i = 0; i < context->maxFramesInFlight; i++)
+		for (int i = 0; i < vulkanContext->maxFramesInFlight; i++)
 		{
-			CreateVkSemaphore(context->logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i], rollback);
-			CreateVkSemaphore(context->logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i], rollback);
-			CreateVkFence(context->logicalDevice, &fenceInfo, nullptr, &drawFences[i], rollback);
+			CreateVkSemaphore(vulkanContext->logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i], rollback);
+			CreateVkSemaphore(vulkanContext->logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i], rollback);
+			CreateVkFence(vulkanContext->logicalDevice, &fenceInfo, nullptr, &drawFences[i], rollback);
 		}
 	}
 }

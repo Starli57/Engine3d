@@ -7,6 +7,6 @@
 
 namespace VulkanApi
 {
-	VkDevice CreateLogicalDevice(const Ref<VulkanContext>& context);
+	VkDevice CreateLogicalDevice(VulkanContext* vulkanContext);
 	void DisposeLogicalDevice(const VkDevice& logicalDevice);
 }

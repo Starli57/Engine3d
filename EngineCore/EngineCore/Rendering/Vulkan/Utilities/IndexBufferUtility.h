@@ -6,7 +6,7 @@
 
 namespace VulkanApi
 {
-	void CreateIndexBuffer(const Ref<VulkanContext>& context, std::vector<uint32_t>& indices,
+	void CreateIndexBuffer(VulkanContext* vulkanContext, std::vector<uint32_t>& indices,
 		VkBuffer& indexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool);
 	void DisposeIndexBuffer(const VkDevice& logicalDevice, const VkBuffer& buffer, const VkDeviceMemory& bufferMemory);
 }

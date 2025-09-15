@@ -7,12 +7,12 @@
 
 namespace VulkanApi
 {
-	void CreateIndexBuffer(const Ref<VulkanContext>& context, std::vector<uint32_t>& indices,
+	void CreateIndexBuffer(VulkanContext* vulkanContext, std::vector<uint32_t>& indices,
         VkBuffer& indexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
 	{
         VkDeviceSize bufferSize = sizeof(indices.at(0)) * indices.size();
         VkBufferUsageFlags distUsageFlags = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-		CreateDeviceLocalBuffer(bufferSize, indices.data(), distUsageFlags, context, indexBuffer, bufferMemory, commandPool);
+		CreateDeviceLocalBuffer(vulkanContext, bufferSize, indices.data(), distUsageFlags, indexBuffer, bufferMemory, commandPool);
 	}
 
 

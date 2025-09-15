@@ -29,7 +29,7 @@ void VulkanTextureView::Update()
     // writeDesc[0].descriptorCount = 1;
     // writeDesc[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     // writeDesc[0].pImageInfo = descImage;
-    // vkUpdateDescriptorSets(vulkanApi.context->logicalDevice, 1, writeDesc, 0, nullptr);
+    // vkUpdateDescriptorSets(vulkanApi.vulkanContext->logicalDevice, 1, writeDesc, 0, nullptr);
     //
     // float shadowMapSize = 256.0f;
     // ImGui::Image(reinterpret_cast<ImTextureID>(textureDescriptors.at(frame)), ImVec2(shadowMapSize, shadowMapSize));

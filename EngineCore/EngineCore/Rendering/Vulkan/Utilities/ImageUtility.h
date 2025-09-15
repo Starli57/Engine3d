@@ -7,12 +7,12 @@
 
 namespace VulkanApi
 {
-    void CreateImage(const Ref<VulkanContext>& vulkanContext,
+    void CreateImage(VulkanContext* vulkanContext,
                         uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
                         VkSampleCountFlagBits msaa, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
     void DestroyImage(const VkDevice& logicalDevice, const VkImage& image);
     
-    void CopyBufferToImage(const Ref<VulkanContext>& vulkanContext,
+    void CopyBufferToImage(VulkanContext* vulkanContext,
                            const VkBuffer& buffer, const VkImage& image, uint32_t width, uint32_t height, VkCommandPool& commandPool);
     
     void TransitionImageLayout(const VkCommandBuffer& commandBuffer, const uint32_t mipLevels,

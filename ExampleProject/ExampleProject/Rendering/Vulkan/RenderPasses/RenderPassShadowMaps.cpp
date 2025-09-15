@@ -10,7 +10,7 @@
 
 namespace VulkanApi
 {
-    RenderPassShadowMaps::RenderPassShadowMaps(Ref<VulkanContext> vulkanContext, const Ref<RenderPassContext>& renderPassContext) :
+    RenderPassShadowMaps::RenderPassShadowMaps(VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext) :
         IRenderPass(vulkanContext, renderPassContext)
     {
         spdlog::info("Create RenderPass ShadowMaps");
