@@ -4,7 +4,7 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rollback/Rollback.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
     void CreateVkSemaphore(VkDevice logicalDevice, const VkSemaphoreCreateInfo* createInfo, 
         const VkAllocationCallbacks* allocator, VkSemaphore* semaphore, const Ref<Engine::Rollback>& rollback);

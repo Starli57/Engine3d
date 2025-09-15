@@ -5,7 +5,7 @@
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 #include "EngineCore/Rendering/Vulkan/Models/ImageModel.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
     void CreateImage(const Ref<AVulkan::VulkanContext>& vulkanContext,
                         uint32_t width, uint32_t height, uint32_t mipLevels, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,

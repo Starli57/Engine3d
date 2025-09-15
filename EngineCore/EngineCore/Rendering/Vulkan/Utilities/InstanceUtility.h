@@ -5,7 +5,7 @@
 
 #include "EngineCore/Rendering/Vulkan/Utilities/ValidationLayersUtility.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	void CreateInstance(VkInstance& instance);
 	void DisposeInstance(const VkInstance& instance);

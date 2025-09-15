@@ -4,7 +4,7 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	VkRenderPass CreateRenderPass(Ref<AVulkan::VulkanContext> vulkanContext,
 		const std::vector<VkAttachmentDescription>& attachments, const VkSubpassDescription& subpass);

@@ -21,8 +21,8 @@ namespace AVulkan
     {
         for (int i = 0; i < commandPools.size(); i++)
         {
-            VkUtils::FreeCommandBuffers(context->logicalDevice, commandPools.at(i), commandBuffers.at(i));
-            VkUtils::DisposeCommandPool(context, commandPools[i]);
+            VulkanApi::FreeCommandBuffers(context->logicalDevice, commandPools.at(i), commandBuffers.at(i));
+            VulkanApi::DisposeCommandPool(context, commandPools[i]);
         }
         
         commandBuffers.clear();
@@ -36,9 +36,9 @@ namespace AVulkan
         auto poolIndex = commandPools.size();
         threadsMapping.emplace(threadId, poolIndex);
         
-        commandPools.push_back(VkUtils::CreateCommandPool(context));
+        commandPools.push_back(VulkanApi::CreateCommandPool(context));
         commandBuffers.emplace_back(frameInFight);
-        VkUtils::AllocateCommandBuffers(context->logicalDevice, commandPools.at(poolIndex), commandBuffers.at(poolIndex), frameInFight);
+        VulkanApi::AllocateCommandBuffers(context->logicalDevice, commandPools.at(poolIndex), commandBuffers.at(poolIndex), frameInFight);
         createPoolMutex->unlock();
     }
 

@@ -5,7 +5,7 @@
 #include "EngineCore/Profiler/Profiler.h"
 #include "spdlog/spdlog.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	void AllocateCommandBuffers(const VkDevice& logicalDevice, const VkCommandPool& commandPool, std::vector<VkCommandBuffer>& commandBuffers, int buffersCount)
 	{

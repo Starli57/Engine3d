@@ -4,7 +4,7 @@
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/EngineApi.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
     void CreateTextureSampler(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, VkSampler& textureSampler)
     {

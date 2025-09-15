@@ -1,7 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "MemoryUtility.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	uint32_t FindMemoryType(const VkPhysicalDevice& physicalDevice, const uint32_t& typeFilter, const VkMemoryPropertyFlags& properties)
 	{

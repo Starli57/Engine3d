@@ -21,12 +21,12 @@ namespace AVulkan
 		{
 			initializationRollback = CreateUniqueRef<Engine::Rollback>("VkPipelineInit");
 
-			auto vertModule = VkUtils::CreateShaderModule(pipelineConfig->vertShaderPath, logicalDevice);
-			auto fragModule = VkUtils::CreateShaderModule(pipelineConfig->fragShaderPath, logicalDevice);
+			auto vertModule = VulkanApi::CreateShaderModule(pipelineConfig->vertShaderPath, logicalDevice);
+			auto fragModule = VulkanApi::CreateShaderModule(pipelineConfig->fragShaderPath, logicalDevice);
 
 			std::array< VkPipelineShaderStageCreateInfo, 2> shaderStages;
-			shaderStages[0] = VkUtils::SetupShaderStageInfo(vertModule, VK_SHADER_STAGE_VERTEX_BIT);
-			shaderStages[1] = VkUtils::SetupShaderStageInfo(fragModule, VK_SHADER_STAGE_FRAGMENT_BIT);
+			shaderStages[0] = VulkanApi::SetupShaderStageInfo(vertModule, VK_SHADER_STAGE_VERTEX_BIT);
+			shaderStages[1] = VulkanApi::SetupShaderStageInfo(fragModule, VK_SHADER_STAGE_FRAGMENT_BIT);
 
 			VkPushConstantRange pushConstantRange;
 			pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
@@ -47,8 +47,8 @@ namespace AVulkan
 			vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 			if (pipelineConfig->useVertices)
 			{
-				auto bindingDescription = VkUtils::GetVertexInputBindingDescription();
-				auto attributeDescriptions = VkUtils::GetVertexInputAttributeDescriptions();
+				auto bindingDescription = VulkanApi::GetVertexInputBindingDescription();
+				auto attributeDescriptions = VulkanApi::GetVertexInputAttributeDescriptions();
 				vertexInputInfo.vertexBindingDescriptionCount = 1;
 				vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
 				vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
@@ -90,8 +90,8 @@ namespace AVulkan
 
 			initializationRollback->Dispose();
 
-			VkUtils::DisposeShaderModule(logicalDevice, fragModule);
-			VkUtils::DisposeShaderModule(logicalDevice, vertModule);
+			VulkanApi::DisposeShaderModule(logicalDevice, fragModule);
+			VulkanApi::DisposeShaderModule(logicalDevice, vertModule);
 		}
 		catch (const std::exception& e)
 		{

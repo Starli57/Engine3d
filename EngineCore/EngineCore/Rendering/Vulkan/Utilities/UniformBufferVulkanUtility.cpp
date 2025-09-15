@@ -3,7 +3,7 @@
 
 #include "EngineCore/CustomAssert.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	Ref<AVulkan::BufferModel> CreateUniformBuffer(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, const VkDeviceSize bufferSize)
 	{

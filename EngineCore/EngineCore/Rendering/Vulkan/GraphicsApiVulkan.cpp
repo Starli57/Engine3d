@@ -163,30 +163,30 @@ namespace AVulkan
 
 	void GraphicsApiVulkan::CreateInstance() const
 	{
-		VkUtils::CreateInstance(context->instance);
-		rollback->Add([this]() { VkUtils::DisposeInstance(context->instance); });
+		VulkanApi::CreateInstance(context->instance);
+		rollback->Add([this]() { VulkanApi::DisposeInstance(context->instance); });
 	}
 
 	void GraphicsApiVulkan::CreateWindowSurface() const
 	{
-		context->windowSurface = VkUtils::CreateSurface(context);
-		rollback->Add([this]() { VkUtils::DisposeSurface(context); });
+		context->windowSurface = VulkanApi::CreateSurface(context);
+		rollback->Add([this]() { VulkanApi::DisposeSurface(context); });
 	}
 
 	void GraphicsApiVulkan::SelectPhysicalRenderingDevice() const
 	{
-		context->physicalDevice = VkUtils::GetBestRenderingDevice(context->instance, context->windowSurface);
-		context->msaa = VkUtils::GetMaxUsableSampleCount(context->physicalDevice);
-		context->depthFormat = VkUtils::FindDepthBufferFormat(context->physicalDevice);
-		VkUtils::PrintPhysicalDeviceDebugInformation(context->physicalDevice, context->windowSurface);
+		context->physicalDevice = VulkanApi::GetBestRenderingDevice(context->instance, context->windowSurface);
+		context->msaa = VulkanApi::GetMaxUsableSampleCount(context->physicalDevice);
+		context->depthFormat = VulkanApi::FindDepthBufferFormat(context->physicalDevice);
+		VulkanApi::PrintPhysicalDeviceDebugInformation(context->physicalDevice, context->windowSurface);
 	}
 
 	void GraphicsApiVulkan::CreateLogicalDevice() const
 	{
-		context->logicalDevice = VkUtils::CreateLogicalDevice(context);
+		context->logicalDevice = VulkanApi::CreateLogicalDevice(context);
 		rollback->Add([this]()
 		{
-			VkUtils::DisposeLogicalDevice(context->logicalDevice);
+			VulkanApi::DisposeLogicalDevice(context->logicalDevice);
 		});
 	}
 
@@ -231,7 +231,7 @@ namespace AVulkan
 
 	void GraphicsApiVulkan::CreateTextureSampler()
 	{
-		VkUtils::CreateTextureSampler(context->physicalDevice, context->logicalDevice, textureSampler);
+		VulkanApi::CreateTextureSampler(context->physicalDevice, context->logicalDevice, textureSampler);
 		rollback->Add([this]() { vkDestroySampler(context->logicalDevice, textureSampler, nullptr); });
 	}
 
@@ -250,9 +250,9 @@ namespace AVulkan
 
 		for (int i = 0; i < context->maxFramesInFlight; i++)
 		{
-			VkUtils::CreateVkSemaphore(context->logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i], rollback);
-			VkUtils::CreateVkSemaphore(context->logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i], rollback);
-			VkUtils::CreateVkFence(context->logicalDevice, &fenceInfo, nullptr, &drawFences[i], rollback);
+			VulkanApi::CreateVkSemaphore(context->logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i], rollback);
+			VulkanApi::CreateVkSemaphore(context->logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i], rollback);
+			VulkanApi::CreateVkFence(context->logicalDevice, &fenceInfo, nullptr, &drawFences[i], rollback);
 		}
 	}
 }

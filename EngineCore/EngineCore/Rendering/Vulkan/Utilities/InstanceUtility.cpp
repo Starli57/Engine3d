@@ -3,7 +3,7 @@
 
 #include "EngineCore/CustomAssert.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	void CreateInstance(VkInstance& instance)
 	{

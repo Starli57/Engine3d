@@ -5,7 +5,7 @@
 #include "EngineCore/Rendering/Vulkan/Utilities/ValidationLayersUtility.h"
 #include "EngineCore/Rendering/Vulkan/Models/PhysicalDeviceExtensions.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	VkDevice CreateLogicalDevice(const Ref<AVulkan::VulkanContext>& context)
 	{
@@ -54,7 +54,7 @@ namespace VkUtils
 		
 		createInfo.pNext = &deviceFeatures;
 
-		VkUtils::SetupValidationLayers(createInfo);
+		VulkanApi::SetupValidationLayers(createInfo);
 
 		VkDevice logicalDevice;
 		auto createStatus = vkCreateDevice(context->physicalDevice, &createInfo, nullptr, &logicalDevice);

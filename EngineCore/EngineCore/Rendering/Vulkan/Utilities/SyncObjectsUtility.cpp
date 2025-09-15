@@ -1,7 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "SyncObjectsUtility.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	void CreateVkSemaphore(VkDevice logicalDevice, const VkSemaphoreCreateInfo* createInfo, const VkAllocationCallbacks* allocator,
 		VkSemaphore* semaphore, const Ref<Engine::Rollback>& rollback)

@@ -6,7 +6,7 @@
 #include "EngineCore/Rendering/Vulkan/Utilities/MemoryUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
     void CreateImage(const Ref<AVulkan::VulkanContext>& vulkanContext,
                         const uint32_t width, const uint32_t height, const uint32_t mipLevels, const VkFormat format,
@@ -164,9 +164,9 @@ namespace VkUtils
 
     void DisposeImageModel(VkDevice& logicalDevice, Ref<AVulkan::ImageModel> imageModel)
     {
-        VkUtils::DestroyImage(logicalDevice, imageModel->image);
-        VkUtils::DestroyImageView(logicalDevice, imageModel->imageView);
-        VkUtils::FreeDeviceMemory(logicalDevice, imageModel->imageMemory);
+        VulkanApi::DestroyImage(logicalDevice, imageModel->image);
+        VulkanApi::DestroyImageView(logicalDevice, imageModel->imageView);
+        VulkanApi::FreeDeviceMemory(logicalDevice, imageModel->imageMemory);
         imageModel.reset();
     }
 }

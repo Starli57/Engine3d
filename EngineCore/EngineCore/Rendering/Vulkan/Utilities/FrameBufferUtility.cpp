@@ -4,7 +4,7 @@
 #include "EngineCore/CustomAssert.h"
 #include "spdlog/spdlog.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
     void CreateFrameBuffer(const VkDevice& logicalDevice, const VkRenderPass& renderPass,
                            int width, int height, const std::vector<VkImageView>& attachments, VkFramebuffer& frameBuffer)

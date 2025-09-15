@@ -5,7 +5,7 @@
 #include "IndexBufferUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	void CreateIndexBuffer(const Ref<AVulkan::VulkanContext>& context, std::vector<uint32_t>& indices,
         VkBuffer& indexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)
@@ -19,6 +19,6 @@ namespace VkUtils
     void DisposeIndexBuffer(const VkDevice& logicalDevice, const VkBuffer& buffer, const VkDeviceMemory& bufferMemory)
     {
 		if (buffer == VK_NULL_HANDLE) return;
-        VkUtils::DisposeBuffer(logicalDevice, buffer, bufferMemory);
+        VulkanApi::DisposeBuffer(logicalDevice, buffer, bufferMemory);
     }
 }

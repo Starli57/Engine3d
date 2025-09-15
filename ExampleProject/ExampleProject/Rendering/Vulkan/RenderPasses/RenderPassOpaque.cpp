@@ -22,14 +22,14 @@ namespace AVulkan
     {
         spdlog::info("RenderPassOpaque::~RenderPassOpaque");
 
-        for (auto frameBuffer : frameBuffers) VkUtils::DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffer);
+        for (auto frameBuffer : frameBuffers) VulkanApi::DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffer);
         frameBuffers.clear();
 
         GraphicsPipelineUtility pipelineUtility;
         for (const auto& pipeline : pipelines) pipelineUtility.Dispose(pipeline.second, vulkanContext->logicalDevice);
         pipelines.clear();
         
-        VkUtils::DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
+        VulkanApi::DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
     }
 
     void RenderPassOpaque::Render(VkCommandBuffer& commandBuffer, const uint16_t frame, const uint32_t imageIndex, std::function<bool(const Ref<Entity>& entity)> filter)
@@ -47,7 +47,7 @@ namespace AVulkan
             RenderEntity(renderPassContext->transparentEntities.at(i), commandBuffer, frame);
         }
         
-        VkUtils::EndRenderPass(commandBuffer);
+        VulkanApi::EndRenderPass(commandBuffer);
         Engine::Profiler::GetInstance().EndSample();
     }
 
@@ -60,8 +60,8 @@ namespace AVulkan
         const int32_t meshIndex = drawEntity.meshComponent->meshIndex.value();
 
         const auto pipeline = pipelines.at(material->pipelineId);
-        VkUtils::BindPipeline(commandBuffer, pipeline);
-        VkUtils::BindVertexAndIndexBuffers(commandBuffer, meshIndex, renderPassContext->assetsDatabase);
+        VulkanApi::BindPipeline(commandBuffer, pipeline);
+        VulkanApi::BindVertexAndIndexBuffers(commandBuffer, meshIndex, renderPassContext->assetsDatabase);
 
         vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT,
             0, sizeof(glm::mat4), &drawEntity.uboModelComponent->model);
@@ -91,7 +91,7 @@ namespace AVulkan
                 renderPassContext->swapChainData->msaaDepthSample->imageView
             };
 
-            VkUtils::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass,
+            VulkanApi::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass,
                 renderPassContext->swapChainData->extent.width, renderPassContext->swapChainData->extent.height,
                 attachments, frameBuffers[i]);
         }
@@ -170,6 +170,6 @@ namespace AVulkan
         subpass.pDepthStencilAttachment = &depthAttachmentRef;
         subpass.pResolveAttachments = &colorAttachmentResolveRef;
 
-        renderPass = VkUtils::CreateRenderPass(vulkanContext, attachments, subpass);
+        renderPass = VulkanApi::CreateRenderPass(vulkanContext, attachments, subpass);
     }
 }

@@ -235,7 +235,7 @@ namespace Engine
         
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingMemory;
-        VkUtils::CreateStagingBuffer(imageSize, texturePixels, stagingBuffer, stagingMemory, vulkanApi->context);
+        VulkanApi::CreateStagingBuffer(imageSize, texturePixels, stagingBuffer, stagingMemory, vulkanApi->context);
         
         stbi_image_free(texturePixels);
         
@@ -244,27 +244,27 @@ namespace Engine
         constexpr VkMemoryPropertyFlags memoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
         auto& image = assetsDatabase->images.at(textureIndex);
-        VkUtils::CreateImage(vulkanApi->context,
+        VulkanApi::CreateImage(vulkanApi->context,
             width, height, mipLevels, vulkanApi->context->imageFormat,
             tiling, usageFlags, VK_SAMPLE_COUNT_1_BIT, memoryFlags, image, assetsDatabase->imagesMemory.at(textureIndex));
         
         auto commandPool = vulkanApi->GetCommandPool();
-        auto commandBuffer = VkUtils::BeginCommandBuffer(vulkanApi->context->logicalDevice, commandPool);
+        auto commandBuffer = VulkanApi::BeginCommandBuffer(vulkanApi->context->logicalDevice, commandPool);
 
-        VkUtils::TransitionImageLayout(commandBuffer, mipLevels, image,
+        VulkanApi::TransitionImageLayout(commandBuffer, mipLevels, image,
             VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_ASPECT_COLOR_BIT);
 
         vkEndCommandBuffer(commandBuffer);
 
         graphicsQueueMutex->lock();
-        VkUtils::SubmitCommandBuffer(vulkanApi->context->graphicsQueue, commandBuffer);
+        VulkanApi::SubmitCommandBuffer(vulkanApi->context->graphicsQueue, commandBuffer);
 
         vkFreeCommandBuffers(vulkanApi->context->logicalDevice, commandPool, 1, &commandBuffer);
 
-        VkUtils::CopyBufferToImage(vulkanApi->context, 
+        VulkanApi::CopyBufferToImage(vulkanApi->context, 
             stagingBuffer, image, width, height, commandPool);
 
-        commandBuffer = VkUtils::BeginCommandBuffer(vulkanApi->context->logicalDevice, commandPool);
+        commandBuffer = VulkanApi::BeginCommandBuffer(vulkanApi->context->logicalDevice, commandPool);
 
         VkImageMemoryBarrier barrier{};
         barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -332,7 +332,7 @@ namespace Engine
         
         vkEndCommandBuffer(commandBuffer);
 
-        VkUtils::SubmitCommandBuffer(vulkanApi->context->graphicsQueue, commandBuffer);
+        VulkanApi::SubmitCommandBuffer(vulkanApi->context->graphicsQueue, commandBuffer);
         graphicsQueueMutex->unlock();
 
         vkFreeCommandBuffers(vulkanApi->context->logicalDevice, commandPool, 1, &commandBuffer);
@@ -341,7 +341,7 @@ namespace Engine
         vkFreeMemory(vulkanApi->context->logicalDevice, stagingMemory, nullptr);
 
         VkImageAspectFlags aspectFlags = VK_IMAGE_ASPECT_COLOR_BIT;
-        VkUtils::CreateImageView(vulkanApi->context->logicalDevice, mipLevels, vulkanApi->context->imageFormat, aspectFlags,
+        VulkanApi::CreateImageView(vulkanApi->context->logicalDevice, mipLevels, vulkanApi->context->imageFormat, aspectFlags,
             image, assetsDatabase->imagesViews.at(textureIndex));
 
         assetsDatabase->textureLoadStatuses.at(textureIndex) = 2;
@@ -349,9 +349,9 @@ namespace Engine
 
     void AssetsLoaderVulkan::UnLoadAllTextures()
     {
-        for (auto image : assetsDatabase->images) VkUtils::DestroyImage(vulkanApi->context->logicalDevice, image);
-        for (auto view : assetsDatabase->imagesViews) VkUtils::DestroyImageView(vulkanApi->context->logicalDevice, view);
-        for (auto imageMemory : assetsDatabase->imagesMemory) VkUtils::FreeDeviceMemory(vulkanApi->context->logicalDevice, imageMemory);
+        for (auto image : assetsDatabase->images) VulkanApi::DestroyImage(vulkanApi->context->logicalDevice, image);
+        for (auto view : assetsDatabase->imagesViews) VulkanApi::DestroyImageView(vulkanApi->context->logicalDevice, view);
+        for (auto imageMemory : assetsDatabase->imagesMemory) VulkanApi::FreeDeviceMemory(vulkanApi->context->logicalDevice, imageMemory);
 
         assetsDatabase->images.clear();
         assetsDatabase->imagesViews.clear();
@@ -371,10 +371,10 @@ namespace Engine
         auto commandPool = vulkanApi->GetCommandPool();
 
         graphicsQueueMutex->lock();
-        VkUtils::CreateVertexBuffer(vulkanApi->context,
+        VulkanApi::CreateVertexBuffer(vulkanApi->context,
             meshAsset.vertices, assetsDatabase->vertexBuffers.at(meshIndex), assetsDatabase->vertexBuffersMemory.at(meshIndex), commandPool);
 
-        VkUtils::CreateIndexBuffer(vulkanApi->context, meshAsset.indices, assetsDatabase->indexBuffers.at(meshIndex),
+        VulkanApi::CreateIndexBuffer(vulkanApi->context, meshAsset.indices, assetsDatabase->indexBuffers.at(meshIndex),
             assetsDatabase->indexBuffersMemory.at(meshIndex), commandPool);
         graphicsQueueMutex->unlock();
 
@@ -399,9 +399,9 @@ namespace Engine
     void AssetsLoaderVulkan::UnLoadAllMeshes()
     {
         for (int i = 0; i < assetsDatabase->vertexBuffers.size(); i++)
-            VkUtils::DisposeVertexBuffer(vulkanApi->context->logicalDevice, assetsDatabase->vertexBuffers.at(i), assetsDatabase->vertexBuffersMemory.at(i));
+            VulkanApi::DisposeVertexBuffer(vulkanApi->context->logicalDevice, assetsDatabase->vertexBuffers.at(i), assetsDatabase->vertexBuffersMemory.at(i));
         for (int i = 0; i < assetsDatabase->indexBuffers.size(); i++)
-            VkUtils::DisposeIndexBuffer(vulkanApi->context->logicalDevice, assetsDatabase->indexBuffers.at(i), assetsDatabase->indexBuffersMemory.at(i));
+            VulkanApi::DisposeIndexBuffer(vulkanApi->context->logicalDevice, assetsDatabase->indexBuffers.at(i), assetsDatabase->indexBuffersMemory.at(i));
     }
 
     void AssetsLoaderVulkan::LoadMaterial(std::filesystem::path& path)

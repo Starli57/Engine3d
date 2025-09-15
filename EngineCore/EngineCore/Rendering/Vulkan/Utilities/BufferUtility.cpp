@@ -5,7 +5,7 @@
 #include "EngineCore/EngineApi.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/MemoryUtility.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	void CreateStagingBuffer(VkDeviceSize bufferSize, void const* sourceData,
 		VkBuffer& buffer, VkDeviceMemory& bufferMemory, const Ref<AVulkan::VulkanContext>& context)

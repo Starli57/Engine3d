@@ -30,20 +30,20 @@ namespace AVulkan
         graphicsApi->descriptorsManager->UpdateMaterialsDescriptors(frame);
         preRenderPass->UpdateDrawingEntities();
 		
-        VkUtils::BeginCommandBuffer(commandBuffer);
+        VulkanApi::BeginCommandBuffer(commandBuffer);
         renderPassClean->Render(commandBuffer, frame, imageIndex, nullptr);
         renderPassShadowMaps->Render(commandBuffer, frame, imageIndex, nullptr);
 
-        VkUtils::TransitionImageLayout(commandBuffer, 1, renderPassShadowMaps->GetImageBuffer()->image,
+        VulkanApi::TransitionImageLayout(commandBuffer, 1, renderPassShadowMaps->GetImageBuffer()->image,
             VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_ASPECT_DEPTH_BIT);
 
         graphicsApi->descriptorsManager->UpdateShadowsMapDescriptors(frame, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
         renderPassOpaque->Render(commandBuffer, frame, imageIndex, [this](const Ref<Entity>& entity) { return true; });
 		
-        VkUtils::TransitionImageLayout(commandBuffer, 1, swapChainData->images.at(imageIndex),
+        VulkanApi::TransitionImageLayout(commandBuffer, 1, swapChainData->images.at(imageIndex),
             VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR, VK_IMAGE_ASPECT_COLOR_BIT);
 
-        VkUtils::EndCommandBuffer(commandBuffer);
+        VulkanApi::EndCommandBuffer(commandBuffer);
     }
 
     void RendererVulkan::CreateRenderPasses()

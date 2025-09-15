@@ -5,7 +5,7 @@
 #include "EngineCore/Rendering/Vulkan/Utilities/PhysicalDeviceUtility.h"
 #include "spdlog/spdlog.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	VkCommandPool CreateCommandPool(const Ref<AVulkan::VulkanContext>& context)
 	{

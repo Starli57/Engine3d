@@ -5,7 +5,7 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	VkSurfaceKHR CreateSurface(const Ref<AVulkan::VulkanContext>& context);
 	void DisposeSurface(const Ref<AVulkan::VulkanContext>& context);

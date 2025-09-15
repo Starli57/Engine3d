@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace VkUtils
+namespace VulkanApi
 {
 	void SetupValidationLayers(VkInstanceCreateInfo& createInfo);
 	void SetupValidationLayers(VkDeviceCreateInfo& createInfo);;

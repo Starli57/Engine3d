@@ -3,7 +3,7 @@
 #include "VertexBufferUtility.h"
 #include "spdlog/spdlog.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	void CreateVertexBuffer(const Ref<AVulkan::VulkanContext>& context, std::vector<Engine::Vertex>& vertices,
 		VkBuffer& vertexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool)

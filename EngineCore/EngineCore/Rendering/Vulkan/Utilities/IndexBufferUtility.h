@@ -4,7 +4,7 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	void CreateIndexBuffer(const Ref<AVulkan::VulkanContext>& context, std::vector<uint32_t>& indices,
 		VkBuffer& indexBuffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool);

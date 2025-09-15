@@ -27,16 +27,16 @@ namespace AVulkan
         spdlog::info("RenderPassShadowMaps::~RenderPassShadowMaps"); 
         vkDestroySampler(vulkanContext->logicalDevice, sampler, nullptr);
 
-        VkUtils::DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffers);
+        VulkanApi::DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffers);
         frameBuffers.clear();
 
-        VkUtils::DisposeImageModel(vulkanContext->logicalDevice, shadowMapBufferModel);
+        VulkanApi::DisposeImageModel(vulkanContext->logicalDevice, shadowMapBufferModel);
 
         for(const auto& pipelinePair : pipelines)
             GraphicsPipelineUtility().Dispose(pipelinePair.second, vulkanContext->logicalDevice);
         pipelines.clear();
 
-        VkUtils::DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
+        VulkanApi::DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
     }
 
     void RenderPassShadowMaps::Render(VkCommandBuffer& commandBuffer, const uint16_t frame, const uint32_t imageIndex, std::function<bool(const Ref<Entity>& entity)> filter)
@@ -45,7 +45,7 @@ namespace AVulkan
         BeginRenderPass(commandBuffer, 0, 0, 1);
         
         auto pipeline = pipelines.at("shadowPass");
-        VkUtils::BindPipeline(commandBuffer, pipeline);
+        VulkanApi::BindPipeline(commandBuffer, pipeline);
         
         auto descriptorSets = std::vector<VkDescriptorSet>();
         descriptorSets.resize(1);
@@ -64,7 +64,7 @@ namespace AVulkan
             RenderEntity(drawEntity, commandBuffer, pipeline);
         }
 
-        VkUtils::EndRenderPass(commandBuffer);
+        VulkanApi::EndRenderPass(commandBuffer);
         Engine::Profiler::GetInstance().EndSample();
     }
 
@@ -73,7 +73,7 @@ namespace AVulkan
         if (drawEntity.meshComponent->meshIndex.has_value() == false) return;
         
         const int32_t meshIndex = drawEntity.meshComponent->meshIndex.value();
-        VkUtils::BindVertexAndIndexBuffers(commandBuffer, meshIndex, renderPassContext->assetsDatabase);
+        VulkanApi::BindVertexAndIndexBuffers(commandBuffer, meshIndex, renderPassContext->assetsDatabase);
 
         vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &drawEntity.uboModelComponent->model);
             
@@ -103,7 +103,7 @@ namespace AVulkan
         subpass.colorAttachmentCount = 0;
         subpass.pDepthStencilAttachment = &depthAttachmentRef;
 
-        renderPass = VkUtils::CreateRenderPass(vulkanContext, attachments, subpass);
+        renderPass = VulkanApi::CreateRenderPass(vulkanContext, attachments, subpass);
     }
 
     void RenderPassShadowMaps::CreatePipelines()
@@ -127,7 +127,7 @@ namespace AVulkan
 
         shadowMapBufferModel = CreateRef<ImageModel>();
 
-        VkUtils::CreateImage(
+        VulkanApi::CreateImage(
             vulkanContext, renderPassContext->swapChainData->extent.width, renderPassContext->swapChainData->extent.height, 1, vulkanContext->depthFormat,
             VK_IMAGE_TILING_OPTIMAL,
             VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
@@ -136,7 +136,7 @@ namespace AVulkan
             shadowMapBufferModel->image,
             shadowMapBufferModel->imageMemory);
 
-        VkUtils::CreateImageView(vulkanContext->logicalDevice, 1, vulkanContext->depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
+        VulkanApi::CreateImageView(vulkanContext->logicalDevice, 1, vulkanContext->depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
             shadowMapBufferModel->image, shadowMapBufferModel->imageView);
     }
 
@@ -148,7 +148,7 @@ namespace AVulkan
         };
 
         frameBuffers.resize(1);
-        VkUtils::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass,
+        VulkanApi::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass,
             renderPassContext->swapChainData->extent.width, renderPassContext->swapChainData->extent.height, attachments, frameBuffers[0]);
     }
 

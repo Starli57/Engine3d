@@ -8,7 +8,7 @@
 #include "EngineCore/Rollback/Rollback.h"
 #include "EngineCore/Components/UboWorldComponent.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	Ref<AVulkan::BufferModel> CreateUniformBuffer(VkDevice& logicalDevice, VkPhysicalDevice& physicalDevice, 
 			VkDeviceSize bufferSize);

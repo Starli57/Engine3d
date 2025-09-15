@@ -28,7 +28,7 @@ namespace AVulkan
     DescriptorMaterialOpaque::~DescriptorMaterialOpaque()
     {
         for(const auto& uniformBuffer : materialsUniformBuffers)
-            VkUtils::DisposeBuffer(logicalDevice, uniformBuffer->buffer, uniformBuffer->bufferMemory);
+            VulkanApi::DisposeBuffer(logicalDevice, uniformBuffer->buffer, uniformBuffer->bufferMemory);
         
         vkDestroyDescriptorSetLayout(logicalDevice, descriptorSetLayout, nullptr);
 
@@ -63,7 +63,7 @@ namespace AVulkan
         materialsUniformBuffers.resize(resourcesStorage->materialsPaths.size());
         for(int i = 0; i < resourcesStorage->materialsPaths.size(); i++)
         {
-            materialsUniformBuffers.at(i) = VkUtils::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboMaterial));
+            materialsUniformBuffers.at(i) = VulkanApi::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboMaterial));
         }
     }
     

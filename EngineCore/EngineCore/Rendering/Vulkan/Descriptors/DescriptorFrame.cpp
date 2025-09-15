@@ -20,11 +20,11 @@ namespace AVulkan
     DescriptorFrame::~DescriptorFrame()
     {
         for(const auto& cameraUniform : cameraUniformBuffers)
-            VkUtils::DisposeBuffer(logicalDevice, cameraUniform->buffer, cameraUniform->bufferMemory);
+            VulkanApi::DisposeBuffer(logicalDevice, cameraUniform->buffer, cameraUniform->bufferMemory);
         for(const auto& lightUniform : lightUniformBuffers)
-            VkUtils::DisposeBuffer(logicalDevice, lightUniform->buffer, lightUniform->bufferMemory);
+            VulkanApi::DisposeBuffer(logicalDevice, lightUniform->buffer, lightUniform->bufferMemory);
         for(const auto& cursorUniform : cursorUniformBuffers)
-            VkUtils::DisposeBuffer(logicalDevice, cursorUniform->buffer, cursorUniform->bufferMemory);
+            VulkanApi::DisposeBuffer(logicalDevice, cursorUniform->buffer, cursorUniform->bufferMemory);
         
         vkDestroyDescriptorSetLayout(logicalDevice, descriptorSetLayout, nullptr);
     }
@@ -49,9 +49,9 @@ namespace AVulkan
         
         for(int i = 0; i < VulkanContext::maxFramesInFlight; i++)
         {
-            cameraUniformBuffers.at(i) = VkUtils::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboWorldComponent));
-            lightUniformBuffers.at(i) = VkUtils::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboLight));
-            cursorUniformBuffers.at(i) = VkUtils::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(glm::vec3));
+            cameraUniformBuffers.at(i) = VulkanApi::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboWorldComponent));
+            lightUniformBuffers.at(i) = VulkanApi::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboLight));
+            cursorUniformBuffers.at(i) = VulkanApi::CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(glm::vec3));
         }
     }
 

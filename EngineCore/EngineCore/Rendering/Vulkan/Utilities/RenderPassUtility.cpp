@@ -5,7 +5,7 @@
 #include "spdlog/spdlog.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/FormatUtility.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	VkRenderPass CreateRenderPass(Ref<AVulkan::VulkanContext> vulkanContext,
 		const std::vector<VkAttachmentDescription>& attachments, const VkSubpassDescription& subpass)

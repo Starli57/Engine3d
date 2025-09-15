@@ -1,7 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "SwapchainUtility.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	AVulkan::SwapChainSurfaceSettings GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface)
 	{

@@ -6,7 +6,7 @@
 #include "EngineCore/Rendering/Vertex.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	VkVertexInputBindingDescription GetVertexInputBindingDescription();
 	std::array<VkVertexInputAttributeDescription, 4> GetVertexInputAttributeDescriptions();

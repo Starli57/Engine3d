@@ -5,7 +5,7 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	VkCommandPool CreateCommandPool(const Ref<AVulkan::VulkanContext>& context);
 	void DisposeCommandPool(const Ref<AVulkan::VulkanContext>& context, const VkCommandPool& commandPool);

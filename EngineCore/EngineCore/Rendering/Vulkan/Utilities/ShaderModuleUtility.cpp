@@ -6,7 +6,7 @@
 
 #include "EngineCore/Utilities/IOUtility.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	VkShaderModule CreateShaderModule(const std::string& shaderPath, const VkDevice& logicalDevice)
 	{

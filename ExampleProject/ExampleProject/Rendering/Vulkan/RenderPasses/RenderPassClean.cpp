@@ -15,17 +15,17 @@ namespace AVulkan
 
     RenderPassClean::~RenderPassClean()
     {
-        VkUtils::DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffers);
+        VulkanApi::DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffers);
         frameBuffers.clear();
         
-        VkUtils::DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
+        VulkanApi::DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
     }
 
     void RenderPassClean::Render(VkCommandBuffer& commandBuffer, uint16_t frame, uint32_t imageIndex,
         std::function<bool(const Ref<Entity>& entity)> filter)
     {
         BeginRenderPass(commandBuffer, imageIndex, 2, 1);
-        VkUtils::EndRenderPass(commandBuffer);
+        VulkanApi::EndRenderPass(commandBuffer);
     }
 
     void RenderPassClean::CreateRenderPass()
@@ -68,7 +68,7 @@ namespace AVulkan
         subpass.pColorAttachments = &colorAttachmentRef;
         subpass.pResolveAttachments = &colorAttachmentResolveRef;
 
-        renderPass = VkUtils::CreateRenderPass(vulkanContext, attachments, subpass);
+        renderPass = VulkanApi::CreateRenderPass(vulkanContext, attachments, subpass);
     }
 
     void RenderPassClean::CreatePipelines()
@@ -87,7 +87,7 @@ namespace AVulkan
                 renderPassContext->swapChainData->imageViews[i]
             };
 
-            VkUtils::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass, renderPassContext->swapChainData->extent.width,
+            VulkanApi::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass, renderPassContext->swapChainData->extent.width,
                 renderPassContext->swapChainData->extent.height, attachments, frameBuffers[i]);
         }
     }

@@ -1,7 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "FormatUtility.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
     VkFormat FindSupportedFormat(const VkPhysicalDevice& physicalDevice, const std::vector<VkFormat>& formats,
                                  const VkImageTiling tiling, const VkFormatFeatureFlags features)

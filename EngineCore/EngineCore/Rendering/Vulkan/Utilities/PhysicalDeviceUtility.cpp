@@ -5,7 +5,7 @@
 #include "EngineCore/Rendering/Vulkan/Models/PhysicalDeviceExtensions.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/SwapchainUtility.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
     VkPhysicalDevice GetBestRenderingDevice(VkInstance& instance, VkSurfaceKHR& surface)
     {
@@ -148,8 +148,8 @@ namespace VkUtils
         
         AVulkan::SwapChainSurfaceSettings surfaceSettings;
 
-        VkUtils::GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
-        VkUtils::GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
+        VulkanApi::GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
+        VulkanApi::GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
 
         for (auto colorFormat : surfaceSettings.formats)
         {

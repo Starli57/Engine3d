@@ -5,7 +5,7 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	VkDevice CreateLogicalDevice(const Ref<AVulkan::VulkanContext>& context);
 	void DisposeLogicalDevice(const VkDevice& logicalDevice);

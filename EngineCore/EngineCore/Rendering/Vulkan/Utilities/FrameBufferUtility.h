@@ -5,7 +5,7 @@
 #include "EngineCore/Rendering/Vulkan/Models/ImageModel.h"
 #include "EngineCore/Core/Ref.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	void CreateFrameBuffer(const VkDevice& logicalDevice, const VkRenderPass& renderPass,
 	                       int width, int height, const std::vector<VkImageView>& attachments, VkFramebuffer& frameBuffer);

@@ -6,7 +6,7 @@
 #include "EngineCore/Rendering/Vulkan/Models/QueueFamilyIndices.h"
 #include "EngineCore/Rendering/Vulkan/SwapChain.h"
 
-namespace VkUtils
+namespace VulkanApi
 {
 	std::vector<VkPhysicalDevice> GetDevicesList(const VkInstance& instance);
 	std::vector<VkPhysicalDevice> GetRenderingDevicesList(const VkInstance& instance, VkSurfaceKHR& surface);
