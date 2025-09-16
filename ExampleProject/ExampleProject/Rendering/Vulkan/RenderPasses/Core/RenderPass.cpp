@@ -1,6 +1,6 @@
 #include "EngineCore/Pch.h"
 #include "IRenderPass.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/RenderPassUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkRenderPassWrapper.h"
 
 namespace ClientVulkanApi
 {

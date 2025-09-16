@@ -1,5 +1,5 @@
 ﻿#include "EngineCore/Pch.h"
-#include "TextureSamplerUtility.h"
+#include "VkSamplerWrapper.h"
 
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/EngineApi.h"

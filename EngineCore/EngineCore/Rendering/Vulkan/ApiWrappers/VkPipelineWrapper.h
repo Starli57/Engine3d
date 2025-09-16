@@ -10,7 +10,7 @@
 
 namespace VulkanApi
 {
-	class GraphicsPipelineUtility
+	class VkPipelineWrapper
 	{
 	public:
 		void Create(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,

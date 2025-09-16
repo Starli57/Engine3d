@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 
 #include "Core/IRenderPass.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/UniformBufferVulkanUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/UniformBufferVulkanUtility.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/Ref.h"
 

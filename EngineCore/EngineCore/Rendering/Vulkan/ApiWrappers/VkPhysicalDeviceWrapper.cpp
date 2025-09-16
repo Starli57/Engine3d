@@ -1,9 +1,9 @@
 #include "EngineCore/Pch.h"
-#include "PhysicalDeviceUtility.h"
+#include "VkPhysicalDeviceWrapper.h"
 
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/Rendering/Vulkan/Models/PhysicalDeviceExtensions.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/SwapchainUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/SwapchainUtility.h"
 
 namespace VulkanApi
 {

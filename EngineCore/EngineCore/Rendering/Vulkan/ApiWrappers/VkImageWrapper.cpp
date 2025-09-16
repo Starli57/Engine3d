@@ -1,10 +1,10 @@
 #include "EngineCore/Pch.h"
 #include "EngineCore/CustomAssert.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/ImageUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkImageWrapper.h"
 
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/MemoryUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkDeviceMemoryWrapper.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkBufferWrapper.h"
 
 namespace VulkanApi
 {

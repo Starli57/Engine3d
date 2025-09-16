@@ -12,10 +12,10 @@
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
 #include "EngineCore/Rendering/Vulkan/SwapChain.h"
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/PhysicalDeviceUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/CommandBufferUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkPhysicalDeviceWrapper.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkCommandBufferWrapper.h"
 
-#include "EngineCore/Rendering/Vulkan/Utilities/CommandPoolUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkCommandPoolWrapper.h"
 
 #include "EngineCore/Core/ProjectSettings.h"
 #include "EngineCore/Rollback/Rollback.h"

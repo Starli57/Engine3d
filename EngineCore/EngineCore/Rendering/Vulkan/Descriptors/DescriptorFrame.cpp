@@ -6,9 +6,9 @@
 #include "EngineCore/Profiler/Profiler.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 #include "EngineCore/Rendering/Vulkan/UniformBufferModel/UboLight.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/DescriptorsAllocator.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/UniformBufferVulkanUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkBufferWrapper.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/DescriptorsAllocator.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/UniformBufferVulkanUtility.h"
 #include "EngineCore/Utilities/MathUtility.h"
 
 namespace VulkanApi

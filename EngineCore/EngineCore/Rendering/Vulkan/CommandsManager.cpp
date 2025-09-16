@@ -1,8 +1,8 @@
 ﻿#include "EngineCore/Pch.h"
 #include "CommandsManager.h"
 
-#include "Utilities/CommandBufferUtility.h"
-#include "Utilities/CommandPoolUtility.h"
+#include "ApiWrappers/VkCommandBufferWrapper.h"
+#include "ApiWrappers/VkCommandPoolWrapper.h"
 
 
 namespace VulkanApi

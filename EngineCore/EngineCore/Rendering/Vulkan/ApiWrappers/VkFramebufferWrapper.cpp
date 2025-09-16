@@ -1,5 +1,5 @@
 #include "EngineCore/Pch.h"
-#include "FrameBufferUtility.h"
+#include "VkFramebufferWrapper.h"
 
 #include "EngineCore/CustomAssert.h"
 #include "spdlog/spdlog.h"

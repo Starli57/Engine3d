@@ -3,7 +3,7 @@
 #include "spdlog/spdlog.h"
 
 #include "IndexBufferUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkBufferWrapper.h"
 
 namespace VulkanApi
 {

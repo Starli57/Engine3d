@@ -20,7 +20,7 @@
 #include "EngineCore/Rendering/IGraphicsApi.h"
 #include "EngineCore/Rendering/PipelinesCollection.h"
 
-#include "Utilities/PhysicalDeviceUtility.h"
+#include "ApiWrappers/VkPhysicalDeviceWrapper.h"
 
 namespace VulkanApi
 {

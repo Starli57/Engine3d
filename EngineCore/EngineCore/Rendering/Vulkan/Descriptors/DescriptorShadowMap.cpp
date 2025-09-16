@@ -3,7 +3,7 @@
 
 #include "EngineCore/Profiler/Profiler.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/DescriptorsAllocator.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/DescriptorsAllocator.h"
 
 namespace VulkanApi
 {

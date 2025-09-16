@@ -1,8 +1,8 @@
 #include "EngineCore/Pch.h"
-#include "CommandPoolUtility.h"
+#include "VkCommandPoolWrapper.h"
 
 #include "EngineCore/CustomAssert.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/PhysicalDeviceUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkPhysicalDeviceWrapper.h"
 #include "spdlog/spdlog.h"
 
 namespace VulkanApi

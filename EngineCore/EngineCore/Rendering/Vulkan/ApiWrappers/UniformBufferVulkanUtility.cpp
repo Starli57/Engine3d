@@ -1,7 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "UniformBufferVulkanUtility.h"
 
-#include "BufferUtility.h"
+#include "VkBufferWrapper.h"
 #include "EngineCore/CustomAssert.h"
 
 namespace VulkanApi

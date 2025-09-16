@@ -1,7 +1,7 @@
 ﻿#include "EngineCore/Pch.h"
 #include "DescriptorsManager.h"
 
-#include "EngineCore/Rendering/Vulkan/Utilities/DescriptorsAllocator.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/DescriptorsAllocator.h"
 
 namespace VulkanApi
 {

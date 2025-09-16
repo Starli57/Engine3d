@@ -1,9 +1,9 @@
 #include "EngineCore/Pch.h"
-#include "RenderPassUtility.h"
+#include "VkRenderPassWrapper.h"
 
 #include "EngineCore/CustomAssert.h"
 #include "spdlog/spdlog.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/FormatUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/FormatUtility.h"
 
 namespace VulkanApi
 {

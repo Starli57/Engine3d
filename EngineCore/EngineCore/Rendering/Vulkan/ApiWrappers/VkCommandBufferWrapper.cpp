@@ -1,5 +1,5 @@
 #include "EngineCore/Pch.h"
-#include "CommandBufferUtility.h"
+#include "VkCommandBufferWrapper.h"
 
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/Profiler/Profiler.h"

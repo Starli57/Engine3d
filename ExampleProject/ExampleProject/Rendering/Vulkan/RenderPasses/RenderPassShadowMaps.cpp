@@ -4,9 +4,9 @@
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/Profiler/Profiler.h"
 #include "EngineCore/Rendering/Vulkan/Descriptors/DescriptorsManager.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/FrameBufferUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/GraphicsPipelineUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/ImageUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkFramebufferWrapper.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkPipelineWrapper.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkImageWrapper.h"
 
 namespace ClientVulkanApi
 {
@@ -33,7 +33,7 @@ namespace ClientVulkanApi
         DisposeImageModel(vulkanContext->logicalDevice, shadowMapBufferModel);
 
         for(const auto& pipelinePair : pipelines)
-            VulkanApi::GraphicsPipelineUtility().Dispose(pipelinePair.second, vulkanContext->logicalDevice);
+            VulkanApi::VkPipelineWrapper().Dispose(pipelinePair.second, vulkanContext->logicalDevice);
         pipelines.clear();
 
         VulkanApi::DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
@@ -115,7 +115,7 @@ namespace ClientVulkanApi
         descriptorSetLayouts.at(0) = renderPassContext->descriptorsManager->GetDescriptorSetLayoutFrame();
 
         auto pipeline = CreateRef<PipelineVulkan>();
-        VulkanApi::GraphicsPipelineUtility().Create(
+        VulkanApi::VkPipelineWrapper().Create(
             shadowPassPipelineConfig, vulkanContext->logicalDevice, renderPass,
             renderPassContext->swapChainData->extent, descriptorSetLayouts, VK_SAMPLE_COUNT_1_BIT, pipeline);
         pipelines.emplace(shadowPassPipelineConfig->pipelineName, pipeline);

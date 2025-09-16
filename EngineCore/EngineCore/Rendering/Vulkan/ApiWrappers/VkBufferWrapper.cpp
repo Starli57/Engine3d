@@ -1,9 +1,9 @@
 #include "EngineCore/Pch.h"
-#include "BufferUtility.h"
+#include "VkBufferWrapper.h"
 
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/EngineApi.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/MemoryUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkDeviceMemoryWrapper.h"
 
 namespace VulkanApi
 {

@@ -1,5 +1,5 @@
 #include "EngineCore/Pch.h"
-#include "ShaderModuleUtility.h"
+#include "VkShaderModuleWrapper.h"
 
 #include "EngineCore/CustomAssert.h"
 #include "spdlog/spdlog.h"

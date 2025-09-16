@@ -3,9 +3,9 @@
 
 #include "EngineCore/Profiler/Profiler.h"
 #include "EngineCore/Rendering/Vulkan/UniformBufferModel/UboLight.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/FrameBufferUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/GraphicsPipelineUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/RenderPassUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkFramebufferWrapper.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkPipelineWrapper.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkRenderPassWrapper.h"
 
 namespace ClientVulkanApi
 {
@@ -25,7 +25,7 @@ namespace ClientVulkanApi
         for (auto frameBuffer : frameBuffers) VulkanApi::DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffer);
         frameBuffers.clear();
 
-        VulkanApi::GraphicsPipelineUtility pipelineUtility;
+        VulkanApi::VkPipelineWrapper pipelineUtility;
         for (const auto& pipeline : pipelines) pipelineUtility.Dispose(pipeline.second, vulkanContext->logicalDevice);
         pipelines.clear();
 
@@ -109,7 +109,7 @@ namespace ClientVulkanApi
         
         for (const auto& config : vulkanContext->pipelinesCollection->pipelinesConfigs)
         {
-            VulkanApi::GraphicsPipelineUtility pipelineUtility;
+            VulkanApi::VkPipelineWrapper pipelineUtility;
             auto pipeline = CreateRef<PipelineVulkan>();
             pipelineUtility.Create(config.second, vulkanContext->logicalDevice, renderPass,
                 renderPassContext->swapChainData->extent, descriptorSetLayouts, vulkanContext->msaa, pipeline);

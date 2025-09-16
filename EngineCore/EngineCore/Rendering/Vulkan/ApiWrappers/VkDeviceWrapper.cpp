@@ -1,8 +1,8 @@
 #include "EngineCore/Pch.h"
-#include "LogicalDeviceUtility.h"
-#include "PhysicalDeviceUtility.h"
+#include "VkDeviceWrapper.h"
+#include "VkPhysicalDeviceWrapper.h"
 #include "EngineCore/CustomAssert.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/ValidationLayersUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/ValidationLayersUtility.h"
 #include "EngineCore/Rendering/Vulkan/Models/PhysicalDeviceExtensions.h"
 
 namespace VulkanApi

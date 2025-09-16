@@ -1,7 +1,7 @@
 ﻿#include "RendererVulkan.h"
 
-#include "EngineCore/Rendering/Vulkan/Utilities/CommandBufferUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/ImageUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkCommandBufferWrapper.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkImageWrapper.h"
 
 namespace ClientVulkanApi
 {

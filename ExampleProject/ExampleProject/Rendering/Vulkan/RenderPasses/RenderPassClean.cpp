@@ -1,8 +1,8 @@
 ﻿#include "EngineCore/Pch.h"
 #include "RenderPassClean.h"
 
-#include "EngineCore/Rendering/Vulkan/Utilities/FrameBufferUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/RenderPassUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkFramebufferWrapper.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkRenderPassWrapper.h"
 
 namespace ClientVulkanApi
 {

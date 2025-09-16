@@ -2,9 +2,9 @@
 #include "AssetsLoaderVulkan.h"
 
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/ImageUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/MemoryUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkBufferWrapper.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkImageWrapper.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkDeviceMemoryWrapper.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <fstream>
@@ -15,8 +15,8 @@
 #include "EngineCore/Utilities/YamlConverters.h"
 
 #include "EngineCore/CustomAssert.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/VertexBufferUtility.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/IndexBufferUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VertexBufferUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/IndexBufferUtility.h"
 
 namespace Engine
 {

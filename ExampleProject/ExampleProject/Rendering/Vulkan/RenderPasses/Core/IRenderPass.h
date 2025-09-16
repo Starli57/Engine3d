@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "RenderPassContext.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/CommandBufferUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkCommandBufferWrapper.h"
 #include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
 #include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/Ecs.h"

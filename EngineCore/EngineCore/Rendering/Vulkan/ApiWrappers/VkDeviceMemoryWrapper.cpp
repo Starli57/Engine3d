@@ -1,5 +1,5 @@
 #include "EngineCore/Pch.h"
-#include "MemoryUtility.h"
+#include "VkDeviceMemoryWrapper.h"
 
 namespace VulkanApi
 {

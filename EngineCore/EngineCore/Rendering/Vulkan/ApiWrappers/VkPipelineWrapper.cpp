@@ -1,8 +1,8 @@
 #include "EngineCore/Pch.h"
 
-#include "GraphicsPipelineUtility.h"
+#include "VkPipelineWrapper.h"
 
-#include "ShaderModuleUtility.h"
+#include "VkShaderModuleWrapper.h"
 #include "VertexBufferUtility.h"
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/Components/UboModelComponent.h"
@@ -12,7 +12,7 @@
 namespace VulkanApi
 {
 #pragma optimize("", off)
-	void GraphicsPipelineUtility::Create(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
+	void VkPipelineWrapper::Create(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
 		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa,
 		Ref<PipelineVulkan>& pipeline)
 	{
@@ -101,20 +101,20 @@ namespace VulkanApi
 	}
 #pragma optimize("", on)
 
-	void GraphicsPipelineUtility::ReCreate(Ref<PipelineVulkan>& pipeline, const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
+	void VkPipelineWrapper::ReCreate(Ref<PipelineVulkan>& pipeline, const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
 		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa)
 	{
 		Dispose(pipeline, logicalDevice);
 		Create(pipelineConfig, logicalDevice, renderpass, swapChainExtent, descriptorSetLayouts, msaa, pipeline);
 	}
 
-	void GraphicsPipelineUtility::Dispose(const Ref<PipelineVulkan>& pipeline, const VkDevice& logicalDevice) const
+	void VkPipelineWrapper::Dispose(const Ref<PipelineVulkan>& pipeline, const VkDevice& logicalDevice) const
 	{
 		vkDestroyPipelineLayout(logicalDevice, pipeline->layout, nullptr);
 		vkDestroyPipeline(logicalDevice, pipeline->pipeline, nullptr);
 	}
 	
-	VkPipelineInputAssemblyStateCreateInfo GraphicsPipelineUtility::SetupInputAssemblyData() const
+	VkPipelineInputAssemblyStateCreateInfo VkPipelineWrapper::SetupInputAssemblyData() const
 	{
 		VkPipelineInputAssemblyStateCreateInfo inputAssembly{};
 		inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -123,7 +123,7 @@ namespace VulkanApi
 		return inputAssembly;
 	}
 
-	VkPipelineViewportStateCreateInfo GraphicsPipelineUtility::SetupViewportAndScissor(const VkExtent2D& swapChainExtent) const
+	VkPipelineViewportStateCreateInfo VkPipelineWrapper::SetupViewportAndScissor(const VkExtent2D& swapChainExtent) const
 	{
 		auto viewport = new VkViewport();
 		viewport->x = 0.0f;
@@ -153,7 +153,7 @@ namespace VulkanApi
 		return viewportState;
 	}
 
-	VkPipelineRasterizationStateCreateInfo GraphicsPipelineUtility::SetupRasterizer(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig) const
+	VkPipelineRasterizationStateCreateInfo VkPipelineWrapper::SetupRasterizer(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig) const
 	{
 		spdlog::info("Setup rasterizer");
 		VkPipelineRasterizationStateCreateInfo rasterizer{};
@@ -175,7 +175,7 @@ namespace VulkanApi
 		return rasterizer;
 	}
 
-	VkPipelineMultisampleStateCreateInfo GraphicsPipelineUtility::SetupMultisampling(const VkSampleCountFlagBits msaa) const
+	VkPipelineMultisampleStateCreateInfo VkPipelineWrapper::SetupMultisampling(const VkSampleCountFlagBits msaa) const
 	{
 		VkPipelineMultisampleStateCreateInfo multisampling{};
 		multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
@@ -188,7 +188,7 @@ namespace VulkanApi
 		return multisampling;
 	}
 
-	VkPipelineColorBlendStateCreateInfo GraphicsPipelineUtility::SetupColorsBlending(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig) const
+	VkPipelineColorBlendStateCreateInfo VkPipelineWrapper::SetupColorsBlending(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig) const
 	{
 		auto colorBlendAttachment = new VkPipelineColorBlendAttachmentState();
 		colorBlendAttachment->colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT |

@@ -1,5 +1,5 @@
 #include "EngineCore/Pch.h"
-#include "WindowSurfaceUtility.h"
+#include "VkSurfaceKHRWrapper.h"
 
 #include "EngineCore/CustomAssert.h"
 

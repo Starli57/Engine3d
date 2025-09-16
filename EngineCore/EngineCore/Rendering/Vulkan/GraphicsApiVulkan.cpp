@@ -6,13 +6,13 @@
 
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/Profiler/Profiler.h"
-#include "Utilities/FormatUtility.h"
-#include "Utilities/ImageUtility.h"
-#include "Utilities/InstanceUtility.h"
-#include "Utilities/LogicalDeviceUtility.h"
-#include "Utilities/SyncObjectsUtility.h"
-#include "Utilities/TextureSamplerUtility.h"
-#include "Utilities/WindowSurfaceUtility.h"
+#include "ApiWrappers/FormatUtility.h"
+#include "ApiWrappers/VkImageWrapper.h"
+#include "ApiWrappers/VkInstanceWrapper.h"
+#include "ApiWrappers/VkDeviceWrapper.h"
+#include "ApiWrappers/SyncObjectsUtility.h"
+#include "ApiWrappers/VkSamplerWrapper.h"
+#include "ApiWrappers/VkSurfaceKHRWrapper.h"
 
 namespace VulkanApi
 {

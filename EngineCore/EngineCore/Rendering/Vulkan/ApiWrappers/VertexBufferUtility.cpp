@@ -1,5 +1,5 @@
 #include "EngineCore/Pch.h"
-#include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkBufferWrapper.h"
 #include "VertexBufferUtility.h"
 #include "spdlog/spdlog.h"
 
