@@ -13,7 +13,7 @@ namespace VulkanApi
 	void CreateDeviceLocalBuffer(const VulkanContext* vulkanContext, VkDeviceSize bufferSize, void const* sourceData, VkBufferUsageFlags distUsageFlags,
 	                             VkBuffer& buffer, VkDeviceMemory& bufferMemory, VkCommandPool& commandPool);
 	
-	void CreateBuffer(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, uint64_t bufferSize,
+	void CreateBuffer(const VulkanContext* vulkanContext, uint64_t bufferSize,
 	                  const VkBufferUsageFlags& usageFlags, VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 
 	void DisposeBuffer(const VkDevice& logicalDevice, const VkBuffer& buffer, const VkDeviceMemory& bufferMemory);
@@ -24,6 +24,6 @@ namespace VulkanApi
 	VkCommandBuffer BeginCommandBuffer(const VkDevice& logicalDevice, const VkCommandPool& commandPool);
 	void SubmitCommandBuffer(const VkQueue& graphicsQueue, const VkCommandBuffer& commandBuffer);
 
-	void BindMemory(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, const VkMemoryPropertyFlags& memoryFlags,
+	void BindMemory(const VulkanContext* vulkanContext, const VkMemoryPropertyFlags& memoryFlags,
 	                const VkBuffer& buffer, VkDeviceMemory& bufferMemory);
 }

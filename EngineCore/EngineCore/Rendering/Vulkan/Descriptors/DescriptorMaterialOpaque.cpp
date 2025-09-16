@@ -5,20 +5,20 @@
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 #include "EngineCore/Rendering/Vulkan/UniformBufferModel/UboMaterial.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/DescriptorsAllocator.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/UniformBufferVulkanUtility.h"
 
 namespace VulkanApi
 {
     #pragma optimize("", off)
-    DescriptorMaterialOpaque::DescriptorMaterialOpaque(
-        VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs,
-        const Ref<DescriptorsAllocator>& descriptorsAllocator, VkSampler& textureSampler, const Ref<Engine::ResourcesStorageVulkan>& resourcesStorage)
-        : IDescriptor(physicalDevice, logicalDevice, ecs, descriptorsAllocator), textureSampler(textureSampler), resourcesStorage(resourcesStorage)
+    DescriptorMaterialOpaque::DescriptorMaterialOpaque(VulkanContext* vulkanContext, const Ref<Ecs>& ecs,
+        VkSampler& textureSampler, const Ref<Engine::ResourcesStorageVulkan>& resourcesStorage)
+        : vulkanContext(vulkanContext), ecs(ecs), textureSampler(textureSampler), resourcesStorage(resourcesStorage)
     {
         descriptorPools.resize(VulkanContext::maxFramesInFlight);
         for(int i = 0; i < VulkanContext::maxFramesInFlight; i++)
         {
-            descriptorsAllocator->CreateDescriptorPool(logicalDevice, descriptorPools.at(i), descriptorsAllocator->maxDescriptorSets);
+            CreateDescriptorPool(vulkanContext->logicalDevice, descriptorPools.at(i), maxDescriptorSets);
         }
         
         CreateLayout();
@@ -28,27 +28,27 @@ namespace VulkanApi
     DescriptorMaterialOpaque::~DescriptorMaterialOpaque()
     {
         for(const auto& uniformBuffer : materialsUniformBuffers)
-            DisposeBuffer(logicalDevice, uniformBuffer->buffer, uniformBuffer->bufferMemory);
+            DisposeBuffer(vulkanContext->logicalDevice, uniformBuffer->buffer, uniformBuffer->bufferMemory);
         
-        vkDestroyDescriptorSetLayout(logicalDevice, descriptorSetLayout, nullptr);
+        vkDestroyDescriptorSetLayout(vulkanContext->logicalDevice, descriptorSetLayout, nullptr);
 
         for(auto pool : descriptorPools)
         {
-            vkDestroyDescriptorPool(logicalDevice, pool, nullptr);
+            vkDestroyDescriptorPool(vulkanContext->logicalDevice, pool, nullptr);
         }
         descriptorPools.clear();
     }
 
     void DescriptorMaterialOpaque::CreateLayout()
     {
-        const auto diffuseMap = descriptorsAllocator->DescriptorSetLayoutBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-        const auto specularMap = descriptorsAllocator->DescriptorSetLayoutBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-        const auto normalMap = descriptorsAllocator->DescriptorSetLayoutBinding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-        const auto alphaMap = descriptorsAllocator->DescriptorSetLayoutBinding(3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-        const auto emissiveMap = descriptorsAllocator->DescriptorSetLayoutBinding(4, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
-        const auto material = descriptorsAllocator->DescriptorSetLayoutBinding(5, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        const auto diffuseMap = DescriptorSetLayoutBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        const auto specularMap = DescriptorSetLayoutBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        const auto normalMap = DescriptorSetLayoutBinding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        const auto alphaMap = DescriptorSetLayoutBinding(3, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        const auto emissiveMap = DescriptorSetLayoutBinding(4, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        const auto material = DescriptorSetLayoutBinding(5, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
         std::vector bindings = { diffuseMap, specularMap, normalMap, alphaMap, emissiveMap, material };
-        descriptorsAllocator->CreateLayout(logicalDevice, bindings, descriptorSetLayout);
+        CreateDescriptorLayout(vulkanContext->logicalDevice, bindings, descriptorSetLayout);
     }
 
     void DescriptorMaterialOpaque::CreateDescriptorSets()
@@ -56,14 +56,14 @@ namespace VulkanApi
         descriptorSets.resize(VulkanContext::maxFramesInFlight);
         for(int i = 0; i < VulkanContext::maxFramesInFlight; i++)
         {
-            descriptorsAllocator->AllocateDescriptorSets(logicalDevice, descriptorSetLayout, 
-                descriptorPools.at(i), descriptorSets.at(i), descriptorsAllocator->maxDescriptorSets);
+            AllocateDescriptorSets(vulkanContext->logicalDevice, descriptorSetLayout, 
+                descriptorPools.at(i), descriptorSets.at(i), maxDescriptorSets);
         }
 
         materialsUniformBuffers.resize(resourcesStorage->materialsPaths.size());
         for(int i = 0; i < resourcesStorage->materialsPaths.size(); i++)
         {
-            materialsUniformBuffers.at(i) = CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboMaterial));
+            materialsUniformBuffers.at(i) = CreateUniformBuffer(vulkanContext, sizeof(UboMaterial));
         }
     }
     
@@ -142,25 +142,25 @@ namespace VulkanApi
 
             auto descriptorSet = descriptorSets.at(frame).at(i);
 
-            descriptorsAllocator->WriteDescriptorSet(descriptorWrites[0], descriptorSet, 0, 0, 1,
+            WriteDescriptorSet(descriptorWrites[0], descriptorSet, 0, 0, 1,
                 VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &baseTextureInfo, nullptr);
 
-            descriptorsAllocator->WriteDescriptorSet(descriptorWrites[1], descriptorSet, 1, 0, 1,
+            WriteDescriptorSet(descriptorWrites[1], descriptorSet, 1, 0, 1,
                 VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &metallicRoughnessInfo, nullptr);
 
-            descriptorsAllocator->WriteDescriptorSet(descriptorWrites[2], descriptorSet, 2, 0, 1,
+            WriteDescriptorSet(descriptorWrites[2], descriptorSet, 2, 0, 1,
                 VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &normalImageInfo, nullptr);
 
-            descriptorsAllocator->WriteDescriptorSet(descriptorWrites[3], descriptorSet, 3, 0, 1,
+            WriteDescriptorSet(descriptorWrites[3], descriptorSet, 3, 0, 1,
                 VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &occlusionInfo, nullptr);
 
-            descriptorsAllocator->WriteDescriptorSet(descriptorWrites[4], descriptorSet, 4, 0, 1,
+            WriteDescriptorSet(descriptorWrites[4], descriptorSet, 4, 0, 1,
                 VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &emissionInfo, nullptr);
 
-            descriptorsAllocator->WriteDescriptorSet(descriptorWrites[5], descriptorSet, 5, 0, 1,
+            WriteDescriptorSet(descriptorWrites[5], descriptorSet, 5, 0, 1,
                 VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &materialBufferInfo);
             
-            vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+            vkUpdateDescriptorSets(vulkanContext->logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
         }
         Engine::Profiler::GetInstance().EndSample();
     }

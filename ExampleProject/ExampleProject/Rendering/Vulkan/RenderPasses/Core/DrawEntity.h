@@ -5,7 +5,7 @@
 #include "EngineCore/Components/PositionComponent.h"
 #include "EngineCore/Components/UboModelComponent.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
     struct DrawEntity
     {

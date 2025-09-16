@@ -2,7 +2,7 @@
 #include "Core/RenderPassContext.h"
 #include "EngineCore/Core/Ref.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
     class PreRenderPass
     {

@@ -6,7 +6,7 @@
 
 namespace VulkanApi
 {
-	void DescriptorsAllocator::CreateLayout(const VkDevice& logicalDevice, const std::vector<VkDescriptorSetLayoutBinding>& bindings, VkDescriptorSetLayout& layout) const
+	void CreateDescriptorLayout(const VkDevice& logicalDevice, const std::vector<VkDescriptorSetLayoutBinding>& bindings, VkDescriptorSetLayout& layout)
 	{
 		VkDescriptorSetLayoutCreateInfo layoutInfo{};
 		layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -17,7 +17,7 @@ namespace VulkanApi
 		Engine::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create descriptor set layout, status: " + createStatus);
 	}
 
-	VkDescriptorSetLayoutBinding DescriptorsAllocator::DescriptorSetLayoutBinding(const uint32_t binding, const VkDescriptorType descriptorType, const VkShaderStageFlags stageFlags, uint32_t descriptorCount = 1) const
+	VkDescriptorSetLayoutBinding DescriptorSetLayoutBinding(const uint32_t binding, const VkDescriptorType descriptorType, const VkShaderStageFlags stageFlags, uint32_t descriptorCount = 1)
 	{
 		return VkDescriptorSetLayoutBinding{
 			.binding = binding,
@@ -28,12 +28,12 @@ namespace VulkanApi
 		};
 	}
 
-	void DescriptorsAllocator::DisposeLayout(const VkDevice& logicalDevice, const VkDescriptorSetLayout& descriptorSetLayout) const
+	void DisposeDescriptorLayout(const VkDevice& logicalDevice, const VkDescriptorSetLayout& descriptorSetLayout)
 	{
 		vkDestroyDescriptorSetLayout(logicalDevice, descriptorSetLayout, nullptr);
 	}
 
-	void DescriptorsAllocator::CreateDescriptorPool(const VkDevice& logicalDevice, VkDescriptorPool& pool, const uint32_t capacity) const
+	void CreateDescriptorPool(const VkDevice& logicalDevice, VkDescriptorPool& pool, const uint32_t capacity)
 	{
 		std::array<VkDescriptorPoolSize, 2> poolSizes{};
 		poolSizes[0].type = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -54,14 +54,14 @@ namespace VulkanApi
 		spdlog::info("Created descriptor pool");
 	}
 
-	void DescriptorsAllocator::DestroyDescriptorPools(const VkDevice& logicalDevice, const VkDescriptorPool& pool) const
+	void DestroyDescriptorPools(const VkDevice& logicalDevice, const VkDescriptorPool& pool)
 	{
 		spdlog::info("DestroyDescriptorPools");
 		vkDestroyDescriptorPool(logicalDevice, pool, nullptr);
 	}
 
-	void DescriptorsAllocator::AllocateDescriptorSets(const VkDevice& logicalDevice, const VkDescriptorSetLayout& descriptorSetLayout,
-		const VkDescriptorPool& pool, std::vector<VkDescriptorSet>& setsReference, const uint32_t count) const
+	void AllocateDescriptorSets(const VkDevice& logicalDevice, const VkDescriptorSetLayout& descriptorSetLayout,
+		const VkDescriptorPool& pool, std::vector<VkDescriptorSet>& setsReference, const uint32_t count)
 	{
 		spdlog::info("Allocate Descriptor Sets {}", count);
 		std::vector<VkDescriptorSetLayout> layouts(count, descriptorSetLayout);
@@ -77,8 +77,8 @@ namespace VulkanApi
 		Engine::CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate descriptor sets, status: " + allocateStatus);
 	}
 
-	void DescriptorsAllocator::WriteDescriptorSet(VkWriteDescriptorSet& writeSet, const VkDescriptorSet& descriptorSet, const uint32_t dstBinding, const uint32_t dstArrayElement,
-		const uint32_t descriptorCount, const VkDescriptorType descriptorType, const VkDescriptorImageInfo* pImageInfo, const VkDescriptorBufferInfo* pBufferInfo) const
+	void WriteDescriptorSet(VkWriteDescriptorSet& writeSet, const VkDescriptorSet& descriptorSet, const uint32_t dstBinding, const uint32_t dstArrayElement,
+		const uint32_t descriptorCount, const VkDescriptorType descriptorType, const VkDescriptorImageInfo* pImageInfo, const VkDescriptorBufferInfo* pBufferInfo)
 	{
 		writeSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		writeSet.dstSet = descriptorSet;

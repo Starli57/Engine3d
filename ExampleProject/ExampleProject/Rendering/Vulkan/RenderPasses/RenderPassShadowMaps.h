@@ -8,18 +8,18 @@
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
     class RenderPassShadowMaps : public IRenderPass
     {
     public:
-        RenderPassShadowMaps(VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext);
+        RenderPassShadowMaps(VulkanApi::VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext);
         ~RenderPassShadowMaps() override;
 
         void Render(VkCommandBuffer& commandBuffer, uint16_t frame, uint32_t imageIndex, std::function<bool(const Ref<Entity>& entity)> filter) override;
         void RenderEntity(const DrawEntity& drawEntity, const VkCommandBuffer& commandBuffer, const Ref<PipelineVulkan>& pipeline) const;
         
-        Ref<ImageModel> GetImageBuffer() { return shadowMapBufferModel; }
+        Ref<VulkanApi::ImageModel> GetImageBuffer() { return shadowMapBufferModel; }
         VkSampler& GetSampler() { return sampler; }
 
     protected:
@@ -30,7 +30,7 @@ namespace VulkanApi
 
         void CreateSampler();
 
-        Ref<ImageModel> shadowMapBufferModel;
+        Ref<VulkanApi::ImageModel> shadowMapBufferModel;
         VkSampler sampler;
     };
 }

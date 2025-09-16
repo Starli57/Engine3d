@@ -1,17 +1,21 @@
 ﻿#include "EngineCore/Pch.h"
 #include "DescriptorFrame.h"
 
+#include "EngineCore/Components/CameraComponent.h"
+#include "EngineCore/Components/LightComponent.h"
 #include "EngineCore/Profiler/Profiler.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 #include "EngineCore/Rendering/Vulkan/UniformBufferModel/UboLight.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/BufferUtility.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/DescriptorsAllocator.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/UniformBufferVulkanUtility.h"
 #include "EngineCore/Utilities/MathUtility.h"
 
 namespace VulkanApi
 {
-    DescriptorFrame::DescriptorFrame(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
-        VkDescriptorPool& descriptorPool, const Ref<DescriptorsAllocator>& descriptorsAllocator)
-        : IDescriptor(physicalDevice, logicalDevice, ecs, descriptorsAllocator), descriptorPool(descriptorPool), inputManager(inputManager)
+    DescriptorFrame::DescriptorFrame(VulkanContext* vulkanContext, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
+        VkDescriptorPool& descriptorPool)
+        : vulkanContext(vulkanContext), ecs(ecs), descriptorPool(descriptorPool), inputManager(inputManager)
     {
         CreateLayout();
         CreateDescriptorSets();
@@ -20,28 +24,28 @@ namespace VulkanApi
     DescriptorFrame::~DescriptorFrame()
     {
         for(const auto& cameraUniform : cameraUniformBuffers)
-            DisposeBuffer(logicalDevice, cameraUniform->buffer, cameraUniform->bufferMemory);
+            DisposeBuffer(vulkanContext->logicalDevice, cameraUniform->buffer, cameraUniform->bufferMemory);
         for(const auto& lightUniform : lightUniformBuffers)
-            DisposeBuffer(logicalDevice, lightUniform->buffer, lightUniform->bufferMemory);
+            DisposeBuffer(vulkanContext->logicalDevice, lightUniform->buffer, lightUniform->bufferMemory);
         for(const auto& cursorUniform : cursorUniformBuffers)
-            DisposeBuffer(logicalDevice, cursorUniform->buffer, cursorUniform->bufferMemory);
+            DisposeBuffer(vulkanContext->logicalDevice, cursorUniform->buffer, cursorUniform->bufferMemory);
         
-        vkDestroyDescriptorSetLayout(logicalDevice, descriptorSetLayout, nullptr);
+        vkDestroyDescriptorSetLayout(vulkanContext->logicalDevice, descriptorSetLayout, nullptr);
     }
 
     void DescriptorFrame::CreateLayout()
     {    
-        const auto uboViewProjectionLayout = descriptorsAllocator->DescriptorSetLayoutBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
-        const auto uboLightLayout = descriptorsAllocator->DescriptorSetLayoutBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
-        const auto uboCursorLayout = descriptorsAllocator->DescriptorSetLayoutBinding(2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
+        const auto uboViewProjectionLayout = DescriptorSetLayoutBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
+        const auto uboLightLayout = DescriptorSetLayoutBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
+        const auto uboCursorLayout = DescriptorSetLayoutBinding(2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
 
         std::vector bindings = { uboViewProjectionLayout, uboLightLayout, uboCursorLayout };
-        descriptorsAllocator->CreateLayout(logicalDevice, bindings, descriptorSetLayout);
+        CreateDescriptorLayout(vulkanContext->logicalDevice, bindings, descriptorSetLayout);
     }
 
     void DescriptorFrame::CreateDescriptorSets()
     {
-        descriptorsAllocator->AllocateDescriptorSets(logicalDevice, descriptorSetLayout, descriptorPool, descriptorSets, VulkanContext::maxFramesInFlight);
+        AllocateDescriptorSets(vulkanContext->logicalDevice, descriptorSetLayout, descriptorPool, descriptorSets, VulkanContext::maxFramesInFlight);
 
         cameraUniformBuffers.resize(VulkanContext::maxFramesInFlight);
         lightUniformBuffers.resize(VulkanContext::maxFramesInFlight);
@@ -49,9 +53,9 @@ namespace VulkanApi
         
         for(int i = 0; i < VulkanContext::maxFramesInFlight; i++)
         {
-            cameraUniformBuffers.at(i) = CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboWorldComponent));
-            lightUniformBuffers.at(i) = CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(UboLight));
-            cursorUniformBuffers.at(i) = CreateUniformBuffer(logicalDevice, physicalDevice, sizeof(glm::vec3));
+            cameraUniformBuffers.at(i) = CreateUniformBuffer(vulkanContext, sizeof(UboWorldComponent));
+            lightUniformBuffers.at(i) = CreateUniformBuffer(vulkanContext, sizeof(UboLight));
+            cursorUniformBuffers.at(i) = CreateUniformBuffer(vulkanContext, sizeof(glm::vec3));
         }
     }
 
@@ -76,16 +80,16 @@ namespace VulkanApi
         cursorDescriptorInfo.offset = 0;
         
         std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
-        descriptorsAllocator->WriteDescriptorSet(descriptorWrites[0], descriptorSets.at(frame), 0, 0, 1,
+        WriteDescriptorSet(descriptorWrites[0], descriptorSets.at(frame), 0, 0, 1,
             VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &viewProjectionDescriptorInfo);
 
-        descriptorsAllocator->WriteDescriptorSet(descriptorWrites[1], descriptorSets.at(frame), 1, 0, 1,
+        WriteDescriptorSet(descriptorWrites[1], descriptorSets.at(frame), 1, 0, 1,
             VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &lightDescriptorInfo);
         
-        descriptorsAllocator->WriteDescriptorSet(descriptorWrites[2], descriptorSets.at(frame), 2, 0, 1,
+        WriteDescriptorSet(descriptorWrites[2], descriptorSets.at(frame), 2, 0, 1,
             VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &cursorDescriptorInfo);
         
-        vkUpdateDescriptorSets(logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
+        vkUpdateDescriptorSets(vulkanContext->logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
         Engine::Profiler::GetInstance().EndSample();
     }
     

@@ -8,9 +8,9 @@
 #include "EngineCore/Rendering/Vulkan/Utilities/GraphicsPipelineUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/ImageUtility.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
-    RenderPassShadowMaps::RenderPassShadowMaps(VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext) :
+    RenderPassShadowMaps::RenderPassShadowMaps(VulkanApi::VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext) :
         IRenderPass(vulkanContext, renderPassContext)
     {
         spdlog::info("Create RenderPass ShadowMaps");
@@ -27,16 +27,16 @@ namespace VulkanApi
         spdlog::info("RenderPassShadowMaps::~RenderPassShadowMaps"); 
         vkDestroySampler(vulkanContext->logicalDevice, sampler, nullptr);
 
-        DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffers);
+        VulkanApi::DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffers);
         frameBuffers.clear();
 
         DisposeImageModel(vulkanContext->logicalDevice, shadowMapBufferModel);
 
         for(const auto& pipelinePair : pipelines)
-            GraphicsPipelineUtility().Dispose(pipelinePair.second, vulkanContext->logicalDevice);
+            VulkanApi::GraphicsPipelineUtility().Dispose(pipelinePair.second, vulkanContext->logicalDevice);
         pipelines.clear();
 
-        DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
+        VulkanApi::DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
     }
 
     void RenderPassShadowMaps::Render(VkCommandBuffer& commandBuffer, const uint16_t frame, const uint32_t imageIndex, std::function<bool(const Ref<Entity>& entity)> filter)
@@ -45,7 +45,7 @@ namespace VulkanApi
         BeginRenderPass(commandBuffer, 0, 0, 1);
         
         auto pipeline = pipelines.at("shadowPass");
-        BindPipeline(commandBuffer, pipeline);
+        VulkanApi::BindPipeline(commandBuffer, pipeline);
         
         auto descriptorSets = std::vector<VkDescriptorSet>();
         descriptorSets.resize(1);
@@ -64,7 +64,7 @@ namespace VulkanApi
             RenderEntity(drawEntity, commandBuffer, pipeline);
         }
 
-        EndRenderPass(commandBuffer);
+        VulkanApi::EndRenderPass(commandBuffer);
         Engine::Profiler::GetInstance().EndSample();
     }
 
@@ -73,7 +73,7 @@ namespace VulkanApi
         if (drawEntity.meshComponent->meshIndex.has_value() == false) return;
         
         const int32_t meshIndex = drawEntity.meshComponent->meshIndex.value();
-        BindVertexAndIndexBuffers(commandBuffer, meshIndex, renderPassContext->assetsDatabase);
+        VulkanApi::BindVertexAndIndexBuffers(commandBuffer, meshIndex, renderPassContext->assetsDatabase);
 
         vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &drawEntity.uboModelComponent->model);
             
@@ -115,7 +115,7 @@ namespace VulkanApi
         descriptorSetLayouts.at(0) = renderPassContext->descriptorsManager->GetDescriptorSetLayoutFrame();
 
         auto pipeline = CreateRef<PipelineVulkan>();
-        GraphicsPipelineUtility().Create(
+        VulkanApi::GraphicsPipelineUtility().Create(
             shadowPassPipelineConfig, vulkanContext->logicalDevice, renderPass,
             renderPassContext->swapChainData->extent, descriptorSetLayouts, VK_SAMPLE_COUNT_1_BIT, pipeline);
         pipelines.emplace(shadowPassPipelineConfig->pipelineName, pipeline);
@@ -125,7 +125,7 @@ namespace VulkanApi
     {
         spdlog::info("Create shadow map buffer");
 
-        shadowMapBufferModel = CreateRef<ImageModel>();
+        shadowMapBufferModel = CreateRef<VulkanApi::ImageModel>();
 
         CreateImage(
             vulkanContext, renderPassContext->swapChainData->extent.width, renderPassContext->swapChainData->extent.height, 1, vulkanContext->depthFormat,
@@ -148,7 +148,7 @@ namespace VulkanApi
         };
 
         frameBuffers.resize(1);
-        CreateFrameBuffer(vulkanContext->logicalDevice, renderPass,
+        VulkanApi::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass,
             renderPassContext->swapChainData->extent.width, renderPassContext->swapChainData->extent.height, attachments, frameBuffers[0]);
     }
 

@@ -7,6 +7,6 @@
 
 namespace VulkanApi
 {
-	VkCommandPool CreateCommandPool(VulkanContext* vulkanContext);
-	void DisposeCommandPool(VulkanContext* vulkanContext, const VkCommandPool& commandPool);
+	VkCommandPool CreateCommandPool(const VulkanContext* vulkanContext);
+	void DisposeCommandPool(const VulkanContext* vulkanContext, const VkCommandPool& commandPool);
 }

@@ -12,13 +12,13 @@
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 #include "EngineCore/Rendering/Vulkan/Descriptors/DescriptorsManager.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
     class IRenderPass
     {
     public:
         IRenderPass(
-            VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext)
+            VulkanApi::VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext)
             : vulkanContext(vulkanContext), renderPassContext(renderPassContext)
         {
             renderPass = VK_NULL_HANDLE;
@@ -31,7 +31,7 @@ namespace VulkanApi
         VkFramebuffer& GetFrameBuffer() { return frameBuffers.at(0); }
 
     protected:
-        VulkanContext* vulkanContext;
+        VulkanApi::VulkanContext* vulkanContext;
         Ref<RenderPassContext> renderPassContext;
         
         VkRenderPass renderPass;

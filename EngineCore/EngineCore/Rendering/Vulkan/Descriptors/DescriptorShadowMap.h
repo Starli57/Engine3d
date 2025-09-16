@@ -1,23 +1,26 @@
 ﻿#pragma once
-#include "IDescriptor.h"
+#include "EngineCore/Core/Ecs.h"
+#include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 
 namespace VulkanApi
 {
-    class DescriptorShadowMap : public IDescriptor
+    class DescriptorShadowMap
     {
     public:
-        DescriptorShadowMap(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, VkDescriptorPool& descriptorPool,
-            const Ref<DescriptorsAllocator>& descriptorsAllocator);
+        DescriptorShadowMap(VulkanContext* vulkanContext, const Ref<Ecs>& ecs, const VkDescriptorPool& descriptorPool);
 
-        ~DescriptorShadowMap() override;
-        void CreateLayout() override;
-        void CreateDescriptorSets() override;
+        ~DescriptorShadowMap();
+        void CreateLayout();
+        void CreateDescriptorSets();
         void UpdateDescriptorSets(uint16_t frame, const VkImageView& shadowImageView, const VkSampler& shadowSampler) const;
 
+        VkDescriptorSetLayout descriptorSetLayout;
         VkDescriptorSet& GetDescriptorSet(const uint32_t frame) { return descriptorSets.at(frame); }
 
     private:
-        VkDescriptorPool& descriptorPool;
+        VulkanContext* vulkanContext;
+        Ref<Ecs> ecs;
+        VkDescriptorPool descriptorPool;
         std::vector<VkDescriptorSet> descriptorSets;
     };
 }

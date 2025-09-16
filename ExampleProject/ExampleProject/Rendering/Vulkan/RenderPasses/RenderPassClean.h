@@ -2,12 +2,12 @@
 #include "Core/IRenderPass.h"
 #include "Core/RenderPassContext.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
     class RenderPassClean : public IRenderPass
     {
     public:
-        RenderPassClean(VulkanContext* vulkanContext,const Ref<RenderPassContext>& renderPassContext);
+        RenderPassClean(VulkanApi::VulkanContext* vulkanContext,const Ref<RenderPassContext>& renderPassContext);
         ~RenderPassClean() override;
 
         void Render(VkCommandBuffer& commandBuffer, uint16_t frame, uint32_t imageIndex, std::function<bool(const Ref<Entity>& entity)> filter) override;

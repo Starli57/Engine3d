@@ -7,7 +7,7 @@
 
 namespace VulkanApi
 {
-	VkCommandPool CreateCommandPool(VulkanContext* vulkanContext)
+	VkCommandPool CreateCommandPool(const VulkanContext* vulkanContext)
 	{
 		spdlog::info("Create command pool");
 		QueueFamilyIndices queueFamilyIndices = GetQueueFamilies(vulkanContext->physicalDevice, vulkanContext->windowSurface);
@@ -24,7 +24,7 @@ namespace VulkanApi
 		return commandPool;
 	}
 
-	void DisposeCommandPool(VulkanContext* vulkanContext, const VkCommandPool& commandPool)
+	void DisposeCommandPool(const VulkanContext* vulkanContext, const VkCommandPool& commandPool)
 	{
 		spdlog::info("Dispose command pool");
 		vkDestroyCommandPool(vulkanContext->logicalDevice, commandPool, nullptr);

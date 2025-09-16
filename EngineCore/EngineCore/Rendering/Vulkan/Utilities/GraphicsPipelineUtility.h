@@ -6,11 +6,7 @@
 #include "EngineCore/Rendering/Vulkan/PipelineVulkan.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/Vulkan/Configs/VulkanPipelineConfig.h"
-
-namespace Engine
-{
-	class Rollback;
-}
+#include "EngineCore/Rollback/Rollback.h"
 
 namespace VulkanApi
 {
@@ -35,7 +31,5 @@ namespace VulkanApi
 		VkPipelineRasterizationStateCreateInfo SetupRasterizer(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig) const;
 		VkPipelineMultisampleStateCreateInfo SetupMultisampling(VkSampleCountFlagBits msaa) const;
 		VkPipelineColorBlendStateCreateInfo SetupColorsBlending(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig) const;
-
-
 	};
 }

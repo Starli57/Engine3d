@@ -5,7 +5,7 @@
 #include "EngineCore/Components/UboWorldComponent.h"
 #include "EngineCore/Profiler/Profiler.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
     PreRenderPass::PreRenderPass(const Ref<RenderPassContext>& renderPassContext) : renderPassContext(renderPassContext)
     {

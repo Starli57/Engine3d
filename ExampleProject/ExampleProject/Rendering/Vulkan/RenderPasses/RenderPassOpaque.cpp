@@ -7,9 +7,9 @@
 #include "EngineCore/Rendering/Vulkan/Utilities/GraphicsPipelineUtility.h"
 #include "EngineCore/Rendering/Vulkan/Utilities/RenderPassUtility.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
-    RenderPassOpaque::RenderPassOpaque(VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext) :
+    RenderPassOpaque::RenderPassOpaque(VulkanApi::VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext) :
         IRenderPass(vulkanContext, renderPassContext)
     {
         spdlog::info("Create RenderPass Opaque");
@@ -22,14 +22,14 @@ namespace VulkanApi
     {
         spdlog::info("RenderPassOpaque::~RenderPassOpaque");
 
-        for (auto frameBuffer : frameBuffers) DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffer);
+        for (auto frameBuffer : frameBuffers) VulkanApi::DisposeFrameBuffer(vulkanContext->logicalDevice, frameBuffer);
         frameBuffers.clear();
 
-        GraphicsPipelineUtility pipelineUtility;
+        VulkanApi::GraphicsPipelineUtility pipelineUtility;
         for (const auto& pipeline : pipelines) pipelineUtility.Dispose(pipeline.second, vulkanContext->logicalDevice);
         pipelines.clear();
-        
-        DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
+
+        VulkanApi::DisposeRenderPass(vulkanContext->logicalDevice, renderPass);
     }
 
     void RenderPassOpaque::Render(VkCommandBuffer& commandBuffer, const uint16_t frame, const uint32_t imageIndex, std::function<bool(const Ref<Entity>& entity)> filter)
@@ -46,8 +46,8 @@ namespace VulkanApi
         {
             RenderEntity(renderPassContext->transparentEntities.at(i), commandBuffer, frame);
         }
-        
-        EndRenderPass(commandBuffer);
+
+        VulkanApi::EndRenderPass(commandBuffer);
         Engine::Profiler::GetInstance().EndSample();
     }
 
@@ -60,8 +60,8 @@ namespace VulkanApi
         const int32_t meshIndex = drawEntity.meshComponent->meshIndex.value();
 
         const auto pipeline = pipelines.at(material->pipelineId);
-        BindPipeline(commandBuffer, pipeline);
-        BindVertexAndIndexBuffers(commandBuffer, meshIndex, renderPassContext->assetsDatabase);
+        VulkanApi::BindPipeline(commandBuffer, pipeline);
+        VulkanApi::BindVertexAndIndexBuffers(commandBuffer, meshIndex, renderPassContext->assetsDatabase);
 
         vkCmdPushConstants(commandBuffer, pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT,
             0, sizeof(glm::mat4), &drawEntity.uboModelComponent->model);
@@ -91,7 +91,7 @@ namespace VulkanApi
                 renderPassContext->swapChainData->msaaDepthSample->imageView
             };
 
-            CreateFrameBuffer(vulkanContext->logicalDevice, renderPass,
+            VulkanApi::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass,
                 renderPassContext->swapChainData->extent.width, renderPassContext->swapChainData->extent.height,
                 attachments, frameBuffers[i]);
         }
@@ -109,7 +109,7 @@ namespace VulkanApi
         
         for (const auto& config : vulkanContext->pipelinesCollection->pipelinesConfigs)
         {
-            GraphicsPipelineUtility pipelineUtility;
+            VulkanApi::GraphicsPipelineUtility pipelineUtility;
             auto pipeline = CreateRef<PipelineVulkan>();
             pipelineUtility.Create(config.second, vulkanContext->logicalDevice, renderPass,
                 renderPassContext->swapChainData->extent, descriptorSetLayouts, vulkanContext->msaa, pipeline);

@@ -3,12 +3,12 @@
 
 #include "EngineCore/Profiler/Profiler.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
+#include "EngineCore/Rendering/Vulkan/Utilities/DescriptorsAllocator.h"
 
 namespace VulkanApi
 {
-    DescriptorShadowMap::DescriptorShadowMap(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice,
-        const Ref<Ecs>& ecs, VkDescriptorPool& descriptorPool, const Ref<DescriptorsAllocator>& descriptorsAllocator)
-        : IDescriptor(physicalDevice, logicalDevice, ecs, descriptorsAllocator), descriptorPool(descriptorPool)
+    DescriptorShadowMap::DescriptorShadowMap(VulkanContext* vulkanContext, const Ref<Ecs>& ecs, const VkDescriptorPool& descriptorPool)
+        : vulkanContext(vulkanContext), ecs(ecs), descriptorPool(descriptorPool)
     {
         CreateLayout();
         CreateDescriptorSets();
@@ -16,21 +16,21 @@ namespace VulkanApi
 
     DescriptorShadowMap::~DescriptorShadowMap()
     {
-        vkDestroyDescriptorSetLayout(logicalDevice, descriptorSetLayout, nullptr);
+        vkDestroyDescriptorSetLayout(vulkanContext->logicalDevice, descriptorSetLayout, nullptr);
     }
 
     void DescriptorShadowMap::CreateLayout()
     {
-        const auto shadowMap = descriptorsAllocator->DescriptorSetLayoutBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        const auto shadowMap = DescriptorSetLayoutBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
         
         std::vector bindings = { shadowMap };
-        descriptorsAllocator->CreateLayout(logicalDevice, bindings, descriptorSetLayout);
+        CreateDescriptorLayout(vulkanContext->logicalDevice, bindings, descriptorSetLayout);
     }
 
     void DescriptorShadowMap::CreateDescriptorSets()
     {
         descriptorSets.resize(VulkanContext::maxFramesInFlight);
-        descriptorsAllocator->AllocateDescriptorSets(logicalDevice, descriptorSetLayout, 
+        AllocateDescriptorSets(vulkanContext->logicalDevice, descriptorSetLayout, 
                 descriptorPool, descriptorSets, VulkanContext::maxFramesInFlight);
     }
 
@@ -46,10 +46,10 @@ namespace VulkanApi
         std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
 
         auto descriptorSet = descriptorSets.at(frame);
-        descriptorsAllocator->WriteDescriptorSet(descriptorWrites[0], descriptorSet, 0, 0, 1,
+        WriteDescriptorSet(descriptorWrites[0], descriptorSet, 0, 0, 1,
             VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &shadowMapInfo, nullptr);
 
-        vkUpdateDescriptorSets(logicalDevice, descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
+        vkUpdateDescriptorSets(vulkanContext->logicalDevice, descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
         Engine::Profiler::GetInstance().EndSample();
     }
 }

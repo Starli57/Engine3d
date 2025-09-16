@@ -1,18 +1,18 @@
 ﻿#include "EngineCore/Pch.h"
 #include "DescriptorsManager.h"
 
+#include "EngineCore/Rendering/Vulkan/Utilities/DescriptorsAllocator.h"
+
 namespace VulkanApi
 {
-    DescriptorsManager::DescriptorsManager(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
+    DescriptorsManager::DescriptorsManager(VulkanContext* vulkanContext, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
             VkSampler& textureSampler, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase)
-                : logicalDevice(logicalDevice), inputManager(inputManager)
+                : vulkanContext(vulkanContext), inputManager(inputManager)
     {
-        descriptorsAllocator = CreateRef<DescriptorsAllocator>();
         CreateGlobalDescriptorsPool();
-        frameDescriptor = CreateUniqueRef<DescriptorFrame>(physicalDevice, logicalDevice, ecs, inputManager, globalDescriptorPool, descriptorsAllocator);
-        opaqueMaterialDescriptor = CreateUniqueRef<DescriptorMaterialOpaque>(physicalDevice, logicalDevice, ecs,
-            descriptorsAllocator, textureSampler, assetsDatabase);
-        shadowMapDescriptor = CreateUniqueRef<DescriptorShadowMap>(physicalDevice, logicalDevice, ecs, globalDescriptorPool, descriptorsAllocator);
+        frameDescriptor = CreateUniqueRef<DescriptorFrame>(vulkanContext, ecs, inputManager, globalDescriptorPool);
+        opaqueMaterialDescriptor = CreateUniqueRef<DescriptorMaterialOpaque>(vulkanContext, ecs, textureSampler, assetsDatabase);
+        shadowMapDescriptor = CreateUniqueRef<DescriptorShadowMap>(vulkanContext, ecs, globalDescriptorPool);
     }
 
     DescriptorsManager::~DescriptorsManager()
@@ -20,12 +20,12 @@ namespace VulkanApi
         shadowMapDescriptor.reset();
         opaqueMaterialDescriptor.reset();
         frameDescriptor.reset();
-        vkDestroyDescriptorPool(logicalDevice, globalDescriptorPool, nullptr);
+        vkDestroyDescriptorPool(vulkanContext->logicalDevice, globalDescriptorPool, nullptr);
     }
 
     void DescriptorsManager::CreateGlobalDescriptorsPool()
     {
-        descriptorsAllocator->CreateDescriptorPool(logicalDevice, globalDescriptorPool, descriptorsAllocator->maxDescriptorSets);
+        CreateDescriptorPool(vulkanContext->logicalDevice, globalDescriptorPool, maxDescriptorSets);
     }
 
     void DescriptorsManager::UpdateFrameDescriptors(const uint32_t frame) const
@@ -45,17 +45,17 @@ namespace VulkanApi
 
     VkDescriptorSetLayout& DescriptorsManager::GetDescriptorSetLayoutFrame() const
     {
-        return frameDescriptor->DescriptorSetLayout();
+        return frameDescriptor->descriptorSetLayout;
     }
 
     VkDescriptorSetLayout& DescriptorsManager::GetDescriptorSetLayoutOpaqueMaterial() const
     {
-        return opaqueMaterialDescriptor->DescriptorSetLayout();
+        return opaqueMaterialDescriptor->descriptorSetLayout;
     }
 
     VkDescriptorSetLayout& DescriptorsManager::GetDescriptorSetLayoutShadowMap() const
     {
-        return shadowMapDescriptor->DescriptorSetLayout();
+        return shadowMapDescriptor->descriptorSetLayout;
     }
 
     VkDescriptorSet& DescriptorsManager::GetDescriptorSetFrame(const uint32_t frame) const

@@ -49,7 +49,7 @@ ImguiVulkan::ImguiVulkan(const Ref<ProjectSettings>& projectSettings, VulkanApi:
     initInfo.QueueFamily = graphicsQueueFamily;
     initInfo.Queue = vulkanApi.vulkanContext->graphicsQueue;
     initInfo.PipelineCache = VK_NULL_HANDLE;
-    initInfo.DescriptorPoolSize = 1024;
+    initInfo.DescriptorPoolSize = 2048;
     initInfo.RenderPass = renderPass;
     initInfo.Subpass = 0;
     initInfo.MinImageCount = 2;

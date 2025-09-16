@@ -11,7 +11,7 @@ Game::Game(Ref<ProjectSettings> projectSettings) : projectSettings(projectSettin
 	
 #if GLFW_INCLUDE_VULKAN
 	auto vulkanApi = engine->GetGraphicsApi();
-	renderer = CreateRef<VulkanApi::RendererVulkan>(vulkanApi, engine->GetAssetsDatabase(), engine->GetEcs());
+	renderer = CreateRef<ClientVulkanApi::RendererVulkan>(vulkanApi, engine->GetAssetsDatabase(), engine->GetEcs());
 	vulkanApi->Init();
 #endif
 	

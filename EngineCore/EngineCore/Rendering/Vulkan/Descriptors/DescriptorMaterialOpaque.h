@@ -1,26 +1,30 @@
 ﻿#pragma once
-#include "IDescriptor.h"
+#include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/Ref.h"
+#include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 #include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
 
 namespace VulkanApi
 {
-    class DescriptorMaterialOpaque : public IDescriptor
+    class DescriptorMaterialOpaque
     {
     public:
-        DescriptorMaterialOpaque(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs,
-            const Ref<DescriptorsAllocator>& descriptorsAllocator, VkSampler& textureSampler, const Ref<Engine::ResourcesStorageVulkan>& resourcesStorage);
+        DescriptorMaterialOpaque(VulkanContext* vulkanContext, const Ref<Ecs>& ecs, VkSampler& textureSampler, const Ref<Engine::ResourcesStorageVulkan>& resourcesStorage);
 
-        ~DescriptorMaterialOpaque() override;
-        void CreateLayout() override;
-        void CreateDescriptorSets() override;
+        ~DescriptorMaterialOpaque();
+        void CreateLayout();
+        void CreateDescriptorSets();
         void UpdateDescriptorSets(uint16_t frame) const;
 
+        VkDescriptorSetLayout descriptorSetLayout;
         VkDescriptorSet& GetDescriptorSet(const uint32_t frame, const uint32_t materialIndex) { return descriptorSets.at(frame).at(materialIndex); }
 
     private:
         Ref<Engine::ResourcesStorageVulkan> resourcesStorage;
+
+        VulkanContext* vulkanContext;
+        Ref<Ecs> ecs;
         
         std::vector<VkDescriptorPool> descriptorPools;
         std::vector<std::vector<VkDescriptorSet>> descriptorSets;

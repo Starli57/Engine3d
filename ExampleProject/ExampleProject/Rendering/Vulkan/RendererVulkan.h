@@ -6,15 +6,15 @@
 #include "RenderPasses/RenderPassOpaque.h"
 #include "RenderPasses/RenderPassShadowMaps.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
     class RendererVulkan
     {
     public:
-        RendererVulkan(GraphicsApiVulkan* graphicsApiVulkan, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs);
+        RendererVulkan(VulkanApi::GraphicsApiVulkan* graphicsApiVulkan, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs);
     
     private:
-        GraphicsApiVulkan* graphicsApi;
+        VulkanApi::GraphicsApiVulkan* graphicsApi;
         Ref<Engine::ResourcesStorageVulkan> assetsDatabase;
         Ref<Ecs> ecs;
 

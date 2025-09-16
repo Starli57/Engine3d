@@ -12,9 +12,7 @@ namespace VulkanApi
 	{
 		VkBufferUsageFlags usageFlagsStaging = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 		constexpr VkMemoryPropertyFlags memoryFlagsStaging = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
-
-		CreateBuffer(vulkanContext->physicalDevice, vulkanContext->logicalDevice, bufferSize,
-			usageFlagsStaging, memoryFlagsStaging, buffer, bufferMemory);
+		CreateBuffer(vulkanContext, bufferSize, usageFlagsStaging, memoryFlagsStaging, buffer, bufferMemory);
 
 		void* data;
 		vkMapMemory(vulkanContext->logicalDevice, bufferMemory, 0, bufferSize, 0, &data);
@@ -32,19 +30,19 @@ namespace VulkanApi
 		VkMemoryPropertyFlags stagingMemoryFlags = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 		VkMemoryPropertyFlags distMemoryFlags = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 
-		CreateBuffer(vulkanContext->physicalDevice, vulkanContext->logicalDevice, bufferSize, stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingBufferMemory);
+		CreateBuffer(vulkanContext, bufferSize, stagingUsageFlags, stagingMemoryFlags, stagingBuffer, stagingBufferMemory);
 
 		void* data;
 		vkMapMemory(vulkanContext->logicalDevice, stagingBufferMemory, 0, bufferSize, 0, &data);
 		memcpy(data, sourceData, (size_t)bufferSize);
 		vkUnmapMemory(vulkanContext->logicalDevice, stagingBufferMemory);
 
-		CreateBuffer(vulkanContext->physicalDevice, vulkanContext->logicalDevice, bufferSize, distUsageFlags, distMemoryFlags, buffer, bufferMemory);
+		CreateBuffer(vulkanContext, bufferSize, distUsageFlags, distMemoryFlags, buffer, bufferMemory);
 		CopyBuffer(vulkanContext->logicalDevice, vulkanContext->graphicsQueue, stagingBuffer, buffer, bufferSize, commandPool);
 		DisposeBuffer(vulkanContext->logicalDevice, stagingBuffer, stagingBufferMemory);
 	}
 	
-	void CreateBuffer(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, const uint64_t bufferSize,
+	void CreateBuffer(const VulkanContext* vulkanContext, const uint64_t bufferSize,
 	                  const VkBufferUsageFlags& usageFlags, const VkMemoryPropertyFlags memoryFlags, VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{
 		VkBufferCreateInfo bufferInfo{};
@@ -53,10 +51,10 @@ namespace VulkanApi
 		bufferInfo.usage = usageFlags;
 		bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-		auto createStatus = vkCreateBuffer(logicalDevice, &bufferInfo, nullptr, &buffer);
+		auto createStatus = vkCreateBuffer(vulkanContext->logicalDevice, &bufferInfo, nullptr, &buffer);
 		Engine::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create buffer, status: " + createStatus);
 	
-		BindMemory(physicalDevice, logicalDevice, memoryFlags, buffer, bufferMemory);
+		BindMemory(vulkanContext, memoryFlags, buffer, bufferMemory);
 	}
 
 	void DisposeBuffer(const VkDevice& logicalDevice, const VkBuffer& buffer, const VkDeviceMemory& bufferMemory)
@@ -113,20 +111,20 @@ namespace VulkanApi
 	}
 
 
-	void BindMemory(const VkPhysicalDevice& physicalDevice, const VkDevice& logicalDevice, const VkMemoryPropertyFlags& memoryFlags,
+	void BindMemory(const VulkanContext* vulkanContext, const VkMemoryPropertyFlags& memoryFlags,
 	                const VkBuffer& buffer, VkDeviceMemory& bufferMemory)
 	{
 		VkMemoryRequirements memRequirements;
-		vkGetBufferMemoryRequirements(logicalDevice, buffer, &memRequirements);
+		vkGetBufferMemoryRequirements(vulkanContext->logicalDevice, buffer, &memRequirements);
 
 		VkMemoryAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 		allocInfo.allocationSize = memRequirements.size;
-		allocInfo.memoryTypeIndex = FindMemoryType(physicalDevice, memRequirements.memoryTypeBits, memoryFlags);
+		allocInfo.memoryTypeIndex = FindMemoryType(vulkanContext->physicalDevice, memRequirements.memoryTypeBits, memoryFlags);
 
-		const auto allocateStatus = vkAllocateMemory(logicalDevice, &allocInfo, nullptr, &bufferMemory);
+		const auto allocateStatus = vkAllocateMemory(vulkanContext->logicalDevice, &allocInfo, nullptr, &bufferMemory);
 		Engine::CAssert::Check(allocateStatus == VK_SUCCESS, "Can't allocate memory for vertex buffer, status: " + allocateStatus);
 
-		vkBindBufferMemory(logicalDevice, buffer, bufferMemory, 0);
+		vkBindBufferMemory(vulkanContext->logicalDevice, buffer, bufferMemory, 0);
 	}
 }

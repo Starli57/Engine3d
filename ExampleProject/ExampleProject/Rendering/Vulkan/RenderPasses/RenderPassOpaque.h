@@ -8,12 +8,12 @@
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/Ref.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
     class RenderPassOpaque : public IRenderPass
     {
     public:
-        RenderPassOpaque(VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext);
+        RenderPassOpaque(VulkanApi::VulkanContext* vulkanContext, const Ref<RenderPassContext>& renderPassContext);
         ~RenderPassOpaque() override;
 
         void Render(VkCommandBuffer& commandBuffer, uint16_t frame, uint32_t imageIndex, std::function<bool(const Ref<Entity>& entity)> filter) override;

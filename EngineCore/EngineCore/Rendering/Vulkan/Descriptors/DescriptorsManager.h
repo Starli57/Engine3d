@@ -1,17 +1,15 @@
 ﻿#pragma once
 #include "DescriptorFrame.h"
 #include "DescriptorMaterialOpaque.h"
-#include "DescriptorsAllocator.h"
 #include "DescriptorShadowMap.h"
 #include "EngineCore/Managers/InputManager.h"
-#include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
 
 namespace VulkanApi
 {
     class DescriptorsManager
     {
     public:
-        DescriptorsManager(VkPhysicalDevice& physicalDevice, VkDevice& logicalDevice, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
+        DescriptorsManager(VulkanContext* vulkanContext, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
             VkSampler& textureSampler, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase);
         ~DescriptorsManager();
 
@@ -30,9 +28,7 @@ namespace VulkanApi
         VkDescriptorSet& GetDescriptorSetShadowMap(uint32_t frame) const;
         
     private:
-        VkDevice& logicalDevice;
-        
-        Ref<DescriptorsAllocator> descriptorsAllocator;
+        VulkanContext* vulkanContext;
         URef<DescriptorFrame> frameDescriptor;
         URef<DescriptorMaterialOpaque> opaqueMaterialDescriptor;
         URef<DescriptorShadowMap> shadowMapDescriptor;
