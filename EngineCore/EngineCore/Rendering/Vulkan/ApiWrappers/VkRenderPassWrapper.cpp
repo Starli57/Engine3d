@@ -2,8 +2,6 @@
 #include "VkRenderPassWrapper.h"
 
 #include "EngineCore/CustomAssert.h"
-#include "spdlog/spdlog.h"
-#include "EngineCore/Rendering/Vulkan/ApiWrappers/FormatUtility.h"
 
 namespace VulkanApi
 {

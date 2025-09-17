@@ -6,7 +6,6 @@
 
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/Profiler/Profiler.h"
-#include "ApiWrappers/FormatUtility.h"
 #include "ApiWrappers/VkImageWrapper.h"
 #include "ApiWrappers/VkInstanceWrapper.h"
 #include "ApiWrappers/VkDeviceWrapper.h"
@@ -16,7 +15,8 @@
 
 namespace VulkanApi
 {
-	GraphicsApiVulkan::GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager, const Ref<Engine::ResourcesStorageVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* glfwWindow)
+	GraphicsApiVulkan::GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
+		const Ref<Engine::ResourcesStorageVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* glfwWindow)
 	{
 		this->vulkanContext = new VulkanContext();
 		this->ecs = ecs;
@@ -131,7 +131,7 @@ namespace VulkanApi
 
 		Engine::CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
 		
-		frame = (frame + 1) % vulkanContext->maxFramesInFlight;
+		frame = (frame + 1) % VulkanContext::maxFramesInFlight;
 	}
 
 	VkResult GraphicsApiVulkan::AcquireNextImage()
@@ -178,7 +178,7 @@ namespace VulkanApi
 	{
 		ChooseRenderingDevice(vulkanContext);
 		vulkanContext->msaa = GetMaxUsableSampleCount(vulkanContext->physicalDevice);
-		vulkanContext->depthFormat = FindDepthBufferFormat(vulkanContext->physicalDevice);
+		SetDepthBufferFormat(vulkanContext->physicalDevice, vulkanContext->depthFormat);
 		PrintPhysicalDeviceDebugInformation(vulkanContext->physicalDevice, vulkanContext->windowSurface);
 	}
 
@@ -218,7 +218,7 @@ namespace VulkanApi
 
 	void GraphicsApiVulkan::CreateCommandsManager()
 	{
-		commandsManager = new CommandsManager(vulkanContext, vulkanContext->maxFramesInFlight);
+		commandsManager = new CommandsManager(vulkanContext, VulkanContext::maxFramesInFlight);
 		rollback->Add([this]() { delete commandsManager; });
 	}
 
@@ -236,9 +236,9 @@ namespace VulkanApi
 
 	void GraphicsApiVulkan::CreateSyncObjects()
 	{
-		imageAvailableSemaphores.resize(vulkanContext->maxFramesInFlight);
-		renderFinishedSemaphores.resize(vulkanContext->maxFramesInFlight);
-		drawFences.resize(vulkanContext->maxFramesInFlight);
+		imageAvailableSemaphores.resize(VulkanContext::maxFramesInFlight);
+		renderFinishedSemaphores.resize(VulkanContext::maxFramesInFlight);
+		drawFences.resize(VulkanContext::maxFramesInFlight);
 
 		VkSemaphoreCreateInfo semaphoreInfo{};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -247,7 +247,7 @@ namespace VulkanApi
 		fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 		fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
 
-		for (int i = 0; i < vulkanContext->maxFramesInFlight; i++)
+		for (int i = 0; i < VulkanContext::maxFramesInFlight; i++)
 		{
 			CreateVkSemaphore(vulkanContext->logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i], rollback);
 			CreateVkSemaphore(vulkanContext->logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i], rollback);

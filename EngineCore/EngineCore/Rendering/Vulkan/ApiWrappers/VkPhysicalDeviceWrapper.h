@@ -22,4 +22,9 @@ namespace VulkanApi
 	bool DoSupportPhysicalDeviceExtensions(const VkPhysicalDevice& device);
 
 	VkSampleCountFlagBits GetMaxUsableSampleCount(const VkPhysicalDevice& physicalDevice);
+
+	void SetSupportedFormat(const VkPhysicalDevice& physicalDevice, const std::vector<VkFormat>& formats,
+							 VkImageTiling tiling, VkFormatFeatureFlags features, VkFormat& outFormat);
+
+	void SetDepthBufferFormat(const VkPhysicalDevice& physicalDevice, VkFormat& outFormat);
 }

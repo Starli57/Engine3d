@@ -177,4 +177,40 @@ namespace VulkanApi
 
         return VK_SAMPLE_COUNT_1_BIT;
     }
+
+    void SetSupportedFormat(const VkPhysicalDevice& physicalDevice, const std::vector<VkFormat>& formats,
+                             const VkImageTiling tiling, const VkFormatFeatureFlags features, VkFormat& outFormat)
+    {
+        for (const VkFormat format : formats) 
+        {
+            VkFormatProperties properties;
+            vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &properties);
+
+            if (tiling == VK_IMAGE_TILING_LINEAR && (properties.linearTilingFeatures & features) == features)
+            {
+                outFormat = format;
+                return;
+            }
+            
+            if (tiling == VK_IMAGE_TILING_OPTIMAL && (properties.optimalTilingFeatures & features) == features)
+            {
+                outFormat = format;
+                return;
+            }
+        }
+
+        throw std::runtime_error("Failed to find supported format!");
+    }
+
+    void SetDepthBufferFormat(const VkPhysicalDevice& physicalDevice, VkFormat& outFormat)
+    {
+        const std::vector<VkFormat> formats =
+        {
+            VK_FORMAT_D32_SFLOAT, 
+            VK_FORMAT_D32_SFLOAT_S8_UINT, 
+            VK_FORMAT_D24_UNORM_S8_UINT 
+        };
+
+        SetSupportedFormat(physicalDevice, formats, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT, outFormat);
+    }
 }
