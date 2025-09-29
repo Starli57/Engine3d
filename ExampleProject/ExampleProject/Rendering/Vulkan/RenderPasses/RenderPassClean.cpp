@@ -77,18 +77,18 @@ namespace ClientVulkanApi
 
     void RenderPassClean::CreateFrameBuffers()
     {
-        frameBuffers.resize(renderPassContext->swapChainData->imagesCount);
+        frameBuffers.resize(renderPassContext->swapchainContext->imagesCount);
 
-        for (size_t i = 0; i < renderPassContext->swapChainData->imagesCount; i++)
+        for (size_t i = 0; i < renderPassContext->swapchainContext->imagesCount; i++)
         {
             std::vector<VkImageView> attachments =
             {
-                renderPassContext->swapChainData->msaaColorSample->imageView,
-                renderPassContext->swapChainData->imageViews[i]
+                renderPassContext->swapchainContext->msaaColorSample->imageView,
+                renderPassContext->swapchainContext->imageViews[i]
             };
 
-            VulkanApi::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass, renderPassContext->swapChainData->extent.width,
-                                         renderPassContext->swapChainData->extent.height, attachments, frameBuffers[i]);
+            VulkanApi::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass, renderPassContext->swapchainContext->extent.width,
+                                         renderPassContext->swapchainContext->extent.height, attachments, frameBuffers[i]);
         }
     }
 }

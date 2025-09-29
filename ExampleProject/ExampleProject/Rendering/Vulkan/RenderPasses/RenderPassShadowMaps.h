@@ -4,7 +4,7 @@
 
 #include "Core/IRenderPass.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkRenderPassWrapper.h"
-#include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
+#include "EngineCore/Rendering/Vulkan/Models/SwapchainContext.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
 

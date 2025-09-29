@@ -10,8 +10,8 @@
 
 #include "Editor/IEngineEditor.h"
 #include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
-#include "EngineCore/Rendering/Vulkan/SwapChain.h"
-#include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
+#include "EngineCore/Rendering/Vulkan/SwapchainManager.h"
+#include "EngineCore/Rendering/Vulkan/Models/SwapchainContext.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkPhysicalDeviceWrapper.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkCommandBufferWrapper.h"
 

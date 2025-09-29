@@ -4,7 +4,7 @@
 #include <optional>
 
 #include "EngineCore/Rendering/Vulkan/Models/QueueFamilyIndices.h"
-#include "EngineCore/Rendering/Vulkan/SwapChain.h"
+#include "EngineCore/Rendering/Vulkan/SwapchainManager.h"
 
 namespace VulkanApi
 {

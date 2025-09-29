@@ -73,7 +73,7 @@ namespace VulkanApi
 		FinalizeRenderOperations();
 
 		onRenderPassesDispose();
-		swapChain->Recreate();
+		swapchainManager->Recreate();
 		onRenderPassesCreate();
 	}
 
@@ -116,7 +116,7 @@ namespace VulkanApi
 		presentInfo.waitSemaphoreCount = 1;
 		presentInfo.pWaitSemaphores = &renderFinishedSemaphores[frame];
 		presentInfo.swapchainCount = 1;
-		presentInfo.pSwapchains = &swapChainData->swapChain;
+		presentInfo.pSwapchains = &swapchainContext->swapChain;
 		presentInfo.pImageIndices = &imageIndex;
 
 		Engine::Profiler::GetInstance().BeginSample("vkQueuePresentKHR");
@@ -139,7 +139,7 @@ namespace VulkanApi
 		vkWaitForFences(vulkanContext->logicalDevice, 1, &drawFences[frame], VK_TRUE, vulkanContext->frameSyncTimeout);
 
 		auto acquireStatus = vkAcquireNextImageKHR(
-			vulkanContext->logicalDevice, swapChainData->swapChain, vulkanContext->frameSyncTimeout,
+			vulkanContext->logicalDevice, swapchainContext->swapChain, vulkanContext->frameSyncTimeout,
 			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 		
 		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR) 
@@ -193,15 +193,15 @@ namespace VulkanApi
 
 	void GraphicsApiVulkan::CreateSwapChain()
 	{
-		swapChainData = CreateRef<SwapChainData>();
-		swapChain = CreateRef<SwapChain>(vulkanContext, swapChainData);
+		swapchainContext = new SwapchainContext();
+		swapchainManager = CreateRef<SwapchainManager>(vulkanContext, swapchainContext);
 
-		swapChain->CreateSwapchain();
-		swapChain->CreateSwapChainImageViews();
-		swapChain->CreateMSAAColorResources();
-		swapChain->CreateMSAADepthResources();
+		swapchainManager->CreateSwapchain();
+		swapchainManager->CreateSwapChainImageViews();
+		swapchainManager->CreateMSAAColorResources();
+		swapchainManager->CreateMSAADepthResources();
 
-		rollback->Add([this] { swapChain->Dispose(); });
+		rollback->Add([this] { swapchainManager->Dispose(); });
 	}
 
 	void GraphicsApiVulkan::CreateDescriptorManager()
@@ -225,7 +225,7 @@ namespace VulkanApi
 	void GraphicsApiVulkan::CreateDepthBuffer() const
 	{
 		spdlog::info("Create depth buffer");
-		swapChain->CreateDepthBuffer();
+		swapchainManager->CreateDepthBuffer();
 	}
 
 	void GraphicsApiVulkan::CreateTextureSampler()

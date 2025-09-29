@@ -80,19 +80,19 @@ namespace ClientVulkanApi
 
     void RenderPassOpaque::CreateFrameBuffers()
     {
-        frameBuffers.resize(renderPassContext->swapChainData->imagesCount);
+        frameBuffers.resize(renderPassContext->swapchainContext->imagesCount);
 
-        for (size_t i = 0; i < renderPassContext->swapChainData->imagesCount; i++)
+        for (size_t i = 0; i < renderPassContext->swapchainContext->imagesCount; i++)
         {
             std::vector<VkImageView> attachments =
             {
-                renderPassContext->swapChainData->msaaColorSample->imageView,
-                renderPassContext->swapChainData->imageViews[i],
-                renderPassContext->swapChainData->msaaDepthSample->imageView
+                renderPassContext->swapchainContext->msaaColorSample->imageView,
+                renderPassContext->swapchainContext->imageViews[i],
+                renderPassContext->swapchainContext->msaaDepthSample->imageView
             };
 
             VulkanApi::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass,
-                renderPassContext->swapChainData->extent.width, renderPassContext->swapChainData->extent.height,
+                renderPassContext->swapchainContext->extent.width, renderPassContext->swapchainContext->extent.height,
                 attachments, frameBuffers[i]);
         }
     }
@@ -112,7 +112,7 @@ namespace ClientVulkanApi
             VulkanApi::VkPipelineWrapper pipelineUtility;
             auto pipeline = CreateRef<PipelineVulkan>();
             pipelineUtility.Create(config.second, vulkanContext->logicalDevice, renderPass,
-                renderPassContext->swapChainData->extent, descriptorSetLayouts, vulkanContext->msaa, pipeline);
+                renderPassContext->swapchainContext->extent, descriptorSetLayouts, vulkanContext->msaa, pipeline);
 
             pipelines.emplace(config.first, pipeline);
         }

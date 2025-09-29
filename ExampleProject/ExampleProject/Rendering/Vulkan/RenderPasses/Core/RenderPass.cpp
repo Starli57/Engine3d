@@ -15,6 +15,6 @@ namespace ClientVulkanApi
         for(uint32_t i = 0; i < depthAttachmentsCount; i++)
             clearValues[colorAttachmentsCount + i].depthStencil.depth = 1.0f;
 
-        VulkanApi::BeginRenderPass(clearValues, frameBuffers[imageIndex], renderPass, commandBuffer, renderPassContext->swapChainData->extent);
+        VulkanApi::BeginRenderPass(clearValues, frameBuffers[imageIndex], renderPass, commandBuffer, renderPassContext->swapchainContext->extent);
     }
 }

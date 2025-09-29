@@ -5,17 +5,17 @@
 
 #include "VulkanContext.h"
 #include "EngineCore/Core/Ref.h"
-#include "EngineCore/Rendering/Vulkan/Models/SwapChainData.h"
+#include "EngineCore/Rendering/Vulkan/Models/SwapchainContext.h"
 #include "EngineCore/Rendering/Vulkan/Models/QueueFamilyIndices.h"
 
 namespace VulkanApi
 {
-	class SwapChain
+	class SwapchainManager
 	{
 	public:
 
-		SwapChain(VulkanContext* vulkanContext, Ref<SwapChainData> swapChainData);
-		~SwapChain();
+		SwapchainManager(VulkanContext* vulkanContext, SwapchainContext* swapchainContext);
+		~SwapchainManager();
 
 		void Recreate();
 		void CreateSwapchain();
@@ -27,7 +27,7 @@ namespace VulkanApi
 
 	private:
 
-		Ref<SwapChainData> swapChainData;
+		SwapchainContext* swapchainContext;
 		VulkanContext* vulkanContext;
 		
 		QueueFamilyIndices physicalDeviceQueueIndices;

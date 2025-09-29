@@ -9,7 +9,7 @@
 #include "VulkanContext.h"
 #include "Descriptors/DescriptorsManager.h"
 
-#include "Models/SwapChainData.h"
+#include "Models/SwapchainContext.h"
 
 #include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/Ref.h"
@@ -30,8 +30,8 @@ namespace VulkanApi
 		VulkanContext* vulkanContext;
 
 		URef<DescriptorsManager> descriptorsManager;
-		Ref<SwapChain> swapChain;
-		Ref<SwapChainData> swapChainData;
+		Ref<SwapchainManager> swapchainManager;
+		SwapchainContext* swapchainContext;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;

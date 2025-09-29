@@ -7,7 +7,7 @@
 
 namespace VulkanApi
 {
-	struct SwapChainData
+	struct SwapchainContext
 	{
 	public:
 

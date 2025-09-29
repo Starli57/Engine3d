@@ -117,7 +117,7 @@ namespace ClientVulkanApi
         auto pipeline = CreateRef<PipelineVulkan>();
         VulkanApi::VkPipelineWrapper().Create(
             shadowPassPipelineConfig, vulkanContext->logicalDevice, renderPass,
-            renderPassContext->swapChainData->extent, descriptorSetLayouts, VK_SAMPLE_COUNT_1_BIT, pipeline);
+            renderPassContext->swapchainContext->extent, descriptorSetLayouts, VK_SAMPLE_COUNT_1_BIT, pipeline);
         pipelines.emplace(shadowPassPipelineConfig->pipelineName, pipeline);
     }
 
@@ -128,7 +128,7 @@ namespace ClientVulkanApi
         shadowMapBufferModel = CreateRef<VulkanApi::ImageModel>();
 
         CreateImage(
-            vulkanContext, renderPassContext->swapChainData->extent.width, renderPassContext->swapChainData->extent.height, 1, vulkanContext->depthFormat,
+            vulkanContext, renderPassContext->swapchainContext->extent.width, renderPassContext->swapchainContext->extent.height, 1, vulkanContext->depthFormat,
             VK_IMAGE_TILING_OPTIMAL,
             VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
             VK_SAMPLE_COUNT_1_BIT,
@@ -149,7 +149,7 @@ namespace ClientVulkanApi
 
         frameBuffers.resize(1);
         VulkanApi::CreateFrameBuffer(vulkanContext->logicalDevice, renderPass,
-            renderPassContext->swapChainData->extent.width, renderPassContext->swapChainData->extent.height, attachments, frameBuffers[0]);
+            renderPassContext->swapchainContext->extent.width, renderPassContext->swapchainContext->extent.height, attachments, frameBuffers[0]);
     }
 
     void RenderPassShadowMaps::CreateSampler()

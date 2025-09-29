@@ -53,7 +53,7 @@ ImguiVulkan::ImguiVulkan(const Ref<ProjectSettings>& projectSettings, VulkanApi:
     initInfo.RenderPass = renderPass;
     initInfo.Subpass = 0;
     initInfo.MinImageCount = 2;
-    initInfo.ImageCount = vulkanApi.swapChainData->imagesCount;
+    initInfo.ImageCount = vulkanApi.swapchainContext->imagesCount;
     initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 
     ImGui_ImplVulkan_Init(&initInfo);
