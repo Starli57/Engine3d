@@ -21,8 +21,8 @@ namespace VulkanApi
 		std::vector<VkImage> images;
 		std::vector<VkImageView> imageViews;
 
-		Ref<ImageModel> depthBufferModel;//todo: replace to render passes
-		Ref<ImageModel> msaaColorSample;//todo: replace to render passes
-		Ref<ImageModel> msaaDepthSample;//todo: replace to render passes
+		ImageModel* depthBufferModel;//todo: replace to render passes
+		ImageModel* msaaColorSample;//todo: replace to render passes
+		ImageModel* msaaDepthSample;//todo: replace to render passes
 	};
 }

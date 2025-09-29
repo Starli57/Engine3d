@@ -23,5 +23,5 @@ namespace VulkanApi
     
     void DestroyImageView(const VkDevice& logicalDevice, const VkImageView& imageView);
 
-    void DisposeImageModel(VkDevice& logicalDevice, Ref<ImageModel> imageModel);
+    void DisposeImageModel(const VkDevice& logicalDevice, const ImageModel* imageModel);
 }

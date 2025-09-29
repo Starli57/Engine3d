@@ -162,11 +162,11 @@ namespace VulkanApi
         vkDestroyImageView(logicalDevice, imageView, nullptr);
     }
 
-    void DisposeImageModel(VkDevice& logicalDevice, Ref<ImageModel> imageModel)
+    void DisposeImageModel(const VkDevice& logicalDevice, const ImageModel* imageModel)
     {
         DestroyImage(logicalDevice, imageModel->image);
         DestroyImageView(logicalDevice, imageModel->imageView);
         FreeDeviceMemory(logicalDevice, imageModel->imageMemory);
-        imageModel.reset();
+        delete imageModel;
     }
 }

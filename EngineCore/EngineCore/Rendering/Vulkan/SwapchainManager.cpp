@@ -78,7 +78,7 @@ namespace VulkanApi
 	{
 		spdlog::info("Create depth buffer");
 
-		swapchainContext->depthBufferModel = CreateRef<ImageModel>();
+		swapchainContext->depthBufferModel = new ImageModel();
 
 		CreateImage(
 			vulkanContext, swapchainContext->extent.width, swapchainContext->extent.height, 1, vulkanContext->depthFormat,
@@ -96,7 +96,7 @@ namespace VulkanApi
 	void SwapchainManager::CreateMSAAColorResources() const
 	{
 		spdlog::info("Create msaa color buffer");
-		swapchainContext->msaaColorSample = CreateRef<ImageModel>();
+		swapchainContext->msaaColorSample = new ImageModel();
 		CreateImage(vulkanContext, 
 			swapchainContext->extent.width, swapchainContext->extent.height, 1, vulkanContext->imageFormat,
 			VK_IMAGE_TILING_OPTIMAL, 
@@ -113,7 +113,7 @@ namespace VulkanApi
 	{
 		spdlog::info("Create msaa depth buffer");
 		
-		swapchainContext->msaaDepthSample = CreateRef<ImageModel>();
+		swapchainContext->msaaDepthSample = new ImageModel();
 		CreateImage(vulkanContext, 
 			swapchainContext->extent.width, swapchainContext->extent.height, 1, vulkanContext->depthFormat,
 			VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,

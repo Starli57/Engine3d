@@ -125,7 +125,7 @@ namespace ClientVulkanApi
     {
         spdlog::info("Create shadow map buffer");
 
-        shadowMapBufferModel = CreateRef<VulkanApi::ImageModel>();
+        shadowMapBufferModel = new VulkanApi::ImageModel();
 
         CreateImage(
             vulkanContext, renderPassContext->swapchainContext->extent.width, renderPassContext->swapchainContext->extent.height, 1, vulkanContext->depthFormat,

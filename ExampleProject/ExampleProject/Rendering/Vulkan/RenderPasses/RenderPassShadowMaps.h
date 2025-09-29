@@ -19,7 +19,7 @@ namespace ClientVulkanApi
         void Render(VkCommandBuffer& commandBuffer, uint16_t frame, uint32_t imageIndex, std::function<bool(const Ref<Entity>& entity)> filter) override;
         void RenderEntity(const DrawEntity& drawEntity, const VkCommandBuffer& commandBuffer, const Ref<PipelineVulkan>& pipeline) const;
         
-        Ref<VulkanApi::ImageModel> GetImageBuffer() { return shadowMapBufferModel; }
+        VulkanApi::ImageModel* GetImageBuffer() const { return shadowMapBufferModel; }
         VkSampler& GetSampler() { return sampler; }
 
     protected:
@@ -30,7 +30,7 @@ namespace ClientVulkanApi
 
         void CreateSampler();
 
-        Ref<VulkanApi::ImageModel> shadowMapBufferModel;
+        VulkanApi::ImageModel* shadowMapBufferModel;
         VkSampler sampler;
     };
 }
