@@ -22,8 +22,8 @@ namespace Engine
 
 		void LoadAndDeserializeMesh(const std::filesystem::path& path, MeshAsset& meshAsset) const;
 		void LoadMesh(std::filesystem::path& path);
-		void SetupMeshBuffers(MeshAsset& meshAsset, uint32_t meshIndex);
-		void UnLoadAllMeshes();
+		void SetupMeshBuffers(MeshAsset& meshAsset, uint32_t meshIndex) const;
+		void UnLoadAllMeshes() const;
 
 		void LoadTexture(const std::filesystem::path& path);
 		void LoadTexture(const std::filesystem::path& path, uint32_t textureIndex);

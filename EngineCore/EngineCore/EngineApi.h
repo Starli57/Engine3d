@@ -53,7 +53,7 @@ namespace Engine
 		GLFWwindow* GetWindow() const { return window; }
 		Ref<Ecs> GetEcs() { return ecs; }
 		Ref<InputManager> GetInput() { return input; }
-		Ref<Engine::EntitySerializer> GetSerializer() { return entitySerializer; }
+		Ref<EntitySerializer> GetSerializer() { return entitySerializer; }
 		Ref<SystemsState> GetSystemsState() { return systemsState; }
 	
 		float GetDeltaTime() const { return deltaTime; }
@@ -76,7 +76,7 @@ namespace Engine
 		Ref<Ecs> ecs;
 		Ref<InputManager> input;
 		Ref<SystemsState> systemsState;
-		Ref<Engine::EntitySerializer> entitySerializer;
+		Ref<EntitySerializer> entitySerializer;
 	
 		float deltaTime;
 

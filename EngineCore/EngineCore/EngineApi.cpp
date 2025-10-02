@@ -21,7 +21,7 @@ namespace Engine
 		throw std::runtime_error("The rendering api is not supported");
 #endif
 
-		entitySerializer = CreateRef<Engine::EntitySerializer>(projectSettings,assetsDatabase);
+		entitySerializer = CreateRef<EntitySerializer>(projectSettings,assetsDatabase);
 	
 		spdlog::info("--Engine init finished--");
 	}

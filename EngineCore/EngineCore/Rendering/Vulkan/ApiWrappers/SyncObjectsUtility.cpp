@@ -10,8 +10,8 @@ namespace VulkanApi
 		rollback->Add([logicalDevice, semaphore]() { vkDestroySemaphore(logicalDevice, *semaphore, nullptr); });
 	}
 
-	void CreateVkFence(VkDevice logicalDevice, const VkFenceCreateInfo* createInfo, const VkAllocationCallbacks* allocator,
-		VkFence* fence, const Ref<Engine::Rollback>& rollback)
+	void CreateVkFence(VkDevice logicalDevice, const VkFenceCreateInfo* createInfo,
+	                   VkFence* fence, const Ref<Engine::Rollback>& rollback)
 	{
 		vkCreateFence(logicalDevice, createInfo, nullptr, fence);
 		rollback->Add([logicalDevice, fence]() { vkDestroyFence(logicalDevice, *fence, nullptr); });

@@ -59,8 +59,8 @@ namespace VulkanApi
 
 	void DisposeBuffer(const VkDevice& logicalDevice, const VkBuffer& buffer, const VkDeviceMemory& bufferMemory)
 	{
-		vkDestroyBuffer(logicalDevice, buffer, nullptr);
-		vkFreeMemory(logicalDevice, bufferMemory, nullptr);
+		if (buffer != VK_NULL_HANDLE) vkDestroyBuffer(logicalDevice, buffer, nullptr);
+		if (bufferMemory != VK_NULL_HANDLE) vkFreeMemory(logicalDevice, bufferMemory, nullptr);
 	}
 
 	void CopyBuffer(const VkDevice& logicalDevice, const VkQueue& graphicsQueue, const VkBuffer& srcBuffer, const VkBuffer& dstBuffer,

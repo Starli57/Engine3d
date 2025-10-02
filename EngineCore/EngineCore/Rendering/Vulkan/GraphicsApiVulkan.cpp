@@ -251,7 +251,7 @@ namespace VulkanApi
 		{
 			CreateVkSemaphore(vulkanContext->logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i], rollback);
 			CreateVkSemaphore(vulkanContext->logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i], rollback);
-			CreateVkFence(vulkanContext->logicalDevice, &fenceInfo, nullptr, &drawFences[i], rollback);
+			CreateVkFence(vulkanContext->logicalDevice, &fenceInfo, &drawFences[i], rollback);
 		}
 	}
 }

@@ -15,8 +15,6 @@
 #include "EngineCore/Utilities/YamlConverters.h"
 
 #include "EngineCore/CustomAssert.h"
-#include "EngineCore/Rendering/Vulkan/ApiWrappers/VertexBufferUtility.h"
-#include "EngineCore/Rendering/Vulkan/ApiWrappers/IndexBufferUtility.h"
 
 namespace Engine
 {
@@ -366,17 +364,23 @@ namespace Engine
         SetupMeshBuffers(meshAsset, meshIter->second);
     }
 
-    void AssetsLoaderVulkan::SetupMeshBuffers(MeshAsset& meshAsset, uint32_t meshIndex)
+    void AssetsLoaderVulkan::SetupMeshBuffers(MeshAsset& meshAsset, uint32_t meshIndex) const
     {
         auto commandPool = vulkanApi->GetCommandPool();
 
         graphicsQueueMutex->lock();
-        VulkanApi::CreateVertexBuffer(vulkanApi->vulkanContext,
-            meshAsset.vertices, assetsDatabase->vertexBuffers.at(meshIndex), assetsDatabase->vertexBuffersMemory.at(meshIndex), commandPool);
+    	
+    	uint64_t vertexBufferSize = sizeof(Vertex) * meshAsset.vertices.size();
+    	VkBufferUsageFlags vertexDistUsageFlags = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+        CreateDeviceLocalBuffer(vulkanApi->vulkanContext, vertexBufferSize, meshAsset.vertices.data(), vertexDistUsageFlags,
+        	assetsDatabase->vertexBuffers.at(meshIndex), assetsDatabase->vertexBuffersMemory.at(meshIndex), commandPool);
+    	
+    	VkDeviceSize indexBufferSize = sizeof(meshAsset.indices.at(0)) * meshAsset.indices.size();
+    	VkBufferUsageFlags indexDistUsageFlags = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+        VulkanApi::CreateDeviceLocalBuffer(vulkanApi->vulkanContext, indexBufferSize, meshAsset.indices.data(), indexDistUsageFlags, 
+			assetsDatabase->indexBuffers.at(meshIndex), assetsDatabase->indexBuffersMemory.at(meshIndex), commandPool);
 
-        VulkanApi::CreateIndexBuffer(vulkanApi->vulkanContext, meshAsset.indices, assetsDatabase->indexBuffers.at(meshIndex),
-            assetsDatabase->indexBuffersMemory.at(meshIndex), commandPool);
-        graphicsQueueMutex->unlock();
+    	graphicsQueueMutex->unlock();
 
         assetsDatabase->indexesCount.at(meshIndex) = static_cast<uint32_t>(meshAsset.indices.size());
 
@@ -396,12 +400,13 @@ namespace Engine
         assetsDatabase->meshLoadStatuses.at(meshIndex) = 2;
     }
 
-    void AssetsLoaderVulkan::UnLoadAllMeshes()
+    void AssetsLoaderVulkan::UnLoadAllMeshes() const
     {
         for (int i = 0; i < assetsDatabase->vertexBuffers.size(); i++)
-            VulkanApi::DisposeVertexBuffer(vulkanApi->vulkanContext->logicalDevice, assetsDatabase->vertexBuffers.at(i), assetsDatabase->vertexBuffersMemory.at(i));
+	        VulkanApi::DisposeBuffer(vulkanApi->vulkanContext->logicalDevice, assetsDatabase->vertexBuffers.at(i), assetsDatabase->vertexBuffersMemory.at(i));
+
         for (int i = 0; i < assetsDatabase->indexBuffers.size(); i++)
-            VulkanApi::DisposeIndexBuffer(vulkanApi->vulkanContext->logicalDevice, assetsDatabase->indexBuffers.at(i), assetsDatabase->indexBuffersMemory.at(i));
+            VulkanApi::DisposeBuffer(vulkanApi->vulkanContext->logicalDevice, assetsDatabase->indexBuffers.at(i), assetsDatabase->indexBuffersMemory.at(i));
     }
 
     void AssetsLoaderVulkan::LoadMaterial(std::filesystem::path& path)
