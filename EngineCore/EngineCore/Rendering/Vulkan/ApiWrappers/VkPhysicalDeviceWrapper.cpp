@@ -3,7 +3,7 @@
 
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/Rendering/Vulkan/Models/PhysicalDeviceExtensions.h"
-#include "EngineCore/Rendering/Vulkan/ApiWrappers/SwapchainUtility.h"
+#include "EngineCore/Rendering/Vulkan/Models/SwapchainSurfaceSettings.h"
 
 namespace VulkanApi
 {
@@ -11,14 +11,15 @@ namespace VulkanApi
     {
         spdlog::info("Select physical rendering device");
 
-        auto devices = GetRenderingDevicesList(vulkanContext->instance, vulkanContext->windowSurface);
+        std::vector<VkPhysicalDevice> renderingDevices;
+        RefRenderingDevicesList(vulkanContext, renderingDevices);
 
-        Engine::CAssert::Check(!devices.empty(), "Physical rendering device not found");
-        spdlog::info("Physical rendering devices found: {0}", devices.size());
+        Engine::CAssert::Check(!renderingDevices.empty(), "Physical rendering device not found");
+        spdlog::info("Physical rendering devices found: {0}", renderingDevices.size());
 
         uint64_t bestScore = 0;
 
-        for (auto& device : devices)
+        for (auto& device : renderingDevices)
         {
             const auto score = CalculateRenderingScore(device);
             if (score > bestScore)
@@ -29,71 +30,62 @@ namespace VulkanApi
         }
     }
 
-    std::vector<VkPhysicalDevice> GetDevicesList(const VkInstance& instance)
+    void RefDevicesList(const VulkanContext* vulkanContext, std::vector<VkPhysicalDevice>& outDevices)
     {
         uint32_t deviceCount = 0;
-        vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
+        vkEnumeratePhysicalDevices(vulkanContext->instance, &deviceCount, nullptr);
 
-        std::vector<VkPhysicalDevice> devices(deviceCount);
-        vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
-
-        return devices;
+        std::vector<VkPhysicalDevice> devices;
+        devices.resize(deviceCount);
+        vkEnumeratePhysicalDevices(vulkanContext->instance, &deviceCount, devices.data());
+        
+        outDevices.resize(deviceCount);
+        for (uint32_t deviceIndex = 0; deviceIndex < deviceCount; ++deviceIndex) outDevices[deviceIndex] = devices[0];
     }
 
-    std::vector<VkPhysicalDevice> GetRenderingDevicesList(const VkInstance& instance, VkSurfaceKHR surface)
+    void RefRenderingDevicesList(const VulkanContext* vulkanContext, std::vector<VkPhysicalDevice>& outRenderingDevices)
     {
-        auto allDevices = GetDevicesList(instance);
+        RefDevicesList(vulkanContext, outRenderingDevices);
 
-        std::vector<VkPhysicalDevice> renderingDevices;
-        for (int i = 0; i < allDevices.size(); i++)
+        for (int i = 0; i < outRenderingDevices.size(); i++)
         {
-            auto device = allDevices.at(i);
-            if (!DoSupportQueueFamilies(device, surface))  continue;
-            if (!DoSupportPhysicalDeviceExtensions(device)) continue;
-            if (!DoSupportSwapChain(device, surface)) continue;
-            renderingDevices.push_back(device);
+            auto device = outRenderingDevices.at(i);
+            if (!DoSupportQueueFamilies(vulkanContext))  continue;
+            if (!DoSupportPhysicalDeviceExtensions(vulkanContext)) continue;
+            if (!DoSupportSwapchain(vulkanContext)) continue;
+            outRenderingDevices.push_back(device);
         }
-
-        return renderingDevices;
     }
-
-
-    QueueFamilyIndices GetQueueFamilies(const VkPhysicalDevice& device, const VkSurfaceKHR& surface)
+    
+    void SetQueueFamilies(VulkanContext* vulkanContext)
     {
-        QueueFamilyIndices indices;
-
         uint32_t queueFamilyCount = 0;
-        vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, nullptr);
+        vkGetPhysicalDeviceQueueFamilyProperties(vulkanContext->physicalDevice, &queueFamilyCount, nullptr);
 
         std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
-        vkGetPhysicalDeviceQueueFamilyProperties(device, &queueFamilyCount, queueFamilies.data());
+        vkGetPhysicalDeviceQueueFamilyProperties(vulkanContext->physicalDevice, &queueFamilyCount, queueFamilies.data());
 
         for (int i = 0; i < queueFamilies.size(); i++)
         {
             VkBool32 presentSupport = false;
-            vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
+            vkGetPhysicalDeviceSurfaceSupportKHR(vulkanContext->physicalDevice, i, vulkanContext->windowSurface, &presentSupport);
 
-            if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
-                indices.graphicsFamily = i;
-
-            if (presentSupport)
-                indices.presentationFamily = i;
+            if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) vulkanContext->queueFamilies.graphicsFamily = i;
+            if (presentSupport) vulkanContext->queueFamilies.presentationFamily = i;
         }
-
-        return indices;
     }
 
-    uint64_t CalculateRenderingScore(const VkPhysicalDevice& device)
+    uint64_t CalculateRenderingScore(VkPhysicalDevice& physicalDevice)
     {
         //todo: make better score calculation
 
         VkPhysicalDeviceProperties2 deviceProperties {};
         deviceProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-        vkGetPhysicalDeviceProperties2(device, &deviceProperties);
+        vkGetPhysicalDeviceProperties2(physicalDevice, &deviceProperties);
         
         VkPhysicalDeviceMemoryProperties2 memoryProperties {};
         memoryProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MEMORY_PROPERTIES_2;
-        vkGetPhysicalDeviceMemoryProperties2(device, &memoryProperties);
+        vkGetPhysicalDeviceMemoryProperties2(physicalDevice, &memoryProperties);
 
         uint64_t totalMemory = 0;
         spdlog::info("Device: {0}", deviceProperties.properties.deviceName);
@@ -111,18 +103,18 @@ namespace VulkanApi
         return discreteMult * totalMemory;
     }
 
-    bool DoSupportQueueFamilies(const VkPhysicalDevice& device, const VkSurfaceKHR& surface)
+    bool DoSupportQueueFamilies(const VulkanContext* vulkanContext)
     {
-        return GetQueueFamilies(device, surface).IsComplete();
+        return vulkanContext->queueFamilies.IsComplete();
     }
 
-    bool DoSupportPhysicalDeviceExtensions(const VkPhysicalDevice& device)
+    bool DoSupportPhysicalDeviceExtensions(const VulkanContext* vulkanContext)
     {
         uint32_t extensionCount;
-        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, nullptr);
+        vkEnumerateDeviceExtensionProperties(vulkanContext->physicalDevice, nullptr, &extensionCount, nullptr);
 
         std::vector<VkExtensionProperties> availableExtensions(extensionCount);
-        vkEnumerateDeviceExtensionProperties(device, nullptr, &extensionCount, availableExtensions.data());
+        vkEnumerateDeviceExtensionProperties(vulkanContext->physicalDevice, nullptr, &extensionCount, availableExtensions.data());
 
         std::set<std::string> requiredExtensions(physicalDeviceExtensions.begin(), physicalDeviceExtensions.end());
 
@@ -133,20 +125,20 @@ namespace VulkanApi
         return requiredExtensions.empty();
     }
 
-    void PrintPhysicalDeviceDebugInformation(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& windowSurface)
+    void PrintPhysicalDeviceDebugInformation(VulkanContext* vulkanContext)
     {
         VkPhysicalDeviceProperties2 deviceProperties {};
         deviceProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-        vkGetPhysicalDeviceProperties2(physicalDevice, &deviceProperties);
+        vkGetPhysicalDeviceProperties2(vulkanContext->physicalDevice, &deviceProperties);
         spdlog::info("Rendering GPU: {0}", deviceProperties.properties.deviceName);
+        
         uint32_t major = VK_API_VERSION_MAJOR(deviceProperties.properties.apiVersion);
         uint32_t minor = VK_API_VERSION_MINOR(deviceProperties.properties.apiVersion);
         spdlog::info("Device API Versions: {}.{}", major, minor);
         
-        SwapChainSurfaceSettings surfaceSettings;
-
-        GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
-        GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
+        SwapchainSurfaceSettings surfaceSettings;
+        SetSwapchainColorFormats(vulkanContext, surfaceSettings.formats);
+        SetSwapchainPresentModes(vulkanContext, surfaceSettings.presentModes);
 
         for (auto colorFormat : surfaceSettings.formats)
         {
@@ -157,34 +149,37 @@ namespace VulkanApi
         {
             spdlog::info("Available present mode: {0}", static_cast<int>(mode));
         }
-
-        spdlog::info("Max MSAA: {0}", static_cast<int>(GetMaxUsableSampleCount(physicalDevice)));
+        
+        SetMaxUsableSampleCount(vulkanContext);
+        spdlog::info("Max MSAA: {0}", static_cast<int>(vulkanContext->msaa));
     }
 
-    VkSampleCountFlagBits GetMaxUsableSampleCount(const VkPhysicalDevice& physicalDevice) 
+    void SetMaxUsableSampleCount(VulkanContext* vulkanContext) 
     {
         VkPhysicalDeviceProperties2 deviceProperties {};
         deviceProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
-        vkGetPhysicalDeviceProperties2(physicalDevice, &deviceProperties);
+        vkGetPhysicalDeviceProperties2(vulkanContext->physicalDevice, &deviceProperties);
 
         VkSampleCountFlags counts = deviceProperties.properties.limits.framebufferColorSampleCounts & deviceProperties.properties.limits.framebufferDepthSampleCounts;
-        if (counts & VK_SAMPLE_COUNT_64_BIT) { return VK_SAMPLE_COUNT_64_BIT; }
-        if (counts & VK_SAMPLE_COUNT_32_BIT) { return VK_SAMPLE_COUNT_32_BIT; }
-        if (counts & VK_SAMPLE_COUNT_16_BIT) { return VK_SAMPLE_COUNT_16_BIT; }
-        if (counts & VK_SAMPLE_COUNT_8_BIT) { return VK_SAMPLE_COUNT_8_BIT; }
-        if (counts & VK_SAMPLE_COUNT_4_BIT) { return VK_SAMPLE_COUNT_4_BIT; }
-        if (counts & VK_SAMPLE_COUNT_2_BIT) { return VK_SAMPLE_COUNT_2_BIT; }
+        VkSampleCountFlagBits msaa = VK_SAMPLE_COUNT_1_BIT;
+        
+        if (counts & VK_SAMPLE_COUNT_64_BIT)        msaa = VK_SAMPLE_COUNT_64_BIT;
+        else if (counts & VK_SAMPLE_COUNT_32_BIT)   msaa = VK_SAMPLE_COUNT_32_BIT; 
+        else if (counts & VK_SAMPLE_COUNT_16_BIT)   msaa = VK_SAMPLE_COUNT_16_BIT;
+        else if (counts & VK_SAMPLE_COUNT_8_BIT)    msaa = VK_SAMPLE_COUNT_8_BIT; 
+        else if (counts & VK_SAMPLE_COUNT_4_BIT)    msaa = VK_SAMPLE_COUNT_4_BIT; 
+        else if (counts & VK_SAMPLE_COUNT_2_BIT)    msaa = VK_SAMPLE_COUNT_2_BIT; 
 
-        return VK_SAMPLE_COUNT_1_BIT;
+        vulkanContext->msaa = msaa;
     }
 
-    void SetSupportedFormat(const VkPhysicalDevice& physicalDevice, const std::vector<VkFormat>& formats,
-                             const VkImageTiling tiling, const VkFormatFeatureFlags features, VkFormat& outFormat)
+    void SetSupportedFormat(const VulkanContext* vulkanContext, const std::vector<VkFormat>& formats,
+            const VkImageTiling tiling, const VkFormatFeatureFlags features, VkFormat& outFormat)
     {
         for (const VkFormat format : formats) 
         {
             VkFormatProperties properties;
-            vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &properties);
+            vkGetPhysicalDeviceFormatProperties(vulkanContext->physicalDevice, format, &properties);
 
             if (tiling == VK_IMAGE_TILING_LINEAR && (properties.linearTilingFeatures & features) == features)
             {
@@ -202,7 +197,7 @@ namespace VulkanApi
         throw std::runtime_error("Failed to find supported format!");
     }
 
-    void SetDepthBufferFormat(const VkPhysicalDevice& physicalDevice, VkFormat& outFormat)
+    void SetDepthBufferFormat(VulkanContext* vulkanContext)
     {
         const std::vector<VkFormat> formats =
         {
@@ -211,6 +206,6 @@ namespace VulkanApi
             VK_FORMAT_D24_UNORM_S8_UINT 
         };
 
-        SetSupportedFormat(physicalDevice, formats, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT, outFormat);
+        SetSupportedFormat(vulkanContext, formats, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT, vulkanContext->depthFormat);
     }
 }

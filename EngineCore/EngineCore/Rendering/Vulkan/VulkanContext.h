@@ -4,31 +4,37 @@
 
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/PipelinesCollection.h"
+#include "Models/QueueFamilyIndices.h"
+#include "Models/SwapchainContext.h"
 
 namespace VulkanApi
 {
 	class VulkanContext
 	{
 	public:
+		VulkanContext() { swapchainContext = new SwapchainContext(); }
+		~VulkanContext() { delete swapchainContext; }
+		
+		GLFWwindow* window = nullptr;
+		SwapchainContext* swapchainContext = nullptr;
 
-		GLFWwindow* window;
+		VkInstance instance = VK_NULL_HANDLE;
+		VkSurfaceKHR windowSurface = VK_NULL_HANDLE;
 
-		VkInstance instance;
-		VkSurfaceKHR windowSurface;
-
-		VkPhysicalDevice physicalDevice;
-		VkDevice logicalDevice;
-
-		VkQueue graphicsQueue;
-		VkQueue presentationQueue;
-
+		VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+		VkDevice logicalDevice = VK_NULL_HANDLE;
+		
+		VkQueue graphicsQueue = VK_NULL_HANDLE;
+		VkQueue presentationQueue = VK_NULL_HANDLE;
+		QueueFamilyIndices queueFamilies;
+		
 		Ref<PipelinesCollection> pipelinesCollection;
 
 		static constexpr uint16_t maxFramesInFlight = 3;
 		uint64_t const frameSyncTimeout = UINT64_MAX;//todo: setup real timeout
 
-		VkFormat imageFormat;
-		VkFormat depthFormat;
-		VkSampleCountFlagBits msaa;
+		VkFormat imageFormat = VK_FORMAT_R8G8B8A8_SRGB;
+		VkFormat depthFormat = VK_FORMAT_D32_SFLOAT;
+		VkSampleCountFlagBits msaa = VK_SAMPLE_COUNT_1_BIT;
 	};
 }

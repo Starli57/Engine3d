@@ -11,13 +11,11 @@ namespace VulkanApi
 	{
 		spdlog::info("Create logical device");
 
-		auto queueFamilies = GetQueueFamilies(vulkanContext->physicalDevice, vulkanContext->windowSurface);
-
 		std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
 		std::set<uint32_t> uniqueQueueFamilies =
 		{
-			queueFamilies.graphicsFamily.value(),
-			queueFamilies.presentationFamily.value()
+			vulkanContext->queueFamilies.graphicsFamily.value(),
+			vulkanContext->queueFamilies.presentationFamily.value()
 		};
 
 		for (uint32_t queueFamily : uniqueQueueFamilies)
@@ -60,8 +58,8 @@ namespace VulkanApi
 		auto createStatus = vkCreateDevice(vulkanContext->physicalDevice, &createInfo, nullptr, &logicalDevice);
 		Engine::CAssert::Check(createStatus == VK_SUCCESS, "failed to create logical device, status: " + createStatus);
 
-		vkGetDeviceQueue(logicalDevice, queueFamilies.graphicsFamily.value(), 0, &vulkanContext->graphicsQueue);
-		vkGetDeviceQueue(logicalDevice, queueFamilies.presentationFamily.value(), 0, &vulkanContext->presentationQueue);
+		vkGetDeviceQueue(logicalDevice, vulkanContext->queueFamilies.graphicsFamily.value(), 0, &vulkanContext->graphicsQueue);
+		vkGetDeviceQueue(logicalDevice, vulkanContext->queueFamilies.presentationFamily.value(), 0, &vulkanContext->presentationQueue);
 
 		return logicalDevice;
 	}

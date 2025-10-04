@@ -15,9 +15,9 @@ namespace VulkanApi
         CommandsManager(VulkanContext* vulkanContext, const int buffersCount);
         ~CommandsManager();
 
-        void CreateCommandPool();
-        VkCommandPool& GetCommandPool();
-        VkCommandBuffer& GetCommandBuffer(int frame);
+        void CreateCommandPool(VkCommandPool& outCommandPool);
+        void RefCommandPool(VkCommandPool& outCommandPool);
+        void RefCommandBuffer(int frame, VkCommandBuffer& outCommandBuffer);
         
     private:
         VulkanContext* vulkanContext;

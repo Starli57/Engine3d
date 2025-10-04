@@ -12,8 +12,7 @@ ImguiVulkan::ImguiVulkan(const Ref<ProjectSettings>& projectSettings, VulkanApi:
 
     rollback = CreateRef<Engine::Rollback>("Editor");
 
-    queueFamilies = VulkanApi::GetQueueFamilies(vulkanApi.vulkanContext->physicalDevice, vulkanApi.vulkanContext->windowSurface);
-    graphicsQueueFamily = queueFamilies.graphicsFamily.value();
+    graphicsQueueFamily = vulkanApi.vulkanContext->queueFamilies.graphicsFamily.value();
 
     CreateRenderPass(renderPass);
 

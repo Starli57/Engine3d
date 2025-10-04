@@ -6,7 +6,7 @@
 
 namespace VulkanApi
 {
-    struct SwapChainSurfaceSettings
+    struct SwapchainSurfaceSettings
     {
         VkSurfaceCapabilitiesKHR capabilities;
         std::vector<VkSurfaceFormatKHR> formats;

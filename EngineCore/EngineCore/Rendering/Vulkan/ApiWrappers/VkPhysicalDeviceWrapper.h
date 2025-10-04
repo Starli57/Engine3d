@@ -1,30 +1,30 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include <optional>
 
-#include "EngineCore/Rendering/Vulkan/Models/QueueFamilyIndices.h"
-#include "EngineCore/Rendering/Vulkan/SwapchainManager.h"
+#include "EngineCore/Rendering/Vulkan/VkSwapchainWrapper.h"
+#include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 
 namespace VulkanApi
 {
-	std::vector<VkPhysicalDevice> GetDevicesList(const VkInstance& instance);
-	std::vector<VkPhysicalDevice> GetRenderingDevicesList(const VkInstance& instance, VkSurfaceKHR surface);
-
 	void ChooseRenderingDevice(VulkanContext* vulkanContext);
-	QueueFamilyIndices GetQueueFamilies(const VkPhysicalDevice& device, const VkSurfaceKHR& surface);
 
-	void PrintPhysicalDeviceDebugInformation(VkPhysicalDevice& device, VkSurfaceKHR& surface);
+	void RefDevicesList(const VulkanContext* vulkanContext, std::vector<VkPhysicalDevice>& outDeviceList);
+	void RefRenderingDevicesList(const VulkanContext* vulkanContext, std::vector<VkPhysicalDevice>& outRenderingDeviceList);
 
-	uint64_t CalculateRenderingScore(const VkPhysicalDevice& device);
+	void SetQueueFamilies(VulkanContext* vulkanContext);
 
-	bool DoSupportQueueFamilies(const VkPhysicalDevice& device, const VkSurfaceKHR& surface);
-	bool DoSupportPhysicalDeviceExtensions(const VkPhysicalDevice& device);
+	void PrintPhysicalDeviceDebugInformation(VulkanContext* vulkanContext);
 
-	VkSampleCountFlagBits GetMaxUsableSampleCount(const VkPhysicalDevice& physicalDevice);
+	uint64_t CalculateRenderingScore(VkPhysicalDevice& physicalDevice);
 
-	void SetSupportedFormat(const VkPhysicalDevice& physicalDevice, const std::vector<VkFormat>& formats,
-							 VkImageTiling tiling, VkFormatFeatureFlags features, VkFormat& outFormat);
+	bool DoSupportQueueFamilies(const VulkanContext* vulkanContext);
+	bool DoSupportPhysicalDeviceExtensions(const VulkanContext* vulkanContext);
 
-	void SetDepthBufferFormat(const VkPhysicalDevice& physicalDevice, VkFormat& outFormat);
+	void SetMaxUsableSampleCount(VulkanContext* vulkanContext);
+
+	void SetSupportedFormat(const VulkanContext* vulkanContext, const std::vector<VkFormat>& formats,
+	                        VkImageTiling tiling, VkFormatFeatureFlags features, VkFormat& outFormat);
+
+	void SetDepthBufferFormat(VulkanContext* vulkanContext);
 }

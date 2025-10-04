@@ -23,7 +23,7 @@ namespace Engine
     {
         graphicsQueueMutex = CreateUniqueRef<std::mutex>();
     
-        vulkanApi = dynamic_cast<VulkanApi::GraphicsApiVulkan*>(graphicsApi);
+        vulkanApi = dynamic_cast<GraphicsApiVulkan*>(graphicsApi);
     	assetsDatabase->materialLoadStatuses.resize(assetsDatabase->materialsPaths.size());
     	assetsDatabase->materials.resize(assetsDatabase->materialsPaths.size());
 
@@ -246,7 +246,9 @@ namespace Engine
             width, height, mipLevels, vulkanApi->vulkanContext->imageFormat,
             tiling, usageFlags, VK_SAMPLE_COUNT_1_BIT, memoryFlags, image, assetsDatabase->imagesMemory.at(textureIndex));
         
-        auto commandPool = vulkanApi->GetCommandPool();
+        VkCommandPool commandPool = VK_NULL_HANDLE;
+    	vulkanApi->commandsManager->RefCommandPool(commandPool);
+    	
         auto commandBuffer = VulkanApi::BeginCommandBuffer(vulkanApi->vulkanContext->logicalDevice, commandPool);
 
         VulkanApi::TransitionImageLayout(commandBuffer, mipLevels, image,
@@ -366,7 +368,8 @@ namespace Engine
 
     void AssetsLoaderVulkan::SetupMeshBuffers(MeshAsset& meshAsset, uint32_t meshIndex) const
     {
-        auto commandPool = vulkanApi->GetCommandPool();
+    	VkCommandPool commandPool = VK_NULL_HANDLE;
+    	vulkanApi->commandsManager->RefCommandPool(commandPool);
 
         graphicsQueueMutex->lock();
     	

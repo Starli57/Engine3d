@@ -22,16 +22,16 @@
 
 #include "ApiWrappers/VkPhysicalDeviceWrapper.h"
 
-namespace VulkanApi
+namespace Engine
 {
-	class GraphicsApiVulkan : public Engine::IGraphicsApi
+	class GraphicsApiVulkan : public IGraphicsApi
 	{
 	public:
-		VulkanContext* vulkanContext;
+		VulkanApi::VulkanContext* vulkanContext;
 
-		URef<DescriptorsManager> descriptorsManager;
-		Ref<SwapchainManager> swapchainManager;
-		SwapchainContext* swapchainContext;
+		URef<VulkanApi::DescriptorsManager> descriptorsManager;
+		VulkanApi::SwapchainContext* swapchainContext;
+		VulkanApi::CommandsManager* commandsManager;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;
@@ -45,9 +45,6 @@ namespace VulkanApi
 		
 		uint32_t GetImageIndex() const { return imageIndex; }
 		uint16_t GetFrame() const { return frame; }
-		
-		VkCommandPool& GetCommandPool() const { return commandsManager->GetCommandPool(); }
-		VkCommandBuffer& GetCommandBuffer() const { return commandsManager->GetCommandBuffer(frame); }
 		
 		GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager, const Ref<Engine::ResourcesStorageVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* window);
 		virtual ~GraphicsApiVulkan() override;
@@ -63,8 +60,6 @@ namespace VulkanApi
 		Ref<Engine::ResourcesStorageVulkan> assetDatabase;
 		Ref<ProjectSettings> projectSettings;
 		Ref<Engine::Rollback> rollback;
-		
-		CommandsManager* commandsManager;
 
 		uint32_t imageIndex = 0;
 		uint16_t frame = 0;
@@ -81,7 +76,7 @@ namespace VulkanApi
 		void CreateSyncObjects();
 		void CreateTextureSampler();
 
-		void RecreateSwapChain();
+		void DisposeAndRecreateSwapchain();
 
 		VkResult AcquireNextImage();
 	};

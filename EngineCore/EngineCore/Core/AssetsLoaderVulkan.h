@@ -39,7 +39,7 @@ namespace Engine
 		//todo: replace and make via a pattern
 		URef<std::mutex> graphicsQueueMutex;
 
-		VulkanApi::GraphicsApiVulkan* vulkanApi;
+		GraphicsApiVulkan* vulkanApi;
 		Ref<ResourcesStorageVulkan> assetsDatabase;
 		Ref<ProjectSettings> projectSettings;
 

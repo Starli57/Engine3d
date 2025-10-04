@@ -29,31 +29,33 @@ namespace VulkanApi
         commandPools.clear();
     }
 
-    void CommandsManager::CreateCommandPool()
+    void CommandsManager::CreateCommandPool(VkCommandPool& outCommandPool)
     {
         createPoolMutex->lock();
         auto threadId = std::this_thread::get_id();
         auto poolIndex = commandPools.size();
         threadsMapping.emplace(threadId, poolIndex);
+
+        VulkanApi::CreateCommandPool(vulkanContext, outCommandPool);
+        commandPools.emplace_back(outCommandPool);
         
-        commandPools.push_back(VulkanApi::CreateCommandPool(vulkanContext));
         commandBuffers.emplace_back(buffersCount);
         AllocateCommandBuffers(vulkanContext->logicalDevice, commandPools.at(poolIndex), commandBuffers.at(poolIndex), buffersCount);
         createPoolMutex->unlock();
     }
 
-    VkCommandPool& CommandsManager::GetCommandPool()
+    void CommandsManager::RefCommandPool(VkCommandPool& outCommandPool)
     {
         const auto threadId = std::this_thread::get_id();
-        if (!threadsMapping.contains(threadId)) CreateCommandPool();
-        
-        return commandPools.at(threadsMapping.at(threadId));
+        if (threadsMapping.contains(threadId)) outCommandPool = commandPools.at(threadsMapping.at(threadId));
+        else CreateCommandPool(outCommandPool);
     }
 
-    VkCommandBuffer& CommandsManager::GetCommandBuffer(const int frame)
+    void CommandsManager::RefCommandBuffer(const int frame, VkCommandBuffer& outCommandBuffer)
     {
         const auto threadId = std::this_thread::get_id();
-        GetCommandPool();
-        return commandBuffers.at(threadsMapping.at(threadId)).at(frame);
+        VkCommandPool commandPool;
+        RefCommandPool(commandPool);
+        outCommandBuffer = commandBuffers.at(threadsMapping.at(threadId)).at(frame);
     }
 }

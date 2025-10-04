@@ -72,8 +72,13 @@ namespace VulkanApi
 		allocInfo.descriptorSetCount = count;
 		allocInfo.pSetLayouts = layouts.data();
 
+		std::vector<VkDescriptorSet> descriptorSets;
+		descriptorSets.reserve(count);
+		const auto allocateStatus = vkAllocateDescriptorSets(logicalDevice, &allocInfo, descriptorSets.data());
+
 		setsReference.resize(count);
-		const auto allocateStatus = vkAllocateDescriptorSets(logicalDevice, &allocInfo, setsReference.data());
+		for (uint32_t i = 0; i < count; ++i) setsReference[i] = descriptorSets[i];
+		
 		Engine::CAssert::Check(allocateStatus == VK_SUCCESS, "Failed to allocate descriptor sets, status: " + allocateStatus);
 	}
 

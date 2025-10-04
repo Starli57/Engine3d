@@ -15,6 +15,8 @@ namespace VulkanApi
 		VkSwapchainKHR oldSwapChain;//todo: add usage to reuse resources
 
 		VkSurfaceFormatKHR surfaceFormat;
+		VkPresentModeKHR presentMode;
+		
 		VkExtent2D extent;
 
 		uint32_t imagesCount;

@@ -11,10 +11,10 @@ namespace ClientVulkanApi
     class RendererVulkan
     {
     public:
-        RendererVulkan(VulkanApi::GraphicsApiVulkan* graphicsApiVulkan, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs);
+        RendererVulkan(Engine::GraphicsApiVulkan* graphicsApiVulkan, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs);
     
     private:
-        VulkanApi::GraphicsApiVulkan* graphicsApi;
+        Engine::GraphicsApiVulkan* graphicsApi;
         Ref<Engine::ResourcesStorageVulkan> assetsDatabase;
         Ref<Ecs> ecs;
 

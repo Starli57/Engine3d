@@ -5,7 +5,7 @@
 
 namespace ClientVulkanApi
 {
-    RendererVulkan::RendererVulkan(VulkanApi::GraphicsApiVulkan* graphicsApiVulkan, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs)
+    RendererVulkan::RendererVulkan(Engine::GraphicsApiVulkan* graphicsApiVulkan, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs)
         : graphicsApi(graphicsApiVulkan), assetsDatabase(assetsDatabase), ecs(ecs)
     {
         graphicsApi->BindClientFunctions(
@@ -23,8 +23,10 @@ namespace ClientVulkanApi
         auto swapChainData = graphicsApi->swapchainContext;
         const auto frame = graphicsApi->GetFrame();
         const auto imageIndex = graphicsApi->GetImageIndex();
-        auto commandBuffer = graphicsApi->GetCommandBuffer();
-    
+        
+        VkCommandBuffer commandBuffer = VK_NULL_HANDLE;
+        graphicsApi->commandsManager->RefCommandBuffer(frame, commandBuffer);
+        
         graphicsApi->descriptorsManager->UpdateFrameDescriptors(frame);
         graphicsApi->descriptorsManager->UpdateMaterialsDescriptors(frame);
         preRenderPass->UpdateDrawingEntities();
