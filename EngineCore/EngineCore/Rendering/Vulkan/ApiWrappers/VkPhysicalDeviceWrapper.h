@@ -1,10 +1,9 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include <optional>
 
+#include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 #include "EngineCore/Rendering/Vulkan/Models/QueueFamilyIndices.h"
-#include "EngineCore/Rendering/Vulkan/SwapchainManager.h"
 
 namespace VulkanApi
 {

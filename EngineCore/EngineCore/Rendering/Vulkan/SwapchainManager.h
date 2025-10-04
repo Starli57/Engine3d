@@ -10,34 +10,19 @@
 
 namespace VulkanApi
 {
-	class SwapchainManager
-	{
-	public:
+	void RecreateSwapchain(VulkanContext* vulkanContext);
+	void CreateSwapchain(VulkanContext* vulkanContext);
+	void CreateSwapChainImageViews(VulkanContext* vulkanContext);
+	void CreateDepthBuffer(VulkanContext* vulkanContext);
+	void CreateMSAAColorResources(VulkanContext* vulkanContext);
+	void CreateMSAADepthResources(VulkanContext* vulkanContext);
+	void DisposeSwapchain(VulkanContext* vulkanContext);
+	
+	VkPresentModeKHR ChoosePresentMode(const std::vector<VkPresentModeKHR>& availableModes);
+	VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+	VkExtent2D ChooseSwapExtent(GLFWwindow& window, const VkSurfaceCapabilitiesKHR& capabilities);
 
-		SwapchainManager(VulkanContext* vulkanContext);
-		~SwapchainManager();
-
-		void Recreate();
-		void CreateSwapchain();
-		void CreateSwapChainImageViews() const;
-		void CreateDepthBuffer() const;
-		void CreateMSAAColorResources() const;
-		void CreateMSAADepthResources() const;
-		void Dispose() const;
-
-	private:
-		VulkanContext* vulkanContext;
-		
-		QueueFamilyIndices physicalDeviceQueueIndices;
-
-		SwapchainContext* GetSwapchainContext() const { return vulkanContext->swapchainContext; }
-		
-		VkPresentModeKHR ChoosePresentMode(const std::vector<VkPresentModeKHR>& availableModes) const;
-		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) const;
-		VkExtent2D ChooseSwapExtent(GLFWwindow& window, const VkSurfaceCapabilitiesKHR& capabilities) const;
-
-		void SetupSwapChainInfo(VkSwapchainCreateInfoKHR& createInfo, VkSurfaceKHR& surface, VkExtent2D& extent,
-			VkPresentModeKHR& presentMode, VkSurfaceFormatKHR& surfaceFormat, VkSurfaceCapabilitiesKHR& capabilities,
-			QueueFamilyIndices& physicalDeviceQueueIndices, uint32_t imageCount) const;
-	};
+	void SetupSwapChainInfo(VkSwapchainCreateInfoKHR& createInfo, VkSurfaceKHR& surface, VkExtent2D& extent,
+		VkPresentModeKHR& presentMode, VkSurfaceFormatKHR& surfaceFormat, VkSurfaceCapabilitiesKHR& capabilities,
+		QueueFamilyIndices& physicalDeviceQueueIndices, uint32_t imageCount);
 }

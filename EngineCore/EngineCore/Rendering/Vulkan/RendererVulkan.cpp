@@ -4,6 +4,7 @@
 
 #include "RendererVulkan.h"
 
+#include "SwapchainManager.h"
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/Profiler/Profiler.h"
 #include "ApiWrappers/VkImageWrapper.h"
@@ -31,6 +32,7 @@ namespace Engine
 	RendererVulkan::~RendererVulkan()
 	{
 		rollback.reset();
+		delete vulkanContext->swapchainContext;
 		delete vulkanContext;
 	}
 
@@ -69,11 +71,11 @@ namespace Engine
 			glfwWaitEvents();
 		}
 
-		spdlog::info("Recreate swapchain");
+		spdlog::info("RecreateSwapchain swapchain");
 		FinalizeRenderOperations();
 
 		onRenderPassesDispose();
-		swapchainManager->Recreate();
+		VulkanApi::RecreateSwapchain(vulkanContext);
 		onRenderPassesCreate();
 	}
 
@@ -178,6 +180,7 @@ namespace Engine
 	{
 		ChooseRenderingDevice(vulkanContext);
 		vulkanContext->msaa = VulkanApi::GetMaxUsableSampleCount(vulkanContext->physicalDevice);
+		vulkanContext->physicalDeviceQueueIndices = VulkanApi::GetQueueFamilies(vulkanContext->physicalDevice, vulkanContext->windowSurface);
 		VulkanApi::SetDepthBufferFormat(vulkanContext->physicalDevice, vulkanContext->depthFormat);
 		VulkanApi::PrintPhysicalDeviceDebugInformation(vulkanContext->physicalDevice, vulkanContext->windowSurface);
 	}
@@ -194,14 +197,12 @@ namespace Engine
 	void RendererVulkan::CreateSwapChain()
 	{
 		vulkanContext->swapchainContext = new VulkanApi::SwapchainContext();
-		swapchainManager = CreateRef<VulkanApi::SwapchainManager>(vulkanContext);
+		VulkanApi::CreateSwapchain(vulkanContext);
+		VulkanApi::CreateSwapChainImageViews(vulkanContext);
+		VulkanApi::CreateMSAAColorResources(vulkanContext);
+		VulkanApi::CreateMSAADepthResources(vulkanContext);
 
-		swapchainManager->CreateSwapchain();
-		swapchainManager->CreateSwapChainImageViews();
-		swapchainManager->CreateMSAAColorResources();
-		swapchainManager->CreateMSAADepthResources();
-
-		rollback->Add([this] { swapchainManager->Dispose(); });
+		rollback->Add([this] { VulkanApi::DisposeSwapchain(vulkanContext); });
 	}
 
 	void RendererVulkan::CreateDescriptorManager()
@@ -225,7 +226,7 @@ namespace Engine
 	void RendererVulkan::CreateDepthBuffer() const
 	{
 		spdlog::info("Create depth buffer");
-		swapchainManager->CreateDepthBuffer();
+		VulkanApi::CreateDepthBuffer(vulkanContext);
 	}
 
 	void RendererVulkan::CreateTextureSampler()

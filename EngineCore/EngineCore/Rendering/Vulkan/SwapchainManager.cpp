@@ -8,141 +8,131 @@
 
 namespace VulkanApi
 {
-	SwapchainManager::SwapchainManager(VulkanContext* vulkanContext) : vulkanContext(vulkanContext)
+	void RecreateSwapchain(VulkanContext* vulkanContext)
 	{
-		physicalDeviceQueueIndices = GetQueueFamilies(vulkanContext->physicalDevice, vulkanContext->windowSurface);
+		DisposeSwapchain(vulkanContext);
+
+		CreateSwapchain(vulkanContext);
+		CreateSwapChainImageViews(vulkanContext);
+		CreateDepthBuffer(vulkanContext);
+		CreateMSAAColorResources(vulkanContext);
+		CreateMSAADepthResources(vulkanContext);
 	}
 
-	SwapchainManager::~SwapchainManager()
-	{
-	}
-
-	void SwapchainManager::Recreate()
-	{
-		Dispose();
-
-		CreateSwapchain();
-		CreateSwapChainImageViews();
-		CreateDepthBuffer();
-		CreateMSAAColorResources();
-		CreateMSAADepthResources();
-	}
-
-	void SwapchainManager::CreateSwapchain()
+	void CreateSwapchain(VulkanContext* vulkanContext)
 	{
 		spdlog::info("Create swap chain");
 		
 		auto details = GetSwapChainDetails(vulkanContext->physicalDevice, vulkanContext->windowSurface);
 		Engine::CAssert::Check(DoSupportSwapChain(details), "Swap chains are not supported");
 
-		GetSwapchainContext()->surfaceFormat = ChooseSwapSurfaceFormat(details.formats);
+		vulkanContext->swapchainContext->surfaceFormat = ChooseSwapSurfaceFormat(details.formats);
 		VkPresentModeKHR presentMode = ChoosePresentMode(details.presentModes);
 		VkExtent2D extent = ChooseSwapExtent(*vulkanContext->window, details.capabilities);
 
-		GetSwapchainContext()->imagesCount = details.capabilities.minImageCount + 1;
-		if (details.capabilities.maxImageCount > 0 && GetSwapchainContext()->imagesCount > details.capabilities.maxImageCount)
+		vulkanContext->swapchainContext->imagesCount = details.capabilities.minImageCount + 1;
+		if (details.capabilities.maxImageCount > 0 && vulkanContext->swapchainContext->imagesCount > details.capabilities.maxImageCount)
 		{
-			GetSwapchainContext()->imagesCount = details.capabilities.maxImageCount;
+			vulkanContext->swapchainContext->imagesCount = details.capabilities.maxImageCount;
 		}
 
-		spdlog::info("Swap chain images count: {0}", GetSwapchainContext()->imagesCount);
+		spdlog::info("Swap chain images count: {0}", vulkanContext->swapchainContext->imagesCount);
 
 
 		VkSwapchainCreateInfoKHR createInfo{};
-		SetupSwapChainInfo(createInfo, vulkanContext->windowSurface, extent, presentMode, GetSwapchainContext()->surfaceFormat, 
-			details.capabilities, physicalDeviceQueueIndices, GetSwapchainContext()->imagesCount);
+		SetupSwapChainInfo(createInfo, vulkanContext->windowSurface, extent, presentMode, vulkanContext->swapchainContext->surfaceFormat, 
+			details.capabilities, vulkanContext->physicalDeviceQueueIndices, vulkanContext->swapchainContext->imagesCount);
 
-		auto createStatus = vkCreateSwapchainKHR(vulkanContext->logicalDevice, &createInfo, nullptr, &GetSwapchainContext()->swapChain);
+		auto createStatus = vkCreateSwapchainKHR(vulkanContext->logicalDevice, &createInfo, nullptr, &vulkanContext->swapchainContext->swapChain);
 		Engine::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create swap chain, status: " + createStatus);
 
-		vkGetSwapchainImagesKHR(vulkanContext->logicalDevice, GetSwapchainContext()->swapChain, &GetSwapchainContext()->imagesCount, nullptr);
-		GetSwapchainContext()->images.resize(GetSwapchainContext()->imagesCount);
-		vkGetSwapchainImagesKHR(vulkanContext->logicalDevice, GetSwapchainContext()->swapChain, &GetSwapchainContext()->imagesCount, GetSwapchainContext()->images.data());
+		vkGetSwapchainImagesKHR(vulkanContext->logicalDevice, vulkanContext->swapchainContext->swapChain, &vulkanContext->swapchainContext->imagesCount, nullptr);
+		vulkanContext->swapchainContext->images.resize(vulkanContext->swapchainContext->imagesCount);
+		vkGetSwapchainImagesKHR(vulkanContext->logicalDevice, vulkanContext->swapchainContext->swapChain, &vulkanContext->swapchainContext->imagesCount, vulkanContext->swapchainContext->images.data());
 
-		vulkanContext->imageFormat = GetSwapchainContext()->surfaceFormat.format;
-		GetSwapchainContext()->extent = extent;
+		vulkanContext->imageFormat = vulkanContext->swapchainContext->surfaceFormat.format;
+		vulkanContext->swapchainContext->extent = extent;
 	}
 
-	void SwapchainManager::CreateSwapChainImageViews() const
+	void CreateSwapChainImageViews(VulkanContext* vulkanContext)
 	{
-		GetSwapchainContext()->imageViews.resize(GetSwapchainContext()->images.size());
-		for (int i = 0; i < GetSwapchainContext()->imageViews.size(); i++)
+		vulkanContext->swapchainContext->imageViews.resize(vulkanContext->swapchainContext->images.size());
+		for (int i = 0; i < vulkanContext->swapchainContext->imageViews.size(); i++)
 		{
 			CreateImageView(vulkanContext->logicalDevice, 1, vulkanContext->imageFormat, VK_IMAGE_ASPECT_COLOR_BIT,
-				GetSwapchainContext()->images[i], GetSwapchainContext()->imageViews[i]);
+				vulkanContext->swapchainContext->images[i], vulkanContext->swapchainContext->imageViews[i]);
 		}
 	}
 
-	void SwapchainManager::CreateDepthBuffer() const
+	void CreateDepthBuffer(VulkanContext* vulkanContext)
 	{
 		spdlog::info("Create depth buffer");
 
-		GetSwapchainContext()->depthBufferModel = new ImageModel();
+		vulkanContext->swapchainContext->depthBufferModel = new ImageModel();
 
 		CreateImage(
-			vulkanContext, GetSwapchainContext()->extent.width, GetSwapchainContext()->extent.height, 1, vulkanContext->depthFormat,
+			vulkanContext, vulkanContext->swapchainContext->extent.width, vulkanContext->swapchainContext->extent.height, 1, vulkanContext->depthFormat,
 			VK_IMAGE_TILING_OPTIMAL,
 			VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
 			VK_SAMPLE_COUNT_1_BIT,
 			VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-			GetSwapchainContext()->depthBufferModel->image,
-			GetSwapchainContext()->depthBufferModel->imageMemory);
+			vulkanContext->swapchainContext->depthBufferModel->image,
+			vulkanContext->swapchainContext->depthBufferModel->imageMemory);
 
 		CreateImageView(vulkanContext->logicalDevice, 1, vulkanContext->depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
-			GetSwapchainContext()->depthBufferModel->image, GetSwapchainContext()->depthBufferModel->imageView);
+			vulkanContext->swapchainContext->depthBufferModel->image, vulkanContext->swapchainContext->depthBufferModel->imageView);
 	}
 
-	void SwapchainManager::CreateMSAAColorResources() const
+	void CreateMSAAColorResources(VulkanContext* vulkanContext)
 	{
 		spdlog::info("Create msaa color buffer");
-		GetSwapchainContext()->msaaColorSample = new ImageModel();
+		vulkanContext->swapchainContext->msaaColorSample = new ImageModel();
 		CreateImage(vulkanContext, 
-			GetSwapchainContext()->extent.width, GetSwapchainContext()->extent.height, 1, vulkanContext->imageFormat,
+			vulkanContext->swapchainContext->extent.width, vulkanContext->swapchainContext->extent.height, 1, vulkanContext->imageFormat,
 			VK_IMAGE_TILING_OPTIMAL, 
 			VK_IMAGE_USAGE_TRANSIENT_ATTACHMENT_BIT | VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
 			vulkanContext->msaa, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-			GetSwapchainContext()->msaaColorSample->image,
-			GetSwapchainContext()->msaaColorSample->imageMemory);
+			vulkanContext->swapchainContext->msaaColorSample->image,
+			vulkanContext->swapchainContext->msaaColorSample->imageMemory);
 
 		CreateImageView(vulkanContext->logicalDevice, 1, vulkanContext->imageFormat, VK_IMAGE_ASPECT_COLOR_BIT,
-			GetSwapchainContext()->msaaColorSample->image, GetSwapchainContext()->msaaColorSample->imageView);
+			vulkanContext->swapchainContext->msaaColorSample->image, vulkanContext->swapchainContext->msaaColorSample->imageView);
 	}
 
-	void SwapchainManager::CreateMSAADepthResources() const
+	void CreateMSAADepthResources(VulkanContext* vulkanContext)
 	{
 		spdlog::info("Create msaa depth buffer");
 		
-		GetSwapchainContext()->msaaDepthSample = new ImageModel();
+		vulkanContext->swapchainContext->msaaDepthSample = new ImageModel();
 		CreateImage(vulkanContext, 
-			GetSwapchainContext()->extent.width, GetSwapchainContext()->extent.height, 1, vulkanContext->depthFormat,
+			vulkanContext->swapchainContext->extent.width, vulkanContext->swapchainContext->extent.height, 1, vulkanContext->depthFormat,
 			VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
 			vulkanContext->msaa, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-			GetSwapchainContext()->msaaDepthSample->image,
-			GetSwapchainContext()->msaaDepthSample->imageMemory);
+			vulkanContext->swapchainContext->msaaDepthSample->image,
+			vulkanContext->swapchainContext->msaaDepthSample->imageMemory);
 
 		CreateImageView(vulkanContext->logicalDevice, 1, vulkanContext->depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT,
-			GetSwapchainContext()->msaaDepthSample->image, GetSwapchainContext()->msaaDepthSample->imageView);
+			vulkanContext->swapchainContext->msaaDepthSample->image, vulkanContext->swapchainContext->msaaDepthSample->imageView);
 	}
 
-	void SwapchainManager::Dispose() const
+	void DisposeSwapchain(VulkanContext* vulkanContext)
 	{
-		spdlog::info("Dispose swapchain");
+		spdlog::info("DisposeSwapchain swapchain");
 
-		DisposeImageModel(vulkanContext->logicalDevice, GetSwapchainContext()->msaaDepthSample);
-		DisposeImageModel(vulkanContext->logicalDevice, GetSwapchainContext()->msaaColorSample);
-		DisposeImageModel(vulkanContext->logicalDevice, GetSwapchainContext()->depthBufferModel);
+		DisposeImageModel(vulkanContext->logicalDevice, vulkanContext->swapchainContext->msaaDepthSample);
+		DisposeImageModel(vulkanContext->logicalDevice, vulkanContext->swapchainContext->msaaColorSample);
+		DisposeImageModel(vulkanContext->logicalDevice, vulkanContext->swapchainContext->depthBufferModel);
 
-		for (int i = 0; i < GetSwapchainContext()->imageViews.size(); i++)
-			DestroyImageView(vulkanContext->logicalDevice, GetSwapchainContext()->imageViews.at(i));
-		GetSwapchainContext()->imageViews.clear();
+		for (int i = 0; i < vulkanContext->swapchainContext->imageViews.size(); i++)
+			DestroyImageView(vulkanContext->logicalDevice, vulkanContext->swapchainContext->imageViews.at(i));
+		vulkanContext->swapchainContext->imageViews.clear();
 
-		vkDestroySwapchainKHR(vulkanContext->logicalDevice, GetSwapchainContext()->swapChain, nullptr);
-		delete vulkanContext->swapchainContext;
+		vkDestroySwapchainKHR(vulkanContext->logicalDevice, vulkanContext->swapchainContext->swapChain, nullptr);
 	}
 	
-	void SwapchainManager::SetupSwapChainInfo(VkSwapchainCreateInfoKHR& createInfo, VkSurfaceKHR& surface, VkExtent2D& extent,
+	void SetupSwapChainInfo(VkSwapchainCreateInfoKHR& createInfo, VkSurfaceKHR& surface, VkExtent2D& extent,
 		VkPresentModeKHR& presentMode, VkSurfaceFormatKHR& surfaceFormat, VkSurfaceCapabilitiesKHR& capabilities, 
-		QueueFamilyIndices& physicalDeviceQueueIndices, uint32_t imageCount) const
+		QueueFamilyIndices& physicalDeviceQueueIndices, uint32_t imageCount)
 	{
 		createInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
 		createInfo.surface = surface;
@@ -176,7 +166,7 @@ namespace VulkanApi
 		}
 	}
 
-	VkSurfaceFormatKHR SwapchainManager::ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) const
+	VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats)
 	{
 		//todo: chose format by player settings or most often used
 
@@ -193,7 +183,7 @@ namespace VulkanApi
 		return availableFormats[0];
 	}
 
-	VkExtent2D SwapchainManager::ChooseSwapExtent(GLFWwindow& window, const VkSurfaceCapabilitiesKHR& capabilities) const
+	VkExtent2D ChooseSwapExtent(GLFWwindow& window, const VkSurfaceCapabilitiesKHR& capabilities)
 	{
 		if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
 			return capabilities.currentExtent;
@@ -213,7 +203,7 @@ namespace VulkanApi
 		return actualExtent;
 	}
 
-	VkPresentModeKHR SwapchainManager::ChoosePresentMode(const std::vector<VkPresentModeKHR>& availableModes) const
+	VkPresentModeKHR ChoosePresentMode(const std::vector<VkPresentModeKHR>& availableModes)
 	{
 		constexpr VkPresentModeKHR highQualityMode = VK_PRESENT_MODE_MAILBOX_KHR;
 		constexpr VkPresentModeKHR defaultMode = VK_PRESENT_MODE_FIFO_KHR;

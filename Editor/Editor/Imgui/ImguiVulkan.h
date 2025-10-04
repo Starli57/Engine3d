@@ -10,13 +10,6 @@
 
 #include "Editor/IEngineEditor.h"
 #include "EngineCore/Rendering/Vulkan/RendererVulkan.h"
-#include "EngineCore/Rendering/Vulkan/SwapchainManager.h"
-#include "EngineCore/Rendering/Vulkan/Models/SwapchainContext.h"
-#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkPhysicalDeviceWrapper.h"
-#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkCommandBufferWrapper.h"
-
-#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkCommandPoolWrapper.h"
-
 #include "EngineCore/Core/ProjectSettings.h"
 #include "EngineCore/Rollback/Rollback.h"
 
@@ -36,8 +29,6 @@ private:
     Ref<Engine::Rollback> rollback;
 
 	VkRenderPass renderPass;
-
-	VulkanApi::QueueFamilyIndices queueFamilies;
 	uint32_t graphicsQueueFamily;
 
 	void DefaultEditorColors(ImGuiStyle* dst) const;

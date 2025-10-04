@@ -4,6 +4,7 @@
 
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/PipelinesCollection.h"
+#include "Models/QueueFamilyIndices.h"
 #include "Models/SwapchainContext.h"
 
 namespace VulkanApi
@@ -24,6 +25,7 @@ namespace VulkanApi
 		VkQueue graphicsQueue = VK_NULL_HANDLE;
 		VkQueue presentationQueue = VK_NULL_HANDLE;
 
+		QueueFamilyIndices physicalDeviceQueueIndices;
 		Ref<PipelinesCollection> pipelinesCollection;
 
 		static constexpr uint16_t maxFramesInFlight = 3;

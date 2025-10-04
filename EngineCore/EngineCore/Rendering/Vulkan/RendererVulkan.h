@@ -28,9 +28,7 @@ namespace Engine
 	{
 	public:
 		VulkanApi::VulkanContext* vulkanContext;
-
 		URef<VulkanApi::DescriptorsManager> descriptorsManager;
-		Ref<VulkanApi::SwapchainManager> swapchainManager;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;
