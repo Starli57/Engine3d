@@ -14,7 +14,7 @@ namespace VulkanApi
 	{
 	public:
 
-		SwapchainManager(VulkanContext* vulkanContext, SwapchainContext* swapchainContext);
+		SwapchainManager(VulkanContext* vulkanContext);
 		~SwapchainManager();
 
 		void Recreate();
@@ -26,12 +26,12 @@ namespace VulkanApi
 		void Dispose() const;
 
 	private:
-
-		SwapchainContext* swapchainContext;
 		VulkanContext* vulkanContext;
 		
 		QueueFamilyIndices physicalDeviceQueueIndices;
 
+		SwapchainContext* GetSwapchainContext() const { return vulkanContext->swapchainContext; }
+		
 		VkPresentModeKHR ChoosePresentMode(const std::vector<VkPresentModeKHR>& availableModes) const;
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats) const;
 		VkExtent2D ChooseSwapExtent(GLFWwindow& window, const VkSurfaceCapabilitiesKHR& capabilities) const;

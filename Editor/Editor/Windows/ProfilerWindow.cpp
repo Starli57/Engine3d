@@ -19,7 +19,7 @@ void ProfilerWindow::Update()
 
 	ImGui::Text("Triangles: %d", profiler.GetTrianglesCount());
 	ImGui::Text("Draw Calls: %d", profiler.GetDrawCalls());
-	ImGui::Text("Swapchain extent width=%d height=%d", renderer.swapchainContext->extent.width, renderer.swapchainContext->extent.height);
+	ImGui::Text("Swapchain extent width=%d height=%d", renderer.vulkanContext->swapchainContext->extent.width, renderer.vulkanContext->swapchainContext->extent.height);
 
 	double screenPositionX;
 	double screenPositionY;

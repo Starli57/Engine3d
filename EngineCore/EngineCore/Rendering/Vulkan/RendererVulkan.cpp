@@ -116,7 +116,7 @@ namespace Engine
 		presentInfo.waitSemaphoreCount = 1;
 		presentInfo.pWaitSemaphores = &renderFinishedSemaphores[frame];
 		presentInfo.swapchainCount = 1;
-		presentInfo.pSwapchains = &swapchainContext->swapChain;
+		presentInfo.pSwapchains = &vulkanContext->swapchainContext->swapChain;
 		presentInfo.pImageIndices = &imageIndex;
 
 		Profiler::GetInstance().BeginSample("vkQueuePresentKHR");
@@ -129,7 +129,7 @@ namespace Engine
 			return;
 		}
 
-		Engine::CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
+		CAssert::Check(presentStatus == VK_SUCCESS, "Failed to present draw command buffer, status: " + presentStatus);
 		
 		frame = (frame + 1) % VulkanApi::VulkanContext::maxFramesInFlight;
 	}
@@ -139,7 +139,7 @@ namespace Engine
 		vkWaitForFences(vulkanContext->logicalDevice, 1, &drawFences[frame], VK_TRUE, vulkanContext->frameSyncTimeout);
 
 		auto acquireStatus = vkAcquireNextImageKHR(
-			vulkanContext->logicalDevice, swapchainContext->swapChain, vulkanContext->frameSyncTimeout,
+			vulkanContext->logicalDevice, vulkanContext->swapchainContext->swapChain, vulkanContext->frameSyncTimeout,
 			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 		
 		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR) 
@@ -193,8 +193,8 @@ namespace Engine
 
 	void RendererVulkan::CreateSwapChain()
 	{
-		swapchainContext = new VulkanApi::SwapchainContext();
-		swapchainManager = CreateRef<VulkanApi::SwapchainManager>(vulkanContext, swapchainContext);
+		vulkanContext->swapchainContext = new VulkanApi::SwapchainContext();
+		swapchainManager = CreateRef<VulkanApi::SwapchainManager>(vulkanContext);
 
 		swapchainManager->CreateSwapchain();
 		swapchainManager->CreateSwapChainImageViews();

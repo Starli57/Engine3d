@@ -20,7 +20,7 @@ namespace ClientVulkanApi
 
     void RendererVulkan::Render() const
     {
-        auto swapChainData = renderingEngine->swapchainContext;
+        auto swapChainData = renderingEngine->vulkanContext->swapchainContext;
         const auto frame = renderingEngine->GetFrame();
         const auto imageIndex = renderingEngine->GetImageIndex();
         auto commandBuffer = renderingEngine->GetCommandBuffer();
@@ -47,8 +47,8 @@ namespace ClientVulkanApi
 
     void RendererVulkan::CreateRenderPasses()
     {
-        auto swapChainData = renderingEngine->swapchainContext;
         auto vulkanContext = renderingEngine->vulkanContext;
+        auto swapChainData = vulkanContext->swapchainContext;
 
         renderPassContext = CreateRef<RenderPassContext>(renderingEngine->descriptorsManager.get(), ecs, assetsDatabase, swapChainData);
         
