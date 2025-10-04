@@ -4,7 +4,6 @@
 
 #include "RendererVulkan.h"
 
-#include "SwapchainManager.h"
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/Profiler/Profiler.h"
 #include "ApiWrappers/VkImageWrapper.h"
@@ -13,6 +12,7 @@
 #include "ApiWrappers/SyncObjectsUtility.h"
 #include "ApiWrappers/VkSamplerWrapper.h"
 #include "ApiWrappers/VkSurfaceKHRWrapper.h"
+#include "ApiWrappers/VkSwapchainWrapper.h"
 
 namespace Engine
 {

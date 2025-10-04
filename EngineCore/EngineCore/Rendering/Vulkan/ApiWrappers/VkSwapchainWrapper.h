@@ -3,9 +3,7 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 
-#include "VulkanContext.h"
-#include "EngineCore/Core/Ref.h"
-#include "EngineCore/Rendering/Vulkan/Models/SwapchainContext.h"
+#include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 #include "EngineCore/Rendering/Vulkan/Models/QueueFamilyIndices.h"
 
 namespace VulkanApi

@@ -1,10 +1,9 @@
 #include "EngineCore/Pch.h"
-#include "SwapchainManager.h"
+#include "VkSwapchainWrapper.h"
 
+#include "SwapchainUtility.h"
+#include "VkImageWrapper.h"
 #include "EngineCore/CustomAssert.h"
-#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkPhysicalDeviceWrapper.h"
-#include "ApiWrappers/VkImageWrapper.h"
-#include "ApiWrappers/SwapchainUtility.h"
 
 namespace VulkanApi
 {
