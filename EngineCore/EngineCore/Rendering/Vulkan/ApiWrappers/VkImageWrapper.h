@@ -1,7 +1,6 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 #include "EngineCore/Rendering/Vulkan/Models/ImageModel.h"
 

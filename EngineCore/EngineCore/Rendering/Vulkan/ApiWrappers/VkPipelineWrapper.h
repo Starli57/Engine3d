@@ -14,11 +14,11 @@ namespace VulkanApi
 	{
 	public:
 		void Create(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
-			VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts,
+			VkRenderPass& renderPass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts,
 			VkSampleCountFlagBits msaa, Ref<PipelineVulkan>& pipeline);
 
 		void ReCreate(Ref<PipelineVulkan>& pipeline, const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
-			VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa);
+			VkRenderPass& renderPass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa);
 
 		void Dispose(const Ref<PipelineVulkan>& pipeline, const VkDevice& logicalDevice) const;
 

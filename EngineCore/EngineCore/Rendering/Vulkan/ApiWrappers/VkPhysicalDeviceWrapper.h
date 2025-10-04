@@ -22,8 +22,8 @@ namespace VulkanApi
 
 	VkSampleCountFlagBits GetMaxUsableSampleCount(const VkPhysicalDevice& physicalDevice);
 
-	void SetSupportedFormat(const VkPhysicalDevice& physicalDevice, const std::vector<VkFormat>& formats,
-							 VkImageTiling tiling, VkFormatFeatureFlags features, VkFormat& outFormat);
+	VkFormat GetSupportedFormat(const VkPhysicalDevice& physicalDevice, const std::vector<VkFormat>& formats,
+							 VkImageTiling tiling, VkFormatFeatureFlags feature);
 
-	void SetDepthBufferFormat(const VkPhysicalDevice& physicalDevice, VkFormat& outFormat);
+	VkFormat GetDepthBufferFormat(const VkPhysicalDevice& physicalDevice);
 }

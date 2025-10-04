@@ -1,7 +1,6 @@
 #include "EngineCore/Pch.h"
 #include "DescriptorsAllocator.h"
 #include "EngineCore/CustomAssert.h"
-#include "EngineCore/Components/UboWorldComponent.h"
 #include "spdlog/spdlog.h"
 
 namespace VulkanApi

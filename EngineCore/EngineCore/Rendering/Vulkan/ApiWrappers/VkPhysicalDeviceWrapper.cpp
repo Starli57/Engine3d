@@ -178,8 +178,8 @@ namespace VulkanApi
         return VK_SAMPLE_COUNT_1_BIT;
     }
 
-    void SetSupportedFormat(const VkPhysicalDevice& physicalDevice, const std::vector<VkFormat>& formats,
-                             const VkImageTiling tiling, const VkFormatFeatureFlags features, VkFormat& outFormat)
+    VkFormat GetSupportedFormat(const VkPhysicalDevice& physicalDevice, const std::vector<VkFormat>& formats,
+                             const VkImageTiling tiling, const VkFormatFeatureFlags features)
     {
         for (const VkFormat format : formats) 
         {
@@ -188,21 +188,19 @@ namespace VulkanApi
 
             if (tiling == VK_IMAGE_TILING_LINEAR && (properties.linearTilingFeatures & features) == features)
             {
-                outFormat = format;
-                return;
+                return format;
             }
             
             if (tiling == VK_IMAGE_TILING_OPTIMAL && (properties.optimalTilingFeatures & features) == features)
             {
-                outFormat = format;
-                return;
+                return format;
             }
         }
 
         throw std::runtime_error("Failed to find supported format!");
     }
 
-    void SetDepthBufferFormat(const VkPhysicalDevice& physicalDevice, VkFormat& outFormat)
+    VkFormat GetDepthBufferFormat(const VkPhysicalDevice& physicalDevice)
     {
         const std::vector<VkFormat> formats =
         {
@@ -211,6 +209,6 @@ namespace VulkanApi
             VK_FORMAT_D24_UNORM_S8_UINT 
         };
 
-        SetSupportedFormat(physicalDevice, formats, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT, outFormat);
+        return GetSupportedFormat(physicalDevice, formats, VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
     }
 }

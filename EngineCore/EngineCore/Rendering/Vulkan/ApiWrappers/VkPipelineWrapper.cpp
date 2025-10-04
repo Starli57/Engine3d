@@ -13,7 +13,7 @@ namespace VulkanApi
 {
 #pragma optimize("", off)
 	void VkPipelineWrapper::Create(const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
-		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa,
+		VkRenderPass& renderPass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa,
 		Ref<PipelineVulkan>& pipeline)
 	{
 		spdlog::info("Create graphics pipeline");
@@ -106,7 +106,7 @@ namespace VulkanApi
 			pipelineInfo.pColorBlendState = &colorBlend;
 			pipelineInfo.pDynamicState = nullptr;
 			pipelineInfo.layout = pipeline->layout;
-			pipelineInfo.renderPass = renderpass;
+			pipelineInfo.renderPass = renderPass;
 			pipelineInfo.subpass = 0;
 			pipelineInfo.pDepthStencilState = &depthStencil;
 
@@ -127,10 +127,10 @@ namespace VulkanApi
 #pragma optimize("", on)
 
 	void VkPipelineWrapper::ReCreate(Ref<PipelineVulkan>& pipeline, const Ref<Engine::VulkanPipelineConfig>& pipelineConfig, VkDevice& logicalDevice,
-		VkRenderPass& renderpass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa)
+		VkRenderPass& renderPass, VkExtent2D& swapChainExtent, std::vector<VkDescriptorSetLayout>& descriptorSetLayouts, VkSampleCountFlagBits msaa)
 	{
 		Dispose(pipeline, logicalDevice);
-		Create(pipelineConfig, logicalDevice, renderpass, swapChainExtent, descriptorSetLayouts, msaa, pipeline);
+		Create(pipelineConfig, logicalDevice, renderPass, swapChainExtent, descriptorSetLayouts, msaa, pipeline);
 	}
 
 	void VkPipelineWrapper::Dispose(const Ref<PipelineVulkan>& pipeline, const VkDevice& logicalDevice) const

@@ -181,7 +181,7 @@ namespace Engine
 		ChooseRenderingDevice(vulkanContext);
 		vulkanContext->msaa = VulkanApi::GetMaxUsableSampleCount(vulkanContext->physicalDevice);
 		vulkanContext->physicalDeviceQueueIndices = VulkanApi::GetQueueFamilies(vulkanContext->physicalDevice, vulkanContext->windowSurface);
-		VulkanApi::SetDepthBufferFormat(vulkanContext->physicalDevice, vulkanContext->depthFormat);
+		vulkanContext->depthFormat = VulkanApi::GetDepthBufferFormat(vulkanContext->physicalDevice);
 		VulkanApi::PrintPhysicalDeviceDebugInformation(vulkanContext->physicalDevice, vulkanContext->windowSurface);
 	}
 

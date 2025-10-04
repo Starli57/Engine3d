@@ -1,6 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "VkInstanceWrapper.h"
 
+#include "ValidationLayersUtility.h"
 #include "EngineCore/CustomAssert.h"
 
 namespace VulkanApi
