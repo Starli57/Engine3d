@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "EngineCore/Core/Ref.h"
-#include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
+#include "EngineCore/Rendering/Vulkan/RendererVulkan.h"
 #include "RenderPasses/PreRenderPass.h"
 #include "RenderPasses/RenderPassClean.h"
 #include "RenderPasses/RenderPassOpaque.h"
@@ -11,10 +11,10 @@ namespace ClientVulkanApi
     class RendererVulkan
     {
     public:
-        RendererVulkan(VulkanApi::GraphicsApiVulkan* graphicsApiVulkan, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs);
+        RendererVulkan(Engine::RendererVulkan* renderingEngine, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs);
     
     private:
-        VulkanApi::GraphicsApiVulkan* graphicsApi;
+        Engine::RendererVulkan* renderingEngine;
         Ref<Engine::ResourcesStorageVulkan> assetsDatabase;
         Ref<Ecs> ecs;
 

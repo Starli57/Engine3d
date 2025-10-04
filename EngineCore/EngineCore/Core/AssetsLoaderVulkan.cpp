@@ -1,7 +1,7 @@
 #include "EngineCore/Pch.h"
 #include "AssetsLoaderVulkan.h"
 
-#include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
+#include "EngineCore/Rendering/Vulkan/RendererVulkan.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkBufferWrapper.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkImageWrapper.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkDeviceMemoryWrapper.h"
@@ -18,12 +18,12 @@
 
 namespace Engine
 {
-    AssetsLoaderVulkan::AssetsLoaderVulkan(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, Ref<ResourcesStorageVulkan> assetsDatabase) : 
+    AssetsLoaderVulkan::AssetsLoaderVulkan(const Ref<ProjectSettings>& projectSettings, IRenderer* graphicsApi, Ref<ResourcesStorageVulkan> assetsDatabase) : 
         projectSettings(projectSettings), assetsDatabase(assetsDatabase)
     {
         graphicsQueueMutex = CreateUniqueRef<std::mutex>();
     
-        vulkanApi = dynamic_cast<VulkanApi::GraphicsApiVulkan*>(graphicsApi);
+        vulkanApi = dynamic_cast<RendererVulkan*>(graphicsApi);
     	assetsDatabase->materialLoadStatuses.resize(assetsDatabase->materialsPaths.size());
     	assetsDatabase->materials.resize(assetsDatabase->materialsPaths.size());
 

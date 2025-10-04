@@ -12,7 +12,7 @@ namespace VulkanApi
 	public:
 
 		GLFWwindow* window;
-
+		
 		VkInstance instance;
 		VkSurfaceKHR windowSurface;
 

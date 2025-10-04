@@ -16,7 +16,7 @@
 #if GLFW_INCLUDE_VULKAN
 #include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/AssetsLoaderVulkan.h"
-#include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
+#include "EngineCore/Rendering/Vulkan/RendererVulkan.h"
 #endif
 
 namespace Engine
@@ -41,11 +41,11 @@ namespace Engine
 		void BindEditorUpdateFunction(std::function<void()> editorUpdate);
 
 #if GLFW_INCLUDE_VULKAN
-		VulkanApi::GraphicsApiVulkan* GetGraphicsApi() const { return graphicsApi; }
+		RendererVulkan* GetRenderer() const { return renderer; }
 		Ref<ResourcesStorageVulkan> GetAssetsDatabase() { return assetsDatabase; }
 		Ref<AssetsLoaderVulkan> GetResourcesManager() { return resourcesManager; }
 #else
-		IGraphicsApi* GetGraphicsApi() const { return graphicsApi; }
+		IRenderer* GetRenderer() const { return renderer; }
 		Ref<ResourcesStorage> GetAssetsDatabase() { return resourcesStorage; }
 		Ref<AssetsLoader> GetResourcesManager() { return resourcesManager; }
 #endif
@@ -64,11 +64,11 @@ namespace Engine
 		GLFWwindow* window;
 
 #if GLFW_INCLUDE_VULKAN
-		VulkanApi::GraphicsApiVulkan* graphicsApi;
+		RendererVulkan* renderer;
 		Ref<ResourcesStorageVulkan> assetsDatabase;
 		Ref<AssetsLoaderVulkan> resourcesManager;
 #else
-		IGraphicsApi* graphicsApi;
+		IRenderer* renderer;
 		Ref<ResourcesStorage> resourcesStorage;
 		Ref<AssetsLoader> resourcesManager;
 #endif

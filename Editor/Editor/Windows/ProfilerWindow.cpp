@@ -4,8 +4,8 @@
 #include "EngineCore/Components/NameComponent.h"
 #include "EngineCore/Profiler/Profiler.h"
 
-ProfilerWindow::ProfilerWindow(const Ref<Engine::EngineApi>& engine, VulkanApi::GraphicsApiVulkan& vulkanApi) : 
-	engine(engine), vulkanApi(vulkanApi)
+ProfilerWindow::ProfilerWindow(const Ref<Engine::EngineApi>& engine, Engine::RendererVulkan& renderer) : 
+	engine(engine), renderer(renderer)
 {
 }
 
@@ -19,7 +19,7 @@ void ProfilerWindow::Update()
 
 	ImGui::Text("Triangles: %d", profiler.GetTrianglesCount());
 	ImGui::Text("Draw Calls: %d", profiler.GetDrawCalls());
-	ImGui::Text("Swapchain extent width=%d height=%d", vulkanApi.swapchainContext->extent.width, vulkanApi.swapchainContext->extent.height);
+	ImGui::Text("Swapchain extent width=%d height=%d", renderer.swapchainContext->extent.width, renderer.swapchainContext->extent.height);
 
 	double screenPositionX;
 	double screenPositionY;

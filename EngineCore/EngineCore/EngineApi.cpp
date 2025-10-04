@@ -34,8 +34,8 @@ namespace Engine
 		resourcesManager.reset();
 		assetsDatabase.reset();
 
-		spdlog::info("Dispose graphicsApi");
-		delete graphicsApi;
+		spdlog::info("Dispose renderer");
+		delete renderer;
 
 		spdlog::info("Dispose glfw window");
 		glfwDestroyWindow(window);
@@ -83,7 +83,7 @@ namespace Engine
 	void EngineApi::DefineGraphicsApi()
 	{
 #if GLFW_INCLUDE_VULKAN
-		graphicsApi = new VulkanApi::GraphicsApiVulkan(ecs, input, assetsDatabase, projectSettings, window);
+		renderer = new RendererVulkan(ecs, input, assetsDatabase, projectSettings, window);
 #else
 		throw std::runtime_error("The rendering api is not supported");
 #endif
@@ -92,7 +92,7 @@ namespace Engine
 	void EngineApi::DefineResourcesManager()
 	{
 #if GLFW_INCLUDE_VULKAN
-		resourcesManager = CreateRef<AssetsLoaderVulkan>(projectSettings, graphicsApi, assetsDatabase);
+		resourcesManager = CreateRef<AssetsLoaderVulkan>(projectSettings, renderer, assetsDatabase);
 #else
 		throw std::runtime_error("The rendering api is not supported");
 #endif
@@ -115,7 +115,7 @@ namespace Engine
 			Profiler::GetInstance().EndSample();
 
 			Profiler::GetInstance().BeginSample("Rendering");
-			graphicsApi->Render();
+			renderer->Render();
 			Profiler::GetInstance().EndSample();
 
 #if DEBUG
@@ -134,7 +134,7 @@ namespace Engine
 			cachedTime = currentTime;
 		}
 
-		graphicsApi->FinalizeRenderOperations();
+		renderer->FinalizeRenderOperations();
 		spdlog::info("Window closed");
 	}
 

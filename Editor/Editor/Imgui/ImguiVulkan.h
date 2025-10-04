@@ -9,7 +9,7 @@
 #include <vulkan/vulkan.h>
 
 #include "Editor/IEngineEditor.h"
-#include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
+#include "EngineCore/Rendering/Vulkan/RendererVulkan.h"
 #include "EngineCore/Rendering/Vulkan/SwapchainManager.h"
 #include "EngineCore/Rendering/Vulkan/Models/SwapchainContext.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkPhysicalDeviceWrapper.h"
@@ -23,7 +23,7 @@
 class ImguiVulkan : public IEngineEditor
 {
 public:
-    ImguiVulkan(const Ref<ProjectSettings>& projectSettings, VulkanApi::GraphicsApiVulkan& vulkanApi);
+    ImguiVulkan(const Ref<ProjectSettings>& projectSettings, Engine::RendererVulkan& renderer);
     ~ImguiVulkan();
 
     void Update() override;
@@ -32,7 +32,7 @@ public:
 
 private:
 	Ref<ProjectSettings> projectSettings;
-	VulkanApi::GraphicsApiVulkan& vulkanApi;
+	Engine::RendererVulkan& renderer;
     Ref<Engine::Rollback> rollback;
 
 	VkRenderPass renderPass;

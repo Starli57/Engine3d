@@ -1,9 +1,9 @@
 #include "VulkanTextureView.h"
 
-VulkanTextureView::VulkanTextureView(const Ref<Engine::EngineApi>& engine, VulkanApi::GraphicsApiVulkan& vulkanApi)
-	: engine(engine), vulkanApi(vulkanApi)
+VulkanTextureView::VulkanTextureView(const Ref<Engine::EngineApi>& engine, Engine::RendererVulkan& renderer)
+	: engine(engine), renderer(renderer)
 {
-    // const auto shadowMap = vulkanApi.GetRenderPassShadowMap();
+    // const auto shadowMap = renderer.GetRenderPassShadowMap();
     // const auto imageBuffer = shadowMap->GetImageBuffer();
     //
     // textureDescriptors.reserve(VulkanApi::VulkanContext::maxFramesInFlight);
@@ -15,7 +15,7 @@ void VulkanTextureView::Update()
 {
     ImGui::Begin("Shadow Map Preview");
     
-    // auto shadowMap = vulkanApi.GetRenderPassShadowMap();
+    // auto shadowMap = renderer.GetRenderPassShadowMap();
     // auto imageBuffer = shadowMap->GetImageBuffer();
     //
     // VkDescriptorImageInfo descImage[1] = {};
@@ -29,7 +29,7 @@ void VulkanTextureView::Update()
     // writeDesc[0].descriptorCount = 1;
     // writeDesc[0].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
     // writeDesc[0].pImageInfo = descImage;
-    // vkUpdateDescriptorSets(vulkanApi.vulkanContext->logicalDevice, 1, writeDesc, 0, nullptr);
+    // vkUpdateDescriptorSets(renderer.vulkanContext->logicalDevice, 1, writeDesc, 0, nullptr);
     //
     // float shadowMapSize = 256.0f;
     // ImGui::Image(reinterpret_cast<ImTextureID>(textureDescriptors.at(frame)), ImVec2(shadowMapSize, shadowMapSize));

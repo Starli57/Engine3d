@@ -2,10 +2,10 @@
 
 namespace Engine
 {
-    class IGraphicsApi
+    class IRenderer
     {
     public:
-        virtual ~IGraphicsApi() = default;
+        virtual ~IRenderer() = default;
 
         virtual void Init() = 0;
         virtual void Render() = 0;

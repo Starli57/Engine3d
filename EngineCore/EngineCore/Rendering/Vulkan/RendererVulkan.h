@@ -17,21 +17,21 @@
 #include "EngineCore/Core/ProjectSettings.h"
 #include "EngineCore/Rollback/Rollback.h"
 #include "EngineCore/Managers/InputManager.h"
-#include "EngineCore/Rendering/IGraphicsApi.h"
+#include "EngineCore/Rendering/IRenderer.h"
 #include "EngineCore/Rendering/PipelinesCollection.h"
 
 #include "ApiWrappers/VkPhysicalDeviceWrapper.h"
 
-namespace VulkanApi
+namespace Engine
 {
-	class GraphicsApiVulkan : public Engine::IGraphicsApi
+	class RendererVulkan : public IRenderer
 	{
 	public:
-		VulkanContext* vulkanContext;
+		VulkanApi::VulkanContext* vulkanContext;
 
-		URef<DescriptorsManager> descriptorsManager;
-		Ref<SwapchainManager> swapchainManager;
-		SwapchainContext* swapchainContext;
+		URef<VulkanApi::DescriptorsManager> descriptorsManager;
+		Ref<VulkanApi::SwapchainManager> swapchainManager;
+		VulkanApi::SwapchainContext* swapchainContext;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;
@@ -49,8 +49,8 @@ namespace VulkanApi
 		VkCommandPool& GetCommandPool() const { return commandsManager->GetCommandPool(); }
 		VkCommandBuffer& GetCommandBuffer() const { return commandsManager->GetCommandBuffer(frame); }
 		
-		GraphicsApiVulkan(const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager, const Ref<Engine::ResourcesStorageVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* window);
-		virtual ~GraphicsApiVulkan() override;
+		RendererVulkan(const Ref<Ecs>& ecs, Ref<InputManager> inputManager, const Ref<ResourcesStorageVulkan>& assetDatabase, Ref<ProjectSettings> projectSettings, GLFWwindow* window);
+		virtual ~RendererVulkan() override;
 
 		void Init() override;
 		void Render() override;
@@ -59,12 +59,12 @@ namespace VulkanApi
 
 	private:
 		Ref<Ecs> ecs;
-		Ref<Engine::InputManager> inputManager;
-		Ref<Engine::ResourcesStorageVulkan> assetDatabase;
+		Ref<InputManager> inputManager;
+		Ref<ResourcesStorageVulkan> assetDatabase;
 		Ref<ProjectSettings> projectSettings;
-		Ref<Engine::Rollback> rollback;
-		
-		CommandsManager* commandsManager;
+		Ref<Rollback> rollback;
+
+		VulkanApi::CommandsManager* commandsManager;
 
 		uint32_t imageIndex = 0;
 		uint16_t frame = 0;

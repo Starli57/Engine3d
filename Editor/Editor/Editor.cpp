@@ -11,7 +11,7 @@
 #include "Windows/AssetsWindow.h"
 #include "Windows/ProfilerWindow.h"
 #include "Windows/VulkanTextureView.h"
-#include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
+#include "EngineCore/Rendering/Vulkan/RendererVulkan.h"
 #include "Windows/MainWindow.h"
 #include "Windows/ResourcesConverterWindow.h"
 #include "Windows/SystemsStateWindow.h"
@@ -19,7 +19,7 @@
 Editor::Editor(const Ref<ProjectSettings>& projectSettings, const Ref<Engine::EngineApi>& engine) : 
 	projectSettings(projectSettings), engine(engine)
 {
-	const auto graphicsApi = engine->GetGraphicsApi();
+	const auto graphicsApi = engine->GetRenderer();
 
 	editorUi = CreateRef<ImguiVulkan>(projectSettings, *graphicsApi);
 

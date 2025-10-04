@@ -5,14 +5,14 @@
 
 #include "EngineCore/CustomAssert.h"
 
-ImguiVulkan::ImguiVulkan(const Ref<ProjectSettings>& projectSettings, VulkanApi::GraphicsApiVulkan& vulkanApi) :
-    projectSettings(projectSettings), vulkanApi(vulkanApi)
+ImguiVulkan::ImguiVulkan(const Ref<ProjectSettings>& projectSettings, Engine::RendererVulkan& renderer) :
+    projectSettings(projectSettings), renderer(renderer)
 {
     spdlog::info("Start editor imgui initialization");
 
     rollback = CreateRef<Engine::Rollback>("Editor");
 
-    queueFamilies = VulkanApi::GetQueueFamilies(vulkanApi.vulkanContext->physicalDevice, vulkanApi.vulkanContext->windowSurface);
+    queueFamilies = VulkanApi::GetQueueFamilies(renderer.vulkanContext->physicalDevice, renderer.vulkanContext->windowSurface);
     graphicsQueueFamily = queueFamilies.graphicsFamily.value();
 
     CreateRenderPass(renderPass);
@@ -41,19 +41,19 @@ ImguiVulkan::ImguiVulkan(const Ref<ProjectSettings>& projectSettings, VulkanApi:
         io.ConfigViewportsNoAutoMerge = true;
     }
 
-    ImGui_ImplGlfw_InitForVulkan(vulkanApi.vulkanContext->window, true);
+    ImGui_ImplGlfw_InitForVulkan(renderer.vulkanContext->window, true);
     ImGui_ImplVulkan_InitInfo initInfo = {};
-    initInfo.Instance = vulkanApi.vulkanContext->instance;
-    initInfo.PhysicalDevice = vulkanApi.vulkanContext->physicalDevice;
-    initInfo.Device = vulkanApi.vulkanContext->logicalDevice;
+    initInfo.Instance = renderer.vulkanContext->instance;
+    initInfo.PhysicalDevice = renderer.vulkanContext->physicalDevice;
+    initInfo.Device = renderer.vulkanContext->logicalDevice;
     initInfo.QueueFamily = graphicsQueueFamily;
-    initInfo.Queue = vulkanApi.vulkanContext->graphicsQueue;
+    initInfo.Queue = renderer.vulkanContext->graphicsQueue;
     initInfo.PipelineCache = VK_NULL_HANDLE;
     initInfo.DescriptorPoolSize = 2048;
     initInfo.RenderPass = renderPass;
     initInfo.Subpass = 0;
     initInfo.MinImageCount = 2;
-    initInfo.ImageCount = vulkanApi.swapchainContext->imagesCount;
+    initInfo.ImageCount = renderer.swapchainContext->imagesCount;
     initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 
     ImGui_ImplVulkan_Init(&initInfo);
@@ -68,7 +68,7 @@ ImguiVulkan::~ImguiVulkan()
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
 
-    vkDestroyRenderPass(vulkanApi.vulkanContext->logicalDevice, renderPass, nullptr);
+    vkDestroyRenderPass(renderer.vulkanContext->logicalDevice, renderPass, nullptr);
 
     rollback->Dispose();
 
@@ -92,7 +92,7 @@ void ImguiVulkan::Update()
 void ImguiVulkan::CreateRenderPass(VkRenderPass& renderPass) const
 {
     VkAttachmentDescription renderPassAttachment = {};
-    renderPassAttachment.format = vulkanApi.vulkanContext->imageFormat;
+    renderPassAttachment.format = renderer.vulkanContext->imageFormat;
     renderPassAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
     renderPassAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     renderPassAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -126,7 +126,7 @@ void ImguiVulkan::CreateRenderPass(VkRenderPass& renderPass) const
     renderPassInfo.pSubpasses = &subpass;
     renderPassInfo.dependencyCount = 1;
     renderPassInfo.pDependencies = &dependency;
-    auto renderPassStatus = vkCreateRenderPass(vulkanApi.vulkanContext->logicalDevice, &renderPassInfo, nullptr, &renderPass);
+    auto renderPassStatus = vkCreateRenderPass(renderer.vulkanContext->logicalDevice, &renderPassInfo, nullptr, &renderPass);
 
     Engine::CAssert::Check(renderPassStatus == VK_SUCCESS, "Failed to create imgui render pass");
 }

@@ -10,7 +10,7 @@ Game::Game(Ref<ProjectSettings> projectSettings) : projectSettings(projectSettin
 	engine->DefineGraphicsApi();
 	
 #if GLFW_INCLUDE_VULKAN
-	auto vulkanApi = engine->GetGraphicsApi();
+	auto vulkanApi = engine->GetRenderer();
 	renderer = CreateRef<ClientVulkanApi::RendererVulkan>(vulkanApi, engine->GetAssetsDatabase(), engine->GetEcs());
 	vulkanApi->Init();
 #endif

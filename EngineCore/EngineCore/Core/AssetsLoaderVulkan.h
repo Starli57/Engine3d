@@ -1,15 +1,15 @@
 #pragma once
 
 #include "ResourcesStorageVulkan.h"
-#include "EngineCore/Rendering/IGraphicsApi.h"
-#include "EngineCore/Rendering/Vulkan/GraphicsApiVulkan.h"
+#include "EngineCore/Rendering/IRenderer.h"
+#include "EngineCore/Rendering/Vulkan/RendererVulkan.h"
 
 namespace Engine
 {
 	class AssetsLoaderVulkan
 	{
 	public:
-		AssetsLoaderVulkan(const Ref<ProjectSettings>& projectSettings, IGraphicsApi* graphicsApi, Ref<ResourcesStorageVulkan> assetsDatabase);
+		AssetsLoaderVulkan(const Ref<ProjectSettings>& projectSettings, IRenderer* graphicsApi, Ref<ResourcesStorageVulkan> assetsDatabase);
 		~AssetsLoaderVulkan() = default;
 		
 		void Load();
@@ -39,7 +39,7 @@ namespace Engine
 		//todo: replace and make via a pattern
 		URef<std::mutex> graphicsQueueMutex;
 
-		VulkanApi::GraphicsApiVulkan* vulkanApi;
+		RendererVulkan* vulkanApi;
 		Ref<ResourcesStorageVulkan> assetsDatabase;
 		Ref<ProjectSettings> projectSettings;
 
