@@ -36,9 +36,9 @@ namespace Engine
 
 		VkSampler textureSampler;
 
-		std::function<void()> onClientRender;
-		std::function<void()> onRenderPassesCreate;
-		std::function<void()> onRenderPassesDispose;
+		std::function<void()> onRenderClient;
+		std::function<void()> onCreateRenderPasses;
+		std::function<void()> onDisposeRenderPasses;
 		
 		uint32_t GetImageIndex() const { return imageIndex; }
 		uint16_t GetFrame() const { return frame; }

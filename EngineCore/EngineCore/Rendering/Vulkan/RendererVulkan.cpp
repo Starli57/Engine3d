@@ -4,15 +4,14 @@
 
 #include "RendererVulkan.h"
 
+#include "ApiWrappers/VkSwapchainWrapper.h"
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/Profiler/Profiler.h"
-#include "ApiWrappers/VkImageWrapper.h"
 #include "ApiWrappers/VkInstanceWrapper.h"
 #include "ApiWrappers/VkDeviceWrapper.h"
 #include "ApiWrappers/SyncObjectsUtility.h"
 #include "ApiWrappers/VkSamplerWrapper.h"
 #include "ApiWrappers/VkSurfaceKHRWrapper.h"
-#include "ApiWrappers/VkSwapchainWrapper.h"
 
 namespace Engine
 {
@@ -74,9 +73,9 @@ namespace Engine
 		spdlog::info("RecreateSwapchain swapchain");
 		FinalizeRenderOperations();
 
-		onRenderPassesDispose();
+		onDisposeRenderPasses();
 		VulkanApi::RecreateSwapchain(vulkanContext);
-		onRenderPassesCreate();
+		onCreateRenderPasses();
 	}
 
 	void RendererVulkan::Render()
@@ -88,7 +87,7 @@ namespace Engine
 		vkResetFences(vulkanContext->logicalDevice, 1, &drawFences[frame]);
 		vkResetCommandBuffer(commandBuffer, 0);
 
-		onClientRender();
+		onRenderClient();
 		
 		const VkPipelineStageFlags waitStages[] = { VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 
@@ -159,9 +158,9 @@ namespace Engine
 
 	void RendererVulkan::BindClientFunctions(std::function<void()> onClientRender, std::function<void()> onRenderPassesCreate, std::function<void()> onRenderPassesDispose)
 	{
-		this->onClientRender = onClientRender;
-		this->onRenderPassesCreate = onRenderPassesCreate;
-		this->onRenderPassesDispose = onRenderPassesDispose;
+		this->onRenderClient = onClientRender;
+		this->onCreateRenderPasses = onRenderPassesCreate;
+		this->onDisposeRenderPasses = onRenderPassesDispose;
 	}
 
 	void RendererVulkan::CreateInstance() const
@@ -213,8 +212,8 @@ namespace Engine
 
 	void RendererVulkan::CreateRenderPasses() const
 	{
-		onRenderPassesCreate();
-		rollback->Add([this] { onRenderPassesDispose(); });
+		onCreateRenderPasses();
+		rollback->Add([this] { onDisposeRenderPasses(); });
 	}
 
 	void RendererVulkan::CreateCommandsManager()
