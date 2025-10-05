@@ -14,7 +14,5 @@ public:
 
 private:
 	Ref<IEngineEditor> editorUi;
-	const Ref<ProjectSettings>& projectSettings;
-	const Ref<Engine::EngineApi>& engine;
 };
 

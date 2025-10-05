@@ -1,15 +1,10 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-
-#include <stack>
 #include <vector>
 
 #include "CommandsManager.h"
 #include "VulkanContext.h"
-#include "Descriptors/DescriptorsManager.h"
-
-#include "Models/SwapchainContext.h"
 
 #include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/Ref.h"
@@ -18,9 +13,6 @@
 #include "EngineCore/Rollback/Rollback.h"
 #include "EngineCore/Managers/InputManager.h"
 #include "EngineCore/Rendering/IRenderer.h"
-#include "EngineCore/Rendering/PipelinesCollection.h"
-
-#include "ApiWrappers/VkPhysicalDeviceWrapper.h"
 
 namespace Engine
 {
@@ -28,7 +20,6 @@ namespace Engine
 	{
 	public:
 		VulkanApi::VulkanContext* vulkanContext;
-		URef<VulkanApi::DescriptorsManager> descriptorsManager;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;
@@ -37,8 +28,12 @@ namespace Engine
 		VkSampler textureSampler;
 
 		std::function<void()> onRenderClient;
+		
 		std::function<void()> onCreateRenderPasses;
 		std::function<void()> onDisposeRenderPasses;
+
+		std::function<void()> onCreateDescriptors;
+		std::function<void()> onDisposeDescriptors;
 		
 		uint32_t GetImageIndex() const { return imageIndex; }
 		uint16_t GetFrame() const { return frame; }
@@ -52,7 +47,9 @@ namespace Engine
 		void Init() override;
 		void Render() override;
 		void FinalizeRenderOperations() override;
-		void BindClientFunctions(std::function<void()> onClientRender, std::function<void()> onRenderPassesCreate, std::function<void()> onRenderPassesDispose);
+		void BindClientFunctions(std::function<void()> onClientRender,
+			std::function<void()> onRenderPassesCreate, std::function<void()> onRenderPassesDispose,
+			std::function<void()> onCreateDescriptors, std::function<void()> onDisposeDescriptors);
 
 	private:
 		Ref<Ecs> ecs;

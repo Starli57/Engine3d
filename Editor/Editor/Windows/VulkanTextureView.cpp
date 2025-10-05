@@ -1,7 +1,6 @@
 #include "VulkanTextureView.h"
 
-VulkanTextureView::VulkanTextureView(const Ref<Engine::EngineApi>& engine, Engine::RendererVulkan& renderer)
-	: engine(engine), renderer(renderer)
+VulkanTextureView::VulkanTextureView(Engine::EngineContext* engineContext) : engineContext(engineContext)
 {
     // const auto shadowMap = renderer.GetRenderPassShadowMap();
     // const auto imageBuffer = shadowMap->GetImageBuffer();

@@ -7,38 +7,41 @@
 
 namespace Engine
 {
-	EngineApi::EngineApi(const Ref<ProjectSettings>& projectSettings) : projectSettings(projectSettings)
+	EngineApi::EngineApi(const Ref<ProjectSettings>& projectSettings)
 	{
 		InitLogger();
 
 		cachedTime = std::chrono::high_resolution_clock::now();
-		ecs = CreateRef<Ecs>();
-		systemsState = CreateRef<SystemsState>();
+		engineContext = new EngineContext(projectSettings);
+		engineContext->ecs = CreateRef<Ecs>();
+		engineContext->systemsState = CreateRef<SystemsState>();
 	
 #if GLFW_INCLUDE_VULKAN
-		assetsDatabase = CreateRef<ResourcesStorageVulkan>(projectSettings);
+		engineContext->resourcesStorage = CreateRef<ResourcesStorageVulkan>(projectSettings);
 #else
 		throw std::runtime_error("The rendering api is not supported");
 #endif
 
-		entitySerializer = CreateRef<EntitySerializer>(projectSettings,assetsDatabase);
+		engineContext->entitySerializer = CreateRef<EntitySerializer>(projectSettings, engineContext->resourcesStorage);
 	
 		spdlog::info("--Engine init finished--");
 	}
 
 	EngineApi::~EngineApi()
 	{
-		resourcesManager->UnLoadAllMaterial();
-		resourcesManager->UnLoadAllMeshes();
-		resourcesManager->UnLoadAllTextures();
-		resourcesManager.reset();
-		assetsDatabase.reset();
+		engineContext->resourcesManager->UnLoadAllMaterial();
+		engineContext->resourcesManager->UnLoadAllMeshes();
+		engineContext->resourcesManager->UnLoadAllTextures();
+		engineContext->resourcesManager.reset();
+		engineContext->resourcesStorage.reset();
 
 		spdlog::info("Dispose renderer");
-		delete renderer;
+		delete engineContext->renderer;
 
 		spdlog::info("Dispose glfw window");
-		glfwDestroyWindow(window);
+		glfwDestroyWindow(engineContext->window);
+		delete engineContext;
+		
 		glfwTerminate();
 	}
 
@@ -69,21 +72,21 @@ namespace Engine
 
 	void EngineApi::CreateAppWindow()
 	{
-		window = glfwCreateWindow(1600, 1200, projectSettings->projectName.c_str(), nullptr, nullptr);
-		CAssert::Check(window != nullptr, "GLFW window can't be created");
+		engineContext->window = glfwCreateWindow(1600, 1200, engineContext->projectSettings->projectName.c_str(), nullptr, nullptr);
+		CAssert::Check(engineContext->window != nullptr, "GLFW window can't be created");
 
-		glfwSetWindowUserPointer(window, this);
+		glfwSetWindowUserPointer(engineContext->window, this);
 	}
 
 	void EngineApi::DefineInput()
 	{
-		input = CreateRef<InputManager>(window, ecs);
+		engineContext->input = CreateRef<InputManager>(engineContext->window, engineContext->ecs);
 	}
 
 	void EngineApi::DefineGraphicsApi()
 	{
 #if GLFW_INCLUDE_VULKAN
-		renderer = new RendererVulkan(ecs, input, assetsDatabase, projectSettings, window);
+		engineContext->renderer = new RendererVulkan(engineContext->ecs, engineContext->input, engineContext->resourcesStorage, engineContext->projectSettings, engineContext->window);
 #else
 		throw std::runtime_error("The rendering api is not supported");
 #endif
@@ -92,7 +95,7 @@ namespace Engine
 	void EngineApi::DefineResourcesManager()
 	{
 #if GLFW_INCLUDE_VULKAN
-		resourcesManager = CreateRef<AssetsLoaderVulkan>(projectSettings, renderer, assetsDatabase);
+		engineContext->resourcesManager = CreateRef<AssetsLoaderVulkan>(engineContext->projectSettings, engineContext->renderer, engineContext->resourcesStorage);
 #else
 		throw std::runtime_error("The rendering api is not supported");
 #endif
@@ -101,21 +104,21 @@ namespace Engine
 	void EngineApi::Run()
 	{
 	
-		while (!glfwWindowShouldClose(window))
+		while (!glfwWindowShouldClose(engineContext->window))
 		{
 			auto currentTime = std::chrono::high_resolution_clock::now();
 			deltaTime = std::chrono::duration<float>(currentTime - cachedTime).count();
 		
-			resourcesManager->Load();
+			engineContext->resourcesManager->Load();
 			glfwPollEvents();
 		
 			Profiler::GetInstance().BeginSample("Systems");
-			input->Update();
+			engineContext->input->Update();
 			gameSystemsUpdate();
 			Profiler::GetInstance().EndSample();
 
 			Profiler::GetInstance().BeginSample("Rendering");
-			renderer->Render();
+			engineContext->renderer->Render();
 			Profiler::GetInstance().EndSample();
 
 #if DEBUG
@@ -134,7 +137,7 @@ namespace Engine
 			cachedTime = currentTime;
 		}
 
-		renderer->FinalizeRenderOperations();
+		engineContext->renderer->FinalizeRenderOperations();
 		spdlog::info("Window closed");
 	}
 

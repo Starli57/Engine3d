@@ -2,15 +2,15 @@
 #include "DescriptorFrame.h"
 #include "DescriptorMaterialOpaque.h"
 #include "DescriptorShadowMap.h"
+#include "EngineCore/EngineContext.h"
 #include "EngineCore/Managers/InputManager.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
     class DescriptorsManager
     {
     public:
-        DescriptorsManager(VulkanContext* vulkanContext, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
-            VkSampler& textureSampler, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase);
+        DescriptorsManager(Engine::EngineContext* engineContext);
         ~DescriptorsManager();
 
         void CreateGlobalDescriptorsPool();
@@ -28,12 +28,11 @@ namespace VulkanApi
         VkDescriptorSet& GetDescriptorSetShadowMap(uint32_t frame) const;
         
     private:
-        VulkanContext* vulkanContext;
+        Engine::EngineContext* engineContext;
+        
         URef<DescriptorFrame> frameDescriptor;
         URef<DescriptorMaterialOpaque> opaqueMaterialDescriptor;
         URef<DescriptorShadowMap> shadowMapDescriptor;
         VkDescriptorPool globalDescriptorPool;
-
-        Ref<Engine::InputManager> inputManager;
     };
 }

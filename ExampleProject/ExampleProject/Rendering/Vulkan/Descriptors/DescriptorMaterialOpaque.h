@@ -1,18 +1,19 @@
 ﻿#pragma once
+#include "EngineCore/EngineContext.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 #include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
     class DescriptorMaterialOpaque
     {
     public:
-        DescriptorMaterialOpaque(VulkanContext* vulkanContext, const Ref<Ecs>& ecs, VkSampler& textureSampler, const Ref<Engine::ResourcesStorageVulkan>& resourcesStorage);
-
+        DescriptorMaterialOpaque(Engine::EngineContext* engineContext);
         ~DescriptorMaterialOpaque();
+        
         void CreateLayout();
         void CreateDescriptorSets();
         void UpdateDescriptorSets(uint16_t frame) const;
@@ -21,14 +22,11 @@ namespace VulkanApi
         VkDescriptorSet& GetDescriptorSet(const uint32_t frame, const uint32_t materialIndex) { return descriptorSets.at(frame).at(materialIndex); }
 
     private:
-        Ref<Engine::ResourcesStorageVulkan> resourcesStorage;
-
-        VulkanContext* vulkanContext;
-        Ref<Ecs> ecs;
+        Engine::EngineContext* engineContext;
+        VulkanApi::VulkanContext* vulkanContext;
         
         std::vector<VkDescriptorPool> descriptorPools;
         std::vector<std::vector<VkDescriptorSet>> descriptorSets;
-        std::vector<Ref<BufferModel>> materialsUniformBuffers;
-        VkSampler& textureSampler;
+        std::vector<Ref<VulkanApi::BufferModel>> materialsUniformBuffers;
     };
 }

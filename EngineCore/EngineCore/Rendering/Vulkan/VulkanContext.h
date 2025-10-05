@@ -13,7 +13,6 @@ namespace VulkanApi
 	{
 	public:
 		SwapchainContext* swapchainContext = nullptr;
-		
 		GLFWwindow* window = nullptr;
 		
 		VkInstance instance = VK_NULL_HANDLE;

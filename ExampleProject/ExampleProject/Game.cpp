@@ -8,24 +8,25 @@ Game::Game(Ref<ProjectSettings> projectSettings) : projectSettings(projectSettin
 	engine->CreateAppWindow();
 	engine->DefineInput();
 	engine->DefineGraphicsApi();
+
+	auto& engineContext = engine->engineContext;
 	
 #if GLFW_INCLUDE_VULKAN
-	auto vulkanApi = engine->GetRenderer();
-	renderer = CreateRef<ClientVulkanApi::RendererVulkan>(vulkanApi, engine->GetAssetsDatabase(), engine->GetEcs());
-	vulkanApi->Init();
+	renderer = CreateRef<ClientVulkanApi::RendererVulkan>(engineContext);
+	engineContext->renderer->Init();
 #endif
 	
 	engine->DefineResourcesManager();
 	engine->BindGameSystemsUpdateFunction([this]() { UpdateGameSystems(); });
 	
-	serializer = CreateRef<Client::EntitySerializer>(engine->GetSerializer());
+	serializer = CreateRef<Client::EntitySerializer>(engineContext->entitySerializer);
 
 #if DEBUG
 	editor = CreateRef<Editor>(projectSettings, engine);
 #endif
 	
 #if !DEBUG
-	engine->GetSerializer()->InstantiateWorld(engine->GetEcs(), engine->GetResourcesManager()->assetsDatabase->worldsPaths.at(0));
+	engineContext->entitySerializer->InstantiateWorld(engine->engineContext->ecs, engine->engineContext->resourcesStorage->worldsPaths.at(0));
 #endif
 	
 	InitializeGameSystems();
@@ -47,10 +48,10 @@ void Game::Run() const
 
 void Game::InitializeGameSystems()
 {
-	auto window = engine->GetWindow();
-	auto ecs = engine->GetEcs();
-	auto input = engine->GetInput();
-	auto systemsState = engine->GetSystemsState();
+	auto window = engine->engineContext->window;
+	auto ecs = engine->engineContext->ecs;
+	auto input = engine->engineContext->input;
+	auto systemsState = engine->engineContext->systemsState;
 	
 	cameraLookAtPositionSystem = CreateUniqueRef<CameraLookAtSystem>(ecs, input);
 	rotatorSystem = CreateUniqueRef<RotateSystem>(ecs);

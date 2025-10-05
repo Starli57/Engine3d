@@ -4,6 +4,7 @@
 #include <chrono>
 #include <entt.hpp>
 
+#include "EngineContext.h"
 #include "Core/SystemsState.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
@@ -40,44 +41,11 @@ namespace Engine
 		void BindGameSystemsUpdateFunction(std::function<void()> gameSystemsUpdate);
 		void BindEditorUpdateFunction(std::function<void()> editorUpdate);
 
-#if GLFW_INCLUDE_VULKAN
-		RendererVulkan* GetRenderer() const { return renderer; }
-		Ref<ResourcesStorageVulkan> GetAssetsDatabase() { return assetsDatabase; }
-		Ref<AssetsLoaderVulkan> GetResourcesManager() { return resourcesManager; }
-#else
-		IRenderer* GetRenderer() const { return renderer; }
-		Ref<ResourcesStorage> GetAssetsDatabase() { return resourcesStorage; }
-		Ref<AssetsLoader> GetResourcesManager() { return resourcesManager; }
-#endif
-
-		GLFWwindow* GetWindow() const { return window; }
-		Ref<Ecs> GetEcs() { return ecs; }
-		Ref<InputManager> GetInput() { return input; }
-		Ref<EntitySerializer> GetSerializer() { return entitySerializer; }
-		Ref<SystemsState> GetSystemsState() { return systemsState; }
-	
 		float GetDeltaTime() const { return deltaTime; }
-
+		
+		EngineContext* engineContext;
+		
 	private:
-		const Ref<ProjectSettings>& projectSettings;
-
-		GLFWwindow* window;
-
-#if GLFW_INCLUDE_VULKAN
-		RendererVulkan* renderer;
-		Ref<ResourcesStorageVulkan> assetsDatabase;
-		Ref<AssetsLoaderVulkan> resourcesManager;
-#else
-		IRenderer* renderer;
-		Ref<ResourcesStorage> resourcesStorage;
-		Ref<AssetsLoader> resourcesManager;
-#endif
-	
-		Ref<Ecs> ecs;
-		Ref<InputManager> input;
-		Ref<SystemsState> systemsState;
-		Ref<EntitySerializer> entitySerializer;
-	
 		float deltaTime;
 
 		std::function<void()> gameSystemsUpdate;

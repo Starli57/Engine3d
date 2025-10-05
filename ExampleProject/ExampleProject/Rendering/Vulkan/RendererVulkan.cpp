@@ -5,13 +5,16 @@
 
 namespace ClientVulkanApi
 {
-    RendererVulkan::RendererVulkan(Engine::RendererVulkan* renderingEngine, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs)
-        : renderingEngine(renderingEngine), assetsDatabase(assetsDatabase), ecs(ecs)
+    RendererVulkan::RendererVulkan(Engine::EngineContext* engineContext)
+        : engineContext(engineContext)
     {
-        renderingEngine->BindClientFunctions(
+        engineContext->renderer->BindClientFunctions(
             [this]() { Render(); },
             [this]() { CreateRenderPasses(); },
-            [this]() { DisposeRenderPasses(); });
+            [this]() { DisposeRenderPasses(); },
+            [this]() { CreateDescriptors(); },
+            [this]() { DisposeDescriptors(); }
+            );
     
         renderPassClean = nullptr;
         renderPassOpaque = nullptr;
@@ -20,13 +23,13 @@ namespace ClientVulkanApi
 
     void RendererVulkan::Render() const
     {
-        auto swapChainData = renderingEngine->vulkanContext->swapchainContext;
-        const auto frame = renderingEngine->GetFrame();
-        const auto imageIndex = renderingEngine->GetImageIndex();
-        auto commandBuffer = renderingEngine->GetCommandBuffer();
+        auto swapChainData = engineContext->renderer->vulkanContext->swapchainContext;
+        const auto frame = engineContext->renderer->GetFrame();
+        const auto imageIndex = engineContext->renderer->GetImageIndex();
+        auto commandBuffer = engineContext->renderer->GetCommandBuffer();
     
-        renderingEngine->descriptorsManager->UpdateFrameDescriptors(frame);
-        renderingEngine->descriptorsManager->UpdateMaterialsDescriptors(frame);
+        descriptorsManager->UpdateFrameDescriptors(frame);
+        descriptorsManager->UpdateMaterialsDescriptors(frame);
         preRenderPass->UpdateDrawingEntities();
 
         VulkanApi::BeginCommandBuffer(commandBuffer);
@@ -36,7 +39,7 @@ namespace ClientVulkanApi
         VulkanApi::TransitionImageLayout(commandBuffer, 1, renderPassShadowMaps->GetImageBuffer()->image,
             VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_IMAGE_ASPECT_DEPTH_BIT);
 
-        renderingEngine->descriptorsManager->UpdateShadowsMapDescriptors(frame, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
+        descriptorsManager->UpdateShadowsMapDescriptors(frame, renderPassShadowMaps->GetImageBuffer()->imageView, renderPassShadowMaps->GetSampler());
         renderPassOpaque->Render(commandBuffer, frame, imageIndex, [this](const Ref<Entity>& entity) { return true; });
 
         VulkanApi::TransitionImageLayout(commandBuffer, 1, swapChainData->images.at(imageIndex),
@@ -47,10 +50,10 @@ namespace ClientVulkanApi
 
     void RendererVulkan::CreateRenderPasses()
     {
-        auto vulkanContext = renderingEngine->vulkanContext;
+        auto vulkanContext = engineContext->renderer->vulkanContext;
         auto swapChainData = vulkanContext->swapchainContext;
 
-        renderPassContext = CreateRef<RenderPassContext>(renderingEngine->descriptorsManager.get(), ecs, assetsDatabase, swapChainData);
+        renderPassContext = CreateRef<RenderPassContext>(descriptorsManager, engineContext->ecs, engineContext->resourcesStorage, swapChainData);
         
         preRenderPass = CreateRef<PreRenderPass>(renderPassContext);
         renderPassClean = new RenderPassClean(vulkanContext, renderPassContext);
@@ -63,5 +66,15 @@ namespace ClientVulkanApi
         delete renderPassClean;
         delete renderPassOpaque;
         delete renderPassShadowMaps;
+    }
+
+    void RendererVulkan::CreateDescriptors()
+    {
+        descriptorsManager = new DescriptorsManager(engineContext);
+    }
+
+    void RendererVulkan::DisposeDescriptors()
+    {
+        delete descriptorsManager;
     }
 }

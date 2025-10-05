@@ -10,13 +10,11 @@
 class VulkanTextureView : public Engine::IWindow
 {
 public:
-	VulkanTextureView(const Ref<Engine::EngineApi>& engine, Engine::RendererVulkan& renderer);
+	VulkanTextureView(Engine::EngineContext* engineContext);
 	void Update() override;
 
 private:
-	Ref<Engine::EngineApi> engine;
-	Engine::RendererVulkan& renderer;
-
+	Engine::EngineContext* engineContext;
 	std::vector<VkDescriptorSet> textureDescriptors;
 	int frame = 0;
 };

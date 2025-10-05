@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include "Descriptors/DescriptorsManager.h"
+#include "EngineCore/EngineContext.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/Vulkan/RendererVulkan.h"
 #include "RenderPasses/PreRenderPass.h"
@@ -11,22 +13,25 @@ namespace ClientVulkanApi
     class RendererVulkan
     {
     public:
-        RendererVulkan(Engine::RendererVulkan* renderingEngine, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase, const Ref<Ecs>& ecs);
+        RendererVulkan(Engine::EngineContext* engineContext);
     
     private:
-        Engine::RendererVulkan* renderingEngine;
-        Ref<Engine::ResourcesStorageVulkan> assetsDatabase;
-        Ref<Ecs> ecs;
-
+        Engine::EngineContext* engineContext;
+        
         Ref<RenderPassContext> renderPassContext;
         Ref<PreRenderPass> preRenderPass;
         RenderPassClean* renderPassClean;
         RenderPassOpaque* renderPassOpaque;
         RenderPassShadowMaps* renderPassShadowMaps;
-    
+
+        DescriptorsManager* descriptorsManager;
+        
         void Render() const;
     
         void CreateRenderPasses();
         void DisposeRenderPasses() const;
+
+        void CreateDescriptors();
+        void DisposeDescriptors();
     };
 }

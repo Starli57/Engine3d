@@ -4,13 +4,10 @@
 
 #include "RenderPassContext.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkCommandBufferWrapper.h"
-#include "EngineCore/Rendering/Vulkan/Models/SwapchainContext.h"
 #include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Core/Ref.h"
-#include "EngineCore/Rendering/PipelinesCollection.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
-#include "EngineCore/Rendering/Vulkan/Descriptors/DescriptorsManager.h"
 
 namespace ClientVulkanApi
 {

@@ -11,11 +11,10 @@
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/UniformBufferVulkanUtility.h"
 #include "EngineCore/Utilities/MathUtility.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
-    DescriptorFrame::DescriptorFrame(VulkanContext* vulkanContext, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
-        VkDescriptorPool& descriptorPool)
-        : vulkanContext(vulkanContext), ecs(ecs), descriptorPool(descriptorPool), inputManager(inputManager)
+    DescriptorFrame::DescriptorFrame(Engine::EngineContext* engineContext, VkDescriptorPool& descriptorPool)
+        : engineContext(engineContext), vulkanContext(engineContext->renderer->vulkanContext), descriptorPool(descriptorPool)
     {
         CreateLayout();
         CreateDescriptorSets();
@@ -24,37 +23,37 @@ namespace VulkanApi
     DescriptorFrame::~DescriptorFrame()
     {
         for(const auto& cameraUniform : cameraUniformBuffers)
-            DisposeBuffer(vulkanContext->logicalDevice, cameraUniform->buffer, cameraUniform->bufferMemory);
+            VulkanApi::DisposeBuffer(vulkanContext->logicalDevice, cameraUniform->buffer, cameraUniform->bufferMemory);
         for(const auto& lightUniform : lightUniformBuffers)
-            DisposeBuffer(vulkanContext->logicalDevice, lightUniform->buffer, lightUniform->bufferMemory);
+            VulkanApi::DisposeBuffer(vulkanContext->logicalDevice, lightUniform->buffer, lightUniform->bufferMemory);
         for(const auto& cursorUniform : cursorUniformBuffers)
-            DisposeBuffer(vulkanContext->logicalDevice, cursorUniform->buffer, cursorUniform->bufferMemory);
+            VulkanApi::DisposeBuffer(vulkanContext->logicalDevice, cursorUniform->buffer, cursorUniform->bufferMemory);
         
         vkDestroyDescriptorSetLayout(vulkanContext->logicalDevice, descriptorSetLayout, nullptr);
     }
 
     void DescriptorFrame::CreateLayout()
     {    
-        const auto uboViewProjectionLayout = DescriptorSetLayoutBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
-        const auto uboLightLayout = DescriptorSetLayoutBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
-        const auto uboCursorLayout = DescriptorSetLayoutBinding(2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
+        const auto uboViewProjectionLayout = VulkanApi::DescriptorSetLayoutBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
+        const auto uboLightLayout = VulkanApi::DescriptorSetLayoutBinding(1, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
+        const auto uboCursorLayout = VulkanApi::DescriptorSetLayoutBinding(2, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT, 1);
 
         std::vector bindings = { uboViewProjectionLayout, uboLightLayout, uboCursorLayout };
-        CreateDescriptorLayout(vulkanContext->logicalDevice, bindings, descriptorSetLayout);
+        VulkanApi::CreateDescriptorLayout(vulkanContext->logicalDevice, bindings, descriptorSetLayout);
     }
 
     void DescriptorFrame::CreateDescriptorSets()
     {
-        AllocateDescriptorSets(vulkanContext->logicalDevice, descriptorSetLayout, descriptorPool, descriptorSets, VulkanContext::maxFramesInFlight);
+        VulkanApi::AllocateDescriptorSets(vulkanContext->logicalDevice, descriptorSetLayout, descriptorPool, descriptorSets, VulkanApi::VulkanContext::maxFramesInFlight);
 
-        cameraUniformBuffers.resize(VulkanContext::maxFramesInFlight);
-        lightUniformBuffers.resize(VulkanContext::maxFramesInFlight);
-        cursorUniformBuffers.resize(VulkanContext::maxFramesInFlight);
+        cameraUniformBuffers.resize(VulkanApi::VulkanContext::maxFramesInFlight);
+        lightUniformBuffers.resize(VulkanApi::VulkanContext::maxFramesInFlight);
+        cursorUniformBuffers.resize(VulkanApi::VulkanContext::maxFramesInFlight);
         
-        for(int i = 0; i < VulkanContext::maxFramesInFlight; i++)
+        for(int i = 0; i < VulkanApi::VulkanContext::maxFramesInFlight; i++)
         {
             cameraUniformBuffers.at(i) = CreateUniformBuffer(vulkanContext, sizeof(UboWorldComponent));
-            lightUniformBuffers.at(i) = CreateUniformBuffer(vulkanContext, sizeof(UboLight));
+            lightUniformBuffers.at(i) = CreateUniformBuffer(vulkanContext, sizeof(VulkanApi::UboLight));
             cursorUniformBuffers.at(i) = CreateUniformBuffer(vulkanContext, sizeof(glm::vec3));
         }
     }
@@ -71,7 +70,7 @@ namespace VulkanApi
 
         VkDescriptorBufferInfo lightDescriptorInfo{};
         lightDescriptorInfo.buffer = lightUniformBuffers.at(frame)->buffer;
-        lightDescriptorInfo.range = sizeof(UboLight);
+        lightDescriptorInfo.range = sizeof(VulkanApi::UboLight);
         lightDescriptorInfo.offset = 0;
 
         VkDescriptorBufferInfo cursorDescriptorInfo{};
@@ -80,14 +79,14 @@ namespace VulkanApi
         cursorDescriptorInfo.offset = 0;
         
         std::array<VkWriteDescriptorSet, 3> descriptorWrites{};
-        WriteDescriptorSet(descriptorWrites[0], descriptorSets.at(frame), 0, 0, 1,
-            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &viewProjectionDescriptorInfo);
+        VulkanApi::WriteDescriptorSet(descriptorWrites[0], descriptorSets.at(frame), 0, 0, 1,
+                                      VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &viewProjectionDescriptorInfo);
 
-        WriteDescriptorSet(descriptorWrites[1], descriptorSets.at(frame), 1, 0, 1,
-            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &lightDescriptorInfo);
-        
-        WriteDescriptorSet(descriptorWrites[2], descriptorSets.at(frame), 2, 0, 1,
-            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &cursorDescriptorInfo);
+        VulkanApi::WriteDescriptorSet(descriptorWrites[1], descriptorSets.at(frame), 1, 0, 1,
+                                      VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &lightDescriptorInfo);
+
+        VulkanApi::WriteDescriptorSet(descriptorWrites[2], descriptorSets.at(frame), 2, 0, 1,
+                                      VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, nullptr, &cursorDescriptorInfo);
         
         vkUpdateDescriptorSets(vulkanContext->logicalDevice, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
         Engine::Profiler::GetInstance().EndSample();
@@ -101,10 +100,10 @@ namespace VulkanApi
         UpdateRendererPositionAndProjection(rendererPosition, cameraProjection, lightsProjection);
         
         memcpy(cameraUniformBuffers.at(frame)->bufferMapped, &cameraProjection, sizeof(UboWorldComponent));
-        memcpy(cursorUniformBuffers.at(frame)->bufferMapped, &inputManager->cursorPlacementWorldPosition, sizeof(glm::vec3));
+        memcpy(cursorUniformBuffers.at(frame)->bufferMapped, &engineContext->input->cursorPlacementWorldPosition, sizeof(glm::vec3));
         
         //todo: support multiple lights
-        const auto lightEntries = ecs->registry->view<PositionComponent, RotationComponent, LightComponent>();
+        const auto lightEntries = engineContext->ecs->registry->view<PositionComponent, RotationComponent, LightComponent>();
         for (const auto entity : lightEntries)
         {
             //todo: now lights descriptor can handle only 1 light entry, need to extend
@@ -117,15 +116,15 @@ namespace VulkanApi
             Engine::CalculateDirection(&direction, rotation + glm::vec3(0,90,0));
             Engine::Normalize(&direction);
 
-            UboLight uboLight = UboLight(viewProjection, position, direction, lightComponent.color, lightComponent.intensity);
-            memcpy(lightUniformBuffers.at(frame)->bufferMapped, &uboLight, sizeof(UboLight));
+            VulkanApi::UboLight uboLight = VulkanApi::UboLight(viewProjection, position, direction, lightComponent.color, lightComponent.intensity);
+            memcpy(lightUniformBuffers.at(frame)->bufferMapped, &uboLight, sizeof(VulkanApi::UboLight));
         }
     }
 
     void DescriptorFrame::UpdateRendererPositionAndProjection(PositionComponent& cameraPositionComponent,
         UboWorldComponent& cameraProjection, UboWorldComponent& lightProjection) const
     {
-        auto cameraEntries = ecs->registry->view<PositionComponent, CameraComponent, UboWorldComponent>();
+        auto cameraEntries = engineContext->ecs->registry->view<PositionComponent, CameraComponent, UboWorldComponent>();
         if (cameraEntries.begin() != cameraEntries.end())
         {
             auto firstCamera = cameraEntries.front();
@@ -134,7 +133,7 @@ namespace VulkanApi
         }
 
         //todo: support multiple light entries 
-        auto lightsEntries = ecs->registry->view<PositionComponent, LightComponent, UboWorldComponent>();
+        auto lightsEntries = engineContext->ecs->registry->view<PositionComponent, LightComponent, UboWorldComponent>();
         if (lightsEntries.begin() != lightsEntries.end())
         {
             auto firstLight = lightsEntries.front();

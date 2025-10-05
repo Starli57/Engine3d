@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "EngineCore/EngineContext.h"
 #include "EngineCore/Components/PositionComponent.h"
 #include "EngineCore/Components/RotationComponent.h"
 #include "EngineCore/Components/UboWorldComponent.h"
@@ -6,12 +7,12 @@
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 #include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
     class DescriptorFrame
     {
     public:
-        DescriptorFrame(VulkanContext* vulkanContext, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager, VkDescriptorPool& descriptorPool);
+        DescriptorFrame(Engine::EngineContext* engineContext, VkDescriptorPool& descriptorPool);
         ~DescriptorFrame();
 
         void CreateLayout();
@@ -26,15 +27,14 @@ namespace VulkanApi
         void UpdateRendererPositionAndProjection(PositionComponent& cameraPositionComponent, 
             UboWorldComponent& cameraProjection, UboWorldComponent& lightProjection) const;
 
-        VulkanContext* vulkanContext;
-        Ref<Ecs> ecs;
+        Engine::EngineContext* engineContext;
+        VulkanApi::VulkanContext* vulkanContext;
+        
         VkDescriptorPool descriptorPool;
         
         std::vector<VkDescriptorSet> descriptorSets;
-        std::vector<Ref<BufferModel>> cameraUniformBuffers;
-        std::vector<Ref<BufferModel>> lightUniformBuffers;
-        std::vector<Ref<BufferModel>> cursorUniformBuffers;
-        
-        Ref<Engine::InputManager> inputManager;
+        std::vector<Ref<VulkanApi::BufferModel>> cameraUniformBuffers;
+        std::vector<Ref<VulkanApi::BufferModel>> lightUniformBuffers;
+        std::vector<Ref<VulkanApi::BufferModel>> cursorUniformBuffers;
     };
 }

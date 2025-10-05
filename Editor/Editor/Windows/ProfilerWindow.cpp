@@ -4,8 +4,8 @@
 #include "EngineCore/Components/NameComponent.h"
 #include "EngineCore/Profiler/Profiler.h"
 
-ProfilerWindow::ProfilerWindow(const Ref<Engine::EngineApi>& engine, Engine::RendererVulkan& renderer) : 
-	engine(engine), renderer(renderer)
+ProfilerWindow::ProfilerWindow(Engine::EngineContext* engineContext)
+	: engineContext(engineContext)
 {
 }
 
@@ -19,13 +19,14 @@ void ProfilerWindow::Update()
 
 	ImGui::Text("Triangles: %d", profiler.GetTrianglesCount());
 	ImGui::Text("Draw Calls: %d", profiler.GetDrawCalls());
-	ImGui::Text("Swapchain extent width=%d height=%d", renderer.vulkanContext->swapchainContext->extent.width, renderer.vulkanContext->swapchainContext->extent.height);
+	ImGui::Text("Swapchain extent width=%d height=%d",
+		engineContext->renderer->vulkanContext->swapchainContext->extent.width, engineContext->renderer->vulkanContext->swapchainContext->extent.height);
 
 	double screenPositionX;
 	double screenPositionY;
-	engine->GetInput()->GetCursorPosition(screenPositionX, screenPositionY);
+	engineContext->input->GetCursorPosition(screenPositionX, screenPositionY);
 	ImGui::Text("Cursor position %.0f %.0f", screenPositionX, screenPositionY);
-	ImGui::Text("Is mouse 0 pressed %s", engine->GetInput()->IsMousePressedStay(0) ? "true" : "false");
+	ImGui::Text("Is mouse 0 pressed %s", engineContext->input->IsMousePressedStay(0) ? "true" : "false");
 	
 	ImGui::End();
 }

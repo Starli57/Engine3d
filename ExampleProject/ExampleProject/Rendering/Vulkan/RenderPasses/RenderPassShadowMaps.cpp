@@ -3,7 +3,6 @@
 
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/Profiler/Profiler.h"
-#include "EngineCore/Rendering/Vulkan/Descriptors/DescriptorsManager.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkFramebufferWrapper.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkPipelineWrapper.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkImageWrapper.h"

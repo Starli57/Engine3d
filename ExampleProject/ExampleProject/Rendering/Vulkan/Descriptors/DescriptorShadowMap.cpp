@@ -5,9 +5,9 @@
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/DescriptorsAllocator.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
-    DescriptorShadowMap::DescriptorShadowMap(VulkanContext* vulkanContext, const Ref<Ecs>& ecs, const VkDescriptorPool& descriptorPool)
+    DescriptorShadowMap::DescriptorShadowMap(VulkanApi::VulkanContext* vulkanContext, const Ref<Ecs>& ecs, const VkDescriptorPool& descriptorPool)
         : vulkanContext(vulkanContext), ecs(ecs), descriptorPool(descriptorPool)
     {
         CreateLayout();
@@ -21,17 +21,17 @@ namespace VulkanApi
 
     void DescriptorShadowMap::CreateLayout()
     {
-        const auto shadowMap = DescriptorSetLayoutBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
+        const auto shadowMap = VulkanApi::DescriptorSetLayoutBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT, 1);
         
         std::vector bindings = { shadowMap };
-        CreateDescriptorLayout(vulkanContext->logicalDevice, bindings, descriptorSetLayout);
+        VulkanApi::CreateDescriptorLayout(vulkanContext->logicalDevice, bindings, descriptorSetLayout);
     }
 
     void DescriptorShadowMap::CreateDescriptorSets()
     {
-        descriptorSets.resize(VulkanContext::maxFramesInFlight);
-        AllocateDescriptorSets(vulkanContext->logicalDevice, descriptorSetLayout, 
-                descriptorPool, descriptorSets, VulkanContext::maxFramesInFlight);
+        descriptorSets.resize(VulkanApi::VulkanContext::maxFramesInFlight);
+        VulkanApi::AllocateDescriptorSets(vulkanContext->logicalDevice, descriptorSetLayout, 
+                                          descriptorPool, descriptorSets, VulkanApi::VulkanContext::maxFramesInFlight);
     }
 
     void DescriptorShadowMap::UpdateDescriptorSets(uint16_t frame, const VkImageView& shadowImageView,
@@ -46,8 +46,8 @@ namespace VulkanApi
         std::array<VkWriteDescriptorSet, 1> descriptorWrites{};
 
         auto descriptorSet = descriptorSets.at(frame);
-        WriteDescriptorSet(descriptorWrites[0], descriptorSet, 0, 0, 1,
-            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &shadowMapInfo, nullptr);
+        VulkanApi::WriteDescriptorSet(descriptorWrites[0], descriptorSet, 0, 0, 1,
+                                      VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, &shadowMapInfo, nullptr);
 
         vkUpdateDescriptorSets(vulkanContext->logicalDevice, descriptorWrites.size(), descriptorWrites.data(), 0, nullptr);
         Engine::Profiler::GetInstance().EndSample();

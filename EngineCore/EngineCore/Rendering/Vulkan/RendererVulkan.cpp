@@ -10,6 +10,7 @@
 #include "ApiWrappers/VkInstanceWrapper.h"
 #include "ApiWrappers/VkDeviceWrapper.h"
 #include "ApiWrappers/SyncObjectsUtility.h"
+#include "ApiWrappers/VkPhysicalDeviceWrapper.h"
 #include "ApiWrappers/VkSamplerWrapper.h"
 #include "ApiWrappers/VkSurfaceKHRWrapper.h"
 
@@ -156,11 +157,17 @@ namespace Engine
 		vkDeviceWaitIdle(vulkanContext->logicalDevice);
 	}
 
-	void RendererVulkan::BindClientFunctions(std::function<void()> onClientRender, std::function<void()> onRenderPassesCreate, std::function<void()> onRenderPassesDispose)
+	void RendererVulkan::BindClientFunctions(std::function<void()> onClientRender,
+		std::function<void()> onRenderPassesCreate, std::function<void()> onRenderPassesDispose,
+		std::function<void()> onCreateDescriptors, std::function<void()> onDisposeDescriptors)
 	{
 		this->onRenderClient = onClientRender;
+		
 		this->onCreateRenderPasses = onRenderPassesCreate;
 		this->onDisposeRenderPasses = onRenderPassesDispose;
+
+		this->onCreateDescriptors = onCreateDescriptors;
+		this->onDisposeDescriptors = onDisposeDescriptors;
 	}
 
 	void RendererVulkan::CreateInstance() const
@@ -206,8 +213,8 @@ namespace Engine
 
 	void RendererVulkan::CreateDescriptorManager()
 	{
-		descriptorsManager = CreateUniqueRef<VulkanApi::DescriptorsManager>(vulkanContext, ecs, inputManager, textureSampler, assetDatabase);
-		rollback->Add([this] { descriptorsManager.reset(); });
+		onCreateDescriptors();
+		rollback->Add([this] { onDisposeDescriptors(); });
 	}
 
 	void RendererVulkan::CreateRenderPasses() const

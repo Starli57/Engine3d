@@ -3,16 +3,15 @@
 
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/DescriptorsAllocator.h"
 
-namespace VulkanApi
+namespace ClientVulkanApi
 {
-    DescriptorsManager::DescriptorsManager(VulkanContext* vulkanContext, const Ref<Ecs>& ecs, Ref<Engine::InputManager> inputManager,
-            VkSampler& textureSampler, const Ref<Engine::ResourcesStorageVulkan>& assetsDatabase)
-                : vulkanContext(vulkanContext), inputManager(inputManager)
+    DescriptorsManager::DescriptorsManager(Engine::EngineContext* engineContext)
+        : engineContext(engineContext)
     {
         CreateGlobalDescriptorsPool();
-        frameDescriptor = CreateUniqueRef<DescriptorFrame>(vulkanContext, ecs, inputManager, globalDescriptorPool);
-        opaqueMaterialDescriptor = CreateUniqueRef<DescriptorMaterialOpaque>(vulkanContext, ecs, textureSampler, assetsDatabase);
-        shadowMapDescriptor = CreateUniqueRef<DescriptorShadowMap>(vulkanContext, ecs, globalDescriptorPool);
+        frameDescriptor = CreateUniqueRef<DescriptorFrame>(engineContext, globalDescriptorPool);
+        opaqueMaterialDescriptor = CreateUniqueRef<DescriptorMaterialOpaque>(engineContext);
+        shadowMapDescriptor = CreateUniqueRef<DescriptorShadowMap>(engineContext->renderer->vulkanContext, engineContext->ecs, globalDescriptorPool);
     }
 
     DescriptorsManager::~DescriptorsManager()
@@ -20,12 +19,12 @@ namespace VulkanApi
         shadowMapDescriptor.reset();
         opaqueMaterialDescriptor.reset();
         frameDescriptor.reset();
-        vkDestroyDescriptorPool(vulkanContext->logicalDevice, globalDescriptorPool, nullptr);
+        vkDestroyDescriptorPool(engineContext->renderer->vulkanContext->logicalDevice, globalDescriptorPool, nullptr);
     }
 
     void DescriptorsManager::CreateGlobalDescriptorsPool()
     {
-        CreateDescriptorPool(vulkanContext->logicalDevice, globalDescriptorPool, maxDescriptorSets);
+        VulkanApi::CreateDescriptorPool(engineContext->renderer->vulkanContext->logicalDevice, globalDescriptorPool, VulkanApi::maxDescriptorSets);
     }
 
     void DescriptorsManager::UpdateFrameDescriptors(const uint32_t frame) const
