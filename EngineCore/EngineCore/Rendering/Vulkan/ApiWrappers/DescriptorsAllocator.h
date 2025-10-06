@@ -2,8 +2,6 @@
 
 #include <GLFW/glfw3.h>
 
-#include "EngineCore/Rendering/Vulkan/Models/SwapchainContext.h"
-
 namespace VulkanApi
 {
 	const uint32_t maxDescriptorSets = 4096;

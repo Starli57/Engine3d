@@ -2,9 +2,9 @@
 
 #include <unordered_map>
 
-#include "EngineCore/Rendering/Vulkan/Configs/VulkanPipelineConfig.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/ProjectSettings.h"
+#include "Vulkan/VulkanPipelineConfig.h"
 
 class PipelinesCollection
 {

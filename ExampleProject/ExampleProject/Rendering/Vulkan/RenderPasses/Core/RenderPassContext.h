@@ -3,7 +3,6 @@
 #include "DrawEntity.h"
 #include "EngineCore/Core/ResourcesStorageVulkan.h"
 #include "EngineCore/Core/Ecs.h"
-#include "EngineCore/Rendering/Vulkan/Models/SwapchainContext.h"
 #include "ExampleProject/Rendering/Vulkan/Descriptors/DescriptorsManager.h"
 
 namespace ClientVulkanApi

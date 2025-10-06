@@ -4,8 +4,8 @@
 #include <vector>
 
 #include "EngineCore/Rendering/Vulkan/PipelineVulkan.h"
+#include "EngineCore/Rendering/Vulkan/VulkanPipelineConfig.h"
 #include "EngineCore/Core/Ref.h"
-#include "EngineCore/Rendering/Vulkan/Configs/VulkanPipelineConfig.h"
 #include "EngineCore/Rollback/Rollback.h"
 
 namespace VulkanApi

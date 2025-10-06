@@ -1,4 +1,6 @@
 #include "RotateSystem.h"
+
+#include "EngineCore/Components/RotationComponent.h"
 #include "EngineCore/Components/RotationVelocityComponent.h"
 #include "EngineCore/Profiler/Profiler.h"
 

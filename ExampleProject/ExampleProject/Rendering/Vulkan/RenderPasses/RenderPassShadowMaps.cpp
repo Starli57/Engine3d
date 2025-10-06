@@ -6,6 +6,7 @@
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkFramebufferWrapper.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkPipelineWrapper.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkImageWrapper.h"
+#include "EngineCore/Rendering/Vulkan/ApiWrappers/VkRenderPassWrapper.h"
 
 namespace ClientVulkanApi
 {

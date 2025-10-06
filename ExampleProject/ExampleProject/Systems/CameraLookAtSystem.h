@@ -2,7 +2,6 @@
 #include "EngineCore/Core/ISystem.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Managers/InputManager.h"
-#include "glm/vec3.hpp"
 
 class CameraLookAtSystem : ISystem
 {

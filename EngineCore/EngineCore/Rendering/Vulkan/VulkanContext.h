@@ -4,14 +4,65 @@
 
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Rendering/PipelinesCollection.h"
-#include "Models/QueueFamilyIndices.h"
-#include "Models/SwapchainContext.h"
 
 namespace VulkanApi
 {
-	class VulkanContext
+	const std::vector<const char*> physicalDeviceExtensions =
 	{
-	public:
+		VK_KHR_SWAPCHAIN_EXTENSION_NAME
+	};
+
+	struct BufferModel
+	{
+		VkBuffer buffer;
+		VkDeviceMemory bufferMemory;
+		void* bufferMapped;
+	};
+
+	struct ImageModel
+	{
+		VkImage image;
+		VkImageView imageView;
+		VkDeviceMemory imageMemory;
+	};
+
+	struct QueueFamilyIndices
+	{
+		std::optional<uint32_t> graphicsFamily;
+		std::optional<uint32_t> presentationFamily;
+
+		bool IsComplete() const
+		{
+			return graphicsFamily.has_value() && presentationFamily.has_value();
+		}
+	};
+	
+	struct SwapchainContext
+	{
+		VkSwapchainKHR swapChain;
+		VkSwapchainKHR oldSwapChain;//todo: add usage to reuse resources
+
+		VkSurfaceFormatKHR surfaceFormat;
+		VkExtent2D extent;
+
+		uint32_t imagesCount;
+		std::vector<VkImage> images;
+		std::vector<VkImageView> imageViews;
+
+		ImageModel* depthBufferModel;//todo: replace to render passes
+		ImageModel* msaaColorSample;//todo: replace to render passes
+		ImageModel* msaaDepthSample;//todo: replace to render passes
+	};
+
+	struct SwapChainSurfaceSettings
+	{
+		VkSurfaceCapabilitiesKHR capabilities;
+		std::vector<VkSurfaceFormatKHR> formats;
+		std::vector<VkPresentModeKHR> presentModes;
+	};
+	
+	struct VulkanContext
+	{
 		SwapchainContext* swapchainContext = nullptr;
 		
 		VkInstance instance = VK_NULL_HANDLE;

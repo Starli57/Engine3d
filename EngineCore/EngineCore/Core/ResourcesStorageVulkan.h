@@ -1,4 +1,5 @@
 #pragma once
+#include <GLFW/glfw3.h>
 #include <vector>
 #include <queue>
 #include <mutex>
@@ -7,7 +8,6 @@
 #include "ProjectSettings.h"
 #include "EngineCore/Assets/MeshAsset.h"
 #include "EngineCore/Assets/PbrMaterialAsset.h"
-#include "EngineCore/Rendering/Vulkan/Models/ImageModel.h"
 
 namespace Engine
 {

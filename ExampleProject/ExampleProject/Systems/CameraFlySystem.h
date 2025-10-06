@@ -1,6 +1,5 @@
 #pragma once
 
-#include <chrono>
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/Ecs.h"
 #include "EngineCore/Managers/InputManager.h"

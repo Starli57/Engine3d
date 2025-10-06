@@ -1,9 +1,7 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
-#include "EngineCore/Rendering/Vulkan/Models/QueueFamilyIndices.h"
 
 namespace VulkanApi
 {

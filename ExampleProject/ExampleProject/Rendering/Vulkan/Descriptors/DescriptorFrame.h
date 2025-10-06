@@ -1,11 +1,8 @@
 ﻿#pragma once
 #include "EngineCore/EngineContext.h"
 #include "EngineCore/Components/PositionComponent.h"
-#include "EngineCore/Components/RotationComponent.h"
 #include "EngineCore/Components/UboWorldComponent.h"
-#include "EngineCore/Managers/InputManager.h"
 #include "EngineCore/Rendering/Vulkan/VulkanContext.h"
-#include "EngineCore/Rendering/Vulkan/Models/BufferModel.h"
 
 namespace ClientVulkanApi
 {

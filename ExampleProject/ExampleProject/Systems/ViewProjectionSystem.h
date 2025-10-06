@@ -1,6 +1,5 @@
 #pragma once
 
-#include <chrono>
 #include <GLFW/glfw3.h>
 #include "EngineCore/Core/ISystem.h"
 #include "EngineCore/Core/Ref.h"

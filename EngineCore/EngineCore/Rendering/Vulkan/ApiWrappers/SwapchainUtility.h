@@ -1,7 +1,7 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include "EngineCore/Rendering/Vulkan/Models/SwapChainSurfaceSettings.h"
+#include "EngineCore/Rendering/Vulkan/VulkanContext.h"
 
 namespace VulkanApi
 {

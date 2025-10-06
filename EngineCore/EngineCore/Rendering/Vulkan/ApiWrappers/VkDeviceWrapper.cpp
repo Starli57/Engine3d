@@ -3,7 +3,6 @@
 #include "VkPhysicalDeviceWrapper.h"
 #include "EngineCore/CustomAssert.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/ValidationLayersUtility.h"
-#include "EngineCore/Rendering/Vulkan/Models/PhysicalDeviceExtensions.h"
 
 namespace VulkanApi
 {
