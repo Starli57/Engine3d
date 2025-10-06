@@ -2,7 +2,6 @@
 #include "RenderPassOpaque.h"
 
 #include "EngineCore/Profiler/Profiler.h"
-#include "EngineCore/Rendering/Vulkan/UniformBufferModel/UboLight.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkFramebufferWrapper.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkPipelineWrapper.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkRenderPassWrapper.h"
