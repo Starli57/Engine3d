@@ -20,12 +20,7 @@ namespace Engine
 	{
 	public:
 		VulkanApi::VulkanContext* vulkanContext;
-
-		std::vector<VkSemaphore> imageAvailableSemaphores;
-		std::vector<VkSemaphore> renderFinishedSemaphores;
-		std::vector<VkFence> drawFences;
-
-		VkSampler textureSampler;
+		GLFWwindow* glfwWindow;
 
 		std::function<void()> onRenderClient;
 		

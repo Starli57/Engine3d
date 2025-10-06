@@ -8,8 +8,8 @@
 
 namespace VulkanApi
 {
-    void RecreateSwapchain(VulkanContext* vulkanContext);
-    void CreateSwapchain(VulkanContext* vulkanContext);
+    void RecreateSwapchain(VulkanContext* vulkanContext, GLFWwindow* window);
+    void CreateSwapchain(VulkanContext* vulkanContext, GLFWwindow* window);
     void CreateSwapChainImageViews(VulkanContext* vulkanContext);
     void CreateDepthBuffer(VulkanContext* vulkanContext);
     void CreateMSAAColorResources(VulkanContext* vulkanContext);

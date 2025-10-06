@@ -24,7 +24,7 @@ namespace Engine
 		this->inputManager = inputManager;
 		this->assetDatabase = assetDatabase;
 		this->projectSettings = projectSettings;
-		this->vulkanContext->window = glfwWindow;
+		this->glfwWindow = glfwWindow;
 		this->vulkanContext->pipelinesCollection = CreateRef<PipelinesCollection>(projectSettings);
 		this->rollback = CreateRef<Rollback>("RendererVulkan");
 	}
@@ -63,11 +63,11 @@ namespace Engine
 	void RendererVulkan::RecreateSwapChain()
 	{
 		int width = 0, height = 0;
-		glfwGetFramebufferSize(vulkanContext->window, &width, &height);
+		glfwGetFramebufferSize(glfwWindow, &width, &height);
 
 		while (width == 0 || height == 0)
 		{
-			glfwGetFramebufferSize(vulkanContext->window, &width, &height);
+			glfwGetFramebufferSize(glfwWindow, &width, &height);
 			glfwWaitEvents();
 		}
 
@@ -75,7 +75,7 @@ namespace Engine
 		FinalizeRenderOperations();
 
 		onDisposeRenderPasses();
-		VulkanApi::RecreateSwapchain(vulkanContext);
+		VulkanApi::RecreateSwapchain(vulkanContext, glfwWindow);
 		onCreateRenderPasses();
 	}
 
@@ -85,7 +85,7 @@ namespace Engine
 		if (acquireStatus != VK_SUCCESS) return;
 
 		auto commandBuffer = commandsManager->GetCommandBuffer(frame);
-		vkResetFences(vulkanContext->logicalDevice, 1, &drawFences[frame]);
+		vkResetFences(vulkanContext->logicalDevice, 1, &vulkanContext->drawFences[frame]);
 		vkResetCommandBuffer(commandBuffer, 0);
 
 		onRenderClient();
@@ -101,14 +101,14 @@ namespace Engine
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		submitInfo.waitSemaphoreCount = 1;
 		submitInfo.signalSemaphoreCount = 1;
-		submitInfo.pWaitSemaphores = &imageAvailableSemaphores[frame];
-		submitInfo.pSignalSemaphores = &renderFinishedSemaphores[frame];
+		submitInfo.pWaitSemaphores = &vulkanContext->imageAvailableSemaphores[frame];
+		submitInfo.pSignalSemaphores = &vulkanContext->renderFinishedSemaphores[frame];
 		submitInfo.pWaitDstStageMask = waitStages;
 		submitInfo.commandBufferCount = static_cast<uint32_t>(submitCommandBuffers.size());
 		submitInfo.pCommandBuffers = submitCommandBuffers.data();
 
 		Profiler::GetInstance().BeginSample("Renderer Submit");
-		auto submitStatus = vkQueueSubmit(vulkanContext->graphicsQueue, 1, &submitInfo, drawFences[frame]);
+		auto submitStatus = vkQueueSubmit(vulkanContext->graphicsQueue, 1, &submitInfo, vulkanContext->drawFences[frame]);
 		Profiler::GetInstance().EndSample();
 
 		CAssert::Check(submitStatus == VK_SUCCESS, "Failed to submit draw command buffer, status: " + submitStatus);
@@ -116,7 +116,7 @@ namespace Engine
 		VkPresentInfoKHR presentInfo{};
 		presentInfo.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 		presentInfo.waitSemaphoreCount = 1;
-		presentInfo.pWaitSemaphores = &renderFinishedSemaphores[frame];
+		presentInfo.pWaitSemaphores = &vulkanContext->renderFinishedSemaphores[frame];
 		presentInfo.swapchainCount = 1;
 		presentInfo.pSwapchains = &vulkanContext->swapchainContext->swapChain;
 		presentInfo.pImageIndices = &imageIndex;
@@ -138,11 +138,11 @@ namespace Engine
 
 	VkResult RendererVulkan::AcquireNextImage()
 	{
-		vkWaitForFences(vulkanContext->logicalDevice, 1, &drawFences[frame], VK_TRUE, vulkanContext->frameSyncTimeout);
+		vkWaitForFences(vulkanContext->logicalDevice, 1, &vulkanContext->drawFences[frame], VK_TRUE, vulkanContext->frameSyncTimeout);
 
 		auto acquireStatus = vkAcquireNextImageKHR(
 			vulkanContext->logicalDevice, vulkanContext->swapchainContext->swapChain, vulkanContext->frameSyncTimeout,
-			imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
+			vulkanContext->imageAvailableSemaphores[frame], VK_NULL_HANDLE, &imageIndex);
 		
 		if (acquireStatus == VK_ERROR_OUT_OF_DATE_KHR) 
 		{
@@ -178,7 +178,7 @@ namespace Engine
 
 	void RendererVulkan::CreateWindowSurface() const
 	{
-		CreateSurface(vulkanContext);
+		CreateSurface(vulkanContext, glfwWindow);
 		rollback->Add([this]() { DisposeSurface(vulkanContext); });
 	}
 
@@ -203,7 +203,7 @@ namespace Engine
 	void RendererVulkan::CreateSwapChain()
 	{
 		vulkanContext->swapchainContext = new VulkanApi::SwapchainContext();
-		VulkanApi::CreateSwapchain(vulkanContext);
+		VulkanApi::CreateSwapchain(vulkanContext, glfwWindow);
 		VulkanApi::CreateSwapChainImageViews(vulkanContext);
 		VulkanApi::CreateMSAAColorResources(vulkanContext);
 		VulkanApi::CreateMSAADepthResources(vulkanContext);
@@ -237,15 +237,15 @@ namespace Engine
 
 	void RendererVulkan::CreateTextureSampler()
 	{
-		VulkanApi::CreateTextureSampler(vulkanContext->physicalDevice, vulkanContext->logicalDevice, textureSampler);
-		rollback->Add([this]() { vkDestroySampler(vulkanContext->logicalDevice, textureSampler, nullptr); });
+		VulkanApi::CreateTextureSampler(vulkanContext->physicalDevice, vulkanContext->logicalDevice, vulkanContext->textureSampler);
+		rollback->Add([this]() { vkDestroySampler(vulkanContext->logicalDevice, vulkanContext->textureSampler, nullptr); });
 	}
 
 	void RendererVulkan::CreateSyncObjects()
 	{
-		imageAvailableSemaphores.resize(VulkanApi::VulkanContext::maxFramesInFlight);
-		renderFinishedSemaphores.resize(VulkanApi::VulkanContext::maxFramesInFlight);
-		drawFences.resize(VulkanApi::VulkanContext::maxFramesInFlight);
+		vulkanContext->imageAvailableSemaphores.resize(VulkanApi::VulkanContext::maxFramesInFlight);
+		vulkanContext->renderFinishedSemaphores.resize(VulkanApi::VulkanContext::maxFramesInFlight);
+		vulkanContext->drawFences.resize(VulkanApi::VulkanContext::maxFramesInFlight);
 
 		VkSemaphoreCreateInfo semaphoreInfo{};
 		semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -256,9 +256,9 @@ namespace Engine
 
 		for (int i = 0; i < VulkanApi::VulkanContext::maxFramesInFlight; i++)
 		{
-			VulkanApi::CreateVkSemaphore(vulkanContext->logicalDevice, &semaphoreInfo, nullptr, &imageAvailableSemaphores[i], rollback);
-			VulkanApi::CreateVkSemaphore(vulkanContext->logicalDevice, &semaphoreInfo, nullptr, &renderFinishedSemaphores[i], rollback);
-			VulkanApi::CreateVkFence(vulkanContext->logicalDevice, &fenceInfo, &drawFences[i], rollback);
+			VulkanApi::CreateVkSemaphore(vulkanContext->logicalDevice, &semaphoreInfo, nullptr, &vulkanContext->imageAvailableSemaphores[i], rollback);
+			VulkanApi::CreateVkSemaphore(vulkanContext->logicalDevice, &semaphoreInfo, nullptr, &vulkanContext->renderFinishedSemaphores[i], rollback);
+			VulkanApi::CreateVkFence(vulkanContext->logicalDevice, &fenceInfo, &vulkanContext->drawFences[i], rollback);
 		}
 	}
 }

@@ -7,6 +7,6 @@
 
 namespace VulkanApi
 {
-	void CreateSurface(VulkanContext* vulkanContext);
+	void CreateSurface(VulkanContext* vulkanContext, GLFWwindow* window);
 	void DisposeSurface(VulkanContext* vulkanContext);
 }

@@ -8,18 +8,18 @@
 
 namespace VulkanApi
 {
-	void RecreateSwapchain(VulkanContext* vulkanContext)
+	void RecreateSwapchain(VulkanContext* vulkanContext, GLFWwindow* window)
 	{
 		DisposeSwapchain(vulkanContext);
 
-		CreateSwapchain(vulkanContext);
+		CreateSwapchain(vulkanContext, window);
 		CreateSwapChainImageViews(vulkanContext);
 		CreateDepthBuffer(vulkanContext);
 		CreateMSAAColorResources(vulkanContext);
 		CreateMSAADepthResources(vulkanContext);
 	}
 
-	void CreateSwapchain(VulkanContext* vulkanContext)
+	void CreateSwapchain(VulkanContext* vulkanContext, GLFWwindow* window)
 	{
 		spdlog::info("Create swap chain");
 		
@@ -28,7 +28,7 @@ namespace VulkanApi
 
 		vulkanContext->swapchainContext->surfaceFormat = ChooseSwapSurfaceFormat(details.formats);
 		VkPresentModeKHR presentMode = ChoosePresentMode(details.presentModes);
-		VkExtent2D extent = ChooseSwapExtent(*vulkanContext->window, details.capabilities);
+		VkExtent2D extent = ChooseSwapExtent(*window, details.capabilities);
 
 		vulkanContext->swapchainContext->imagesCount = details.capabilities.minImageCount + 1;
 		if (details.capabilities.maxImageCount > 0 && vulkanContext->swapchainContext->imagesCount > details.capabilities.maxImageCount)

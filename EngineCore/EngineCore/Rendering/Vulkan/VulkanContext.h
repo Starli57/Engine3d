@@ -13,7 +13,6 @@ namespace VulkanApi
 	{
 	public:
 		SwapchainContext* swapchainContext = nullptr;
-		GLFWwindow* window = nullptr;
 		
 		VkInstance instance = VK_NULL_HANDLE;
 		VkSurfaceKHR windowSurface = VK_NULL_HANDLE;
@@ -24,6 +23,8 @@ namespace VulkanApi
 		VkQueue graphicsQueue = VK_NULL_HANDLE;
 		VkQueue presentationQueue = VK_NULL_HANDLE;
 
+		VkSampler textureSampler;
+		
 		QueueFamilyIndices physicalDeviceQueueIndices;
 		Ref<PipelinesCollection> pipelinesCollection;
 
@@ -33,5 +34,9 @@ namespace VulkanApi
 		VkFormat imageFormat = VK_FORMAT_R8G8B8A8_SRGB;
 		VkFormat depthFormat = VK_FORMAT_D32_SFLOAT;
 		VkSampleCountFlagBits msaa = VK_SAMPLE_COUNT_1_BIT;
+		
+		std::vector<VkSemaphore> imageAvailableSemaphores;
+		std::vector<VkSemaphore> renderFinishedSemaphores;
+		std::vector<VkFence> drawFences;
 	};
 }

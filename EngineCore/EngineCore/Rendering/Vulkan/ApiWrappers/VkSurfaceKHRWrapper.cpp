@@ -5,11 +5,11 @@
 
 namespace VulkanApi
 {
-	void CreateSurface(VulkanContext* vulkanContext)
+	void CreateSurface(VulkanContext* vulkanContext, GLFWwindow* window)
 	{
 		spdlog::info("Create Window Surface");
 
-		const auto createResult = glfwCreateWindowSurface(vulkanContext->instance, vulkanContext->window, nullptr, &vulkanContext->windowSurface);
+		const auto createResult = glfwCreateWindowSurface(vulkanContext->instance, window, nullptr, &vulkanContext->windowSurface);
 		Engine::CAssert::Check(createResult == VK_SUCCESS, "Can't create vulkan window surface, status: " + createResult);
 	}
 

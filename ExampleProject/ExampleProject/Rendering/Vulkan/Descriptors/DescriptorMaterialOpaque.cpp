@@ -107,27 +107,27 @@ namespace ClientVulkanApi
             VkDescriptorImageInfo baseTextureInfo{};
             baseTextureInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             baseTextureInfo.imageView = baseTextuerImageView;
-            baseTextureInfo.sampler = engineContext->renderer->textureSampler;
+            baseTextureInfo.sampler = engineContext->renderer->vulkanContext->textureSampler;
 
             VkDescriptorImageInfo metallicRoughnessInfo{};
             metallicRoughnessInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             metallicRoughnessInfo.imageView = metallicRoughnessImageView;
-            metallicRoughnessInfo.sampler = engineContext->renderer->textureSampler;
+            metallicRoughnessInfo.sampler = engineContext->renderer->vulkanContext->textureSampler;
 
             VkDescriptorImageInfo normalImageInfo{};
             normalImageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             normalImageInfo.imageView = normalMapImageView;
-            normalImageInfo.sampler = engineContext->renderer->textureSampler;
+            normalImageInfo.sampler = engineContext->renderer->vulkanContext->textureSampler;
 
             VkDescriptorImageInfo occlusionInfo{};
             occlusionInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             occlusionInfo.imageView = occlusionTextureImageView;
-            occlusionInfo.sampler = engineContext->renderer->textureSampler;
+            occlusionInfo.sampler = engineContext->renderer->vulkanContext->textureSampler;
 
             VkDescriptorImageInfo emissionInfo{};
             emissionInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
             emissionInfo.imageView = emissionTextureImageView;
-            emissionInfo.sampler = engineContext->renderer->textureSampler;
+            emissionInfo.sampler = engineContext->renderer->vulkanContext->textureSampler;
 
             VulkanApi::UboMaterial uboMaterial = VulkanApi::UboMaterial(engineContext->resourcesStorage->materials.at(i));
             memcpy(materialsUniformBuffers.at(i)->bufferMapped, &uboMaterial, sizeof(VulkanApi::UboMaterial));

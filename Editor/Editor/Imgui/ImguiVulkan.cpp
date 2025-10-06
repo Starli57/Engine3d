@@ -40,7 +40,7 @@ ImguiVulkan::ImguiVulkan(const Ref<ProjectSettings>& projectSettings, Engine::Re
         io.ConfigViewportsNoAutoMerge = true;
     }
 
-    ImGui_ImplGlfw_InitForVulkan(renderer.vulkanContext->window, true);
+    ImGui_ImplGlfw_InitForVulkan(renderer.glfwWindow, true);
     ImGui_ImplVulkan_InitInfo initInfo = {};
     initInfo.Instance = renderer.vulkanContext->instance;
     initInfo.PhysicalDevice = renderer.vulkanContext->physicalDevice;
