@@ -19,7 +19,6 @@ namespace Engine
 	class RendererVulkan : public IRenderer
 	{
 	public:
-		VulkanApi::VulkanContext* vulkanContext;
 		GLFWwindow* glfwWindow;
 
 		std::function<void()> onRenderClient;
@@ -53,6 +52,7 @@ namespace Engine
 		Ref<ProjectSettings> projectSettings;
 		Ref<Rollback> rollback;
 
+		VulkanApi::VulkanContext* vulkanContext;
 		VulkanApi::CommandsManager* commandsManager;
 
 		uint32_t imageIndex = 0;

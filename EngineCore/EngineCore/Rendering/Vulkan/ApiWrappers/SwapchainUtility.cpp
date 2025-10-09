@@ -3,28 +3,6 @@
 
 namespace VulkanApi
 {
-	SwapChainSurfaceSettings GetSwapChainDetails(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface)
-	{
-		SwapChainSurfaceSettings surfaceSettings;
-		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(physicalDevice, surface, &surfaceSettings.capabilities);
-
-		GetSwapChainColorFormats(physicalDevice, surface, surfaceSettings.formats);
-		GetSwapChainPresentModes(physicalDevice, surface, surfaceSettings.presentModes);
-
-		return surfaceSettings;
-	}
-
-	bool DoSupportSwapChain(const SwapChainSurfaceSettings& details)
-	{
-		return !details.formats.empty() && !details.presentModes.empty();
-	}
-
-	bool DoSupportSwapChain(VkPhysicalDevice& physicalDevice, VkSurfaceKHR& surface)
-	{
-		SwapChainSurfaceSettings details = GetSwapChainDetails(physicalDevice, surface);
-		return DoSupportSwapChain(details);
-	}
-
 	void GetSwapChainColorFormats(const VkPhysicalDevice& physicalDevice, const VkSurfaceKHR& surface, std::vector<VkSurfaceFormatKHR>& formats)
 	{
 		uint32_t formatCount;

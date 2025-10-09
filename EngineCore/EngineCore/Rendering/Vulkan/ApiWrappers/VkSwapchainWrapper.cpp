@@ -23,25 +23,29 @@ namespace VulkanApi
 	{
 		spdlog::info("Create swap chain");
 		
-		auto details = GetSwapChainDetails(vulkanContext->physicalDevice, vulkanContext->windowSurface);
-		Engine::CAssert::Check(DoSupportSwapChain(details), "Swap chains are not supported");
+		VkSurfaceCapabilitiesKHR capabilities;
+		std::vector<VkSurfaceFormatKHR> formats;
+		std::vector<VkPresentModeKHR> presentModes;
+		
+		vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vulkanContext->physicalDevice, vulkanContext->windowSurface, &capabilities);
+		GetSwapChainColorFormats(vulkanContext->physicalDevice, vulkanContext->windowSurface, formats);
+		GetSwapChainPresentModes(vulkanContext->physicalDevice, vulkanContext->windowSurface, presentModes);
+		
+		vulkanContext->swapchainContext->surfaceFormat = ChooseSwapSurfaceFormat(formats);
+		VkPresentModeKHR presentMode = ChoosePresentMode(presentModes);
+		VkExtent2D extent = ChooseSwapExtent(*window, capabilities);
 
-		vulkanContext->swapchainContext->surfaceFormat = ChooseSwapSurfaceFormat(details.formats);
-		VkPresentModeKHR presentMode = ChoosePresentMode(details.presentModes);
-		VkExtent2D extent = ChooseSwapExtent(*window, details.capabilities);
-
-		vulkanContext->swapchainContext->imagesCount = details.capabilities.minImageCount + 1;
-		if (details.capabilities.maxImageCount > 0 && vulkanContext->swapchainContext->imagesCount > details.capabilities.maxImageCount)
+		vulkanContext->swapchainContext->imagesCount = capabilities.minImageCount + 1;
+		if (capabilities.maxImageCount > 0 && vulkanContext->swapchainContext->imagesCount > capabilities.maxImageCount)
 		{
-			vulkanContext->swapchainContext->imagesCount = details.capabilities.maxImageCount;
+			vulkanContext->swapchainContext->imagesCount = capabilities.maxImageCount;
 		}
 
 		spdlog::info("Swap chain images count: {0}", vulkanContext->swapchainContext->imagesCount);
-
-
+		
 		VkSwapchainCreateInfoKHR createInfo{};
 		SetupSwapChainInfo(createInfo, vulkanContext->windowSurface, extent, presentMode, vulkanContext->swapchainContext->surfaceFormat, 
-			details.capabilities, vulkanContext->physicalDeviceQueueIndices, vulkanContext->swapchainContext->imagesCount);
+			capabilities, vulkanContext->physicalDeviceQueueIndices, vulkanContext->swapchainContext->imagesCount);
 
 		auto createStatus = vkCreateSwapchainKHR(vulkanContext->logicalDevice, &createInfo, nullptr, &vulkanContext->swapchainContext->swapChain);
 		Engine::CAssert::Check(createStatus == VK_SUCCESS, "Failed to create swap chain, status: " + createStatus);

@@ -54,13 +54,6 @@ namespace VulkanApi
 		ImageModel* msaaDepthSample;//todo: replace to render passes
 	};
 
-	struct SwapChainSurfaceSettings
-	{
-		VkSurfaceCapabilitiesKHR capabilities;
-		std::vector<VkSurfaceFormatKHR> formats;
-		std::vector<VkPresentModeKHR> presentModes;
-	};
-	
 	struct VulkanContext
 	{
 		SwapchainContext* swapchainContext = nullptr;
@@ -74,7 +67,7 @@ namespace VulkanApi
 		VkQueue graphicsQueue = VK_NULL_HANDLE;
 		VkQueue presentationQueue = VK_NULL_HANDLE;
 
-		VkSampler textureSampler;
+		VkSampler textureSampler = VK_NULL_HANDLE;
 		
 		QueueFamilyIndices physicalDeviceQueueIndices;
 		Ref<PipelinesCollection> pipelinesCollection;
