@@ -27,6 +27,7 @@
 *.lib
 
 # Folders
+Build/
 Intermediate/
 Output/
 ExampleProject/Resources
