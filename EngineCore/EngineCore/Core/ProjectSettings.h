@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include "EngineCore/Defines/DllDefines.h"
 
 struct ProjectSettings
 {

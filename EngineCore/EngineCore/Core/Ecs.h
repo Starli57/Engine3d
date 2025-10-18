@@ -4,7 +4,6 @@
 #include <entt.hpp>
 
 #include "EngineCore/Core/Ref.h"
-#include "EngineCore/Defines/DllDefines.h"
 #include "Entity.h"
 
 class Ecs
