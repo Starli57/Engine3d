@@ -20,6 +20,7 @@ namespace Engine
 	{
 	public:
 		GLFWwindow* glfwWindow;
+		VulkanApi::VulkanContext* vulkanContext;
 
 		std::function<void()> onRenderClient;
 		
@@ -52,7 +53,6 @@ namespace Engine
 		Ref<ProjectSettings> projectSettings;
 		Ref<Rollback> rollback;
 
-		VulkanApi::VulkanContext* vulkanContext;
 		VulkanApi::CommandsManager* commandsManager;
 
 		uint32_t imageIndex = 0;

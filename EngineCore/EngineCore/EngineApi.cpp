@@ -131,7 +131,7 @@ namespace Engine
 			uint32_t frameDeltaTime = static_cast<uint32_t>(std::chrono::duration<float>(std::chrono::high_resolution_clock::now() - currentTime).count() * 1000);
 			if (targetDeltaMs > frameDeltaTime)
 			{
-				Sleep(targetDeltaMs - frameDeltaTime);
+				;// Sleep(targetDeltaMs - frameDeltaTime);
 			}
 		
 			cachedTime = currentTime;

@@ -2,7 +2,7 @@
 
 #include <vector>
 #include <chrono>
-#include <entt.hpp>
+#include <entt/entt.hpp>
 
 #include "EngineContext.h"
 #include "Core/SystemsState.h"

@@ -21,9 +21,6 @@ Game::Game(Ref<ProjectSettings> projectSettings) : projectSettings(projectSettin
 	
 	serializer = CreateRef<Client::EntitySerializer>(engineContext->entitySerializer);
 
-#if DEBUG
-	editor = CreateRef<Editor>(projectSettings, engine);
-#endif
 	
 #if !DEBUG
 	engineContext->entitySerializer->InstantiateWorld(engine->engineContext->ecs, engine->engineContext->resourcesStorage->worldsPaths.at(0));
@@ -34,10 +31,6 @@ Game::Game(Ref<ProjectSettings> projectSettings) : projectSettings(projectSettin
 
 Game::~Game()
 {
-#if DEBUG
-	editor.reset();
-#endif
-	
 	engine.reset();
 }
 

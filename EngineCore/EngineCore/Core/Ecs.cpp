@@ -2,16 +2,6 @@
 #include "EngineCore/Pch.h"
 #include "EngineCore/Core/Ecs.h"
 
-#include "EngineCore/Components/PositionComponent.h"
-#include "EngineCore/Components/RotationComponent.h"
-#include "EngineCore/Components/ScaleComponent.h"
-#include "EngineCore/Components/UboModelComponent.h"
-
-#include "EngineCore/Components/MeshComponent.h"
-#include "EngineCore/Components/MaterialComponent.h"
-#include "EngineCore/Components/RotationComponent.h"
-#include "EngineCore/Components/RotationVelocityComponent.h"
-
 Ecs::Ecs()
 {
 	allEntities = std::vector<Ref<Entity>>();

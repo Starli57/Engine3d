@@ -3,5 +3,6 @@ project (Engine)
 set(CMAKE_CXX_STANDARD 20)
 
 add_subdirectory(Externals)
-add_subdirectory(Editor)
 add_subdirectory(EngineCore)
+add_subdirectory(ExampleProject)
+add_subdirectory(Editor)

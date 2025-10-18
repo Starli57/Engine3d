@@ -48,7 +48,13 @@ namespace VulkanApi
             auto device = allDevices.at(i);
             if (!DoSupportQueueFamilies(device, surface))  continue;
             if (!DoSupportPhysicalDeviceExtensions(device)) continue;
-            if (!DoSupportSwapChain(device, surface)) continue;
+            
+            std::vector<VkSurfaceFormatKHR> formats;
+            std::vector<VkPresentModeKHR> presentModes;
+            GetSwapChainColorFormats(device, surface, formats);
+            GetSwapChainPresentModes(device, surface, presentModes);
+            if (formats.empty() || presentModes.empty()) continue;
+            
             renderingDevices.push_back(device);
         }
 
@@ -141,17 +147,17 @@ namespace VulkanApi
         uint32_t minor = VK_API_VERSION_MINOR(deviceProperties.properties.apiVersion);
         spdlog::info("Device API Versions: {}.{}", major, minor);
         
-        SwapChainSurfaceSettings surfaceSettings;
+        std::vector<VkSurfaceFormatKHR> formats;
+        std::vector<VkPresentModeKHR> presentModes;
+        GetSwapChainColorFormats(physicalDevice, windowSurface, formats);
+        GetSwapChainPresentModes(physicalDevice, windowSurface, presentModes);
 
-        GetSwapChainColorFormats(physicalDevice, windowSurface, surfaceSettings.formats);
-        GetSwapChainPresentModes(physicalDevice, windowSurface, surfaceSettings.presentModes);
-
-        for (auto colorFormat : surfaceSettings.formats)
+        for (auto colorFormat : formats)
         {
             spdlog::info("Available color format: {0} color space: {1}", static_cast<int>(colorFormat.format), static_cast<int>(colorFormat.colorSpace));
         }
 
-        for (auto mode : surfaceSettings.presentModes)
+        for (auto mode : presentModes)
         {
             spdlog::info("Available present mode: {0}", static_cast<int>(mode));
         }

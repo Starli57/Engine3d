@@ -1,7 +1,7 @@
 
 #include <iostream>
 
-#include "Game.h"
+#include "ExampleProject/Game.h"
 
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/ProjectSettings.h"

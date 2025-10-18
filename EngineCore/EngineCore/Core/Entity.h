@@ -1,6 +1,6 @@
 #pragma once
 
-#include <entt.hpp>
+#include <entt/entt.hpp>
 #include "EngineCore/Core/Ref.h"
 
 class Entity

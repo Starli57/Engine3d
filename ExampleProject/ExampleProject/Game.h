@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Editor/Editor.h"
 #include "EngineCore/EngineApi.h"
 #include "EngineCore/Core/Ref.h"
 #include "EngineCore/Core/ProjectSettings.h"
@@ -21,7 +20,6 @@ public:
 
 	void Run() const;
 private:
-	Ref<Editor> editor;
 	Ref<Engine::EngineApi> engine;
 	Ref<Client::EntitySerializer> serializer;
 	
