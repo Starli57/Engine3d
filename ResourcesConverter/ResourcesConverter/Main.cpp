@@ -15,8 +15,8 @@ int main()
 {
 	try
 	{
-		const auto inFolder = "../ResourcesConverter/Input/";
-		const auto outFolder = "../ExampleProject/Resources/";
+		const auto inFolder = "Input/";
+		const auto outFolder = "Resources/";
 		
 		std::vector<std::future<void>> conversionTasks;
 
