@@ -20,9 +20,8 @@ Game::Game(Ref<ProjectSettings> projectSettings) : projectSettings(projectSettin
 	engine->BindGameSystemsUpdateFunction([this]() { UpdateGameSystems(); });
 	
 	serializer = CreateRef<Client::EntitySerializer>(engineContext->entitySerializer);
-
 	
-#if !DEBUG
+#if !_DEBUG
 	engineContext->entitySerializer->InstantiateWorld(engine->engineContext->ecs, engine->engineContext->resourcesStorage->worldsPaths.at(0));
 #endif
 	

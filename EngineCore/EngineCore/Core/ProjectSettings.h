@@ -10,12 +10,12 @@ struct ProjectSettings
 	const std::string worldsPath = "Worlds";
 	const std::string fontsPath = "Fonts";
 
-	ProjectSettings(const std::string& projectPath, const std::string& externalsPath) : 
+	ProjectSettings(const std::string& projectPath) : 
 		projectPath(projectPath), 
 		resourcesPath(projectPath + "Resources"), 
 		prefabsPath(projectPath + "Prefabs"), 
 		worldsPath(projectPath + "Worlds"), 
-		fontsPath(externalsPath + "Fonts")
+		fontsPath(projectPath + "Fonts")
 	{
 	}
 };

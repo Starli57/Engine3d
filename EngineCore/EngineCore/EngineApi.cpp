@@ -121,7 +121,7 @@ namespace Engine
 			engineContext->renderer->Render();
 			Profiler::GetInstance().EndSample();
 
-#if DEBUG
+#if _DEBUG
 			editorUpdate();
 #endif
 			

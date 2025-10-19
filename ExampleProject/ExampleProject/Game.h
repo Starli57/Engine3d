@@ -15,12 +15,13 @@
 class Game
 {
 public:
+	Ref<Engine::EngineApi> engine;
+	
 	Game(Ref<ProjectSettings> projectSettings);
 	~Game();
 
 	void Run() const;
 private:
-	Ref<Engine::EngineApi> engine;
 	Ref<Client::EntitySerializer> serializer;
 	
 	Ref<ProjectSettings> projectSettings;

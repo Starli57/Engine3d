@@ -6,7 +6,6 @@
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkImageWrapper.h"
 #include "EngineCore/Rendering/Vulkan/ApiWrappers/VkDeviceMemoryWrapper.h"
 
-#define STB_IMAGE_IMPLEMENTATION
 #include <fstream>
 #include <stb_image.h>
 #include <yaml-cpp/exceptions.h>
