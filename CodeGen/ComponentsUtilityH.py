@@ -1,8 +1,5 @@
 import os
-
-components_folder1 = "EngineCore/EngineCore/Components"
-components_folder2 = "ExampleProject/ExampleProject/Components"
-output_file = "Editor/Editor/Utilities/ComponentsUtility.h"
+import sys
 
 def extract_component_names(folder):
     component_names = []
@@ -11,10 +8,9 @@ def extract_component_names(folder):
             component_names.append(filename)
     return component_names
 
-components1 = extract_component_names(components_folder1)
-components2 = extract_component_names(components_folder2)
+components = extract_component_names(sys.argv[1])
 
-with open(output_file, 'w') as f:
+with open(sys.argv[2], 'w') as f:
 
 #Defs
     f.write("\n")
@@ -29,10 +25,8 @@ with open(output_file, 'w') as f:
     f.write("#include \"EngineCore/Core/IComponent.h\"\n")
     f.write("\n")
 
-    for component in components1:
-        f.write(f"#include \"EngineCore/Components/{component}\"\n")
-    for component in components2:
-        f.write(f"#include \"ExampleProject/Components/{component}\"\n")
+    for component in components:
+        f.write(f"#include \"{sys.argv[1].split('/', 1)[1]}/{component}\"\n")
 #Notes
     f.write("\n")
     f.write("/// <summary>\n")
@@ -43,7 +37,7 @@ with open(output_file, 'w') as f:
 
 #Components array
     f.write("\n")
-    f.write(f"const int componentsLength = {len(components1) + len(components2)};\n")
+    f.write(f"const int componentsLength = {len(components)};\n")
     f.write("extern const char* allComponentsNames[componentsLength];\n")
     f.write("\n")
 
@@ -53,4 +47,4 @@ with open(output_file, 'w') as f:
     f.write("void AddComponent(Ref<Entity> entity, const std::string& componentName);\n")
     f.write("void RemoveComponent(Ref<Entity> entity, const std::string& componentName);\n")
 
-print(f"Generated C++ for {output_file}")
+print(f"Generated C++ for {sys.argv[2]}")

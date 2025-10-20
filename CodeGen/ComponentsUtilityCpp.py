@@ -1,16 +1,9 @@
 import os
-
-components_folder1 = "EngineCore/EngineCore/Components"
-components_folder2 = "ExampleProject/ExampleProject/Components"
-output_file = "Editor/Editor/Utilities/ComponentsUtility.cpp"
+import sys
 
 def extract_component_names():
     component_names = []
-    for filename in os.listdir(components_folder1):
-        if filename.endswith(".h"):
-            component_names.append(filename)
-
-    for filename in os.listdir(components_folder2):
+    for filename in os.listdir(sys.argv[1]):
         if filename.endswith(".h"):
             component_names.append(filename)
 
@@ -18,12 +11,12 @@ def extract_component_names():
 
 components = extract_component_names()
 
-with open(output_file, 'w') as f:
+with open(sys.argv[2], 'w') as f:
 
 #Defs
     f.write("\n")
     f.write("#include \"EngineCore/Pch.h\"\n")
-    f.write("#include \"Editor/Utilities/ComponentsUtility.h\"\n")
+    f.write("#include \"Editor/ComponentsList.h\"\n")
     f.write("\n")
 
 #Notes
@@ -82,4 +75,4 @@ with open(output_file, 'w') as f:
     f.write("}\n")
     f.write("\n")
 
-print(f"Generated C++ for {output_file}")
+print(f"Generated C++ for {sys.argv[2]}")

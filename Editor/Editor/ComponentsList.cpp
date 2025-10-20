@@ -1,6 +1,6 @@
 
 #include "EngineCore/Pch.h"
-#include "Editor/Utilities/ComponentsUtility.h"
+#include "Editor/ComponentsList.h"
 
 
 /// <summary>
@@ -25,7 +25,6 @@ const char* allComponentsNames[componentsLength] =
       "ShadowMapComponent",
       "UboModelComponent",
       "UboWorldComponent",
-      "CameraFreeComponent",
 };
 
 
@@ -46,7 +45,6 @@ bool HasComponent(Ref<Entity> entity, const std::string& componentName)
       if (componentName == "ShadowMapComponent") return entity->HasComponent<ShadowMapComponent>();
       if (componentName == "UboModelComponent") return entity->HasComponent<UboModelComponent>();
       if (componentName == "UboWorldComponent") return entity->HasComponent<UboWorldComponent>();
-      if (componentName == "CameraFreeComponent") return entity->HasComponent<CameraFreeComponent>();
       throw std::runtime_error("Not supported component type: " + componentName);
 }
 
@@ -70,7 +68,6 @@ void AddComponent(Ref<Entity> entity, const std::string& componentName)
       if (componentName == "ShadowMapComponent") entity->AddComponent<ShadowMapComponent>();
       if (componentName == "UboModelComponent") entity->AddComponent<UboModelComponent>();
       if (componentName == "UboWorldComponent") entity->AddComponent<UboWorldComponent>();
-      if (componentName == "CameraFreeComponent") entity->AddComponent<CameraFreeComponent>();
 }
 
 
@@ -93,6 +90,5 @@ void RemoveComponent(Ref<Entity> entity, const std::string& componentName)
       if (componentName == "ShadowMapComponent") entity->RemoveComponent<ShadowMapComponent>();
       if (componentName == "UboModelComponent") entity->RemoveComponent<UboModelComponent>();
       if (componentName == "UboWorldComponent") entity->RemoveComponent<UboWorldComponent>();
-      if (componentName == "CameraFreeComponent") entity->RemoveComponent<CameraFreeComponent>();
 }
 
