@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 4.1)
 project (Engine)
 set(CMAKE_CXX_STANDARD 20)
 
+#trigger all projects building
 add_subdirectory(Externals)
 add_subdirectory(EngineCore)
 add_subdirectory(ExampleProject)

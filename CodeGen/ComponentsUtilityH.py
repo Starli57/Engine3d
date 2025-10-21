@@ -8,9 +8,9 @@ def extract_component_names(folder):
             component_names.append(filename)
     return component_names
 
-components = extract_component_names(sys.argv[1])
+components = extract_component_names(f"{sys.argv[1]}/{sys.argv[1]}/Components")
 
-with open(sys.argv[2], 'w') as f:
+with open(f"{sys.argv[1]}/{sys.argv[1]}/ComponentsList.h", 'w') as f:
 
 #Defs
     f.write("\n")
@@ -26,7 +26,7 @@ with open(sys.argv[2], 'w') as f:
     f.write("\n")
 
     for component in components:
-        f.write(f"#include \"{sys.argv[1].split('/', 1)[1]}/{component}\"\n")
+        f.write(f"#include \"{sys.argv[1]}/Components/{component}\"\n")
 #Notes
     f.write("\n")
     f.write("/// <summary>\n")
@@ -47,4 +47,4 @@ with open(sys.argv[2], 'w') as f:
     f.write("void AddComponent(Ref<Entity> entity, const std::string& componentName);\n")
     f.write("void RemoveComponent(Ref<Entity> entity, const std::string& componentName);\n")
 
-print(f"Generated C++ for {sys.argv[2]}")
+print(f"Generated C++ for {sys.argv[1]}")

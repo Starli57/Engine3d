@@ -3,7 +3,7 @@ import sys
 
 def extract_component_names():
     component_names = []
-    for filename in os.listdir(sys.argv[1]):
+    for filename in os.listdir(f"{sys.argv[1]}/{sys.argv[1]}/Components"):
         if filename.endswith(".h"):
             component_names.append(filename)
 
@@ -11,12 +11,12 @@ def extract_component_names():
 
 components = extract_component_names()
 
-with open(sys.argv[2], 'w') as f:
+with open(f"{sys.argv[1]}/{sys.argv[1]}/ComponentsList.cpp", 'w') as f:
 
 #Defs
     f.write("\n")
     f.write("#include \"EngineCore/Pch.h\"\n")
-    f.write("#include \"Editor/ComponentsList.h\"\n")
+    f.write(f"#include \"{sys.argv[1]}/ComponentsList.h\"\n")
     f.write("\n")
 
 #Notes
@@ -75,4 +75,4 @@ with open(sys.argv[2], 'w') as f:
     f.write("}\n")
     f.write("\n")
 
-print(f"Generated C++ for {sys.argv[2]}")
+print(f"Generated C++ for {f"{sys.argv[1]}/{sys.argv[1]}/ComponentsList.cpp"}")

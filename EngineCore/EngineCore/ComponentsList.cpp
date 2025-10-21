@@ -1,6 +1,4 @@
-
-#include "EngineCore/Pch.h"
-#include "Editor/ComponentsList.h"
+#include "EngineCore/ComponentsList.h"
 
 
 /// <summary>
