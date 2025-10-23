@@ -7,9 +7,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_0.mesh
+  meshPath: Resources\SponzaglTF\sponza_0.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\0.material
+  materialPath: Resources\SponzaglTF\0.material
 UboModelComponent:
   {}
 ---
@@ -22,9 +22,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_1.mesh
+  meshPath: Resources\SponzaglTF\sponza_1.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\1.material
+  materialPath: Resources\SponzaglTF\1.material
 UboModelComponent:
   {}
 ---
@@ -37,9 +37,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_2.mesh
+  meshPath: Resources\SponzaglTF\sponza_2.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\2.material
+  materialPath: Resources\SponzaglTF\2.material
 UboModelComponent:
   {}
 ---
@@ -52,9 +52,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_3.mesh
+  meshPath: Resources\SponzaglTF\sponza_3.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\3.material
+  materialPath: Resources\SponzaglTF\3.material
 UboModelComponent:
   {}
 ---
@@ -67,9 +67,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_4.mesh
+  meshPath: Resources\SponzaglTF\sponza_4.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\4.material
+  materialPath: Resources\SponzaglTF\4.material
 UboModelComponent:
   {}
 ---
@@ -82,9 +82,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_5.mesh
+  meshPath: Resources\SponzaglTF\sponza_5.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\5.material
+  materialPath: Resources\SponzaglTF\5.material
 UboModelComponent:
   {}
 ---
@@ -97,9 +97,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_6.mesh
+  meshPath: Resources\SponzaglTF\sponza_6.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\6.material
+  materialPath: Resources\SponzaglTF\6.material
 UboModelComponent:
   {}
 ---
@@ -112,9 +112,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_7.mesh
+  meshPath: Resources\SponzaglTF\sponza_7.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\7.material
+  materialPath: Resources\SponzaglTF\7.material
 UboModelComponent:
   {}
 ---
@@ -127,9 +127,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_8.mesh
+  meshPath: Resources\SponzaglTF\sponza_8.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\8.material
+  materialPath: Resources\SponzaglTF\8.material
 UboModelComponent:
   {}
 ---
@@ -142,9 +142,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_9.mesh
+  meshPath: Resources\SponzaglTF\sponza_9.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\9.material
+  materialPath: Resources\SponzaglTF\9.material
 UboModelComponent:
   {}
 ---
@@ -157,9 +157,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_10.mesh
+  meshPath: Resources\SponzaglTF\sponza_10.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\10.material
+  materialPath: Resources\SponzaglTF\10.material
 UboModelComponent:
   {}
 ---
@@ -172,9 +172,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_11.mesh
+  meshPath: Resources\SponzaglTF\sponza_11.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\11.material
+  materialPath: Resources\SponzaglTF\11.material
 UboModelComponent:
   {}
 ---
@@ -187,9 +187,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_12.mesh
+  meshPath: Resources\SponzaglTF\sponza_12.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\12.material
+  materialPath: Resources\SponzaglTF\12.material
 UboModelComponent:
   {}
 ---
@@ -202,9 +202,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_13.mesh
+  meshPath: Resources\SponzaglTF\sponza_13.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\13.material
+  materialPath: Resources\SponzaglTF\13.material
 UboModelComponent:
   {}
 ---
@@ -217,9 +217,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_14.mesh
+  meshPath: Resources\SponzaglTF\sponza_14.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\14.material
+  materialPath: Resources\SponzaglTF\14.material
 UboModelComponent:
   {}
 ---
@@ -232,9 +232,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_15.mesh
+  meshPath: Resources\SponzaglTF\sponza_15.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\15.material
+  materialPath: Resources\SponzaglTF\15.material
 UboModelComponent:
   {}
 ---
@@ -247,9 +247,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_16.mesh
+  meshPath: Resources\SponzaglTF\sponza_16.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\16.material
+  materialPath: Resources\SponzaglTF\16.material
 UboModelComponent:
   {}
 ---
@@ -262,9 +262,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_17.mesh
+  meshPath: Resources\SponzaglTF\sponza_17.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\17.material
+  materialPath: Resources\SponzaglTF\17.material
 UboModelComponent:
   {}
 ---
@@ -277,9 +277,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_18.mesh
+  meshPath: Resources\SponzaglTF\sponza_18.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\18.material
+  materialPath: Resources\SponzaglTF\18.material
 UboModelComponent:
   {}
 ---
@@ -292,9 +292,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_19.mesh
+  meshPath: Resources\SponzaglTF\sponza_19.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\19.material
+  materialPath: Resources\SponzaglTF\19.material
 UboModelComponent:
   {}
 ---
@@ -307,9 +307,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_20.mesh
+  meshPath: Resources\SponzaglTF\sponza_20.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\20.material
+  materialPath: Resources\SponzaglTF\20.material
 UboModelComponent:
   {}
 ---
@@ -322,9 +322,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_21.mesh
+  meshPath: Resources\SponzaglTF\sponza_21.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\21.material
+  materialPath: Resources\SponzaglTF\21.material
 UboModelComponent:
   {}
 ---
@@ -337,9 +337,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_22.mesh
+  meshPath: Resources\SponzaglTF\sponza_22.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\22.material
+  materialPath: Resources\SponzaglTF\22.material
 UboModelComponent:
   {}
 ---
@@ -352,9 +352,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_23.mesh
+  meshPath: Resources\SponzaglTF\sponza_23.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\23.material
+  materialPath: Resources\SponzaglTF\23.material
 UboModelComponent:
   {}
 ---
@@ -367,9 +367,9 @@ RotationComponent:
 ScaleComponent:
   scale: [1, 1, 1]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SponzaglTF\sponza_24.mesh
+  meshPath: Resources\SponzaglTF\sponza_24.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SponzaglTF\24.material
+  materialPath: Resources\SponzaglTF\24.material
 UboModelComponent:
   {}
 ---

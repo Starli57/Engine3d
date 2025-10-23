@@ -3,24 +3,24 @@ NameComponent:
 PositionComponent:
   position: [0, 0, 0]
 RotationComponent:
-  rotation: [3026.38232, 71.9000015, 0]
+  rotation: [4366.71387, 71.9000015, 0]
 RotationVelocityComponent:
   velocity: [20, 0, 0]
 ScaleComponent:
   scale: [100, 100, 100]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\DamagedHelmet\damagedhelmet_material_mr0.mesh
+  meshPath: Resources\DamagedHelmet\damagedhelmet_material_mr0.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\DamagedHelmet\material_mr0.material
+  materialPath: Resources\DamagedHelmet\material_mr0.material
 UboModelComponent:
   {}
 ---
 NameComponent:
   name: Camera
 PositionComponent:
-  position: [-10.3458185, 105.004318, 266.116913]
+  position: [-38.9750214, 110.370201, 294.14267]
 RotationComponent:
-  rotation: [-85.7339096, -24.0806065, 40]
+  rotation: [-76.7109146, -20.5053005, 40]
 CameraComponent:
   fov: 60
   zNear: 1
@@ -32,7 +32,7 @@ UboWorldComponent:
   {}
 CameraFreeComponent:
   movementSpeed: 200
-  rotationSpeed: 12
+  rotationSpeed: 24
 ---
 NameComponent:
   name: Diffuse Light
@@ -46,7 +46,7 @@ LightComponent:
   color: [0.957295358, 0.788788795, 0.538265705]
   intensity: 1000000
 ShadowMapComponent:
-  farObjectProjectionMultiplier: 5.0
+  farObjectProjectionMultiplier: 5
   zNear: 1
-  zFar: 10000
+  zFar: 500
   upAxis: [0, 1, 0]

@@ -7,9 +7,9 @@ RotationComponent:
 ScaleComponent:
   scale: [100, 100, 100]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SonyTC-D5Recorder\scene_tc-d50.mesh
+  meshPath: Resources\SonyTC-D5Recorder\scene_tc-d50.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SonyTC-D5Recorder\tc-d50.material
+  materialPath: Resources\SonyTC-D5Recorder\tc-d50.material
 UboModelComponent:
   {}
 ---
@@ -22,9 +22,9 @@ RotationComponent:
 ScaleComponent:
   scale: [100, 100, 100]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SonyTC-D5Recorder\scene_tc-d5_op1.mesh
+  meshPath: Resources\SonyTC-D5Recorder\scene_tc-d5_op1.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SonyTC-D5Recorder\tc-d5_op1.material
+  materialPath: Resources\SonyTC-D5Recorder\tc-d5_op1.material
 UboModelComponent:
   {}
 ---
@@ -37,9 +37,9 @@ RotationComponent:
 ScaleComponent:
   scale: [100, 100, 100]
 MeshComponent:
-  meshPath: ../ExampleProject/Resources\SonyTC-D5Recorder\scene_tc-d5_black2.mesh
+  meshPath: Resources\SonyTC-D5Recorder\scene_tc-d5_black2.mesh
 MaterialComponent:
-  materialPath: ../ExampleProject/Resources\SonyTC-D5Recorder\tc-d5_black2.material
+  materialPath: Resources\SonyTC-D5Recorder\tc-d5_black2.material
 UboModelComponent:
   {}
 ---
