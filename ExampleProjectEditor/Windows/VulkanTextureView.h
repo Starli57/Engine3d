@@ -1,23 +1,23 @@
 #pragma once
 
 #include <imgui.h>
-#include <vector>
+#include <imgui_impl_vulkan.h>
 
 #include "EngineCore/EngineApi.h"
 #include "EngineCore/Rendering/Vulkan/RendererVulkan.h"
 #include "EngineCore/Editor/IWindow.h"
-#include "EngineCore/Profiler/ProfilerSample.h"
 
-namespace Editor
+namespace UserEditor
 {
-	class ProfilerWindow : public Engine::IWindow
+	class VulkanTextureView : public Engine::IWindow
 	{
 	public:
-		ProfilerWindow(Engine::EngineContext* engineContext);
+		VulkanTextureView(Engine::EngineContext* engineContext);
 		void Update() override;
 
 	private:
 		Engine::EngineContext* engineContext;
-		void ShowRecursive(Engine::ProfilerSample& sample) const;
+		std::vector<VkDescriptorSet> textureDescriptors;
+		int frame = 0;
 	};
 }

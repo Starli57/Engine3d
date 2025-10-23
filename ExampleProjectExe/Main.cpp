@@ -12,7 +12,12 @@ int main()
     try
     {
         const URef<Game> game = CreateUniqueRef<Game>(projectSettings);
+        game->engine->engineContext->entitySerializer->InstantiateWorld(
+            game->engine->engineContext->ecs,
+            game->engine->engineContext->resourcesStorage->worldsPaths.at(0));
+        
         game->Run();
+
     }
     catch (const std::exception& e)
     {

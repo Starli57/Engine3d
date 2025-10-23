@@ -1,0 +1,35 @@
+#pragma once
+
+#include <imgui.h>
+
+#include "Inspector.h"
+
+#include "EngineCore/Core/Ref.h"
+#include "EngineCore/Core/Ecs.h"
+#include "EngineCore/Core/ProjectSettings.h"
+#include "EngineCore/Editor/IWindow.h"
+#include "EngineCore/Components/NameComponent.h"
+#include "EngineCore/Components/IdComponent.h"
+#include "EngineCore/Serialization/EntitySerializer.h"
+
+namespace UserEditor
+{
+	class Hierarchy : public Engine::IWindow
+	{
+	public:
+		Hierarchy(const Ref<Engine::EntitySerializer>& serializer, const Ref<Ecs>& ecs, const Ref<Inspector>& inspector, const Ref<ProjectSettings>& projectSettings, const
+				  Ref<Engine::ResourcesStorageVulkan>& resourcesStorage);
+		~Hierarchy() override;
+
+		void Update() override;
+
+	private:
+		Ref<Ecs> ecs;
+		Ref<Inspector> inspector;
+		Ref<Engine::EntitySerializer> serializer;
+		Ref<ProjectSettings> projectSettings;
+		Ref<Engine::ResourcesStorageVulkan> resourcesStorage;
+
+		int selectedItemIndex;
+	};
+}

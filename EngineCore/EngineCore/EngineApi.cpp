@@ -122,7 +122,7 @@ namespace Engine
 			Profiler::GetInstance().EndSample();
 
 #if _DEBUG
-			editorUpdate();
+			if (editorUpdate) editorUpdate();
 #endif
 			
 			Profiler::GetInstance().Reset();

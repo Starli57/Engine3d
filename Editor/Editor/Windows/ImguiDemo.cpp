@@ -1,6 +1,9 @@
 #include "ImguiDemo.h"
 
-void ImguiDemo::Update()
+namespace Editor
 {
-	ImGui::ShowDemoWindow();
+	void ImguiDemo::Update()
+	{
+		ImGui::ShowDemoWindow();
+	}
 }

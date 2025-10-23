@@ -21,10 +21,6 @@ Game::Game(Ref<ProjectSettings> projectSettings) : projectSettings(projectSettin
 	
 	serializer = CreateRef<Client::EntitySerializer>(engineContext->entitySerializer);
 	
-#if !_DEBUG
-	engineContext->entitySerializer->InstantiateWorld(engine->engineContext->ecs, engine->engineContext->resourcesStorage->worldsPaths.at(0));
-#endif
-	
 	InitializeGameSystems();
 }
 

@@ -4,8 +4,11 @@
 
 #include "EngineCore/Editor/IWindow.h"
 
-class ImguiDemo : public Engine::IWindow
+namespace Editor
 {
-public:
-	void Update() override;
-};
+	class ImguiDemo : public Engine::IWindow
+	{
+	public:
+		void Update() override;
+	};
+}
