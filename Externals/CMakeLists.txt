@@ -32,7 +32,6 @@ target_include_directories(imgui PUBLIC
     "${CMAKE_CURRENT_LIST_DIR}/DearImgui/backends"
 )
 
-
 add_library(ExternalsLib INTERFACE)
 
 target_link_libraries(imgui PUBLIC 
