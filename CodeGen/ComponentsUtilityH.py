@@ -10,7 +10,7 @@ def extract_component_names(folder):
 
 components = extract_component_names(f"{sys.argv[1]}/{sys.argv[1]}/Components")
 
-with open(f"{sys.argv[1]}/{sys.argv[1]}/ComponentsList.h", 'w') as f:
+with open(f"{sys.argv[1]}/{sys.argv[1]}/ComponentsFactory.h", 'w') as f:
 
 #Defs
     f.write("\n")
@@ -23,10 +23,7 @@ with open(f"{sys.argv[1]}/{sys.argv[1]}/ComponentsList.h", 'w') as f:
     f.write("#include \"EngineCore/Core/Ref.h\"\n")
     f.write("#include \"EngineCore/Core/Entity.h\"\n")
     f.write("#include \"EngineCore/Core/IComponent.h\"\n")
-    f.write("\n")
 
-    for component in components:
-        f.write(f"#include \"{sys.argv[1]}/Components/{component}\"\n")
 #Notes
     f.write("\n")
     f.write("/// <summary>\n")

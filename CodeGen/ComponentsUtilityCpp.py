@@ -1,23 +1,26 @@
 import os
 import sys
 
-def extract_component_names():
+def extract_component_names(project):
     component_names = []
-    for filename in os.listdir(f"{sys.argv[1]}/{sys.argv[1]}/Components"):
+    for filename in os.listdir(f"{project}/{project}/Components"):
         if filename.endswith(".h"):
             component_names.append(filename)
 
     return component_names
 
-components = extract_component_names()
+components = extract_component_names(sys.argv[1])
 
-with open(f"{sys.argv[1]}/{sys.argv[1]}/ComponentsList.cpp", 'w') as f:
+with open(f"{sys.argv[1]}/{sys.argv[1]}/ComponentsFactory.cpp", 'w') as f:
 
 #Defs
     f.write("\n")
     f.write("#include \"EngineCore/Pch.h\"\n")
-    f.write(f"#include \"{sys.argv[1]}/ComponentsList.h\"\n")
+    f.write(f"#include \"{sys.argv[1]}/ComponentsFactory.h\"\n")
     f.write("\n")
+
+    for component in components:
+        f.write(f"#include \"{sys.argv[1]}/Components/{component}\"\n")
 
 #Notes
     f.write("\n")

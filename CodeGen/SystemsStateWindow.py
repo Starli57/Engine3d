@@ -28,10 +28,10 @@ with open(output_file, 'w') as f:
     f.write("\n")
 
 #Body
-    f.write("SystemsStateWindow::SystemsStateWindow(const Ref<SystemsState>& systemsState) : systemsState(systemsState) { } \n")
+    f.write("Editor::SystemsStateWindow::SystemsStateWindow(const Ref<SystemsState>& systemsState) : systemsState(systemsState) { } \n")
     f.write("\n")
 
-    f.write("void SystemsStateWindow::Update()\n")
+    f.write("void Editor::SystemsStateWindow::Update()\n")
     f.write("{\n")
     f.write("      ImGui::Begin(\"Systems State\");\n")
     for system in systems:
