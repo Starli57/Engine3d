@@ -51,15 +51,10 @@ namespace Editor
         initInfo.Queue = renderer.vulkanContext->graphicsQueue;
         initInfo.PipelineCache = VK_NULL_HANDLE;
         initInfo.DescriptorPoolSize = 2048;
-        initInfo.RenderPass = renderPass;
-        initInfo.Subpass = 0;
         initInfo.MinImageCount = 2;
         initInfo.ImageCount = renderer.vulkanContext->swapchainContext->imagesCount;
-        initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
-
+        
         ImGui_ImplVulkan_Init(&initInfo);
-        ImGui_ImplVulkan_CreateFontsTexture();
-
         spdlog::info("Editor imgui initialization completed");
     }
 
