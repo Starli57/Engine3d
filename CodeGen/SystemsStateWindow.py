@@ -1,7 +1,7 @@
 import os
 
 systems_folder = "ExampleProject/ExampleProject/Systems"
-output_file = "Editor/Editor/Windows/SystemsStateWindow.cpp"
+output_file = "ExampleProjectEditor/Windows/SystemsStateWindow.cpp"
 
 def extract_systems_names(folder):
     system_names = []
@@ -28,15 +28,17 @@ with open(output_file, 'w') as f:
     f.write("\n")
 
 #Body
-    f.write("Editor::SystemsStateWindow::SystemsStateWindow(const Ref<SystemsState>& systemsState) : systemsState(systemsState) { } \n")
+    f.write("namespace UserEditor {\n")
+    f.write("      SystemsStateWindow::SystemsStateWindow(const Ref<SystemsState>& systemsState) : systemsState(systemsState) { } \n")
     f.write("\n")
 
-    f.write("void Editor::SystemsStateWindow::Update()\n")
-    f.write("{\n")
-    f.write("      ImGui::Begin(\"Systems State\");\n")
+    f.write("      void SystemsStateWindow::Update()\n")
+    f.write("      {\n")
+    f.write("            ImGui::Begin(\"Systems State\");\n")
     for system in systems:
-        f.write(f"      ImGui::Checkbox(\"{system.split('.')[0].strip()}\", &systemsState->{system.split('.')[0].strip()});\n")
-    f.write("      ImGui::End();\n")
-    f.write("};\n")
+        f.write(f"            ImGui::Checkbox(\"{system.split('.')[0].strip()}\", &systemsState->{system.split('.')[0].strip()});\n")
+    f.write("            ImGui::End();\n")
+    f.write("      };\n")
+    f.write("}\n")
 
 print(f"Generated C++ for {output_file}")
